@@ -11,6 +11,7 @@ import {
   MessageSquare, Image, Loader2, Check
 } from "lucide-react"
 import { PlanEditor } from "@/components/coach/PlanEditor"
+import { PhotoComparison } from "@/components/coach/PhotoComparison"
 import type { Plan } from "@/app/actions/plans"
 
 interface Client {
@@ -376,45 +377,50 @@ export function ClientDetailView({
         )}
 
         {activeTab === "photos" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-6">
             {photos.length === 0 ? (
-              <div className="col-span-full text-center py-12" style={{ color: "#7e8a9e" }}>
+              <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
                 <Image size={40} className="mx-auto mb-4" style={{ color: "#404858" }} />
                 <p>No progress photos yet</p>
               </div>
             ) : (
-              photos.map((photo) => (
-                <div
-                  key={photo.id}
-                  className="p-5 rounded-2xl"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.06)",
-                  }}
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <Calendar size={14} style={{ color: "#7e8a9e" }} />
-                    <span className="text-sm" style={{ color: "#7e8a9e" }}>
-                      {photo.week_number ? `Week ${photo.week_number}` : ""} · {new Date(photo.upload_date).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[photo.front_photo, photo.side_photo, photo.back_photo].map((url, i) => (
-                      <div
-                        key={i}
-                        className="aspect-[3/4] rounded-lg flex items-center justify-center"
-                        style={{ background: "rgba(255, 255, 255, 0.04)" }}
-                      >
-                        {url ? (
-                          <img src={url} alt="" className="w-full h-full object-cover rounded-lg" />
-                        ) : (
-                          <Image size={20} style={{ color: "#404858" }} />
-                        )}
+              <>
+                <PhotoComparison clientId={client.id} photos={photos} checkins={checkins} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {photos.map((photo) => (
+                    <div
+                      key={photo.id}
+                      className="p-5 rounded-2xl"
+                      style={{
+                        background: "rgba(255, 255, 255, 0.03)",
+                        border: "1px solid rgba(255, 255, 255, 0.06)",
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-4">
+                        <Calendar size={14} style={{ color: "#7e8a9e" }} />
+                        <span className="text-sm" style={{ color: "#7e8a9e" }}>
+                          {photo.week_number ? `Week ${photo.week_number}` : ""} · {new Date(photo.upload_date).toLocaleDateString()}
+                        </span>
                       </div>
-                    ))}
-                  </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[photo.front_photo, photo.side_photo, photo.back_photo].map((url, i) => (
+                          <div
+                            key={i}
+                            className="aspect-[3/4] rounded-lg flex items-center justify-center overflow-hidden"
+                            style={{ background: "rgba(255, 255, 255, 0.04)" }}
+                          >
+                            {url ? (
+                              <img src={`/api/file?pathname=${encodeURIComponent(url)}`} alt="" className="w-full h-full object-cover rounded-lg" />
+                            ) : (
+                              <Image size={20} style={{ color: "#404858" }} />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))
+              </>
             )}
           </div>
         )}
