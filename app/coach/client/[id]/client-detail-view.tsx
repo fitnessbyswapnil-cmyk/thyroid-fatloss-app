@@ -1,0 +1,519 @@
+"use client"
+
+import { useState } from "react"
+import { motion } from "framer-motion"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
+import {
+  ArrowLeft, Send, Scale, Activity, Moon, Brain,
+  TrendingDown, Calendar, Clock, Zap, Heart,
+  MessageSquare, Image, Loader2, Check
+} from "lucide-react"
+
+interface Client {
+  id: string
+  full_name: string
+  email: string
+  phone: string | null
+  age: number | null
+  gender: string | null
+  current_weight: number | null
+  start_weight: number | null
+  target_weight: number | null
+  thyroid_condition: string | null
+  medications: string | null
+  allergies: string | null
+  plan_type: string
+  start_date: string | null
+  streak_current: number | null
+  streak_best: number | null
+  recovery_score: number | null
+  wellness_score: number | null
+  tsh_before: number | null
+  tsh_current: number | null
+  coach_notes: string | null
+  subscription_status: string
+}
+
+interface Checkin {
+  id: string
+  week_number: number
+  weight: number | null
+  energy_level: number | null
+  sleep_score: number | null
+  stress_level: number | null
+  mood: number | null
+  adherence_score: number | null
+  notes: string | null
+  coach_feedback: string | null
+  submitted_at: string
+}
+
+interface Photo {
+  id: string
+  front_photo: string | null
+  side_photo: string | null
+  back_photo: string | null
+  week_number: number | null
+  upload_date: string
+}
+
+interface Insight {
+  id: string
+  insight: string
+  is_read: boolean
+  created_at: string
+}
+
+interface Habit {
+  date: string
+  morning_meds: boolean
+  morning_walk: boolean
+  hydration_goal: boolean
+  meal_prep: boolean
+  supplements: boolean
+  sleep_by_10pm: boolean
+}
+
+export function ClientDetailView({
+  client,
+  checkins,
+  photos,
+  insights,
+  habits,
+  coachId,
+}: {
+  client: Client
+  checkins: Checkin[]
+  photos: Photo[]
+  insights: Insight[]
+  habits: Habit[]
+  coachId: string
+}) {
+  const router = useRouter()
+  const [newInsight, setNewInsight] = useState("")
+  const [isSending, setIsSending] = useState(false)
+  const [activeTab, setActiveTab] = useState<"overview" | "checkins" | "photos" | "insights">("overview")
+
+  const weightLost = client.start_weight && client.current_weight
+    ? (client.start_weight - client.current_weight).toFixed(1)
+    : "0"
+
+  const tshImprovement = client.tsh_before && client.tsh_current
+    ? Math.round(((client.tsh_before - client.tsh_current) / client.tsh_before) * 100)
+    : 0
+
+  const programWeek = client.start_date
+    ? Math.ceil((Date.now() - new Date(client.start_date).getTime()) / (7 * 24 * 60 * 60 * 1000))
+    : 1
+
+  const handleSendInsight = async () => {
+    if (!newInsight.trim()) return
+    setIsSending(true)
+
+    const supabase = createClient()
+    const { error } = await supabase
+      .from("coach_insights")
+      .insert({
+        client_id: client.id,
+        coach_id: coachId,
+        insight: newInsight,
+      })
+
+    if (!error) {
+      setNewInsight("")
+      router.refresh()
+    }
+    setIsSending(false)
+  }
+
+  return (
+    <div className="min-h-screen" style={{ background: "#090c14" }}>
+      {/* Header */}
+      <header
+        className="sticky top-0 z-50 px-6 py-4"
+        style={{
+          background: "rgba(9, 12, 20, 0.8)",
+          backdropFilter: "blur(20px)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+        }}
+      >
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/coach" className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}>
+              <ArrowLeft size={20} />
+            </Link>
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center font-medium"
+                style={{
+                  background: "linear-gradient(135deg, rgba(45, 212, 191, 0.2) 0%, rgba(34, 197, 94, 0.2) 100%)",
+                  color: "#2dd4bf"
+                }}
+              >
+                {client.full_name?.charAt(0) || "?"}
+              </div>
+              <div>
+                <h1 className="font-semibold" style={{ color: "#e8eaf0" }}>
+                  {client.full_name}
+                </h1>
+                <p className="text-xs" style={{ color: "#7e8a9e" }}>
+                  Week {programWeek} · {client.plan_type} plan
+                </p>
+              </div>
+            </div>
+          </div>
+          <span
+            className="px-3 py-1 rounded-lg text-xs font-medium"
+            style={{
+              background: client.subscription_status === "active"
+                ? "rgba(45, 212, 191, 0.15)"
+                : "rgba(245, 158, 11, 0.15)",
+              color: client.subscription_status === "active" ? "#2dd4bf" : "#f59e0b",
+            }}
+          >
+            {client.subscription_status}
+          </span>
+        </div>
+      </header>
+
+      {/* Tabs */}
+      <div
+        className="px-6 py-3 border-b sticky top-[72px] z-40"
+        style={{
+          background: "rgba(9, 12, 20, 0.95)",
+          borderColor: "rgba(255, 255, 255, 0.06)",
+        }}
+      >
+        <div className="max-w-5xl mx-auto flex items-center gap-2">
+          {(["overview", "checkins", "photos", "insights"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className="px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all"
+              style={{
+                background: activeTab === tab ? "rgba(45, 212, 191, 0.15)" : "transparent",
+                color: activeTab === tab ? "#2dd4bf" : "#7e8a9e",
+              }}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        {activeTab === "overview" && (
+          <div className="space-y-6">
+            {/* Key Metrics */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { label: "Current Weight", value: `${client.current_weight || "-"} kg`, icon: Scale, delta: `-${weightLost} kg`, color: "#2dd4bf" },
+                { label: "TSH Level", value: client.tsh_current || "-", icon: Activity, delta: tshImprovement > 0 ? `-${tshImprovement}%` : null, color: "#34d399" },
+                { label: "Recovery Score", value: `${client.recovery_score || 0}%`, icon: Heart, delta: null, color: "#fb7185" },
+                { label: "Current Streak", value: `${client.streak_current || 0} days`, icon: Zap, delta: `Best: ${client.streak_best || 0}`, color: "#f59e0b" },
+              ].map((metric) => (
+                <div
+                  key={metric.label}
+                  className="p-5 rounded-2xl"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.03)",
+                    border: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <metric.icon size={16} style={{ color: metric.color }} />
+                    <span className="text-xs" style={{ color: "#7e8a9e" }}>{metric.label}</span>
+                  </div>
+                  <div className="text-2xl font-bold" style={{ color: "#e8eaf0" }}>
+                    {metric.value}
+                  </div>
+                  {metric.delta && (
+                    <div className="text-xs mt-1" style={{ color: "#2dd4bf" }}>
+                      {metric.delta}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Client Info */}
+            <div
+              className="p-6 rounded-2xl"
+              style={{
+                background: "rgba(255, 255, 255, 0.03)",
+                border: "1px solid rgba(255, 255, 255, 0.06)",
+              }}
+            >
+              <h3 className="font-semibold mb-4" style={{ color: "#e8eaf0" }}>Client Information</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[
+                  { label: "Email", value: client.email },
+                  { label: "Phone", value: client.phone || "-" },
+                  { label: "Age", value: client.age ? `${client.age} years` : "-" },
+                  { label: "Gender", value: client.gender || "-" },
+                  { label: "Start Date", value: client.start_date ? new Date(client.start_date).toLocaleDateString() : "-" },
+                  { label: "Target Weight", value: client.target_weight ? `${client.target_weight} kg` : "-" },
+                  { label: "Thyroid Condition", value: client.thyroid_condition || "-" },
+                  { label: "Medications", value: client.medications || "-" },
+                  { label: "Allergies", value: client.allergies || "None" },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <div className="text-xs uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
+                      {item.label}
+                    </div>
+                    <div className="text-sm" style={{ color: "#e8eaf0" }}>
+                      {item.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Weekly Habits */}
+            {habits.length > 0 && (
+              <div
+                className="p-6 rounded-2xl"
+                style={{
+                  background: "rgba(255, 255, 255, 0.03)",
+                  border: "1px solid rgba(255, 255, 255, 0.06)",
+                }}
+              >
+                <h3 className="font-semibold mb-4" style={{ color: "#e8eaf0" }}>
+                  This Week&apos;s Habits
+                </h3>
+                <div className="grid grid-cols-7 gap-2">
+                  {habits.slice(0, 7).map((habit) => {
+                    const completed = [
+                      habit.morning_meds,
+                      habit.morning_walk,
+                      habit.hydration_goal,
+                      habit.meal_prep,
+                      habit.supplements,
+                      habit.sleep_by_10pm,
+                    ].filter(Boolean).length
+                    
+                    return (
+                      <div key={habit.date} className="text-center">
+                        <div className="text-[10px] mb-2" style={{ color: "#7e8a9e" }}>
+                          {new Date(habit.date).toLocaleDateString("en-US", { weekday: "short" })}
+                        </div>
+                        <div
+                          className="w-10 h-10 rounded-full mx-auto flex items-center justify-center text-sm font-medium"
+                          style={{
+                            background: completed >= 5 
+                              ? "rgba(45, 212, 191, 0.2)" 
+                              : completed >= 3 
+                                ? "rgba(245, 158, 11, 0.2)" 
+                                : "rgba(255, 255, 255, 0.05)",
+                            color: completed >= 5 ? "#2dd4bf" : completed >= 3 ? "#f59e0b" : "#7e8a9e",
+                          }}
+                        >
+                          {completed}/6
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Quick Send Insight */}
+            <div
+              className="p-6 rounded-2xl"
+              style={{
+                background: "rgba(255, 255, 255, 0.03)",
+                border: "1px solid rgba(255, 255, 255, 0.06)",
+              }}
+            >
+              <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
+                <MessageSquare size={16} style={{ color: "#2dd4bf" }} />
+                Send Insight
+              </h3>
+              <div className="flex gap-3">
+                <textarea
+                  value={newInsight}
+                  onChange={(e) => setNewInsight(e.target.value)}
+                  placeholder="Write personalized feedback or encouragement..."
+                  rows={3}
+                  className="flex-1 px-4 py-3 rounded-xl text-sm focus:outline-none resize-none"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.04)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    color: "#e8eaf0",
+                  }}
+                />
+                <motion.button
+                  onClick={handleSendInsight}
+                  disabled={isSending || !newInsight.trim()}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 rounded-xl self-end"
+                  style={{
+                    background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
+                    color: "#0a0d14",
+                    opacity: !newInsight.trim() ? 0.5 : 1,
+                    height: 44,
+                  }}
+                >
+                  {isSending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "checkins" && (
+          <div className="space-y-4">
+            {checkins.length === 0 ? (
+              <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
+                <Clock size={40} className="mx-auto mb-4" style={{ color: "#404858" }} />
+                <p>No check-ins yet</p>
+              </div>
+            ) : (
+              checkins.map((checkin) => (
+                <div
+                  key={checkin.id}
+                  className="p-5 rounded-2xl"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.03)",
+                    border: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="px-3 py-1 rounded-lg text-sm font-medium"
+                        style={{ background: "rgba(45, 212, 191, 0.15)", color: "#2dd4bf" }}
+                      >
+                        Week {checkin.week_number}
+                      </span>
+                      <span className="text-xs" style={{ color: "#7e8a9e" }}>
+                        {new Date(checkin.submitted_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    {checkin.adherence_score && (
+                      <span className="text-sm font-medium" style={{ color: "#2dd4bf" }}>
+                        {checkin.adherence_score}% adherence
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    {[
+                      { label: "Weight", value: checkin.weight ? `${checkin.weight} kg` : "-", icon: Scale },
+                      { label: "Energy", value: checkin.energy_level ? `${checkin.energy_level}/10` : "-", icon: Zap },
+                      { label: "Sleep", value: checkin.sleep_score ? `${checkin.sleep_score}/10` : "-", icon: Moon },
+                      { label: "Stress", value: checkin.stress_level ? `${checkin.stress_level}/10` : "-", icon: TrendingDown },
+                      { label: "Mood", value: checkin.mood ? `${checkin.mood}/10` : "-", icon: Brain },
+                    ].map((item) => (
+                      <div key={item.label} className="flex items-center gap-2">
+                        <item.icon size={14} style={{ color: "#7e8a9e" }} />
+                        <div>
+                          <div className="text-xs" style={{ color: "#7e8a9e" }}>{item.label}</div>
+                          <div className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{item.value}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {checkin.notes && (
+                    <div className="mt-4 p-3 rounded-lg" style={{ background: "rgba(255, 255, 255, 0.02)" }}>
+                      <div className="text-xs uppercase mb-1" style={{ color: "#7e8a9e" }}>Notes</div>
+                      <p className="text-sm" style={{ color: "#c9cdd5" }}>{checkin.notes}</p>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === "photos" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {photos.length === 0 ? (
+              <div className="col-span-full text-center py-12" style={{ color: "#7e8a9e" }}>
+                <Image size={40} className="mx-auto mb-4" style={{ color: "#404858" }} />
+                <p>No progress photos yet</p>
+              </div>
+            ) : (
+              photos.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="p-5 rounded-2xl"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.03)",
+                    border: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <Calendar size={14} style={{ color: "#7e8a9e" }} />
+                    <span className="text-sm" style={{ color: "#7e8a9e" }}>
+                      {photo.week_number ? `Week ${photo.week_number}` : ""} · {new Date(photo.upload_date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[photo.front_photo, photo.side_photo, photo.back_photo].map((url, i) => (
+                      <div
+                        key={i}
+                        className="aspect-[3/4] rounded-lg flex items-center justify-center"
+                        style={{ background: "rgba(255, 255, 255, 0.04)" }}
+                      >
+                        {url ? (
+                          <img src={url} alt="" className="w-full h-full object-cover rounded-lg" />
+                        ) : (
+                          <Image size={20} style={{ color: "#404858" }} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === "insights" && (
+          <div className="space-y-4">
+            {insights.length === 0 ? (
+              <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
+                <MessageSquare size={40} className="mx-auto mb-4" style={{ color: "#404858" }} />
+                <p>No insights sent yet</p>
+              </div>
+            ) : (
+              insights.map((insight) => (
+                <div
+                  key={insight.id}
+                  className="p-5 rounded-2xl"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.03)",
+                    border: "1px solid rgba(255, 255, 255, 0.06)",
+                  }}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <span className="text-xs" style={{ color: "#7e8a9e" }}>
+                      {new Date(insight.created_at).toLocaleDateString("en-IN", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                    {insight.is_read && (
+                      <span className="flex items-center gap-1 text-[10px]" style={{ color: "#2dd4bf" }}>
+                        <Check size={12} />
+                        Read
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm leading-relaxed" style={{ color: "#c9cdd5" }}>
+                    {insight.insight}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
