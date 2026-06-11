@@ -1,5 +1,6 @@
 'use server'
 
+import { put } from '@vercel/blob'
 import { createClient } from '@/lib/supabase/server'
 
 export interface PhotoUploadInput {
@@ -19,31 +20,23 @@ export async function uploadProgressPhotos(input: PhotoUploadInput) {
       return { success: false, error: 'Not authenticated' }
     }
 
-    // Convert blobs to form data for upload endpoint
-    const uploadPhotoToBlob = async (blob: Blob, filename: string) => {
+    // Upload a blob straight to Vercel Blob (private store). We keep the same
+    // `${user.id}/...` path prefix that /api/file's ownership check relies on
+    // (pathname.startsWith(user.id)), and return the pathname — not a URL —
+    // since the store is private and files are served via /api/file.
+    const uploadPhotoToBlob = async (blob: Blob | undefined, angle: string) => {
       if (!blob) return null
 
-      const formData = new FormData()
-      formData.append('file', blob, filename)
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        throw new Error('Photo upload failed')
-      }
-
-      const { url } = await response.json()
-      return url
+      const pathname = `${user.id}/progress-${angle}/${Date.now()}.jpg`
+      const result = await put(pathname, blob, { access: 'private' })
+      return result.pathname
     }
 
     // Upload all photos in parallel
-    const [frontUrl, sideUrl, backUrl] = await Promise.all([
-      input.frontPhotoBlob ? uploadPhotoToBlob(input.frontPhotoBlob, `front-${Date.now()}.jpg`) : Promise.resolve(null),
-      input.sidePhotoBlob ? uploadPhotoToBlob(input.sidePhotoBlob, `side-${Date.now()}.jpg`) : Promise.resolve(null),
-      input.backPhotoBlob ? uploadPhotoToBlob(input.backPhotoBlob, `back-${Date.now()}.jpg`) : Promise.resolve(null),
+    const [frontPath, sidePath, backPath] = await Promise.all([
+      uploadPhotoToBlob(input.frontPhotoBlob, 'front'),
+      uploadPhotoToBlob(input.sidePhotoBlob, 'side'),
+      uploadPhotoToBlob(input.backPhotoBlob, 'back'),
     ])
 
     // Save metadata to progress_photos table
@@ -51,9 +44,9 @@ export async function uploadProgressPhotos(input: PhotoUploadInput) {
       .from('progress_photos')
       .insert({
         client_id: user.id,
-        front_photo: frontUrl,
-        side_photo: sideUrl,
-        back_photo: backUrl,
+        front_photo: frontPath,
+        side_photo: sidePath,
+        back_photo: backPath,
         week_number: input.weekNumber,
         notes: input.notes || null,
       })
@@ -68,9 +61,9 @@ export async function uploadProgressPhotos(input: PhotoUploadInput) {
     return { success: true, data }
   } catch (error) {
     console.error('[v0] Photo upload error:', error)
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Upload failed' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Upload failed',
     }
   }
 }

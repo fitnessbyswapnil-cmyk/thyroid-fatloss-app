@@ -60,7 +60,7 @@ export async function getPendingReviews() {
           full_name
         )
       `)
-      .eq('status', 'pending')
+      .eq('status', 'submitted')
       .order('submitted_at', { ascending: false })
 
     if (error) throw error
