@@ -201,15 +201,15 @@ export default function LoginPage() {
             <div className="flex-1 h-px" style={{ background: "rgba(255, 255, 255, 0.06)" }} />
           </div>
 
-          {/* Sign Up Link */}
+          {/* Request access link */}
           <p className="text-center text-sm" style={{ color: "#7e8a9e" }}>
             New to ThyroWell?{" "}
-            <Link 
-              href="/auth/sign-up" 
+            <Link
+              href="/request-access"
               className="font-medium transition-colors hover:underline"
               style={{ color: "#2dd4bf" }}
             >
-              Start your healing journey
+              Request your spot
             </Link>
           </p>
         </div>

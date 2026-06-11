@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import { PendingReview } from "@/app/actions/coach-reviews"
 import { PendingReviewsQueue } from "@/components/coach/PendingReviewsQueue"
+import { AddClientButton } from "@/components/coach/AddClientButton"
 
 interface Client {
   id: string
@@ -136,6 +137,7 @@ export function CoachDashboardClient({
             </span>
           </div>
           <div className="flex items-center gap-3">
+            <AddClientButton />
             <Link
               href="/dashboard"
               className="p-2 rounded-lg transition-colors"

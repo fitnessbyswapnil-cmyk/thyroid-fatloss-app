@@ -49,8 +49,8 @@ export default function LandingPage() {
           >
             Sign In
           </Link>
-          <Link 
-            href="/auth/sign-up"
+          <Link
+            href="/request-access"
             className="text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
             style={{ 
               background: "rgba(45, 212, 191, 0.15)",
@@ -111,7 +111,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
-                href="/auth/sign-up"
+                href="/request-access"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold"
                 style={{
                   background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
@@ -230,7 +230,7 @@ export default function LandingPage() {
           </p>
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link
-              href="/auth/sign-up"
+              href="/request-access"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold"
               style={{
                 background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
