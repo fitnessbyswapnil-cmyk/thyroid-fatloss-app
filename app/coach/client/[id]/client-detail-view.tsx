@@ -66,29 +66,18 @@ interface Insight {
   created_at: string
 }
 
-interface Habit {
-  date: string
-  morning_meds: boolean
-  morning_walk: boolean
-  hydration_goal: boolean
-  meal_prep: boolean
-  supplements: boolean
-  sleep_by_10pm: boolean
-}
 
 export function ClientDetailView({
   client,
   checkins,
   photos,
   insights,
-  habits,
   coachId,
 }: {
   client: Client
   checkins: Checkin[]
   photos: Photo[]
   insights: Insight[]
-  habits: Habit[]
   coachId: string
 }) {
   const router = useRouter()
@@ -270,54 +259,6 @@ export function ClientDetailView({
                 ))}
               </div>
             </div>
-
-            {/* Weekly Habits */}
-            {habits.length > 0 && (
-              <div
-                className="p-6 rounded-2xl"
-                style={{
-                  background: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
-                }}
-              >
-                <h3 className="font-semibold mb-4" style={{ color: "#e8eaf0" }}>
-                  This Week&apos;s Habits
-                </h3>
-                <div className="grid grid-cols-7 gap-2">
-                  {habits.slice(0, 7).map((habit) => {
-                    const completed = [
-                      habit.morning_meds,
-                      habit.morning_walk,
-                      habit.hydration_goal,
-                      habit.meal_prep,
-                      habit.supplements,
-                      habit.sleep_by_10pm,
-                    ].filter(Boolean).length
-                    
-                    return (
-                      <div key={habit.date} className="text-center">
-                        <div className="text-[10px] mb-2" style={{ color: "#7e8a9e" }}>
-                          {new Date(habit.date).toLocaleDateString("en-US", { weekday: "short" })}
-                        </div>
-                        <div
-                          className="w-10 h-10 rounded-full mx-auto flex items-center justify-center text-sm font-medium"
-                          style={{
-                            background: completed >= 5 
-                              ? "rgba(45, 212, 191, 0.2)" 
-                              : completed >= 3 
-                                ? "rgba(245, 158, 11, 0.2)" 
-                                : "rgba(255, 255, 255, 0.05)",
-                            color: completed >= 5 ? "#2dd4bf" : completed >= 3 ? "#f59e0b" : "#7e8a9e",
-                          }}
-                        >
-                          {completed}/6
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* Quick Send Insight */}
             <div

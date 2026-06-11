@@ -38,15 +38,6 @@ export default async function DashboardPage() {
 
   const latestCheckin = allCheckins[0]
 
-  // Fetch today's habits
-  const today = new Date().toISOString().split("T")[0]
-  const { data: todayHabits } = await supabase
-    .from("daily_habits")
-    .select("*")
-    .eq("client_id", user.id)
-    .eq("date", today)
-    .single()
-
   // Fetch latest coach insight
   const { data: latestInsight } = await supabase
     .from("coach_insights")
@@ -137,7 +128,6 @@ export default async function DashboardPage() {
       : "Today",
     isNewInsight: latestInsight ? !latestInsight.is_read : false,
     dailyIntention: "Every cell in your body is working to heal. Trust the process, honor your journey.",
-    todayHabits,
     chartData: allCheckins.map(c => ({
       week_number: c.week_number,
       weight: c.weight || 0,

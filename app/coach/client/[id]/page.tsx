@@ -48,24 +48,12 @@ export default async function ClientDetailPage({
     .eq("client_id", id)
     .order("created_at", { ascending: false })
 
-  // Fetch daily habits for the last 7 days
-  const sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-  
-  const { data: habits } = await supabase
-    .from("daily_habits")
-    .select("*")
-    .eq("client_id", id)
-    .gte("date", sevenDaysAgo.toISOString().split("T")[0])
-    .order("date", { ascending: false })
-
   return (
     <ClientDetailView
       client={client}
       checkins={checkins || []}
       photos={photos || []}
       insights={insights || []}
-      habits={habits || []}
       coachId={user.id}
     />
   )

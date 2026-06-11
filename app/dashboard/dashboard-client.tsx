@@ -32,7 +32,6 @@ interface DashboardData {
   insightTimestamp: string
   isNewInsight: boolean
   dailyIntention: string
-  todayHabits: Record<string, boolean> | null
   chartData: Array<{ week_number: number; weight: number; energy_level: number; sleep_score: number }>
 }
 
