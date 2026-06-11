@@ -10,6 +10,8 @@ import {
   TrendingDown, Calendar, Clock, Zap, Heart,
   MessageSquare, Image, Loader2, Check
 } from "lucide-react"
+import { PlanEditor } from "@/components/coach/PlanEditor"
+import type { Plan } from "@/app/actions/plans"
 
 interface Client {
   id: string
@@ -72,18 +74,22 @@ export function ClientDetailView({
   checkins,
   photos,
   insights,
+  mealPlan,
+  workoutPlan,
   coachId,
 }: {
   client: Client
   checkins: Checkin[]
   photos: Photo[]
   insights: Insight[]
+  mealPlan: Plan | null
+  workoutPlan: Plan | null
   coachId: string
 }) {
   const router = useRouter()
   const [newInsight, setNewInsight] = useState("")
   const [isSending, setIsSending] = useState(false)
-  const [activeTab, setActiveTab] = useState<"overview" | "checkins" | "photos" | "insights">("overview")
+  const [activeTab, setActiveTab] = useState<"overview" | "checkins" | "photos" | "plans" | "insights">("overview")
 
   const weightLost = client.start_weight && client.current_weight
     ? (client.start_weight - client.current_weight).toFixed(1)
@@ -176,7 +182,7 @@ export function ClientDetailView({
         }}
       >
         <div className="max-w-5xl mx-auto flex items-center gap-2">
-          {(["overview", "checkins", "photos", "insights"] as const).map((tab) => (
+          {(["overview", "checkins", "photos", "plans", "insights"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -410,6 +416,13 @@ export function ClientDetailView({
                 </div>
               ))
             )}
+          </div>
+        )}
+
+        {activeTab === "plans" && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <PlanEditor clientId={client.id} type="meal" plan={mealPlan} />
+            <PlanEditor clientId={client.id} type="workout" plan={workoutPlan} />
           </div>
         )}
 

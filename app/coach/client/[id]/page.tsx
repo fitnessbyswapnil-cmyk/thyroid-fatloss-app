@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect, notFound } from "next/navigation"
 import { ClientDetailView } from "./client-detail-view"
+import { getPlansForClient } from "@/app/actions/plans"
 
 export default async function ClientDetailPage({
   params,
@@ -48,12 +49,16 @@ export default async function ClientDetailPage({
     .eq("client_id", id)
     .order("created_at", { ascending: false })
 
+  const { meal: mealPlan, workout: workoutPlan } = await getPlansForClient(id)
+
   return (
     <ClientDetailView
       client={client}
       checkins={checkins || []}
       photos={photos || []}
       insights={insights || []}
+      mealPlan={mealPlan}
+      workoutPlan={workoutPlan}
       coachId={user.id}
     />
   )
