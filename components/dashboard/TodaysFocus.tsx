@@ -11,7 +11,7 @@ interface TodaysFocusProps {
 
 export function TodaysFocus({
   intention = "Every cell in your body is working to heal. Trust the process, honor your journey.",
-  attribution = "Dr. Rashmi Sharma",
+  attribution = "Your Coach",
   streakDays = 19
 }: TodaysFocusProps) {
   const quickActions = [

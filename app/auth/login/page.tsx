@@ -69,7 +69,7 @@ export default function LoginPage() {
             ThyroWell
           </h1>
           <p style={{ color: "#7e8a9e", fontSize: 14 }}>
-            Welcome back to your healing journey
+            Welcome back to your wellness journey
           </p>
         </div>
 

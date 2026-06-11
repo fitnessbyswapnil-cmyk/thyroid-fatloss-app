@@ -11,8 +11,8 @@ interface CoachInsightCardProps {
 }
 
 export function CoachInsightCard({ 
-  coachName = "Dr. Rashmi Sharma",
-  coachRole = "Thyroid Specialist · Reviewing your week",
+  coachName = "Your Coach",
+  coachRole = "Wellness coach · Reviewing your week",
   insight = "Amazing progress this week! Your energy levels have improved significantly. Keep focusing on your morning routine - it's making a real difference. Remember to take your supplements 30 mins before breakfast.",
   timestamp = "Today · 9:14 AM",
   isNew = true

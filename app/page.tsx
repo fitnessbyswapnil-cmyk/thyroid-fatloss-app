@@ -5,16 +5,16 @@ import Link from "next/link"
 import { ArrowRight, Heart, Zap, Moon, Target, Star, ChevronRight } from "lucide-react"
 
 const features = [
-  { icon: Heart, label: "Thyroid Recovery", desc: "Personalized healing protocols" },
-  { icon: Zap, label: "Energy Restoration", desc: "Feel vibrant again" },
-  { icon: Moon, label: "Sleep Optimization", desc: "Deep, restorative rest" },
-  { icon: Target, label: "Weight Management", desc: "Sustainable fat loss" },
+  { icon: Heart, label: "Personalized Coaching", desc: "Plans built around your life" },
+  { icon: Zap, label: "Energy & Vitality", desc: "Habits to help you feel your best" },
+  { icon: Moon, label: "Better Sleep Routines", desc: "Restful, consistent evenings" },
+  { icon: Target, label: "Sustainable Habits", desc: "A lifestyle-first approach" },
 ]
 
 const testimonials = [
-  { name: "Priya S.", result: "Lost 8.5 kg in 12 weeks", quote: "My energy is back to what it was 10 years ago!" },
-  { name: "Anita M.", result: "TSH normalized in 8 weeks", quote: "Dr. Rashmi changed my life completely." },
-  { name: "Kavita R.", result: "Lost 6.2 kg in 10 weeks", quote: "Finally, someone who understands thyroid issues!" },
+  { name: "Priya S.", result: "More energy by week 12", quote: "I finally have a routine that fits my life." },
+  { name: "Anita M.", result: "A sustainable routine", quote: "Having someone guide and check in on me kept me consistent." },
+  { name: "Kavita R.", result: "Consistent support", quote: "I feel listened to and supported every week." },
 ]
 
 export default function LandingPage() {
@@ -79,33 +79,34 @@ export default function LandingPage() {
           >
             <Star size={14} style={{ color: "#f59e0b" }} />
             <span className="text-xs font-medium" style={{ color: "#f59e0b" }}>
-              Premium Thyroid Coaching Program
+              Premium Wellness Coaching
             </span>
           </div>
 
-          <h2 
+          <h2
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
             style={{ color: "#e8eaf0" }}
           >
-            Transform Your
+            Feel Your Best,
             <br />
-            <span 
-              style={{ 
+            <span
+              style={{
                 fontFamily: "'Instrument Serif', Georgia, serif",
                 fontStyle: "italic",
                 color: "#2dd4bf"
               }}
             >
-              Thyroid Health
+              One Habit at a Time
             </span>
           </h2>
 
-          <p 
+          <p
             className="text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
             style={{ color: "#7e8a9e" }}
           >
-            Expert-guided recovery for hypothyroidism and Hashimoto&apos;s. 
-            Lose stubborn weight, restore energy, and reclaim your vitality.
+            Personalized wellness coaching for women navigating thyroid health.
+            Build sustainable habits around nutrition, movement, sleep, and energy —
+            with a coach in your corner.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -219,14 +220,14 @@ export default function LandingPage() {
             border: "1px solid rgba(45, 212, 191, 0.2)",
           }}
         >
-          <h3 
+          <h3
             className="text-2xl md:text-3xl font-bold mb-4"
             style={{ color: "#e8eaf0" }}
           >
-            Ready to Begin Your Healing Journey?
+            Ready to Start Your Wellness Journey?
           </h3>
           <p className="mb-8" style={{ color: "#7e8a9e" }}>
-            Join hundreds of women who have transformed their thyroid health with our expert coaching.
+            Join women building healthier, sustainable habits with personalized coaching and weekly support.
           </p>
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link
@@ -246,15 +247,22 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 px-6 py-8 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+      <footer className="relative z-10 px-6 py-10 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="max-w-3xl mx-auto text-center mb-8">
+          <p className="text-xs leading-relaxed" style={{ color: "#5a6578" }}>
+            ThyroWell is a wellness coaching program, not medical treatment or a substitute for your
+            doctor. Always consult a qualified healthcare professional about your health. Individual
+            results vary.
+          </p>
+        </div>
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs" style={{ color: "#404858" }}>
-            2024 ThyroWell. Premium Thyroid Coaching.
+            © 2026 ThyroWell. Premium Wellness Coaching.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-xs" style={{ color: "#7e8a9e" }}>Privacy</Link>
-            <Link href="#" className="text-xs" style={{ color: "#7e8a9e" }}>Terms</Link>
-            <Link href="#" className="text-xs" style={{ color: "#7e8a9e" }}>Contact</Link>
+            <Link href="/privacy" className="text-xs" style={{ color: "#7e8a9e" }}>Privacy</Link>
+            <Link href="/terms" className="text-xs" style={{ color: "#7e8a9e" }}>Terms</Link>
+            <a href="mailto:hello@thyrowell.example" className="text-xs" style={{ color: "#7e8a9e" }}>Contact</a>
           </div>
         </div>
       </footer>

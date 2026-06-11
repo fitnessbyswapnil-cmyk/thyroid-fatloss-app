@@ -3,15 +3,17 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
-import { ArrowRight, ArrowLeft, Loader2, Check, Heart, Scale, Pill } from "lucide-react"
+import { ArrowRight, ArrowLeft, Loader2, Check, Heart, Scale, Pill, ShieldCheck } from "lucide-react"
 
-type Step = "welcome" | "health" | "goals" | "complete"
+type Step = "welcome" | "consent" | "health" | "goals" | "complete"
 
 export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState<Step>("welcome")
   const [isLoading, setIsLoading] = useState(false)
+  const [consent, setConsent] = useState(false)
   
   // Form data
   const [formData, setFormData] = useState({
@@ -52,6 +54,7 @@ export default function OnboardingPage() {
         allergies: formData.allergies,
         tsh_before: formData.tshBefore ? parseFloat(formData.tshBefore) : null,
         tsh_current: formData.tshBefore ? parseFloat(formData.tshBefore) : null,
+        consent_at: new Date().toISOString(),
         onboarding_completed: true,
         recovery_score: 0,
         wellness_score: 50,
@@ -73,13 +76,15 @@ export default function OnboardingPage() {
   }
 
   const nextStep = () => {
-    if (step === "welcome") setStep("health")
+    if (step === "welcome") setStep("consent")
+    else if (step === "consent") setStep("health")
     else if (step === "health") setStep("goals")
     else if (step === "goals") handleComplete()
   }
 
   const prevStep = () => {
-    if (step === "health") setStep("welcome")
+    if (step === "consent") setStep("welcome")
+    else if (step === "health") setStep("consent")
     else if (step === "goals") setStep("health")
   }
 
@@ -101,14 +106,14 @@ export default function OnboardingPage() {
         {/* Progress indicator */}
         {step !== "complete" && (
           <div className="flex items-center justify-center gap-2 mb-8">
-            {["welcome", "health", "goals"].map((s, i) => (
+            {["welcome", "consent", "health", "goals"].map((s, i) => (
               <div
                 key={s}
                 className="h-1.5 rounded-full transition-all duration-500"
                 style={{
                   width: step === s ? 32 : 8,
-                  background: ["welcome", "health", "goals"].indexOf(step) >= i 
-                    ? "#2dd4bf" 
+                  background: ["welcome", "consent", "health", "goals"].indexOf(step) >= i
+                    ? "#2dd4bf"
                     : "rgba(255, 255, 255, 0.1)",
                 }}
               />
@@ -145,7 +150,7 @@ export default function OnboardingPage() {
                 Welcome to ThyroWell
               </h1>
               <p className="mb-8 leading-relaxed" style={{ color: "#7e8a9e" }}>
-                Let&apos;s personalize your healing journey. This will only take a minute.
+                Let&apos;s personalize your wellness journey. This will only take a minute.
               </p>
 
               <motion.button
@@ -162,6 +167,72 @@ export default function OnboardingPage() {
                 Begin Setup
                 <ArrowRight size={18} />
               </motion.button>
+            </motion.div>
+          )}
+
+          {/* Step: Health-data consent (required before any health questions) */}
+          {step === "consent" && (
+            <motion.div
+              key="consent"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="text-center mb-8">
+                <ShieldCheck size={32} className="mx-auto mb-4" style={{ color: "#2dd4bf" }} />
+                <h2 className="text-xl font-bold mb-2" style={{ color: "#e8eaf0" }}>
+                  Your consent
+                </h2>
+                <p className="text-sm" style={{ color: "#7e8a9e" }}>
+                  Before we ask about your health, please review and agree
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl" style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                <p className="text-sm leading-relaxed mb-5" style={{ color: "#c9cdd5" }}>
+                  ThyroWell is a <strong>wellness coaching program, not medical treatment or a
+                  substitute for your doctor.</strong> To personalize your coaching, we collect and
+                  securely store health information you provide — such as your weight, thyroid
+                  condition, and medications. Individual results vary.
+                </p>
+
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                    className="w-5 h-5 mt-0.5 shrink-0"
+                    style={{ accentColor: "#2dd4bf" }}
+                  />
+                  <span className="text-sm" style={{ color: "#e8eaf0" }}>
+                    I consent to ThyroWell collecting and storing my health information to provide
+                    coaching, and I agree to the{" "}
+                    <Link href="/privacy" target="_blank" style={{ color: "#2dd4bf" }}>Privacy Policy</Link>{" "}
+                    and{" "}
+                    <Link href="/terms" target="_blank" style={{ color: "#2dd4bf" }}>Terms</Link>.
+                  </span>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between mt-8">
+                <button onClick={prevStep} className="flex items-center gap-2 text-sm font-medium" style={{ color: "#7e8a9e" }}>
+                  <ArrowLeft size={16} /> Back
+                </button>
+                <motion.button
+                  onClick={nextStep}
+                  disabled={!consent}
+                  whileHover={consent ? { scale: 1.02 } : {}}
+                  whileTap={consent ? { scale: 0.98 } : {}}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm disabled:opacity-50"
+                  style={{
+                    background: consent ? "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)" : "rgba(255,255,255,0.1)",
+                    color: consent ? "#0a0d14" : "#7e8a9e",
+                  }}
+                >
+                  Continue <ArrowRight size={16} />
+                </motion.button>
+              </div>
             </motion.div>
           )}
 
@@ -430,7 +501,7 @@ export default function OnboardingPage() {
                 You&apos;re All Set!
               </h1>
               <p className="mb-6" style={{ color: "#7e8a9e" }}>
-                Your personalized healing journey begins now.
+                Your personalized wellness journey begins now.
               </p>
               <Loader2 className="animate-spin mx-auto" size={24} style={{ color: "#2dd4bf" }} />
             </motion.div>

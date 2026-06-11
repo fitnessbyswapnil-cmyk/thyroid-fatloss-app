@@ -202,7 +202,7 @@ export function HeroSection({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        Your body is healing beautifully
+        You.re making real progress
       </motion.p>
 
       {/* Recovery Ring */}

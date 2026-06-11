@@ -68,8 +68,8 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       {/* SECTION 3 — Coach Insight Card */}
       <div className="py-8">
         <CoachInsightCard
-          coachName="Dr. Rashmi Sharma"
-          coachRole="Thyroid Specialist · Reviewing your progress"
+          coachName="Your Coach"
+          coachRole="Wellness coach · Reviewing your progress"
           insight={data.coachInsight}
           timestamp={data.insightTimestamp}
           isNew={data.isNewInsight}
@@ -95,7 +95,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       <div className="py-8">
         <TodaysFocus
           intention={data.dailyIntention}
-          attribution="Dr. Rashmi Sharma"
+          attribution="Your Coach"
           streakDays={data.streak.current}
         />
       </div>
@@ -119,7 +119,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       {/* SECTION 8 — Daily Reminder (Closing Affirmation) */}
       <DailyReminder
         quote="Every small step you take today is building a healthier, stronger you."
-        attribution="Dr. Rashmi Sharma, Your Coach"
+        attribution="Your ThyroWell Coach"
       />
       
       {/* Floating Bottom Navigation */}

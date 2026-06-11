@@ -10,7 +10,7 @@ interface DailyReminderProps {
 
 export function DailyReminder({
   quote = "Every small step you take today is building a healthier, stronger you.",
-  attribution = "Dr. Rashmi Sharma, Your Coach"
+  attribution = "Your ThyroWell Coach"
 }: DailyReminderProps) {
   return (
     <motion.section
@@ -70,7 +70,7 @@ export function DailyReminder({
         className="text-[12px] mt-6"
         style={{ color: "#404858" }}
       >
-        Rest well tonight. Tomorrow we continue healing.
+        Rest well tonight. Tomorrow we keep building healthy habits.
       </p>
     </motion.section>
   )

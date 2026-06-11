@@ -899,7 +899,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         transition={{ delay: 1.8 }}
       >
         <p className="text-sm leading-relaxed" style={{ color: '#8892a4' }}>
-          Dr. Rashmi will review this and reply
+          Your coach will review this and reply
         </p>
         <p className="text-sm font-medium" style={{ color: '#8892a4' }}>
           within 24 hours.
