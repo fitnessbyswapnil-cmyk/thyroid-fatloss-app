@@ -73,7 +73,10 @@ export default async function EnrollPage() {
           </p>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 flex items-center justify-center gap-5">
+          <Link href="/account" className="text-xs" style={{ color: "#7e8a9e" }}>
+            Manage or delete my data
+          </Link>
           <Link href="/auth/login" className="inline-flex items-center gap-2 text-xs" style={{ color: "#7e8a9e" }}>
             <LogOut size={14} /> Back to sign in
           </Link>

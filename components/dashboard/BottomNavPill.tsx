@@ -9,7 +9,7 @@ const tabs = [
   { icon: Home, label: "Home", href: "/dashboard" },
   { icon: TrendingUp, label: "Progress", href: "/dashboard/progress-photos" },
   { icon: Apple, label: "Plans", href: "/dashboard/plans" },
-  { icon: User, label: "Profile", href: "/dashboard/settings" },
+  { icon: User, label: "Profile", href: "/account" },
 ]
 
 export function BottomNavPill() {
