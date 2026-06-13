@@ -2,8 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Check, Sparkles, ArrowRight, LogOut } from "lucide-react"
-
-const PAYMENT_URL = process.env.NEXT_PUBLIC_PAYMENT_URL || "https://example.com/checkout-placeholder"
+import { getPaymentUrl } from "@/lib/env"
 
 const benefits = [
   "Personalized meal and workout plans built for your thyroid",
@@ -13,6 +12,7 @@ const benefits = [
 ]
 
 export default async function EnrollPage() {
+  const PAYMENT_URL = getPaymentUrl()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/auth/login")

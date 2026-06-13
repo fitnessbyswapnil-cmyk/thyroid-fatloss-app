@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { createClient } from "@/lib/supabase/client"
+import { getSiteUrl } from "@/lib/env"
 import { Loader2, ArrowLeft, Mail, Check } from "lucide-react"
 
 export default function ForgotPasswordPage() {
@@ -18,9 +19,11 @@ export default function ForgotPasswordPage() {
     setError(null)
 
     const supabase = createClient()
+    // Route through the callback so the recovery code is exchanged for a
+    // session, then land on the reset-password form. URL built from
+    // NEXT_PUBLIC_SITE_URL (throws in prod if unset).
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-        `${window.location.origin}/auth/reset-password`,
+      redirectTo: `${getSiteUrl()}/auth/callback?next=/auth/reset-password`,
     })
 
     if (error) {

@@ -1,7 +1,10 @@
 import Link from "next/link"
-import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react"
+import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react"
+import { getPaymentUrl } from "@/lib/env"
 
-const PAYMENT_URL = process.env.NEXT_PUBLIC_PAYMENT_URL || "https://example.com/checkout-placeholder"
+// Runtime-evaluated so the env check fires per request (and fails loudly in
+// production if NEXT_PUBLIC_PAYMENT_URL is unset) instead of baking a build-time value.
+export const dynamic = "force-dynamic"
 
 const steps = [
   "Tell us about your goals and complete enrollment",
@@ -10,6 +13,7 @@ const steps = [
 ]
 
 export default function RequestAccessPage() {
+  const PAYMENT_URL = getPaymentUrl()
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "#090c14" }}>
       <div

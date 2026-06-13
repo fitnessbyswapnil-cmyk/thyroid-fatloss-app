@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getSiteUrl } from '@/lib/env'
 import { revalidatePath } from 'next/cache'
 
 interface InviteClientInput {
@@ -34,11 +35,13 @@ export async function inviteClient(input: InviteClientInput) {
     }
 
     const admin = createAdminClient()
-    const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || ''}/auth/callback`
+    // Built from NEXT_PUBLIC_SITE_URL (throws in prod if unset). After the
+    // invitee exchanges the code, the callback sends them to onboarding.
+    const redirectTo = `${getSiteUrl()}/auth/callback?next=/onboarding`
 
     const { data: invited, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
       data: { full_name: fullName, role: 'client' },
-      redirectTo: redirectTo || undefined,
+      redirectTo,
     })
 
     if (inviteError) {
