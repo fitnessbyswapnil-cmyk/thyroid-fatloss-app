@@ -44,18 +44,29 @@ export async function inviteClient(input: InviteClientInput) {
       redirectTo,
     })
 
-    if (inviteError) {
-      // Most common: the user already exists.
-      return { success: false, error: inviteError.message }
+    // A failed send must NEVER look like success. Log the real cause and return
+    // a clear, actionable error to the coach. Do not activate the client here.
+    if (inviteError || !invited?.user) {
+      console.error('[inviteClient] invite send failed for', email, '—', inviteError)
+      const msg = inviteError?.message || ''
+      const alreadyExists = /already|registered|exists/i.test(msg)
+      return {
+        success: false,
+        error: alreadyExists
+          ? 'A client with this email already exists.'
+          : 'Invite could not be sent — check Supabase email settings.',
+      }
     }
 
-    // Ensure the clients row is active (trigger created it via the invite).
-    const newUserId = invited.user?.id
-    if (newUserId) {
-      await admin
-        .from('clients')
-        .update({ full_name: fullName, role: 'client', subscription_status: 'active', onboarding_completed: false })
-        .eq('id', newUserId)
+    // Invite sent. Ensure the clients row (created by the handle_new_user
+    // trigger) is named and active. The column already defaults to 'active',
+    // so a hiccup here doesn't block access — but we log it rather than swallow.
+    const { error: updateError } = await admin
+      .from('clients')
+      .update({ full_name: fullName, role: 'client', subscription_status: 'active', onboarding_completed: false })
+      .eq('id', invited.user.id)
+    if (updateError) {
+      console.error('[inviteClient] client invited but row activation update failed:', updateError)
     }
 
     revalidatePath('/coach')
