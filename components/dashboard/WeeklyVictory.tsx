@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
-import { Activity, Sparkles, ArrowDown, Zap } from "lucide-react"
+import { Activity, Sparkles, ArrowDown, ArrowUp, Minus, Zap } from "lucide-react"
 
 function useAnimatedCounter(target: number, duration: number = 1400, decimals: number = 0, shouldAnimate: boolean = true) {
   const [count, setCount] = useState(0)
@@ -31,20 +31,30 @@ function useAnimatedCounter(target: number, duration: number = 1400, decimals: n
 interface WeeklyVictoryProps {
   weekNumber?: number
   mainVictory?: string
-  tshDrop?: number
-  energyGain?: number
+  tshCurrent?: number     // the client's latest self-entered TSH reading
+  tshChangePct?: number   // signed: positive = lower than start, negative = higher
+  energyLevel?: number    // 1–10 from the latest check-in
 }
 
 export function WeeklyVictory({
   weekNumber = 8,
   mainVictory = "Your TSH trend",
-  tshDrop = 51,
-  energyGain = 25
+  tshCurrent = 0,
+  tshChangePct = 0,
+  energyLevel = 0
 }: WeeklyVictoryProps) {
   const containerRef = useRef(null)
   const isInView = useInView(containerRef, { once: true, margin: "-60px" })
-  const animatedTsh = useAnimatedCounter(tshDrop, 1600, 0, isInView)
-  const animatedEnergy = useAnimatedCounter(energyGain, 1600, 0, isInView)
+  const animatedTsh = useAnimatedCounter(tshCurrent, 1600, 1, isInView)
+  const animatedEnergy = useAnimatedCounter(energyLevel, 1600, 0, isInView)
+
+  // Direction-aware, no value judgment: just show which way it moved.
+  const lower = tshChangePct > 0
+  const higher = tshChangePct < 0
+  const TrendIcon = lower ? ArrowDown : higher ? ArrowUp : Minus
+  const changeLabel = tshChangePct !== 0
+    ? `${Math.abs(tshChangePct)}% ${lower ? "lower" : "higher"} than start`
+    : "Latest reading"
 
   return (
     <motion.section
@@ -102,53 +112,53 @@ export function WeeklyVictory({
           {mainVictory}
         </h3>
 
-        {/* Stats row */}
+        {/* Stats row — the client's own latest readings, shown neutrally */}
         <div className="flex gap-6">
-          {/* TSH Drop */}
+          {/* Latest TSH reading + direction since start */}
           <div className="flex items-center gap-2">
-            <div 
+            <div
               className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(52, 211, 153, 0.15)" }}
+              style={{ background: "rgba(255, 255, 255, 0.06)" }}
             >
-              <ArrowDown style={{ width: 18, height: 18, color: "#34d399" }} />
+              <TrendIcon style={{ width: 18, height: 18, color: "#7e8a9e" }} />
             </div>
             <div>
-              <span 
+              <span
                 className="tabular-nums block"
-                style={{ 
+                style={{
                   fontFamily: "'Instrument Serif', Georgia, serif",
                   fontStyle: "italic",
                   fontSize: 28,
-                  color: "#34d399"
+                  color: "#eaecf4"
                 }}
               >
-                {animatedTsh}%
+                {animatedTsh}
               </span>
               <span className="text-[11px]" style={{ color: "#7e8a9e" }}>
-                Change since start
+                {changeLabel}
               </span>
             </div>
           </div>
 
-          {/* Energy Gain */}
+          {/* Latest energy level */}
           <div className="flex items-center gap-2">
-            <div 
+            <div
               className="w-10 h-10 rounded-full flex items-center justify-center"
               style={{ background: "rgba(245, 158, 11, 0.15)" }}
             >
               <Zap style={{ width: 18, height: 18, color: "#f59e0b" }} />
             </div>
             <div>
-              <span 
+              <span
                 className="tabular-nums block"
-                style={{ 
+                style={{
                   fontFamily: "'Instrument Serif', Georgia, serif",
                   fontStyle: "italic",
                   fontSize: 28,
-                  color: "#f59e0b"
+                  color: "#eaecf4"
                 }}
               >
-                {animatedEnergy}%
+                {animatedEnergy}<span style={{ fontSize: 16, color: "#7e8a9e" }}>/10</span>
               </span>
               <span className="text-[11px]" style={{ color: "#7e8a9e" }}>
                 Energy level

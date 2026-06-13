@@ -35,7 +35,7 @@ interface WeightData {
 }
 
 export function TransformationMetrics({
-  weight = { current: 78.1, start: 82.5, goal: 72, lost: 4.4 }
+  weight = { current: 0, start: 0, goal: 0, lost: 0 }
 }: {
   weight?: WeightData
 }) {

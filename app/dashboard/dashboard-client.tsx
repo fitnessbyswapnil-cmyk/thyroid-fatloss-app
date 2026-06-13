@@ -47,20 +47,21 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       {/* SECTION 1 — Hero Section (88vh) */}
       <HeroSection
         name={data.name}
-        recoveryPercent={data.recoveryPercent}
+        wellnessPercent={data.wellnessScore.current / 100}
         tshCurrent={data.tsh.current}
         energyCurrent={data.energy}
         sleepHours={data.sleep}
       />
       
-      {/* SECTION 2 — Weekly Victory Card (celebration moment) */}
-      {data.tshImprovement > 0 && (
+      {/* SECTION 2 — TSH trend (shown whenever real TSH data exists, either direction) */}
+      {data.tsh.current > 0 && data.tsh.before > 0 && (
         <div className="py-8">
           <WeeklyVictory
             weekNumber={data.programWeek}
             mainVictory="Your TSH trend"
-            tshDrop={data.tshImprovement}
-            energyGain={Math.round((data.energy / 10) * 100)}
+            tshCurrent={data.tsh.current}
+            tshChangePct={data.tshImprovement}
+            energyLevel={data.energy}
           />
         </div>
       )}
@@ -87,7 +88,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
             { label: "Sleep", value: data.subscores.sleepQuality, color: "#34d399" },
             { label: "Mental Clarity", value: data.subscores.mentalClarity, color: "#fb7185" }
           ]}
-          insight="Great progress! Focus on sleep consistency to boost your score further."
+          insight="Your wellness score is based on your latest check-in."
         />
       </div>
       
@@ -100,12 +101,14 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         />
       </div>
       
-      {/* SECTION 6 — Transformation Metrics (Bento Grid) */}
-      <div className="py-8">
-        <TransformationMetrics
-          weight={data.weight}
-        />
-      </div>
+      {/* SECTION 6 — Weight progress (only when the client has weight data) */}
+      {data.weight.current > 0 && (
+        <div className="py-8">
+          <TransformationMetrics
+            weight={data.weight}
+          />
+        </div>
+      )}
       
       {/* SECTION 7 — Streak & Achievements */}
       <div className="py-10">

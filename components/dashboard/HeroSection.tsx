@@ -25,7 +25,7 @@ function useAnimatedCounter(target: number, duration: number = 1400, decimals: n
   return count
 }
 
-// Recovery Ring Component - 230x230px as specified
+// Wellness score ring — reflects the client's real wellness score (0–100).
 function RecoveryRing({ progress }: { progress: number }) {
   const RADIUS = 96
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS
@@ -73,7 +73,7 @@ function RecoveryRing({ progress }: { progress: number }) {
           filter="url(#ringGlow)"
         />
       </svg>
-      {/* Center content - simplified: just % and Healed label, no week number */}
+      {/* Center content - wellness score % and label */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span 
           className="text-white tabular-nums"
@@ -85,11 +85,11 @@ function RecoveryRing({ progress }: { progress: number }) {
         >
           {animatedPercent}%
         </span>
-        <span 
+        <span
           className="text-xs font-medium uppercase"
           style={{ color: "#2dd4bf", letterSpacing: "0.08em" }}
         >
-          Healed
+          Wellness
         </span>
       </div>
     </div>
@@ -98,18 +98,18 @@ function RecoveryRing({ progress }: { progress: number }) {
 
 interface HeroSectionProps {
   name?: string
-  recoveryPercent?: number
+  wellnessPercent?: number
   tshCurrent?: number
   energyCurrent?: number
   sleepHours?: number
 }
 
-export function HeroSection({ 
-  name = "Priya",
-  recoveryPercent = 0.67,
-  tshCurrent = 4.2,
-  energyCurrent = 7.1,
-  sleepHours = 7.4
+export function HeroSection({
+  name = "there",
+  wellnessPercent = 0,
+  tshCurrent = 0,
+  energyCurrent = 0,
+  sleepHours = 0
 }: HeroSectionProps) {
   const [greeting, setGreeting] = useState("Good morning")
 
@@ -202,7 +202,7 @@ export function HeroSection({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        You.re making real progress
+        You&apos;re making real progress
       </motion.p>
 
       {/* Recovery Ring */}
@@ -212,18 +212,20 @@ export function HeroSection({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <RecoveryRing progress={recoveryPercent} />
+        <RecoveryRing progress={wellnessPercent} />
       </motion.div>
 
-      {/* Quick stat chips - simplified hero, only ring + headline + 3 chips */}
+      {/* Quick stat chips — the client's own latest readings, no fabricated trend
+          arrows. Each chip only shows when there is a real value. Note sleep is a
+          1–10 quality score (not hours). */}
       <div className="flex gap-2">
         {[
-          { label: `TSH ${tshCurrent}`, arrow: "↓", color: "#34d399" },
-          { label: `Energy ${energyCurrent}`, arrow: "↑", color: "#2dd4bf" },
-          { label: `Sleep ${sleepHours}h`, arrow: "↑", color: "#2dd4bf" }
-        ].map((stat, index) => (
+          tshCurrent > 0 ? { label: `TSH ${tshCurrent}`, color: "#2dd4bf" } : null,
+          energyCurrent > 0 ? { label: `Energy ${energyCurrent}/10`, color: "#2dd4bf" } : null,
+          sleepHours > 0 ? { label: `Sleep ${sleepHours}/10`, color: "#2dd4bf" } : null,
+        ].filter(Boolean).map((stat, index) => (
           <motion.div
-            key={stat.label}
+            key={stat?.label || index}
             className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-medium"
             style={{
               background: "rgba(255,255,255,0.04)",
@@ -234,8 +236,7 @@ export function HeroSection({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.8 + index * 0.05, duration: 0.4 }}
           >
-            {stat.label}
-            <span style={{ color: stat.color }}>{stat.arrow}</span>
+            {stat?.label}
           </motion.div>
         ))}
       </div>

@@ -130,7 +130,7 @@ export default async function DashboardPage() {
         })
       : "Today",
     isNewInsight: latestInsight ? !latestInsight.is_read : false,
-    dailyIntention: "Every cell in your body is working to heal. Trust the process, honor your journey.",
+    dailyIntention: "Small, consistent steps add up. Be kind to yourself today.",
     chartData: allCheckins.map(c => ({
       week_number: c.week_number,
       weight: c.weight || 0,
