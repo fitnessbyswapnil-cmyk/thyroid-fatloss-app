@@ -16,7 +16,7 @@ interface DashboardData {
   recoveryPercent: number
   wellnessScore: { current: number; previous: number; delta: number }
   subscores: {
-    tshBalance: number
+    mood: number
     energyLevels: number
     sleepQuality: number
     mentalClarity: number
@@ -58,7 +58,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         <div className="py-8">
           <WeeklyVictory
             weekNumber={data.programWeek}
-            mainVictory={`Your TSH dropped ${data.tshImprovement}% since you started`}
+            mainVictory="Your TSH trend"
             tshDrop={data.tshImprovement}
             energyGain={Math.round((data.energy / 10) * 100)}
           />
@@ -82,7 +82,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
           score={data.wellnessScore.current}
           delta={data.wellnessScore.delta}
           subscores={[
-            { label: "TSH Balance", value: data.subscores.tshBalance, color: "#2dd4bf" },
+            { label: "Mood", value: data.subscores.mood, color: "#2dd4bf" },
             { label: "Energy", value: data.subscores.energyLevels, color: "#f59e0b" },
             { label: "Sleep", value: data.subscores.sleepQuality, color: "#34d399" },
             { label: "Mental Clarity", value: data.subscores.mentalClarity, color: "#fb7185" }

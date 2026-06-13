@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
-import { Trophy, Sparkles, ArrowDown, Zap } from "lucide-react"
+import { Activity, Sparkles, ArrowDown, Zap } from "lucide-react"
 
 function useAnimatedCounter(target: number, duration: number = 1400, decimals: number = 0, shouldAnimate: boolean = true) {
   const [count, setCount] = useState(0)
@@ -37,7 +37,7 @@ interface WeeklyVictoryProps {
 
 export function WeeklyVictory({
   weekNumber = 8,
-  mainVictory = "Your TSH dropped 51% this week",
+  mainVictory = "Your TSH trend",
   tshDrop = 51,
   energyGain = 25
 }: WeeklyVictoryProps) {
@@ -85,12 +85,12 @@ export function WeeklyVictory({
             border: "1px solid rgba(245, 158, 11, 0.25)"
           }}
         >
-          <Trophy style={{ width: 14, height: 14, color: "#f59e0b" }} />
-          <span 
+          <Activity style={{ width: 14, height: 14, color: "#f59e0b" }} />
+          <span
             className="text-[11px] font-semibold uppercase"
             style={{ color: "#f59e0b", letterSpacing: "0.06em" }}
           >
-            Week {weekNumber} Victory
+            Week {weekNumber} · Tracking
           </span>
         </div>
 
@@ -125,7 +125,7 @@ export function WeeklyVictory({
                 {animatedTsh}%
               </span>
               <span className="text-[11px]" style={{ color: "#7e8a9e" }}>
-                TSH improved
+                Change since start
               </span>
             </div>
           </div>
@@ -148,10 +148,10 @@ export function WeeklyVictory({
                   color: "#f59e0b"
                 }}
               >
-                +{animatedEnergy}%
+                {animatedEnergy}%
               </span>
               <span className="text-[11px]" style={{ color: "#7e8a9e" }}>
-                Energy boost
+                Energy level
               </span>
             </div>
           </div>

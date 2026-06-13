@@ -95,7 +95,10 @@ export default async function DashboardPage() {
       delta: wellnessScoreDelta 
     },
     subscores: {
-      tshBalance: energyScore,
+      // Real, per-check-in metrics only. (TSH is a self-entered lab value on the
+      // clients row, not a per-check-in 0–100 score — so it is shown as the
+      // client's own reading elsewhere, not fabricated into a wellness subscore.)
+      mood: (latestCheckin.mood || 7) * 10,
       energyLevels: energyScore,
       sleepQuality: sleepScore,
       mentalClarity: stressScore,

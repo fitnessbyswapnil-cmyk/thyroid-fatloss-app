@@ -45,7 +45,7 @@ export function WellnessScorecard({
   score = 79,
   delta = 11,
   subscores = [
-    { label: "TSH Balance", value: 82, color: "#2dd4bf" },
+    { label: "Mood", value: 82, color: "#2dd4bf" },
     { label: "Energy", value: 75, color: "#f59e0b" },
     { label: "Sleep", value: 88, color: "#34d399" },
     { label: "Mental Clarity", value: 71, color: "#fb7185" }
