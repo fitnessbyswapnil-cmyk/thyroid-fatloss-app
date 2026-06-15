@@ -36,13 +36,23 @@ interface Stats {
   avgRecovery: string
 }
 
-export function CoachDashboardClient({ 
-  clients, 
+interface QuietClient {
+  id: string
+  full_name: string
+  daysSince: number | null
+}
+
+export function CoachDashboardClient({
+  clients,
   pendingReviews = [],
-  stats 
-}: { 
+  lastCheckIns = {},
+  quietClients = [],
+  stats
+}: {
   clients: Client[]
   pendingReviews: PendingReview[]
+  lastCheckIns?: Record<string, string>
+  quietClients?: QuietClient[]
   stats: Stats
 }) {
   const router = useRouter()
@@ -165,6 +175,37 @@ export function CoachDashboardClient({
             animate={{ opacity: 1, y: 0 }}
           >
             <PendingReviewsQueue reviews={pendingReviews} />
+          </motion.div>
+        )}
+
+        {/* Needs attention — quiet clients (active + onboarded, no check-in in 7+ days) */}
+        {quietClients.length > 0 && (
+          <motion.div
+            className="mb-8 p-5 rounded-2xl"
+            style={{ background: "rgba(245, 158, 11, 0.06)", border: "1px solid rgba(245, 158, 11, 0.2)" }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <Clock size={16} style={{ color: "#f59e0b" }} />
+              <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>Needs attention</h3>
+              <span className="text-xs" style={{ color: "#7e8a9e" }}>· {quietClients.length} quiet client{quietClients.length === 1 ? "" : "s"}</span>
+            </div>
+            <div className="space-y-2">
+              {quietClients.map((q) => (
+                <Link
+                  key={q.id}
+                  href={`/coach/client/${q.id}`}
+                  className="flex items-center justify-between p-3 rounded-xl transition-colors"
+                  style={{ background: "rgba(255, 255, 255, 0.03)" }}
+                >
+                  <span className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{q.full_name}</span>
+                  <span className="text-xs" style={{ color: "#f59e0b" }}>
+                    {q.daysSince === null ? "No check-in yet" : `${q.daysSince} days since last check-in`}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -321,6 +362,11 @@ export function CoachDashboardClient({
                       </div>
                       <p className="text-xs truncate" style={{ color: "#7e8a9e" }}>
                         {client.email}
+                      </p>
+                      <p className="text-[11px] mt-0.5" style={{ color: "#5a6578" }}>
+                        {lastCheckIns[client.id]
+                          ? `Last check-in: ${new Date(lastCheckIns[client.id]).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}`
+                          : "No check-in yet"}
                       </p>
                     </div>
 

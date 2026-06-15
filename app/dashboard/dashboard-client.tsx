@@ -9,6 +9,7 @@ import { TransformationMetrics } from "@/components/dashboard/TransformationMetr
 import { StreakAchievements } from "@/components/dashboard/StreakAchievements"
 import { DailyReminder } from "@/components/dashboard/DailyReminder"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
+import { CoachFeedbackCard, type CoachFeedbackItem } from "@/components/dashboard/CoachFeedbackCard"
 
 interface DashboardData {
   name: string
@@ -33,6 +34,7 @@ interface DashboardData {
   isNewInsight: boolean
   dailyIntention: string
   chartData: Array<{ week_number: number; weight: number; energy_level: number; sleep_score: number }>
+  coachFeedback: CoachFeedbackItem[]
 }
 
 export function DashboardClient({ data }: { data: DashboardData }) {
@@ -77,6 +79,13 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         />
       </div>
       
+      {/* SECTION 3b — Coach feedback on the client's reviewed check-ins */}
+      {data.coachFeedback.length > 0 && (
+        <div className="py-8">
+          <CoachFeedbackCard feedback={data.coachFeedback} />
+        </div>
+      )}
+
       {/* SECTION 4 — Wellness Scorecard */}
       <div className="py-8">
         <WellnessScorecard

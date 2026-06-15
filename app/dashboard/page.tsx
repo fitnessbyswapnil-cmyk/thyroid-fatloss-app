@@ -47,6 +47,23 @@ export default async function DashboardPage() {
     .limit(1)
     .single()
 
+  // Fetch the coach's feedback on this client's check-ins. RLS policy
+  // feedback_select_own_client (migration 006) lets a client read feedback on
+  // their own check-ins, so this authed read is safe + scoped. Read-only.
+  const checkinIdToWeek = new Map(allCheckins.map((c) => [c.id, c.week_number]))
+  const { data: feedbackRows } = await supabase
+    .from("checkin_feedback")
+    .select("id, checkin_id, body, created_at")
+    .in("checkin_id", allCheckins.map((c) => c.id))
+    .order("created_at", { ascending: false })
+
+  const coachFeedback = (feedbackRows || []).map((f) => ({
+    id: f.id as string,
+    weekNumber: (checkinIdToWeek.get(f.checkin_id) ?? null) as number | null,
+    body: f.body as string,
+    createdAt: f.created_at as string,
+  }))
+
   // Calculate program week
   const startDate = client.start_date ? new Date(client.start_date) : new Date()
   const programWeek = Math.max(1, Math.ceil((Date.now() - startDate.getTime()) / (7 * 24 * 60 * 60 * 1000)))
@@ -137,6 +154,7 @@ export default async function DashboardPage() {
       energy_level: c.energy_level || 0,
       sleep_score: c.sleep_quality || c.sleep_score || 0
     })) || [],
+    coachFeedback,
   }
 
   return <DashboardClient data={dashboardData} />

@@ -49,6 +49,33 @@ export default async function CoachDashboardPage() {
   const clientsWithCheckins = new Set(recentCheckins?.map(c => c.client_id) || [])
   const pendingCheckins = clients?.filter(c => !clientsWithCheckins.has(c.id)).length || 0
 
+  // Last check-in per client (coach reads all check-ins via RLS). Used for the
+  // roster "last check-in" column and the quiet-clients triage list.
+  const { data: allClientCheckins } = await supabase
+    .from("weekly_checkins")
+    .select("client_id, submitted_at")
+    .order("submitted_at", { ascending: false })
+
+  const lastCheckIns: Record<string, string> = {}
+  for (const row of allClientCheckins || []) {
+    if (row.client_id && !lastCheckIns[row.client_id]) {
+      lastCheckIns[row.client_id] = row.submitted_at
+    }
+  }
+
+  // Quiet clients = active + onboarded but no check-in in the last 7 days (or ever).
+  const DAY = 24 * 60 * 60 * 1000
+  const now = Date.now()
+  const quietClients = (clients || [])
+    .filter(c => c.subscription_status === "active" && c.onboarding_completed)
+    .map(c => {
+      const last = lastCheckIns[c.id]
+      const daysSince = last ? Math.floor((now - new Date(last).getTime()) / DAY) : null
+      return { id: c.id, full_name: c.full_name, daysSince }
+    })
+    .filter(c => c.daysSince === null || c.daysSince >= 7)
+    .sort((a, b) => (b.daysSince ?? Number.MAX_SAFE_INTEGER) - (a.daysSince ?? Number.MAX_SAFE_INTEGER))
+
   // Calculate average stats
   const avgWeight = clients?.reduce((sum, c) => sum + (c.current_weight || 0), 0) / (totalClients || 1)
   const avgRecovery = clients?.reduce((sum, c) => sum + (c.recovery_score || 0), 0) / (totalClients || 1)
@@ -57,6 +84,8 @@ export default async function CoachDashboardPage() {
     <CoachDashboardClient
       clients={clients || []}
       pendingReviews={pendingReviews || []}
+      lastCheckIns={lastCheckIns}
+      quietClients={quietClients}
       stats={{
         totalClients,
         activeClients,
