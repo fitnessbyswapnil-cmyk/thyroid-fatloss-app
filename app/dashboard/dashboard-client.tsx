@@ -10,6 +10,7 @@ import { StreakAchievements } from "@/components/dashboard/StreakAchievements"
 import { DailyReminder } from "@/components/dashboard/DailyReminder"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
 import { CoachFeedbackCard, type CoachFeedbackItem } from "@/components/dashboard/CoachFeedbackCard"
+import { TodayLogCard } from "@/components/dashboard/TodayLogCard"
 
 interface DashboardData {
   name: string
@@ -35,6 +36,7 @@ interface DashboardData {
   dailyIntention: string
   chartData: Array<{ week_number: number; weight: number; energy_level: number; sleep_score: number }>
   coachFeedback: CoachFeedbackItem[]
+  todayLog: { workoutDone: boolean; mealsFollowed: number }
 }
 
 export function DashboardClient({ data }: { data: DashboardData }) {
@@ -107,6 +109,14 @@ export function DashboardClient({ data }: { data: DashboardData }) {
           intention={data.dailyIntention}
           attribution="Your Coach"
           streakDays={data.streak.current}
+        />
+      </div>
+
+      {/* SECTION 5b — Today's adherence log (drives the real streak) */}
+      <div className="py-8">
+        <TodayLogCard
+          initialWorkoutDone={data.todayLog.workoutDone}
+          initialMealsFollowed={data.todayLog.mealsFollowed}
         />
       </div>
       

@@ -5,10 +5,10 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { 
-  Users, Activity, Clock, TrendingUp, Search, 
+import {
+  Users, Activity, Clock, TrendingUp, Search,
   ChevronRight, MessageSquare, LogOut, Home,
-  Scale, Heart, Zap
+  Scale, Heart, Zap, BookOpen
 } from "lucide-react"
 import { PendingReview } from "@/app/actions/coach-reviews"
 import { PendingReviewsQueue } from "@/components/coach/PendingReviewsQueue"
@@ -147,6 +147,13 @@ export function CoachDashboardClient({
             </span>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href="/coach/library"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
+              style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <BookOpen size={15} /> Library
+            </Link>
             <AddClientButton />
             <Link
               href="/dashboard"

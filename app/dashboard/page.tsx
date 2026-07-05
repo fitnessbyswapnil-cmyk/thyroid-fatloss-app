@@ -64,6 +64,48 @@ export default async function DashboardPage() {
     createdAt: f.created_at as string,
   }))
 
+  // Daily adherence logs → REAL streaks (last 180 days). Degrades to zeros if
+  // the daily_logs table isn't provisioned yet (migration 008) — the query
+  // errors softly and `logs` is null.
+  const { data: logs } = await supabase
+    .from("daily_logs")
+    .select("date, workout_done, meals_followed")
+    .eq("client_id", user.id)
+    .order("date", { ascending: false })
+    .limit(180)
+
+  const dayStr = (d: Date) => d.toLocaleDateString("en-CA")
+  const activeDays = new Set(
+    (logs || [])
+      .filter((l) => l.workout_done || (l.meals_followed || 0) > 0)
+      .map((l) => l.date as string)
+  )
+
+  // Current streak: walk back from today (grace for a not-yet-logged today).
+  let streakCurrent = 0
+  {
+    const d = new Date()
+    if (!activeDays.has(dayStr(d))) d.setDate(d.getDate() - 1)
+    while (activeDays.has(dayStr(d))) {
+      streakCurrent++
+      d.setDate(d.getDate() - 1)
+    }
+  }
+  // Best streak within the window.
+  let streakBest = 0
+  {
+    let run = 0
+    let prev: string | null = null
+    for (const ds of [...activeDays].sort()) {
+      run = prev && (new Date(ds).getTime() - new Date(prev).getTime()) === 86400000 ? run + 1 : 1
+      streakBest = Math.max(streakBest, run)
+      prev = ds
+    }
+  }
+  const monthPrefix = dayStr(new Date()).slice(0, 7)
+  const monthlyCount = [...activeDays].filter((d) => d.startsWith(monthPrefix)).length
+  const todayLog = (logs || []).find((l) => l.date === dayStr(new Date())) || null
+
   // Calculate program week
   const startDate = client.start_date ? new Date(client.start_date) : new Date()
   const programWeek = Math.max(1, Math.ceil((Date.now() - startDate.getTime()) / (7 * 24 * 60 * 60 * 1000)))
@@ -120,11 +162,16 @@ export default async function DashboardPage() {
       sleepQuality: sleepScore,
       mentalClarity: stressScore,
     },
-    streak: { 
-      current: client.streak_current || 0, 
-      best: client.streak_best || 0 
+    // Real streaks computed from daily_logs (not the never-written clients columns)
+    streak: {
+      current: streakCurrent,
+      best: Math.max(streakBest, streakCurrent),
     },
-    monthlyGoal: { current: client.streak_current || 0, target: 30 },
+    monthlyGoal: { current: monthlyCount, target: 30 },
+    todayLog: {
+      workoutDone: Boolean(todayLog?.workout_done),
+      mealsFollowed: todayLog?.meals_followed || 0,
+    },
     weight: { 
       current: client.current_weight || 0, 
       start: client.start_weight || 0, 

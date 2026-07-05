@@ -10,8 +10,34 @@ export interface PlanSection {
   body: string
 }
 
+/** A workout-plan line item, embedded from the exercise library at save time. */
+export interface WorkoutItem {
+  exerciseId?: string
+  name: string
+  sets?: number | null
+  reps?: string | null      // "12", "8-10", "45 sec" — freeform
+  day?: string | null       // "Mon", "Day 1" — freeform grouping
+  videoUrl?: string | null
+  notes?: string | null
+}
+
+/** A meal-plan line item, embedded from the food library at save time. */
+export interface MealItem {
+  foodId?: string
+  name: string
+  portion: string
+  qty?: number | null       // portion multiplier
+  meal?: string | null      // "Breakfast", "Lunch" — freeform grouping
+  calories?: number | null
+  protein?: number | null
+  carbs?: number | null
+  fats?: number | null
+}
+
 export interface PlanContent {
   sections: PlanSection[]
+  workoutItems?: WorkoutItem[]
+  mealItems?: MealItem[]
 }
 
 export interface Plan {
@@ -31,6 +57,8 @@ interface SavePlanInput {
   type: PlanType
   title: string
   sections: PlanSection[]
+  workoutItems?: WorkoutItem[]
+  mealItems?: MealItem[]
   filePath?: string | null
 }
 
@@ -50,7 +78,15 @@ export async function savePlan(input: SavePlanInput) {
       .map((s) => ({ heading: s.heading.trim(), body: s.body.trim() }))
       .filter((s) => s.heading || s.body)
 
-    const content: PlanContent = { sections }
+    // Library-built line items (optional, additive to the sections model)
+    const workoutItems = (input.workoutItems || []).filter((i) => i.name?.trim())
+    const mealItems = (input.mealItems || []).filter((i) => i.name?.trim())
+
+    const content: PlanContent = {
+      sections,
+      ...(workoutItems.length ? { workoutItems } : {}),
+      ...(mealItems.length ? { mealItems } : {}),
+    }
 
     const { data: existing } = await supabase
       .from('plans')
