@@ -78,13 +78,24 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
           <Link href="/coach" className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
           <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>Library</h1>
           <div className="flex items-center gap-2 ml-4">
-            {(["workouts", "foods"] as const).map((t) => (
-              <button key={t} onClick={() => setTab(t)}
-                className="px-4 py-2 rounded-lg text-sm font-medium capitalize inline-flex items-center gap-2"
-                style={{ background: tab === t ? "rgba(45,212,191,0.15)" : "transparent", color: tab === t ? "#2dd4bf" : "#7e8a9e" }}>
-                {t === "workouts" ? <Dumbbell size={15} /> : <Apple size={15} />} {t}
-              </button>
-            ))}
+            {(["workouts", "foods"] as const).map((t) => {
+              const count = t === "workouts" ? initialExercises.length : initialFoods.length
+              return (
+                <button key={t} onClick={() => setTab(t)}
+                  className="px-4 py-2 rounded-full text-sm font-medium capitalize inline-flex items-center gap-2"
+                  style={{
+                    background: tab === t ? "rgba(45,212,191,0.15)" : "rgba(255,255,255,0.04)",
+                    border: `1px solid ${tab === t ? "rgba(45,212,191,0.3)" : "rgba(255,255,255,0.06)"}`,
+                    color: tab === t ? "#2dd4bf" : "#7e8a9e",
+                  }}>
+                  {t === "workouts" ? <Dumbbell size={15} /> : <Apple size={15} />} {t}
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full tabular-nums"
+                    style={{ background: tab === t ? "rgba(45,212,191,0.2)" : "rgba(255,255,255,0.07)" }}>
+                    {count}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </header>

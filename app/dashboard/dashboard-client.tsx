@@ -11,6 +11,7 @@ import { DailyReminder } from "@/components/dashboard/DailyReminder"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
 import { CoachFeedbackCard, type CoachFeedbackItem } from "@/components/dashboard/CoachFeedbackCard"
 import { TodayLogCard } from "@/components/dashboard/TodayLogCard"
+import { CheckInCTA } from "@/components/dashboard/CheckInCTA"
 
 interface DashboardData {
   name: string
@@ -112,7 +113,12 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         />
       </div>
 
-      {/* SECTION 5b — Today's adherence log (drives the real streak) */}
+      {/* SECTION 5b — Weekly check-in entry point */}
+      <div className="pt-2 pb-4">
+        <CheckInCTA programWeek={data.programWeek} />
+      </div>
+
+      {/* SECTION 5c — Today's adherence log (drives the real streak) */}
       <div className="py-8">
         <TodayLogCard
           initialWorkoutDone={data.todayLog.workoutDone}

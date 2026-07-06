@@ -8,7 +8,8 @@ import { createClient } from "@/lib/supabase/client"
 import {
   ArrowLeft, Send, Scale, Activity, Moon, Brain,
   TrendingDown, Calendar, Clock, Zap, Heart,
-  MessageSquare, Image, Loader2, Check
+  MessageSquare, Image, Loader2, Check,
+  LayoutDashboard, LineChart, ClipboardList, Camera, Apple, Lightbulb
 } from "lucide-react"
 import { PlanEditor } from "@/components/coach/PlanEditor"
 import { PhotoComparison } from "@/components/coach/PhotoComparison"
@@ -189,18 +190,27 @@ export function ClientDetailView({
           borderColor: "rgba(255, 255, 255, 0.06)",
         }}
       >
-        <div className="max-w-5xl mx-auto flex items-center gap-2">
-          {(["overview", "trends", "checkins", "photos", "plans", "insights"] as const).map((tab) => (
+        <div className="max-w-5xl mx-auto flex items-center gap-1.5 overflow-x-auto hide-scrollbar">
+          {([
+            { id: "overview", label: "Overview", icon: LayoutDashboard },
+            { id: "trends", label: "Trends", icon: LineChart },
+            { id: "checkins", label: "Check-ins", icon: ClipboardList },
+            { id: "photos", label: "Photos", icon: Camera },
+            { id: "plans", label: "Plans", icon: Apple },
+            { id: "insights", label: "Insights", icon: Lightbulb },
+          ] as const).map((tab) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className="px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all"
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium whitespace-nowrap shrink-0 transition-all"
               style={{
-                background: activeTab === tab ? "rgba(45, 212, 191, 0.15)" : "transparent",
-                color: activeTab === tab ? "#2dd4bf" : "#7e8a9e",
+                background: activeTab === tab.id ? "rgba(45, 212, 191, 0.15)" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${activeTab === tab.id ? "rgba(45,212,191,0.3)" : "rgba(255,255,255,0.06)"}`,
+                color: activeTab === tab.id ? "#2dd4bf" : "#7e8a9e",
               }}
             >
-              {tab}
+              <tab.icon size={14} />
+              {tab.label}
             </button>
           ))}
         </div>

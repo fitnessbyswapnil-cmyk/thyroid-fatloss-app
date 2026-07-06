@@ -78,7 +78,6 @@ export default async function CoachDashboardPage() {
 
   // Calculate average stats
   const avgWeight = clients?.reduce((sum, c) => sum + (c.current_weight || 0), 0) / (totalClients || 1)
-  const avgRecovery = clients?.reduce((sum, c) => sum + (c.recovery_score || 0), 0) / (totalClients || 1)
 
   return (
     <CoachDashboardClient
@@ -91,7 +90,6 @@ export default async function CoachDashboardPage() {
         activeClients,
         pendingCheckins,
         avgWeight: avgWeight.toFixed(1),
-        avgRecovery: avgRecovery.toFixed(0),
       }}
     />
   )

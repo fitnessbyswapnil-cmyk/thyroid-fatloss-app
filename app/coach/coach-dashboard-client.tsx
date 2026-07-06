@@ -33,7 +33,6 @@ interface Stats {
   activeClients: number
   pendingCheckins: number
   avgWeight: string
-  avgRecovery: string
 }
 
 interface QuietClient {
@@ -93,12 +92,12 @@ export function CoachDashboardClient({
       color: "#f59e0b",
       subtext: "This week"
     },
-    { 
-      label: "Avg Recovery", 
-      value: `${stats.avgRecovery}%`, 
-      icon: Activity, 
+    {
+      label: "To Review",
+      value: pendingReviews.length,
+      icon: Activity,
       color: "#34d399",
-      subtext: "All clients"
+      subtext: "Submitted check-ins"
     },
     { 
       label: "Avg Weight", 
@@ -395,34 +394,7 @@ export function CoachDashboardClient({
                           </span>
                         )}
                       </div>
-                      <div className="text-center">
-                        <div className="flex items-center gap-1 mb-1">
-                          <Heart size={12} style={{ color: "#7e8a9e" }} />
-                          <span 
-                            className="text-sm font-semibold tabular-nums"
-                            style={{ color: "#e8eaf0" }}
-                          >
-                            {client.recovery_score || 0}%
-                          </span>
-                        </div>
-                        <span className="text-[10px]" style={{ color: "#7e8a9e" }}>
-                          Recovery
-                        </span>
-                      </div>
-                      <div className="text-center">
-                        <div className="flex items-center gap-1 mb-1">
-                          <Zap size={12} style={{ color: "#7e8a9e" }} />
-                          <span 
-                            className="text-sm font-semibold tabular-nums"
-                            style={{ color: "#e8eaf0" }}
-                          >
-                            {client.streak_current || 0}
-                          </span>
-                        </div>
-                        <span className="text-[10px]" style={{ color: "#7e8a9e" }}>
-                          Streak
-                        </span>
-                      </div>
+                      <ChevronRight size={18} style={{ color: "#404858" }} />
                     </div>
 
                     {/* Actions */}
