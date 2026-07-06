@@ -1,0 +1,46 @@
+name,portion,calories,protein,carbs,fats,is_veg,tags
+Moong Dal Chilla,2 medium (120g),220,12,28,6,true,"breakfast, high-protein"
+Besan Chilla,2 medium (120g),240,11,26,9,true,breakfast
+Vegetable Poha,1 plate (150g),250,5,45,6,true,breakfast
+Vegetable Upma,1 bowl (150g),230,6,38,6,true,breakfast
+Idli with Sambar,3 idli + 1 katori,290,10,52,4,true,"breakfast, light"
+Masala Oats,1 bowl (200g),220,8,35,5,true,"breakfast, fiber"
+Vegetable Dalia,1 bowl (200g),200,7,36,3,true,"breakfast, fiber"
+Paneer Bhurji,1 katori (100g),260,14,6,20,true,"high-protein, breakfast"
+Boiled Eggs,2 whole,140,12,1,10,false,"high-protein, breakfast"
+Egg Bhurji,2 eggs,180,13,3,13,false,"high-protein, breakfast"
+Greek Yogurt (Plain),1 katori (150g),90,10,6,2,true,"snack, high-protein"
+Sprouts Salad,1 katori (100g),120,8,18,2,true,"snack, high-protein, fiber"
+Roasted Chana,1 handful (30g),110,6,17,2,true,snack
+Fruit Bowl (Mixed),1 bowl (150g),80,1,20,0,true,snack
+Apple,1 medium,80,0,21,0,true,snack
+Banana,1 medium,105,1,27,0,true,"snack, pre-workout"
+Buttermilk (Chaas),1 glass (250ml),50,3,6,1,true,"drink, light"
+Coconut Water,1 glass (250ml),45,0,11,0,true,drink
+Phulka Roti,1 roti (35g),85,3,17,1,true,"lunch, dinner"
+Jowar Roti,1 roti (45g),110,3,22,1,true,"lunch, dinner, gluten-free"
+Bajra Roti,1 roti (45g),115,3,22,2,true,"lunch, dinner, gluten-free"
+Steamed Rice,1 katori (100g),130,3,28,0,true,"lunch, dinner"
+Brown Rice,1 katori (100g),120,3,25,1,true,"lunch, dinner, fiber"
+Dal Tadka,1 katori (150g),160,8,20,5,true,"lunch, dinner, protein"
+Rajma Curry,1 katori (150g),180,9,25,4,true,"lunch, dinner, protein"
+Chole,1 katori (150g),210,9,28,7,true,"lunch, dinner, protein"
+Palak Paneer,1 katori (150g),240,11,8,18,true,"lunch, dinner"
+Mixed Veg Sabzi,1 katori (120g),110,3,12,6,true,"lunch, dinner"
+Bhindi Sabzi,1 katori (100g),90,2,9,5,true,"lunch, dinner"
+Lauki Sabzi,1 katori (120g),70,2,8,4,true,"lunch, dinner, light"
+Paneer Tikka,6 pieces (100g),230,14,8,16,true,"high-protein, dinner"
+Grilled Chicken Breast,100g,165,31,0,4,false,"high-protein, lunch, dinner"
+Chicken Curry (Homestyle),1 katori (150g),220,20,6,13,false,"lunch, dinner, protein"
+Fish Curry (Homestyle),1 katori (150g),190,18,6,10,false,"lunch, dinner, protein"
+Grilled Fish,100g,140,22,0,5,false,"high-protein, dinner"
+Vegetable Khichdi,1 bowl (200g),230,8,38,5,true,"dinner, light"
+Curd (Dahi),1 katori (100g),60,3,5,3,true,"lunch, side"
+Cucumber Salad,1 katori (100g),25,1,4,0,true,"side, fiber"
+Vegetable Soup (Clear),1 bowl (200ml),60,2,10,1,true,"dinner, light"
+Chicken Soup (Clear),1 bowl (200ml),90,10,5,3,false,"dinner, light"
+Peanut Butter,1 tbsp (16g),95,4,3,8,true,"snack, healthy-fat"
+Mixed Nuts,1 small handful (20g),120,4,4,10,true,"snack, healthy-fat"
+Makhana (Roasted),1 katori (25g),90,3,17,1,true,"snack, light"
+Tofu Stir-Fry,1 katori (120g),140,12,5,9,true,"high-protein, dinner"
+Quinoa Pulao,1 bowl (150g),210,7,33,5,true,"lunch, fiber"

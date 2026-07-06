@@ -108,3 +108,54 @@ export async function deleteFood(id: string) {
   revalidatePath('/coach/library')
   return { success: true }
 }
+
+// ---------- CSV bulk import ----------
+// Rows are pre-parsed client-side; this validates, caps, and inserts in one batch.
+export async function importExercises(rows: Array<Partial<Exercise> & { name: string }>) {
+  const { supabase, user } = await requireCoach()
+  if (!user) return { success: false, error: 'Only the coach can import' }
+  const clean = rows
+    .filter((r) => r.name?.trim())
+    .slice(0, 500)
+    .map((r) => ({
+      name: r.name.trim(),
+      muscle_group: r.muscle_group?.trim() || null,
+      equipment: r.equipment?.trim() || null,
+      video_url: r.video_url?.trim() || null,
+      cues: r.cues?.trim() || null,
+      created_by: user.id,
+    }))
+  if (!clean.length) return { success: false, error: 'No valid rows found' }
+  const { error } = await supabase.from('exercises').insert(clean)
+  if (error) return { success: false, error: error.message }
+  revalidatePath('/coach/library')
+  return { success: true, count: clean.length }
+}
+
+export async function importFoods(rows: Array<Partial<Food> & { name: string }>) {
+  const { supabase, user } = await requireCoach()
+  if (!user) return { success: false, error: 'Only the coach can import' }
+  const num = (v: unknown) => {
+    const n = Number(v)
+    return v === '' || v === null || v === undefined || Number.isNaN(n) ? null : n
+  }
+  const clean = rows
+    .filter((r) => r.name?.trim())
+    .slice(0, 500)
+    .map((r) => ({
+      name: r.name.trim(),
+      portion: (r.portion || '1 serving').toString().trim(),
+      calories: num(r.calories),
+      protein: num(r.protein),
+      carbs: num(r.carbs),
+      fats: num(r.fats),
+      is_veg: String(r.is_veg).toLowerCase() !== 'false' && String(r.is_veg).toLowerCase() !== 'no',
+      tags: r.tags?.toString().trim() || null,
+      created_by: user.id,
+    }))
+  if (!clean.length) return { success: false, error: 'No valid rows found' }
+  const { error } = await supabase.from('foods').insert(clean)
+  if (error) return { success: false, error: error.message }
+  revalidatePath('/coach/library')
+  return { success: true, count: clean.length }
+}

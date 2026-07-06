@@ -13,8 +13,9 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: 'ThyroWell | Premium Thyroid Recovery Coaching',
-  description: 'Transform your health with personalized thyroid recovery and hormonal fat-loss coaching. Expert guidance for hypothyroidism and Hashimoto\'s management.',
+  title: 'ThyroWell | Premium Wellness Coaching',
+  description:
+    'Personalized wellness coaching for women navigating thyroid health. Sustainable habits for nutrition, movement, sleep, and energy — with a coach in your corner.',
   generator: 'v0.app',
   icons: {
     icon: [

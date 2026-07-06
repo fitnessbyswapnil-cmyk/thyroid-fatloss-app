@@ -4,11 +4,41 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { ArrowLeft, Dumbbell, Apple, Plus, Pencil, Trash2, Loader2, Search, X, Video, Leaf, Drumstick } from "lucide-react"
+import { ArrowLeft, Dumbbell, Apple, Plus, Pencil, Trash2, Loader2, Search, X, Video, Leaf, Drumstick, Upload } from "lucide-react"
 import {
   type Exercise, type Food,
   upsertExercise, deleteExercise, upsertFood, deleteFood,
+  importExercises, importFoods,
 } from "@/app/actions/library"
+
+/**
+ * Small CSV parser: handles quoted fields + commas inside quotes. First row is
+ * the header; returns array of objects keyed by lowercased header names.
+ */
+function parseCsv(text: string): Record<string, string>[] {
+  const rows: string[][] = []
+  let cur = "", row: string[] = [], inQ = false
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+    if (inQ) {
+      if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++ }
+      else if (ch === '"') inQ = false
+      else cur += ch
+    } else if (ch === '"') inQ = true
+    else if (ch === ",") { row.push(cur); cur = "" }
+    else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && text[i + 1] === "\n") i++
+      row.push(cur); cur = ""
+      if (row.some((c) => c.trim() !== "")) rows.push(row)
+      row = []
+    } else cur += ch
+  }
+  row.push(cur)
+  if (row.some((c) => c.trim() !== "")) rows.push(row)
+  if (rows.length < 2) return []
+  const headers = rows[0].map((h) => h.trim().toLowerCase().replace(/\s+/g, "_"))
+  return rows.slice(1).map((r) => Object.fromEntries(headers.map((h, i) => [h, (r[i] ?? "").trim()])))
+}
 
 const card = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" } as const
 const inputStyle = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" } as const
@@ -17,6 +47,29 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
   const router = useRouter()
   const [tab, setTab] = useState<"workouts" | "foods">("workouts")
   const [search, setSearch] = useState("")
+  const [importing, setImporting] = useState(false)
+  const [importMsg, setImportMsg] = useState<string | null>(null)
+
+  const handleCsv = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = ""
+    if (!file) return
+    setImporting(true); setImportMsg(null)
+    try {
+      const rows = parseCsv(await file.text())
+      if (!rows.length) throw new Error("CSV needs a header row + at least one data row")
+      const res = tab === "workouts"
+        ? await importExercises(rows as never)
+        : await importFoods(rows as never)
+      if (!res.success) throw new Error(res.error || "Import failed")
+      setImportMsg(`Imported ${(res as { count?: number }).count ?? rows.length} ${tab === "workouts" ? "exercises" : "foods"} ✓`)
+      router.refresh()
+    } catch (err) {
+      setImportMsg(err instanceof Error ? err.message : "Import failed")
+    } finally {
+      setImporting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "#090c14" }}>
@@ -37,13 +90,26 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8">
-        {/* Search */}
-        <div className="relative mb-6">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: "#7e8a9e" }} />
-          <input value={search} onChange={(e) => setSearch(e.target.value)}
-            placeholder={tab === "workouts" ? "Search exercises…" : "Search foods…"}
-            className="w-full pl-11 pr-4 py-3 rounded-xl text-sm focus:outline-none" style={inputStyle} />
+        {/* Search + CSV import */}
+        <div className="flex items-center gap-3 mb-2">
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: "#7e8a9e" }} />
+            <input value={search} onChange={(e) => setSearch(e.target.value)}
+              placeholder={tab === "workouts" ? "Search exercises…" : "Search foods…"}
+              className="w-full pl-11 pr-4 py-3 rounded-xl text-sm focus:outline-none" style={inputStyle} />
+          </div>
+          <label className="inline-flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium cursor-pointer shrink-0"
+            style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5", border: "1px solid rgba(255,255,255,0.08)" }}>
+            {importing ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
+            Import CSV
+            <input type="file" accept=".csv,text/csv" onChange={handleCsv} className="hidden" disabled={importing} />
+          </label>
         </div>
+        <p className="text-[11px] mb-5" style={{ color: importMsg?.endsWith("✓") ? "#2dd4bf" : importMsg ? "#fb7185" : "#5a6578" }}>
+          {importMsg || (tab === "workouts"
+            ? "CSV headers: name, muscle_group, equipment, video_url, cues — starter file: data/exercises-starter.csv"
+            : "CSV headers: name, portion, calories, protein, carbs, fats, is_veg, tags — starter file: data/foods-starter.csv")}
+        </p>
 
         {tab === "workouts"
           ? <ExerciseList items={initialExercises} search={search} onChanged={() => router.refresh()} />

@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import { PlanEditor } from "@/components/coach/PlanEditor"
 import { PhotoComparison } from "@/components/coach/PhotoComparison"
+import { TrendChart } from "@/components/coach/TrendChart"
 import type { Plan } from "@/app/actions/plans"
 
 interface Client {
@@ -90,7 +91,13 @@ export function ClientDetailView({
   const router = useRouter()
   const [newInsight, setNewInsight] = useState("")
   const [isSending, setIsSending] = useState(false)
-  const [activeTab, setActiveTab] = useState<"overview" | "checkins" | "photos" | "plans" | "insights">("overview")
+  const [activeTab, setActiveTab] = useState<"overview" | "trends" | "checkins" | "photos" | "plans" | "insights">("overview")
+
+  // Ascending series for trend charts (checkins arrive week DESC)
+  const asc = checkins.slice().reverse()
+  const weightSeries = asc.filter((c) => c.weight != null).map((c) => ({ label: `W${c.week_number}`, value: Number(c.weight) }))
+  const energySeries = asc.filter((c) => c.energy_level != null).map((c) => ({ label: `W${c.week_number}`, value: Number(c.energy_level) }))
+  const sleepSeries = asc.filter((c) => c.sleep_score != null).map((c) => ({ label: `W${c.week_number}`, value: Number(c.sleep_score) }))
 
   const weightLost = client.start_weight && client.current_weight
     ? (client.start_weight - client.current_weight).toFixed(1)
@@ -183,7 +190,7 @@ export function ClientDetailView({
         }}
       >
         <div className="max-w-5xl mx-auto flex items-center gap-2">
-          {(["overview", "checkins", "photos", "plans", "insights"] as const).map((tab) => (
+          {(["overview", "trends", "checkins", "photos", "plans", "insights"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -309,6 +316,31 @@ export function ClientDetailView({
                 </motion.button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === "trends" && (
+          <div className="space-y-5">
+            {[
+              { title: "Weight (kg)", series: weightSeries, color: "#2dd4bf", unit: "" },
+              { title: "Energy (/10)", series: energySeries, color: "#f59e0b", unit: "" },
+              { title: "Sleep (/10)", series: sleepSeries, color: "#34d399", unit: "" },
+            ].map((chart) => (
+              <div
+                key={chart.title}
+                className="p-5 rounded-2xl"
+                style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}
+              >
+                <h3 className="text-sm font-semibold mb-3" style={{ color: "#e8eaf0" }}>{chart.title}</h3>
+                {chart.series.length >= 2 ? (
+                  <TrendChart points={chart.series} color={chart.color} unit={chart.unit} />
+                ) : (
+                  <p className="text-xs py-4" style={{ color: "#7e8a9e" }}>
+                    Not enough check-in data yet — needs at least 2 entries.
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         )}
 
