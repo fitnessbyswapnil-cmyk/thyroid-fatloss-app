@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { Apple, Dumbbell, FileText, Sparkles, Video } from "lucide-react"
-import type { Plan, PlanType } from "@/app/actions/plans"
+import { Apple, Dumbbell, FileText, Sparkles, ChevronRight } from "lucide-react"
+import type { Plan, PlanType, WorkoutItem } from "@/app/actions/plans"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
+import { ExerciseViewer } from "@/components/dashboard/ExerciseViewer"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
@@ -13,8 +15,11 @@ const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }
 export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) {
   const meta = META[type]
   const Icon = meta.icon
+  const [active, setActive] = useState<WorkoutItem | null>(null)
 
   return (
+    <>
+    {active && <ExerciseViewer item={active} onClose={() => setActive(null)} />}
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
@@ -61,7 +66,13 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
             {(plan.content?.workoutItems?.length ?? 0) > 0 && (
               <div className="space-y-2">
                 {plan.content.workoutItems!.map((it, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.03)" }}>
+                  <button
+                    key={i}
+                    onClick={() => setActive(it)}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white/[0.06]"
+                    style={{ background: "rgba(255,255,255,0.03)" }}
+                    aria-label={`View ${it.name} demo`}
+                  >
                     <ExerciseDemo start={it.imageStart} end={it.imageEnd} alt={it.name} size={48} rounded={10} />
                     {it.day && (
                       <span className="px-2 py-0.5 rounded text-[10px] uppercase shrink-0" style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}>
@@ -74,12 +85,8 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                         {it.sets ? `${it.sets} × ` : ""}{it.reps || ""}
                       </span>
                     )}
-                    {it.videoUrl && (
-                      <a href={it.videoUrl} target="_blank" rel="noopener noreferrer" className="shrink-0" style={{ color: "#2dd4bf" }} aria-label={`Video: ${it.name}`}>
-                        <Video size={15} />
-                      </a>
-                    )}
-                  </div>
+                    <ChevronRight size={16} className="shrink-0" style={{ color: "#4b5563" }} />
+                  </button>
                 ))}
               </div>
             )}
@@ -167,5 +174,6 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
         )}
       </div>
     </motion.div>
+    </>
   )
 }
