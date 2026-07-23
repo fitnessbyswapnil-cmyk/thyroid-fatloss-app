@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, type ReactNode } from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import {
@@ -22,6 +22,24 @@ const inputStyle = {
   border: "1px solid rgba(255, 255, 255, 0.08)",
   color: "#e8eaf0",
 } as const
+
+/** A single equipment/muscle filter pill in the library picker. */
+function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
+      style={
+        active
+          ? { background: "#2dd4bf", color: "#04121a" }
+          : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5", border: "1px solid rgba(255,255,255,0.08)" }
+      }
+    >
+      {children}
+    </button>
+  )
+}
 
 export function PlanEditor({ clientId, type, plan }: { clientId: string; type: PlanType; plan: Plan | null }) {
   const router = useRouter()
@@ -47,6 +65,9 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [foods, setFoods] = useState<Food[]>([])
   const [libSearch, setLibSearch] = useState("")
+  const [libEquip, setLibEquip] = useState<string | null>(null)   // equipment filter
+  const [libMuscle, setLibMuscle] = useState<string | null>(null) // muscle-group filter
+  const [libVeg, setLibVeg] = useState<"veg" | "nonveg" | null>(null) // foods filter
 
   // Templates
   const [templates, setTemplates] = useState<PlanTemplate[] | null>(null)
@@ -160,9 +181,31 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   }
 
   const lib = type === "workout" ? exercises : foods
-  const libFiltered = (lib as Array<Exercise | Food>).filter(
-    (x) => !libSearch || x.name.toLowerCase().includes(libSearch.toLowerCase())
-  )
+
+  // Expert picker facets — derived live from the loaded library so chips only
+  // ever show values the coach actually has exercises for (Fittr-style).
+  const equipOptions =
+    type === "workout"
+      ? Array.from(new Set(exercises.map((e) => e.equipment?.trim()).filter(Boolean) as string[])).sort()
+      : []
+  const muscleOptions =
+    type === "workout"
+      ? Array.from(new Set(exercises.map((e) => e.muscle_group?.trim()).filter(Boolean) as string[])).sort()
+      : []
+
+  const libFiltered = (lib as Array<Exercise | Food>).filter((x) => {
+    if (libSearch && !x.name.toLowerCase().includes(libSearch.toLowerCase())) return false
+    if (type === "workout") {
+      const e = x as Exercise
+      if (libEquip && e.equipment?.trim() !== libEquip) return false
+      if (libMuscle && e.muscle_group?.trim() !== libMuscle) return false
+    } else {
+      const f = x as Food
+      if (libVeg === "veg" && !f.is_veg) return false
+      if (libVeg === "nonveg" && f.is_veg) return false
+    }
+    return true
+  })
 
   return (
     <div className="p-6 rounded-2xl" style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
@@ -213,20 +256,68 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
               <input autoFocus value={libSearch} onChange={(e) => setLibSearch(e.target.value)} placeholder="Search library…" className="flex-1 px-2 py-1.5 rounded-lg text-sm focus:outline-none" style={inputStyle} />
               <button onClick={() => setPickerOpen(false)} style={{ color: "#7e8a9e" }} aria-label="Close picker"><X size={14} /></button>
             </div>
-            <div className="max-h-44 overflow-y-auto space-y-1">
+
+            {/* Expert filter chips — pick by equipment & target muscle (Fittr-style) */}
+            {type === "workout" && (equipOptions.length > 0 || muscleOptions.length > 0) && (
+              <div className="space-y-1.5 mb-2">
+                {equipOptions.length > 0 && (
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                    <span className="text-[10px] uppercase shrink-0 pr-0.5" style={{ color: "#5c6672", letterSpacing: "0.06em" }}>Equipment</span>
+                    <FilterChip active={libEquip === null} onClick={() => setLibEquip(null)}>All</FilterChip>
+                    {equipOptions.map((eq) => (
+                      <FilterChip key={eq} active={libEquip === eq} onClick={() => setLibEquip(libEquip === eq ? null : eq)}>{eq}</FilterChip>
+                    ))}
+                  </div>
+                )}
+                {muscleOptions.length > 0 && (
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                    <span className="text-[10px] uppercase shrink-0 pr-0.5" style={{ color: "#5c6672", letterSpacing: "0.06em" }}>Muscle</span>
+                    <FilterChip active={libMuscle === null} onClick={() => setLibMuscle(null)}>All</FilterChip>
+                    {muscleOptions.map((mg) => (
+                      <FilterChip key={mg} active={libMuscle === mg} onClick={() => setLibMuscle(libMuscle === mg ? null : mg)}>{mg}</FilterChip>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Veg / non-veg filter for the food library */}
+            {type === "meal" && (
+              <div className="flex items-center gap-1.5 mb-2">
+                <FilterChip active={libVeg === null} onClick={() => setLibVeg(null)}>All</FilterChip>
+                <FilterChip active={libVeg === "veg"} onClick={() => setLibVeg(libVeg === "veg" ? null : "veg")}>Veg</FilterChip>
+                <FilterChip active={libVeg === "nonveg"} onClick={() => setLibVeg(libVeg === "nonveg" ? null : "nonveg")}>Non-veg</FilterChip>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between px-1 mb-1">
+              <span className="text-[11px]" style={{ color: "#5c6672" }}>{libFiltered.length} shown</span>
+            </div>
+
+            <div className="max-h-60 overflow-y-auto space-y-1">
               {!libLoaded && <p className="text-xs p-2" style={{ color: "#7e8a9e" }}><Loader2 size={12} className="inline animate-spin mr-1" /> Loading…</p>}
               {libLoaded && libFiltered.length === 0 && (
                 <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>
-                  Nothing in the library yet — add items in <span style={{ color: "#2dd4bf" }}>Coach → Library</span> first.
+                  {(libSearch || libEquip || libMuscle || libVeg)
+                    ? "No matches — try clearing a filter."
+                    : <>Nothing in the library yet — add items in <span style={{ color: "#2dd4bf" }}>Coach → Library</span> first.</>}
                 </p>
               )}
               {libFiltered.map((x) => (
                 <button key={x.id} onClick={() => (type === "workout" ? addExercise(x as Exercise) : addFood(x as Food))}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-white/5" style={{ color: "#e8eaf0" }}>
-                  {x.name}
-                  <span className="text-[11px] ml-2" style={{ color: "#7e8a9e" }}>
-                    {type === "workout" ? (x as Exercise).muscle_group || "" : `${(x as Food).portion} · ${(x as Food).calories ?? "—"} kcal`}
+                  className="w-full flex items-center gap-2.5 text-left px-2 py-1.5 rounded-lg text-sm hover:bg-white/5" style={{ color: "#e8eaf0" }}>
+                  {type === "workout" && (
+                    <ExerciseDemo start={(x as Exercise).image_start} end={(x as Exercise).image_end} alt={x.name} size={34} rounded={8} />
+                  )}
+                  <span className="flex-1 min-w-0">
+                    <span className="block truncate">{x.name}</span>
+                    <span className="block text-[11px] truncate" style={{ color: "#7e8a9e" }}>
+                      {type === "workout"
+                        ? [(x as Exercise).muscle_group, (x as Exercise).equipment].filter(Boolean).join(" · ")
+                        : `${(x as Food).portion} · ${(x as Food).calories ?? "—"} kcal`}
+                    </span>
                   </span>
+                  <Plus size={14} className="shrink-0" style={{ color: "#2dd4bf" }} />
                 </button>
               ))}
             </div>

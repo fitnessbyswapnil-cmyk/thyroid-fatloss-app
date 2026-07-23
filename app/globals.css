@@ -486,3 +486,12 @@
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+
+/* Hide scrollbar on horizontal filter-chip rows (kept scrollable) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
