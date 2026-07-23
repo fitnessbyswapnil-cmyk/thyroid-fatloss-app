@@ -10,6 +10,8 @@ export interface Exercise {
   equipment: string | null
   video_url: string | null
   cues: string | null
+  image_start: string | null
+  image_end: string | null
 }
 
 export interface Food {
@@ -51,6 +53,8 @@ export async function upsertExercise(input: Partial<Exercise> & { name: string }
     equipment: input.equipment?.trim() || null,
     video_url: input.video_url?.trim() || null,
     cues: input.cues?.trim() || null,
+    image_start: input.image_start?.trim() || null,
+    image_end: input.image_end?.trim() || null,
     updated_at: new Date().toISOString(),
   }
   const { error } = input.id
@@ -123,6 +127,8 @@ export async function importExercises(rows: Array<Partial<Exercise> & { name: st
       equipment: r.equipment?.trim() || null,
       video_url: r.video_url?.trim() || null,
       cues: r.cues?.trim() || null,
+      image_start: r.image_start?.trim() || null,
+      image_end: r.image_end?.trim() || null,
       created_by: user.id,
     }))
   if (!clean.length) return { success: false, error: 'No valid rows found' }

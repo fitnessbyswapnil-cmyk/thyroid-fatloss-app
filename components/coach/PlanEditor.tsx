@@ -10,6 +10,7 @@ import {
 import { savePlan, type Plan, type PlanType, type PlanSection, type WorkoutItem, type MealItem } from "@/app/actions/plans"
 import { listExercises, listFoods, type Exercise, type Food } from "@/app/actions/library"
 import { listTemplates, saveTemplate, deleteTemplate, type PlanTemplate } from "@/app/actions/templates"
+import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
@@ -74,7 +75,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const addExercise = (e: Exercise) => {
     setWorkoutItems((prev) => [...prev, {
       exerciseId: e.id, name: e.name, sets: 3, reps: "10", day: "",
-      videoUrl: e.video_url, notes: e.cues || null,
+      videoUrl: e.video_url, imageStart: e.image_start, imageEnd: e.image_end, notes: e.cues || null,
     }])
     setPickerOpen(false); setLibSearch("")
   }
@@ -235,6 +236,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         {/* Workout item rows */}
         {type === "workout" && workoutItems.map((it, i) => (
           <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <ExerciseDemo start={it.imageStart} end={it.imageEnd} alt={it.name} size={36} rounded={9} />
             <input value={it.day || ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, day: e.target.value } : x))} placeholder="Day" className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
             <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>
               {it.name}

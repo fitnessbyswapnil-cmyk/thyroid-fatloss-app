@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Apple, Dumbbell, FileText, Sparkles, Video } from "lucide-react"
 import type { Plan, PlanType } from "@/app/actions/plans"
+import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
@@ -61,6 +62,7 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
               <div className="space-y-2">
                 {plan.content.workoutItems!.map((it, i) => (
                   <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.03)" }}>
+                    <ExerciseDemo start={it.imageStart} end={it.imageEnd} alt={it.name} size={48} rounded={10} />
                     {it.day && (
                       <span className="px-2 py-0.5 rounded text-[10px] uppercase shrink-0" style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}>
                         {it.day}
