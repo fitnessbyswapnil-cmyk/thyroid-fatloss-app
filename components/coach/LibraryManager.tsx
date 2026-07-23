@@ -193,7 +193,7 @@ function ExerciseList({ items, search, onChanged }: { items: Exercise[]; search:
 
       {filtered.map((e) => (
         <div key={e.id} className="p-4 rounded-2xl flex items-start gap-3" style={card}>
-          <ExerciseDemo start={e.image_start} end={e.image_end} alt={e.name} size={56} rounded={12} />
+          <ExerciseDemo demo={e.demo_url} start={e.image_start} end={e.image_end} alt={e.name} size={56} rounded={12} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>{e.name}</span>

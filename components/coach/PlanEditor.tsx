@@ -96,7 +96,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const addExercise = (e: Exercise) => {
     setWorkoutItems((prev) => [...prev, {
       exerciseId: e.id, name: e.name, sets: 3, reps: "10", day: "",
-      videoUrl: e.video_url, imageStart: e.image_start, imageEnd: e.image_end, notes: e.cues || null,
+      videoUrl: e.video_url, demoUrl: e.demo_url, imageStart: e.image_start, imageEnd: e.image_end, notes: e.cues || null,
     }])
     setPickerOpen(false); setLibSearch("")
   }
@@ -307,7 +307,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
                 <button key={x.id} onClick={() => (type === "workout" ? addExercise(x as Exercise) : addFood(x as Food))}
                   className="w-full flex items-center gap-2.5 text-left px-2 py-1.5 rounded-lg text-sm hover:bg-white/5" style={{ color: "#e8eaf0" }}>
                   {type === "workout" && (
-                    <ExerciseDemo start={(x as Exercise).image_start} end={(x as Exercise).image_end} alt={x.name} size={34} rounded={8} />
+                    <ExerciseDemo demo={(x as Exercise).demo_url} start={(x as Exercise).image_start} end={(x as Exercise).image_end} alt={x.name} size={34} rounded={8} />
                   )}
                   <span className="flex-1 min-w-0">
                     <span className="block truncate">{x.name}</span>
@@ -327,7 +327,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         {/* Workout item rows */}
         {type === "workout" && workoutItems.map((it, i) => (
           <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
-            <ExerciseDemo start={it.imageStart} end={it.imageEnd} alt={it.name} size={36} rounded={9} />
+            <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={36} rounded={9} />
             <input value={it.day || ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, day: e.target.value } : x))} placeholder="Day" className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
             <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>
               {it.name}

@@ -65,7 +65,10 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
 
         {/* Big demo */}
         <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: "#fff" }}>
-          {frames.length === 0 ? (
+          {item.demoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={item.demoUrl} alt={item.name} className="absolute inset-0 w-full h-full object-contain" />
+          ) : frames.length === 0 ? (
             <div className="w-full h-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)" }}>
               <Dumbbell size={64} style={{ color: "#404858" }} />
             </div>
@@ -81,7 +84,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
               />
             ))
           )}
-          {frames.length >= 2 && (
+          {(item.demoUrl || frames.length >= 2) && (
             <span
               className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-medium"
               style={{ background: "rgba(4,8,14,0.6)", color: "#2dd4bf", backdropFilter: "blur(4px)" }}

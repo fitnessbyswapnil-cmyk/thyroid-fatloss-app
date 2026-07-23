@@ -18,7 +18,8 @@ export interface WorkoutItem {
   reps?: string | null      // "12", "8-10", "45 sec" — freeform
   day?: string | null       // "Mon", "Day 1" — freeform grouping
   videoUrl?: string | null
-  imageStart?: string | null  // demo frame 1 (embedded from library at save time)
+  demoUrl?: string | null     // animated GIF/MP4 demo (embedded from library at save time)
+  imageStart?: string | null  // demo frame 1 — fallback when no demoUrl
   imageEnd?: string | null    // demo frame 2
   notes?: string | null
 }

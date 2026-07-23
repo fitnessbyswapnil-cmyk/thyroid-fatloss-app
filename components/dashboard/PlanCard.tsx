@@ -73,7 +73,7 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                     style={{ background: "rgba(255,255,255,0.03)" }}
                     aria-label={`View ${it.name} demo`}
                   >
-                    <ExerciseDemo start={it.imageStart} end={it.imageEnd} alt={it.name} size={48} rounded={10} />
+                    <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={48} rounded={10} />
                     {it.day && (
                       <span className="px-2 py-0.5 rounded text-[10px] uppercase shrink-0" style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}>
                         {it.day}

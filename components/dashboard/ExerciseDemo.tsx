@@ -10,6 +10,7 @@ import { Dumbbell } from "lucide-react"
  * Pauses when off-screen and respects prefers-reduced-motion.
  */
 export function ExerciseDemo({
+  demo,
   start,
   end,
   alt,
@@ -17,6 +18,7 @@ export function ExerciseDemo({
   rounded = 14,
   interval = 900,
 }: {
+  demo?: string | null   // animated GIF/MP4 — takes priority when present
   start?: string | null
   end?: string | null
   alt?: string
@@ -25,6 +27,20 @@ export function ExerciseDemo({
   interval?: number
 }) {
   const frames = [start, end].filter(Boolean) as string[]
+
+  // A real animated GIF loops natively — no crossfade needed, and it reads far
+  // clearer than two stills. Prefer it whenever a demo URL exists.
+  if (demo) {
+    return (
+      <div
+        className="relative shrink-0 overflow-hidden"
+        style={{ width: size, height: size, borderRadius: rounded, background: "#fff" }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={demo} alt={alt || "exercise demo"} loading="lazy" className="w-full h-full object-cover" />
+      </div>
+    )
+  }
   const [i, setI] = useState(0)
   const [inView, setInView] = useState(true)
   const ref = useRef<HTMLDivElement>(null)
