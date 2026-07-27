@@ -33,3 +33,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ExerciseDB catalogue cache (local, re-fetchable)
+scripts/.cache-exercisedb.json
