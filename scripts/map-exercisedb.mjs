@@ -74,6 +74,32 @@ function overlap(a, b) {
   return inter / Math.max(A.size, B.size)
 }
 
+// Equipment family — a demo must use the SAME kind of equipment as the plan
+// exercise, or the form shown is wrong (a barbell glute bridge is not a
+// bodyweight one). Returns a group key, or null when unknown (treated as
+// bodyweight-compatible so gentle moves still match).
+function equipGroup(raw) {
+  const s = (raw || '').toLowerCase()
+  if (!s || /body\s*weight|bodyweight|body only|assisted|none|no equipment/.test(s)) return 'bodyweight'
+  if (/kettlebell/.test(s)) return 'kettlebell'
+  if (/dumbbell/.test(s)) return 'dumbbell'
+  if (/resistance band|band/.test(s)) return 'band'
+  if (/barbell|ez ?bar|olympic/.test(s)) return 'barbell'
+  if (/cable/.test(s)) return 'cable'
+  if (/smith|leverage|machine|sled/.test(s)) return 'machine'
+  if (/medicine ball|stability ball|exercise ball|bosu|ball/.test(s)) return 'ball'
+  if (/foam roll/.test(s)) return 'bodyweight'
+  return 'other'
+}
+// Same family only. Unknown library equipment falls back to bodyweight-compatible.
+function equipOk(libEq, edbEq) {
+  const a = equipGroup(libEq), b = equipGroup(edbEq)
+  if (a === b) return true
+  // A plan exercise with no/unknown equipment is fine paired with a bodyweight demo.
+  if ((a === 'other' || a === 'bodyweight') && b === 'bodyweight') return true
+  return false
+}
+
 // ── fetch full catalogue (10/page free-plan cap), cached ─────────────────────
 async function getCatalogue() {
   if (!REFRESH && existsSync(CACHE)) {
@@ -132,32 +158,37 @@ async function main() {
 
   const edb = await getCatalogue()
   if (!edb.length) { console.error('✗ No ExerciseDB exercises available.'); process.exit(1) }
-  const byName = new Map()
-  for (const e of edb) if (e.id) byName.set(norm(e.name), e)
 
-  const { data: lib, error } = await db.from('exercises').select('id, name, demo_url')
+  const { data: lib, error } = await db.from('exercises').select('id, name, equipment, demo_url')
   if (error) { console.error('✗ Could not read exercises:', error.message); process.exit(1) }
   console.log(`  ${lib.length} exercises in your library\n`)
 
-  // Build the match list first (cheap), then do the expensive downloads.
+  // Match by NAME within the SAME equipment family only. Equipment first, then
+  // best name overlap — so a bodyweight move can never pick a barbell demo.
   const matches = []
   const misses = []
   for (const row of lib) {
-    let m = byName.get(norm(row.name)), kind = 'exact'
-    if (!m) {
-      let best = null, score = 0
-      for (const e of edb) { const s = overlap(row.name, e.name); if (s > score) { score = s; best = e } }
-      if (best && score >= 0.6) { m = best; kind = 'fuzzy' }
+    let best = null, bestScore = 0
+    for (const e of edb) {
+      if (!e.id || !equipOk(row.equipment, e.equipment)) continue
+      const s = overlap(row.name, e.name)
+      if (s > bestScore) { bestScore = s; best = e }
     }
-    if (m) matches.push({ row, edb: m, kind }); else misses.push(row.name)
+    // With equipment already constrained, a 0.5 name overlap is a confident match.
+    if (best && bestScore >= 0.5) {
+      matches.push({ row, edb: best, kind: bestScore >= 0.999 ? 'exact' : 'good' })
+    } else {
+      misses.push(row.name)
+    }
   }
   const exact = matches.filter((m) => m.kind === 'exact').length
-  const fuzzy = matches.filter((m) => m.kind === 'fuzzy').length
-  console.log(`  matched: ${matches.length}  (exact ${exact}, fuzzy ${fuzzy}) · no match: ${misses.length}`)
+  const good = matches.filter((m) => m.kind === 'good').length
+  console.log(`  matched: ${matches.length}  (exact ${exact}, same-equipment ${good}) · no match: ${misses.length}`)
 
   if (DRY) {
-    console.log(`\n  Sample matches:`)
-    for (const m of matches.slice(0, 12)) console.log(`    "${m.row.name}"  →  "${m.edb.name}"  (${m.kind})`)
+    console.log(`\n  Sample matches (name · equipment):`)
+    for (const m of matches.slice(0, 15))
+      console.log(`    "${m.row.name}" [${m.row.equipment || '—'}]  →  "${m.edb.name}" [${m.edb.equipment}]`)
     if (misses.length) console.log(`\n  Unmatched (first 20): ${misses.slice(0, 20).join(', ')}${misses.length > 20 ? ' …' : ''}`)
     console.log(`\nDry run — nothing downloaded or written. Re-run without --dry to apply.\n`)
     return
