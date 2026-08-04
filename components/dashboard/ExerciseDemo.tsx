@@ -27,23 +27,31 @@ export function ExerciseDemo({
   interval?: number
 }) {
   const frames = [start, end].filter(Boolean) as string[]
+  const [i, setI] = useState(0)
+  const [inView, setInView] = useState(true)
+  const [demoBroken, setDemoBroken] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   // A real animated GIF loops natively — no crossfade needed, and it reads far
-  // clearer than two stills. Prefer it whenever a demo URL exists.
-  if (demo) {
+  // clearer than two stills. Prefer it whenever a demo URL exists, but if it
+  // fails to load (e.g. not cached yet) fall back to the photo frames below.
+  if (demo && !demoBroken) {
     return (
       <div
         className="relative shrink-0 overflow-hidden"
         style={{ width: size, height: size, borderRadius: rounded, background: "#fff" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={demo} alt={alt || "exercise demo"} loading="lazy" className="w-full h-full object-cover" />
+        <img
+          src={demo}
+          alt={alt || "exercise demo"}
+          loading="lazy"
+          className="w-full h-full object-cover"
+          onError={() => setDemoBroken(true)}
+        />
       </div>
     )
   }
-  const [i, setI] = useState(0)
-  const [inView, setInView] = useState(true)
-  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const el = ref.current
