@@ -35,7 +35,6 @@
  *   node --env-file=.env.local scripts/map-exercisedb.mjs --refresh
  */
 import { createClient } from '@supabase/supabase-js'
-import { put } from '@vercel/blob'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
@@ -47,15 +46,12 @@ const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SUPA_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY
 const RAPID_KEY = process.env.RAPIDAPI_KEY
 const RAPID_HOST = process.env.RAPIDAPI_HOST || 'exercisedb.p.rapidapi.com'
-const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN
-
 const DRY = process.argv.includes('--dry')
 const CLEAR = process.argv.includes('--clear-photos')
 const REFRESH = process.argv.includes('--refresh')
 
 function need(v, name) { if (!v) { console.error(`✗ Missing ${name} in .env.local`); process.exit(1) } }
 need(SUPA_URL, 'NEXT_PUBLIC_SUPABASE_URL'); need(SUPA_KEY, 'SUPABASE_SERVICE_ROLE_KEY'); need(RAPID_KEY, 'RAPIDAPI_KEY')
-if (!DRY) need(BLOB_TOKEN, 'BLOB_READ_WRITE_TOKEN')
 
 const db = createClient(SUPA_URL, SUPA_KEY, { auth: { autoRefreshToken: false, persistSession: false } })
 const H = { 'X-RapidAPI-Key': RAPID_KEY, 'X-RapidAPI-Host': RAPID_HOST }
@@ -132,27 +128,6 @@ async function getCatalogue() {
   return all
 }
 
-// ── detect the working GIF image endpoint once ───────────────────────────────
-async function resolveGif(id) {
-  // Newer ExerciseDB serves the GIF binary from /image; try known shapes.
-  const candidates = [
-    `/image?exerciseId=${id}&resolution=360`,
-    `/image?exerciseId=${id}&resolution=180`,
-    `/image?exerciseId=${id}`,
-  ]
-  for (const path of candidates) {
-    try {
-      const res = await fetch(`https://${RAPID_HOST}${path}`, { headers: H })
-      const ct = res.headers.get('content-type') || ''
-      if (res.ok && ct.includes('image')) {
-        const buf = Buffer.from(await res.arrayBuffer())
-        if (buf.length > 500) return { buf, ct, path }
-      }
-    } catch { /* try next */ }
-  }
-  return null
-}
-
 async function main() {
   console.log(`\nThyroWell → ExerciseDB demo mapper  ${DRY ? '(dry run)' : ''}${CLEAR ? ' [clears old photos on matches]' : ''}`)
 
@@ -165,21 +140,24 @@ async function main() {
 
   // Match by NAME within the SAME equipment family only. Equipment first, then
   // best name overlap — so a bodyweight move can never pick a barbell demo.
+  // Accept only when it's an exact name OR shares ≥2 meaningful words (kills
+  // "reverse lunge"→"reverse dip" type single-word coincidences). Tie-break to
+  // the SHORTEST demo name so a plain move wins over a compound variant.
+  const shared = (a, b) => { const B = tokens(b); let n = 0; for (const t of tokens(a)) if (B.has(t)) n++; return n }
   const matches = []
   const misses = []
   for (const row of lib) {
-    let best = null, bestScore = 0
+    let best = null, bestScore = 0, bestLen = 1e9
     for (const e of edb) {
       if (!e.id || !equipOk(row.equipment, e.equipment)) continue
       const s = overlap(row.name, e.name)
-      if (s > bestScore) { bestScore = s; best = e }
+      const len = tokens(e.name).size
+      if (s > bestScore || (s === bestScore && len < bestLen)) { bestScore = s; best = e; bestLen = len }
     }
-    // With equipment already constrained, a 0.5 name overlap is a confident match.
-    if (best && bestScore >= 0.5) {
-      matches.push({ row, edb: best, kind: bestScore >= 0.999 ? 'exact' : 'good' })
-    } else {
-      misses.push(row.name)
-    }
+    const exactName = best && norm(best.name) === norm(row.name)
+    const ok = best && (exactName || (bestScore >= 0.5 && shared(row.name, best.name) >= 2))
+    if (ok) matches.push({ row, edb: best, kind: exactName ? 'exact' : 'good' })
+    else misses.push(row.name)
   }
   const exact = matches.filter((m) => m.kind === 'exact').length
   const good = matches.filter((m) => m.kind === 'good').length
@@ -194,45 +172,27 @@ async function main() {
     return
   }
 
-  // Confirm the image endpoint works before looping over everything.
-  console.log(`\n  resolving GIF endpoint…`)
-  const probe = await resolveGif(matches[0]?.edb.id || '0001')
-  if (!probe) {
-    console.error(`✗ Could not fetch a GIF from the /image endpoint. Your plan may not include image access, or the endpoint shape differs.`)
-    console.error(`  Nothing was written. Tell Claude this failed and it will adjust the endpoint.`)
-    process.exit(1)
-  }
-  console.log(`  ✓ GIF endpoint works (${probe.path.split('?')[0]}, ${(probe.buf.length / 1024).toFixed(0)}KB sample)\n`)
-
-  let done = 0, skipped = 0, failed = 0
+  // Store each matched exercise's demo as our proxy URL. The GIF itself is
+  // fetched lazily (and cached to Blob) by /api/exercise-gif on first view, so
+  // this step makes ZERO image calls — no quota risk, and it's instant.
+  let done = 0, failed = 0
   for (const { row, edb: ex } of matches) {
-    if (row.demo_url) { skipped++; continue } // resumable: already has a demo
-    const got = await resolveGif(ex.id)
-    if (!got) { failed++; console.log(`  ! ${row.name}: no GIF`); await sleep(150); continue }
-    let url
-    try {
-      const uploaded = await put(`exercise-demos/${ex.id}.gif`, got.buf, {
-        access: 'public', token: BLOB_TOKEN, contentType: 'image/gif', addRandomSuffix: false, allowOverwrite: true,
-      })
-      url = uploaded.url
-    } catch (e) { failed++; console.log(`  ! ${row.name}: blob upload failed — ${e.message}`); continue }
-
-    const patch = { demo_url: url, updated_at: new Date().toISOString() }
+    const patch = { demo_url: `/api/exercise-gif?id=${ex.id}`, updated_at: new Date().toISOString() }
     if (CLEAR) { patch.image_start = null; patch.image_end = null }
     const { error: uerr } = await db.from('exercises').update(patch).eq('id', row.id)
-    if (uerr) { failed++; console.log(`  ! ${row.name}: db update — ${uerr.message}`); continue }
+    if (uerr) { failed++; console.log(`  ! ${row.name}: ${uerr.message}`); continue }
     done++
-    if (done % 10 === 0) process.stdout.write(`\r  uploaded ${done} demos…`)
-    await sleep(150)
+    if (done % 25 === 0) process.stdout.write(`\r  linked ${done} demos…`)
   }
   process.stdout.write('\n')
 
   console.log(`\n── Result ──`)
-  console.log(`  new demos uploaded : ${done}`)
-  console.log(`  already had a demo : ${skipped}`)
+  console.log(`  demos linked       : ${done}`)
   console.log(`  failed             : ${failed}`)
   console.log(`  no ExerciseDB match: ${misses.length}  (kept their photo demo)`)
-  console.log(`\nDone. Reload the app to see the animated GIF demos.\n`)
+  console.log(`\nDone. The GIFs load & cache on first view via /api/exercise-gif.`)
+  console.log(`⚠ Make sure RAPIDAPI_KEY is set in your Vercel env vars too, or the`)
+  console.log(`  deployed app can't fetch them. Then reload the app.\n`)
 }
 
 main().catch((e) => { console.error(e); process.exit(1) })
