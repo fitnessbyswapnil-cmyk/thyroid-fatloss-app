@@ -170,6 +170,13 @@ export function ClientDetailView({
           </div>
           <div className="flex items-center gap-2">
             <Link
+              href={`/coach/client/${client.id}/messages`}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5"
+              style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.25)" }}
+            >
+              <MessageSquare size={13} /> Chat
+            </Link>
+            <Link
               href={`/coach/client/${client.id}/health`}
               className="px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5"
               style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.25)" }}

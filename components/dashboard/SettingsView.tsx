@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Download, Trash2, Loader2, ShieldCheck, FileText, LogOut, AlertTriangle, X, LayoutDashboard, ChevronRight, Activity } from "lucide-react"
+import { ArrowLeft, Download, Trash2, Loader2, ShieldCheck, FileText, LogOut, AlertTriangle, X, LayoutDashboard, ChevronRight, Activity, MessageSquare } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { exportMyData, deleteMyAccount } from "@/app/actions/account"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
@@ -91,6 +91,22 @@ export function SettingsView({
             <ChevronRight size={18} style={{ color: "#2dd4bf" }} />
           </Link>
         )}
+
+        {/* Coach chat */}
+        <Link
+          href="/dashboard/messages"
+          className="flex items-center gap-3 p-5 rounded-2xl"
+          style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.22)" }}
+        >
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(45,212,191,0.15)" }}>
+            <MessageSquare size={20} style={{ color: "#2dd4bf" }} />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold" style={{ color: "#e8eaf0" }}>Message your coach</p>
+            <p className="text-xs" style={{ color: "#7e8a9e" }}>Questions, wins, anything — chat anytime</p>
+          </div>
+          <ChevronRight size={18} style={{ color: "#2dd4bf" }} />
+        </Link>
 
         {/* My Health & Labs — thyroid profile + lab tracking */}
         <Link
