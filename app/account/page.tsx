@@ -16,6 +16,7 @@ export default async function AccountPage() {
     .single()
 
   const isActive = client?.role !== "client" || client?.subscription_status === "active"
+  const isCoach = client?.role === "coach" || client?.role === "admin"
 
   return (
     <SettingsView
@@ -23,6 +24,7 @@ export default async function AccountPage() {
       email={client?.email || user.email || ""}
       consentAt={client?.consent_at || null}
       isActive={isActive}
+      isCoach={isCoach}
     />
   )
 }

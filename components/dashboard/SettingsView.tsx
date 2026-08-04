@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Download, Trash2, Loader2, ShieldCheck, FileText, LogOut, AlertTriangle, X } from "lucide-react"
+import { ArrowLeft, Download, Trash2, Loader2, ShieldCheck, FileText, LogOut, AlertTriangle, X, LayoutDashboard, ChevronRight } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { exportMyData, deleteMyAccount } from "@/app/actions/account"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
@@ -14,11 +14,13 @@ export function SettingsView({
   email,
   consentAt,
   isActive = true,
+  isCoach = false,
 }: {
   fullName: string
   email: string
   consentAt: string | null
   isActive?: boolean
+  isCoach?: boolean
 }) {
   const router = useRouter()
   const backHref = isActive ? "/dashboard" : "/enroll"
@@ -70,6 +72,26 @@ export function SettingsView({
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8 space-y-5">
+        {/* Coach panel entry — only visible to coach/admin accounts. In the
+            installed app there's no address bar, so this is how the coach
+            reaches /coach. */}
+        {isCoach && (
+          <Link
+            href="/coach"
+            className="flex items-center gap-3 p-5 rounded-2xl"
+            style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.25)" }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(45,212,191,0.15)" }}>
+              <LayoutDashboard size={20} style={{ color: "#2dd4bf" }} />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold" style={{ color: "#e8eaf0" }}>Coach Panel</p>
+              <p className="text-xs" style={{ color: "#7e8a9e" }}>Manage clients, plans & your exercise library</p>
+            </div>
+            <ChevronRight size={18} style={{ color: "#2dd4bf" }} />
+          </Link>
+        )}
+
         {/* Profile */}
         <div className="p-6 rounded-2xl" style={card}>
           <h3 className="font-semibold mb-4" style={{ color: "#e8eaf0" }}>Account</h3>
