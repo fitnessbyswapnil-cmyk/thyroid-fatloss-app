@@ -76,6 +76,21 @@ export default async function CoachDashboardPage() {
     .filter(c => c.daysSince === null || c.daysSince >= 7)
     .sort((a, b) => (b.daysSince ?? Number.MAX_SAFE_INTEGER) - (a.daysSince ?? Number.MAX_SAFE_INTEGER))
 
+  // Clients waiting for a reply — unread messages from clients (coach side).
+  const { data: unreadMsgs } = await supabase
+    .from("messages")
+    .select("client_id")
+    .eq("from_coach", false)
+    .eq("read_by_coach", false)
+
+  const unreadByClient: Record<string, number> = {}
+  for (const m of unreadMsgs || []) {
+    if (m.client_id) unreadByClient[m.client_id] = (unreadByClient[m.client_id] || 0) + 1
+  }
+  const waitingClients = Object.entries(unreadByClient)
+    .map(([id, count]) => ({ id, full_name: (clients || []).find(c => c.id === id)?.full_name || "Client", count }))
+    .sort((a, b) => b.count - a.count)
+
   // Calculate average stats
   const avgWeight = clients?.reduce((sum, c) => sum + (c.current_weight || 0), 0) / (totalClients || 1)
 
@@ -85,6 +100,7 @@ export default async function CoachDashboardPage() {
       pendingReviews={pendingReviews || []}
       lastCheckIns={lastCheckIns}
       quietClients={quietClients}
+      waitingClients={waitingClients}
       stats={{
         totalClients,
         activeClients,

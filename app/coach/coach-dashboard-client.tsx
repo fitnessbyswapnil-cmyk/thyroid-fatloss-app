@@ -46,12 +46,14 @@ export function CoachDashboardClient({
   pendingReviews = [],
   lastCheckIns = {},
   quietClients = [],
+  waitingClients = [],
   stats
 }: {
   clients: Client[]
   pendingReviews: PendingReview[]
   lastCheckIns?: Record<string, string>
   quietClients?: QuietClient[]
+  waitingClients?: { id: string; full_name: string; count: number }[]
   stats: Stats
 }) {
   const router = useRouter()
@@ -181,6 +183,37 @@ export function CoachDashboardClient({
             animate={{ opacity: 1, y: 0 }}
           >
             <PendingReviewsQueue reviews={pendingReviews} />
+          </motion.div>
+        )}
+
+        {/* Waiting for your reply — clients with unread messages */}
+        {waitingClients.length > 0 && (
+          <motion.div
+            className="mb-6 p-5 rounded-2xl"
+            style={{ background: "rgba(45, 212, 191, 0.06)", border: "1px solid rgba(45, 212, 191, 0.2)" }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <MessageSquare size={16} style={{ color: "#2dd4bf" }} />
+              <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>Waiting for your reply</h3>
+              <span className="text-xs" style={{ color: "#7e8a9e" }}>· {waitingClients.length} client{waitingClients.length === 1 ? "" : "s"}</span>
+            </div>
+            <div className="space-y-2">
+              {waitingClients.map((w) => (
+                <Link
+                  key={w.id}
+                  href={`/coach/client/${w.id}/messages`}
+                  className="flex items-center justify-between p-3 rounded-xl"
+                  style={{ background: "rgba(255, 255, 255, 0.03)" }}
+                >
+                  <span className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{w.full_name}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(45,212,191,0.15)", color: "#2dd4bf" }}>
+                    {w.count} new message{w.count === 1 ? "" : "s"}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </motion.div>
         )}
 
