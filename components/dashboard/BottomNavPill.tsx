@@ -7,7 +7,7 @@ import { Home, TrendingUp, Apple, User } from "lucide-react"
 
 const tabs = [
   { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: TrendingUp, label: "Progress", href: "/dashboard/progress-photos" },
+  { icon: TrendingUp, label: "Progress", href: "/dashboard/progress" },
   { icon: Apple, label: "Plans", href: "/dashboard/plans" },
   { icon: User, label: "Profile", href: "/account" },
 ]
