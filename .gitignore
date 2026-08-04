@@ -36,3 +36,4 @@ next-env.d.ts
 
 # ExerciseDB catalogue cache (local, re-fetchable)
 scripts/.cache-exercisedb.json
+package-lock.json
