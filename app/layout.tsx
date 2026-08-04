@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { RegisterSW } from '@/components/pwa/RegisterSW'
 import './globals.css'
 
 // Instrument Serif for score numbers and key metrics
@@ -16,7 +17,15 @@ export const metadata: Metadata = {
   title: 'ThyroWell | Premium Wellness Coaching',
   description:
     'Personalized wellness coaching for women navigating thyroid health. Sustainable habits for nutrition, movement, sleep, and energy — with a coach in your corner.',
-  generator: 'v0.app',
+  applicationName: 'ThyroWell',
+  manifest: '/manifest.webmanifest',
+  // iOS home-screen app behaviour: launch full-screen (no Safari chrome),
+  // dark status bar, and "ThyroWell" under the icon.
+  appleWebApp: {
+    capable: true,
+    title: 'ThyroWell',
+    statusBarStyle: 'black-translucent',
+  },
   icons: {
     icon: [
       {
@@ -60,6 +69,7 @@ export default function RootLayout({
       </head>
       <body className={`${instrumentSerif.variable} font-sans antialiased`}>
         {children}
+        <RegisterSW />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

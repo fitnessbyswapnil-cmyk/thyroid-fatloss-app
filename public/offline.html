@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>ThyroWell — Offline</title>
+    <style>
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        background: #0a0d14; color: #e8eaf0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        text-align: center; padding: 24px;
+      }
+      .mark { width: 64px; height: 64px; border-radius: 16px; background: #11151f; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+      h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+      p { color: #7e8a9e; font-size: 14px; line-height: 1.5; max-width: 300px; margin: 0 0 20px; }
+      button { background: #2dd4bf; color: #04121a; border: 0; border-radius: 12px; padding: 12px 22px; font-size: 15px; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div class="mark">
+      <svg width="34" height="34" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" fill="#2dd4bf">
+        <path d="M101.141 53H136.632C151.023 53 162.689 64.6662 162.689 79.0573V112.904H148.112V79.0573C148.112 78.7105 148.098 78.3662 148.072 78.0251L112.581 112.898C112.701 112.902 112.821 112.904 112.941 112.904H148.112V126.672H112.941C98.5504 126.672 86.5638 114.891 86.5638 100.5V66.7434H101.141V100.5C101.141 101.15 101.191 101.792 101.289 102.422L137.56 66.7816C137.255 66.7563 136.945 66.7434 136.632 66.7434H101.141V53Z" />
+        <path d="M65.2926 124.136L14 66.7372H34.6355L64.7495 100.436V66.7372H80.1365V118.47C80.1365 126.278 70.4953 129.958 65.2926 124.136Z" />
+      </svg>
+    </div>
+    <h1>You're offline</h1>
+    <p>ThyroWell needs an internet connection. Check your network and try again.</p>
+    <button onclick="location.reload()">Retry</button>
+  </body>
+</html>
