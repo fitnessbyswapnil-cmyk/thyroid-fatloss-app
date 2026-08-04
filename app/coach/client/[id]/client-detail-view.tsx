@@ -168,17 +168,26 @@ export function ClientDetailView({
               </div>
             </div>
           </div>
-          <span
-            className="px-3 py-1 rounded-lg text-xs font-medium"
-            style={{
-              background: client.subscription_status === "active"
-                ? "rgba(45, 212, 191, 0.15)"
-                : "rgba(245, 158, 11, 0.15)",
-              color: client.subscription_status === "active" ? "#2dd4bf" : "#f59e0b",
-            }}
-          >
-            {client.subscription_status}
-          </span>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/coach/client/${client.id}/health`}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5"
+              style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.25)" }}
+            >
+              <Activity size={13} /> Health &amp; Labs
+            </Link>
+            <span
+              className="px-3 py-1 rounded-lg text-xs font-medium"
+              style={{
+                background: client.subscription_status === "active"
+                  ? "rgba(45, 212, 191, 0.15)"
+                  : "rgba(245, 158, 11, 0.15)",
+                color: client.subscription_status === "active" ? "#2dd4bf" : "#f59e0b",
+              }}
+            >
+              {client.subscription_status}
+            </span>
+          </div>
         </div>
       </header>
 
