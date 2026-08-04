@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
 export type PlanType = 'meal' | 'workout'
@@ -142,8 +143,46 @@ export async function getPlansForClient(clientId: string): Promise<{ meal: Plan 
     .order('updated_at', { ascending: false })
 
   const plans = (data || []) as Plan[]
-  return {
-    meal: plans.find((p) => p.type === 'meal') || null,
-    workout: plans.find((p) => p.type === 'workout') || null,
+  const meal = plans.find((p) => p.type === 'meal') || null
+  let workout = plans.find((p) => p.type === 'workout') || null
+
+  // Overlay the CURRENT library demo (GIF/photos/cues) onto each workout item by
+  // exerciseId, so demos upgrade automatically without re-saving old plans. The
+  // exercises table is coach-only under RLS, so we read demo fields with the
+  // admin client — non-sensitive, and the caller already has plan access.
+  const items = workout?.content?.workoutItems
+  if (workout && items?.length) {
+    const ids = [...new Set(items.map((i) => i.exerciseId).filter(Boolean))] as string[]
+    if (ids.length) {
+      try {
+        const admin = createAdminClient()
+        const { data: exs } = await admin
+          .from('exercises')
+          .select('id, demo_url, image_start, image_end, cues')
+          .in('id', ids)
+        const byId = new Map((exs || []).map((e) => [e.id, e]))
+        workout = {
+          ...workout,
+          content: {
+            ...workout.content,
+            workoutItems: items.map((it) => {
+              const e = it.exerciseId ? byId.get(it.exerciseId) : null
+              if (!e) return it
+              return {
+                ...it,
+                demoUrl: e.demo_url ?? it.demoUrl ?? null,
+                imageStart: e.image_start ?? it.imageStart ?? null,
+                imageEnd: e.image_end ?? it.imageEnd ?? null,
+                notes: it.notes ?? e.cues ?? null,
+              }
+            }),
+          },
+        }
+      } catch {
+        /* enrichment is best-effort — fall back to the embedded snapshot */
+      }
+    }
   }
+
+  return { meal, workout }
 }
