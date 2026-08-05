@@ -1,6 +1,6 @@
 "use client"
 
-import { HeroSection } from "@/components/dashboard/HeroSection"
+import { PrototypeHero } from "@/components/dashboard/PrototypeHero"
 import { CoachInsightCard } from "@/components/dashboard/CoachInsightCard"
 import { WeeklyVictory } from "@/components/dashboard/WeeklyVictory"
 import { WellnessScorecard } from "@/components/dashboard/WellnessScorecard"
@@ -16,6 +16,8 @@ import { CheckInCTA } from "@/components/dashboard/CheckInCTA"
 interface DashboardData {
   name: string
   programWeek: number
+  dayOfReset: number | null
+  medication: { name: string | null; dose: string | null; timing: string | null } | null
   recoveryPercent: number
   wellnessScore: { current: number; previous: number; delta: number }
   subscores: {
@@ -49,13 +51,13 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         paddingBottom: "calc(100px + env(safe-area-inset-bottom, 24px))"
       }}
     >
-      {/* SECTION 1 — Hero Section (88vh) */}
-      <HeroSection
+      {/* SECTION 1 — Prototype hero (greeting, medication, focus, streak, quick actions) */}
+      <PrototypeHero
         name={data.name}
-        wellnessPercent={data.wellnessScore.current / 100}
-        tshCurrent={data.tsh.current}
-        energyCurrent={data.energy}
-        sleepHours={data.sleep}
+        dayOfReset={data.dayOfReset}
+        programWeek={data.programWeek}
+        streak={data.streak.current}
+        medication={data.medication}
       />
       
       {/* SECTION 2 — TSH trend (shown whenever real TSH data exists, either direction) */}

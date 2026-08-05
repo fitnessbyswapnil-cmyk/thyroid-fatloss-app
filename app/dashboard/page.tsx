@@ -109,6 +109,16 @@ export default async function DashboardPage() {
   // Calculate program week
   const startDate = client.start_date ? new Date(client.start_date) : new Date()
   const programWeek = Math.max(1, Math.ceil((Date.now() - startDate.getTime()) / (7 * 24 * 60 * 60 * 1000)))
+  const dayOfReset = client.start_date
+    ? Math.max(1, Math.floor((Date.now() - startDate.getTime()) / (24 * 60 * 60 * 1000)) + 1)
+    : null
+
+  // Thyroid medication for the home reminder card (from the health profile).
+  const { data: healthProfile } = await supabase
+    .from("health_profiles")
+    .select("medication, medication_dose, medication_timing")
+    .eq("client_id", user.id)
+    .maybeSingle()
 
   // Calculate weight lost
   const weightLost = client.start_weight && client.current_weight 
@@ -147,6 +157,10 @@ export default async function DashboardPage() {
   const dashboardData = {
     name: client.full_name?.split(" ")[0] || "Friend",
     programWeek,
+    dayOfReset,
+    medication: healthProfile
+      ? { name: healthProfile.medication, dose: healthProfile.medication_dose, timing: healthProfile.medication_timing }
+      : null,
     recoveryPercent: Math.min(0.95, (client.recovery_score || 0) / 100),
     wellnessScore: { 
       current: wellnessScoreCurrent, 
