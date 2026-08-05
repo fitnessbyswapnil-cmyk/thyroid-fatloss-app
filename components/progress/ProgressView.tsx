@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, TrendingDown } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
 
 export interface CheckinPoint {
@@ -45,7 +45,8 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
   const lost = startW != null && nowW != null ? +(startW - nowW).toFixed(1) : null
 
   return (
-    <div className="min-h-screen" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+      <div className="tw-glow" style={{ position: "fixed", top: -140, left: 30, width: 340, height: 300, zIndex: 0 }} />
       <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
@@ -53,21 +54,21 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-6 py-8 space-y-5">
-        {/* Headline stat */}
+      <main className="max-w-2xl mx-auto px-6 py-8 space-y-5 relative" style={{ zIndex: 1 }}>
+        {/* Glowing headline moment (prototype style) */}
         {lost != null && (
-          <div className="p-6 rounded-2xl flex items-center gap-4" style={{ background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.2)" }}>
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(45,212,191,0.15)" }}>
-              <TrendingDown size={24} style={{ color: "#2dd4bf" }} />
-            </div>
-            <div>
-              <p className="text-3xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
-                {lost > 0 ? `${lost} kg down` : lost < 0 ? `${Math.abs(lost)} kg up` : "Holding steady"}
-              </p>
-              <p className="text-xs" style={{ color: "#7e8a9e" }}>
-                From {startW} kg to {nowW} kg over {weightPts.length} check-ins
-              </p>
-            </div>
+          <div className="text-center py-4">
+            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
+              Over {weightPts.length} check-ins
+            </p>
+            <p className="mt-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 48, lineHeight: 1.05, color: "#e8eaf0", textShadow: "0 0 44px rgba(45,212,191,0.35)" }}>
+              {lost > 0 ? `${lost} kg down` : lost < 0 ? `${Math.abs(lost)} kg up` : "Holding steady"}
+            </p>
+            <p className="text-sm mt-2 mx-auto" style={{ color: "#a9b2c1", maxWidth: 300, lineHeight: 1.5 }}>
+              {lost > 0
+                ? "Slow is exactly right on thyroid — this pace protects your energy."
+                : "Weight isn't the whole story on thyroid — watch your energy, sleep and mood too."}
+            </p>
           </div>
         )}
 

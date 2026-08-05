@@ -73,7 +73,8 @@ export function HealthView({
     .map((l) => ({ label: new Date(l.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short" }), value: Number(l[metric]) }))
 
   return (
-    <div className="min-h-screen" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+      <div className="tw-glow" style={{ position: "fixed", top: -150, left: 10, width: 360, height: 300, zIndex: 0 }} />
       <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href={asCoach && clientId ? `/coach/client/${clientId}` : "/dashboard"} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
@@ -83,7 +84,7 @@ export function HealthView({
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-6 py-8 space-y-5">
+      <main className="max-w-2xl mx-auto px-6 py-8 space-y-5 relative" style={{ zIndex: 1 }}>
         {/* Thyroid intake */}
         <div className="p-6 rounded-2xl" style={card}>
           <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#e8eaf0" }}>

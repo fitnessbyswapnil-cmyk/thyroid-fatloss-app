@@ -495,3 +495,23 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ── Ambient motion (ThyroWell prototype design language) ─────────────────── */
+@keyframes twBreathe { 0%,100% { opacity:.45; transform:scale(1); } 50% { opacity:.85; transform:scale(1.07); } }
+@keyframes twSheen   { 0% { transform:translateX(-170%) skewX(-18deg); } 60%,100% { transform:translateX(340%) skewX(-18deg); } }
+@keyframes twPulse   { 0%,100% { box-shadow:0 0 0 0 rgba(45,212,191,.4); } 55% { box-shadow:0 0 0 8px rgba(45,212,191,0); } }
+@keyframes twDraw    { from { stroke-dashoffset:620; } to { stroke-dashoffset:0; } }
+@keyframes twFadeUp  { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .tw-breathe, .tw-sheen, .tw-pulse, .tw-draw { animation: none !important; } }
+
+/* Soft radial glow blob used behind hero sections */
+.tw-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(26px);
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(45,212,191,0.13), transparent 70%);
+  animation: twBreathe 7s ease-in-out infinite;
+}
+.tw-breathe { animation: twBreathe 7s ease-in-out infinite; }
+.tw-fade-up { animation: twFadeUp .35s ease-out; }
