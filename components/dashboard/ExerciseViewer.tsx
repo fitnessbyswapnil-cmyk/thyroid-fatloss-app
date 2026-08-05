@@ -103,21 +103,50 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
 
         {/* Details */}
         <div className="p-5">
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <h3 className="text-xl leading-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
+          <div className="flex items-center gap-2.5 mb-3">
+            <h3 className="text-[26px] leading-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
               {item.name}
             </h3>
-            {(item.sets || item.reps) && (
-              <span className="shrink-0 px-3 py-1 rounded-lg text-sm tabular-nums font-medium" style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}>
-                {item.sets ? `${item.sets} × ` : ""}{item.reps || ""}
+            {item.day && (
+              <span className="text-[10px] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ background: "rgba(255,255,255,0.05)", color: "#a9b2c1" }}>
+                {item.day}
               </span>
             )}
           </div>
 
+          {/* Prototype stat tiles */}
+          {(item.sets || item.reps) && (
+            <div className="grid grid-cols-2 gap-2.5 mb-4">
+              <div className="rounded-2xl p-3 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#e8eaf0" }}>{item.sets ?? "—"}</p>
+                <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#7e8a9e" }}>sets</p>
+              </div>
+              <div className="rounded-2xl p-3 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#e8eaf0" }}>{item.reps ?? "—"}</p>
+                <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#7e8a9e" }}>reps</p>
+              </div>
+            </div>
+          )}
+
+          {/* Form cues as a checklist (prototype style) */}
           {item.notes && (
             <div className="mb-4">
-              <p className="text-[11px] uppercase mb-1.5" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>How to do it</p>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "#c9cdd5" }}>{item.notes}</p>
+              <p className="text-[10.5px] uppercase font-semibold mb-2.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>Form cues</p>
+              <div className="flex flex-col gap-2">
+                {item.notes
+                  .split(/(?<=[.!?])\s+/)
+                  .map((c) => c.trim())
+                  .filter(Boolean)
+                  .slice(0, 6)
+                  .map((cue, i) => (
+                    <div key={i} className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                      <span className="w-[19px] h-[19px] rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(45,212,191,0.12)" }}>
+                        <svg width="9" height="9" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#2dd4bf", strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
+                      </span>
+                      <p className="text-[12.5px]" style={{ color: "#a9b2c1", lineHeight: 1.45 }}>{cue}</p>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
 

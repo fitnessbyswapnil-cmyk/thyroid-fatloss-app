@@ -232,17 +232,25 @@ export function CoachDashboardClient({
             </div>
             <div className="space-y-2">
               {quietClients.map((q) => (
-                <Link
+                <div
                   key={q.id}
-                  href={`/coach/client/${q.id}`}
-                  className="flex items-center justify-between p-3 rounded-xl transition-colors"
+                  className="flex items-center gap-3 p-3 rounded-xl"
                   style={{ background: "rgba(255, 255, 255, 0.03)" }}
                 >
-                  <span className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{q.full_name}</span>
-                  <span className="text-xs" style={{ color: "#f59e0b" }}>
-                    {q.daysSince === null ? "No check-in yet" : `${q.daysSince} days since last check-in`}
-                  </span>
-                </Link>
+                  <Link href={`/coach/client/${q.id}`} className="flex-1 min-w-0">
+                    <span className="block text-sm font-medium truncate" style={{ color: "#e8eaf0" }}>{q.full_name}</span>
+                    <span className="block text-xs mt-0.5" style={{ color: "#f59e0b" }}>
+                      {q.daysSince === null ? "No check-in yet" : `${q.daysSince} days since last check-in`}
+                    </span>
+                  </Link>
+                  <Link
+                    href={`/coach/client/${q.id}/messages`}
+                    className="shrink-0 text-[11px] font-semibold rounded-full px-3 py-1.5"
+                    style={{ color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.3)" }}
+                  >
+                    Gentle nudge
+                  </Link>
+                </div>
               ))}
             </div>
           </motion.div>

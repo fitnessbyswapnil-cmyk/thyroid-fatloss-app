@@ -125,7 +125,15 @@ export function HealthView({
               </button>
             ))}
           </div>
-          <TrendChart points={points} unit={meta.unit} goalDirection={metric === "weight_kg" || metric === "tsh" ? "down" : undefined} />
+          <TrendChart
+            points={points}
+            unit={meta.unit}
+            goalDirection={metric === "weight_kg" || metric === "tsh" ? "down" : undefined}
+            band={metric === "tsh" ? { min: 0.4, max: 4.0, label: "target ≤ 4.0" } : undefined}
+          />
+          {metric === "tsh" && (
+            <p className="text-[11px] mt-2" style={{ color: "#5a6578" }}>Shaded band = typical target range, 0.4–4.0 mIU/L. Your doctor's target may differ.</p>
+          )}
         </div>
 
         {/* Labs history + add */}

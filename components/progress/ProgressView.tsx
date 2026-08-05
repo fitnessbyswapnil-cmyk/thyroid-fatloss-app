@@ -89,6 +89,40 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           )}
         </div>
 
+        {/* Milestones — earned from real check-in data only */}
+        {(() => {
+          const milestones: { label: string; done: boolean }[] = []
+          if (sorted.length >= 1) milestones.push({ label: "First check-in logged", done: true })
+          if (sorted.length >= 4) milestones.push({ label: "4 weeks consistent", done: true })
+          else milestones.push({ label: "4 weeks consistent — soon", done: false })
+          if (lost != null && lost >= 1) milestones.push({ label: "First kg down", done: true })
+          else if (lost != null) milestones.push({ label: "First kg down — soon", done: false })
+          if (lost != null && lost >= 3) milestones.push({ label: "3 kg down", done: true })
+          if (sorted.length >= 8) milestones.push({ label: "8 weeks strong", done: true })
+          if (milestones.length === 0) return null
+          return (
+            <div>
+              <p className="text-[10.5px] uppercase font-semibold mb-2.5 ml-0.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>Milestones</p>
+              <div className="flex flex-wrap gap-2">
+                {milestones.map((m) => (
+                  <span
+                    key={m.label}
+                    className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-3 py-1.5"
+                    style={m.done
+                      ? { color: "#34d399", background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.2)" }
+                      : { color: "#5a6578", border: "1px dashed rgba(255,255,255,0.12)" }}
+                  >
+                    {m.done && (
+                      <svg width="11" height="11" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#34d399", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
+                    )}
+                    {m.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
+
         <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" }}>
           View progress photos
         </Link>

@@ -55,10 +55,22 @@ export function ChatView({
 
   return (
     <div className="flex flex-col h-[100dvh]" style={{ background: "#090c14" }}>
-      <header className="shrink-0 px-6 py-4" style={{ background: "rgba(9,12,20,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>{title}</h1>
+      <header className="shrink-0 px-5 py-3.5" style={{ background: "rgba(9,12,20,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <Link href={backHref} className="p-2 -ml-2 rounded-lg shrink-0" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
+          {/* Prototype-style identity block: avatar + presence dot + reply-time hint */}
+          <div className="relative shrink-0">
+            <div className="w-[42px] h-[42px] rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(45,212,191,0.14)", color: "#5eead4" }}>
+              {(asCoach ? title.split("·").pop() : "C")?.trim().charAt(0).toUpperCase() || "C"}
+            </div>
+            <div className="absolute right-0 bottom-[1px] w-[11px] h-[11px] rounded-full" style={{ background: "#34d399", border: "2.5px solid #0a0d14" }} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-[15px] font-semibold truncate" style={{ color: "#e8eaf0" }}>{title}</h1>
+            <p className="text-[11.5px] mt-0.5" style={{ color: "#7e8a9e" }}>
+              {asCoach ? "Your client · replies land in their app" : "Your coach · usually replies within a day"}
+            </p>
+          </div>
         </div>
       </header>
 
@@ -73,14 +85,15 @@ export function ChatView({
             const mine = isMine(m)
             return (
               <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-                <div className="max-w-[80%] px-4 py-2.5 rounded-2xl text-sm" style={{
-                  background: mine ? "#2dd4bf" : "rgba(255,255,255,0.06)",
-                  color: mine ? "#04121a" : "#e8eaf0",
-                  borderBottomRightRadius: mine ? 4 : 16,
-                  borderBottomLeftRadius: mine ? 16 : 4,
+                <div className="max-w-[78%] px-3.5 py-2.5 text-[13.5px]" style={{
+                  background: mine ? "rgba(45,212,191,0.13)" : "rgba(255,255,255,0.05)",
+                  border: mine ? "1px solid rgba(45,212,191,0.22)" : "1px solid rgba(255,255,255,0.06)",
+                  color: "#e8eaf0",
+                  borderRadius: mine ? "18px 18px 6px 18px" : "18px 18px 18px 6px",
+                  lineHeight: 1.5,
                 }}>
                   <span className="whitespace-pre-wrap break-words">{m.body}</span>
-                  <span className="block text-[10px] mt-1" style={{ color: mine ? "rgba(4,18,26,0.55)" : "#7e8a9e" }}>
+                  <span className="block text-[10px] mt-1" style={{ color: mine ? "rgba(94,234,212,0.6)" : "#5a6578", textAlign: mine ? "right" : "left" }}>
                     {new Date(m.created_at).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}
                   </span>
                 </div>

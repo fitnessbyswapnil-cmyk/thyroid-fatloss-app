@@ -16,12 +16,14 @@ export function TrendChart({
   height = 160,
   unit = "",
   goalDirection,
+  band,
 }: {
   points: TrendPoint[]
   color?: string
   height?: number
   unit?: string
   goalDirection?: "down" | "up" // colour the net change good/bad
+  band?: { min: number; max: number; label?: string } // shaded target range (e.g. TSH 0.4–4.0)
 }) {
   const clean = points.filter((p) => typeof p.value === "number" && !Number.isNaN(p.value))
   if (clean.length === 0) {
@@ -34,7 +36,9 @@ export function TrendChart({
 
   const W = 320, H = height, padX = 30, padY = 18
   const values = clean.map((p) => p.value)
-  const min = Math.min(...values), max = Math.max(...values)
+  // Include the target band in the scale so it's always visible.
+  const min = Math.min(...values, ...(band ? [band.min] : []))
+  const max = Math.max(...values, ...(band ? [band.max] : []))
   const span = max - min || 1
   const innerW = W - padX * 2, innerH = H - padY * 2
   const x = (i: number) => padX + (clean.length === 1 ? innerW / 2 : (i / (clean.length - 1)) * innerW)
@@ -57,6 +61,16 @@ export function TrendChart({
             <stop offset="100%" stopColor={color} stopOpacity="0" />
           </linearGradient>
         </defs>
+        {/* Target band (prototype style: shaded range + dashed ceiling) */}
+        {band && (
+          <g>
+            <rect x={padX} y={y(band.max)} width={innerW} height={Math.max(2, y(band.min) - y(band.max))} rx="5" fill="rgba(45,212,191,0.05)" />
+            <line x1={padX} y1={y(band.max)} x2={padX + innerW} y2={y(band.max)} stroke="rgba(45,212,191,0.35)" strokeWidth="1" strokeDasharray="4 4" />
+            {band.label && (
+              <text x={padX + innerW} y={y(band.max) - 5} fontSize="9" fill="#5a6578" textAnchor="end">{band.label}</text>
+            )}
+          </g>
+        )}
         <path d={area} fill={`url(#grad-${color.replace("#", "")})`} />
         <path d={line} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         {clean.map((p, i) => (
