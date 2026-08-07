@@ -69,10 +69,10 @@ export default function OnboardingPage() {
       return
     }
 
+    // No auto-redirect: the completion screen offers an optional blood-report
+    // upload (or straight to the dashboard).
     setStep("complete")
-    setTimeout(() => {
-      router.push("/dashboard")
-    }, 2000)
+    setIsLoading(false)
   }
 
   const nextStep = () => {
@@ -494,16 +494,33 @@ export default function OnboardingPage() {
                 <Check size={36} style={{ color: "#2dd4bf" }} />
               </motion.div>
               
-              <h1 
+              <h1
                 className="text-2xl font-bold mb-3"
                 style={{ color: "#e8eaf0" }}
               >
                 You&apos;re All Set!
               </h1>
-              <p className="mb-6" style={{ color: "#7e8a9e" }}>
+              <p className="mb-2" style={{ color: "#7e8a9e" }}>
                 Your personalized wellness journey begins now.
               </p>
-              <Loader2 className="animate-spin mx-auto" size={24} style={{ color: "#2dd4bf" }} />
+              <p className="text-sm mb-6" style={{ color: "#a9b2c1", lineHeight: 1.5 }}>
+                One optional step: have a recent blood report? Add it and we&apos;ll
+                track your values with your progress — you can also do this anytime later.
+              </p>
+              <button
+                onClick={() => router.push("/dashboard/health")}
+                className="w-full h-12 rounded-full font-bold text-sm mb-3"
+                style={{ background: "#2dd4bf", color: "#06231f", boxShadow: "0 8px 24px rgba(45,212,191,0.25)" }}
+              >
+                Add my blood report
+              </button>
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="w-full h-11 rounded-full text-sm font-medium"
+                style={{ color: "#7e8a9e" }}
+              >
+                Skip for now
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

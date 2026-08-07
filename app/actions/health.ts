@@ -16,6 +16,14 @@ export interface HealthProfile {
   notes: string | null
 }
 
+export interface LabExtra {
+  name: string
+  value: number
+  unit: string | null
+  low: number | null
+  high: number | null
+}
+
 export interface LabResult {
   id: string
   client_id: string
@@ -28,6 +36,8 @@ export interface LabResult {
   ferritin: number | null
   weight_kg: number | null
   notes: string | null
+  extras: LabExtra[] | null
+  source: string | null
 }
 
 const num = (v: unknown) => {
@@ -90,6 +100,20 @@ export async function addLab(input: Partial<LabResult> & { clientId?: string; ta
   if (!clientId) return { success: false, error: 'Not authenticated' }
   const { data: { user } } = await supabase.auth.getUser()
   if (!input.taken_on) return { success: false, error: 'Date is required' }
+  // Sanitize extras: numeric values only, capped list, plain fields.
+  const extras = Array.isArray(input.extras)
+    ? input.extras
+        .filter((e) => e && typeof e.name === "string" && e.name.trim() && num(e.value) !== null)
+        .slice(0, 40)
+        .map((e) => ({
+          name: e.name.trim().slice(0, 60),
+          value: num(e.value)!,
+          unit: e.unit?.toString().trim().slice(0, 20) || null,
+          low: num(e.low),
+          high: num(e.high),
+        }))
+    : null
+
   const row = {
     client_id: clientId,
     taken_on: input.taken_on,
@@ -97,6 +121,8 @@ export async function addLab(input: Partial<LabResult> & { clientId?: string; ta
     vitamin_d: num(input.vitamin_d), b12: num(input.b12), ferritin: num(input.ferritin),
     weight_kg: num(input.weight_kg),
     notes: input.notes?.trim() || null,
+    extras: extras && extras.length ? extras : null,
+    source: input.source === "upload" ? "upload" : "manual",
     created_by: user?.id ?? null,
   }
   const { error } = await supabase.from('lab_results').insert(row)

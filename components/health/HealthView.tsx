@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, Activity, Pill, FlaskConical, Plus, Trash2, Loader2, Check } from "lucide-react"
 import { saveHealthProfile, addLab, deleteLab, type HealthProfile, type LabResult } from "@/app/actions/health"
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
+import { LabReportUpload } from "@/components/health/LabReportUpload"
+import { LabGauges } from "@/components/health/LabGauges"
 
 const card = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" } as const
 const inputStyle = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" } as const
@@ -85,6 +87,12 @@ export function HealthView({
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8 space-y-5 relative" style={{ zIndex: 1 }}>
+        {/* Free on-device report import */}
+        <LabReportUpload clientId={clientId} />
+
+        {/* Latest report as range gauges */}
+        {labs.length > 0 && <LabGauges lab={labs[labs.length - 1]} />}
+
         {/* Thyroid intake */}
         <div className="p-6 rounded-2xl" style={card}>
           <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
