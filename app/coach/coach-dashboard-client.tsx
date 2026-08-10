@@ -11,6 +11,7 @@ import {
   Scale, Heart, Zap, BookOpen
 } from "lucide-react"
 import { PendingReview } from "@/app/actions/coach-reviews"
+import type { CoachAlert } from "@/lib/coach/alerts"
 import { PendingReviewsQueue } from "@/components/coach/PendingReviewsQueue"
 import { AddClientButton } from "@/components/coach/AddClientButton"
 
@@ -47,6 +48,7 @@ export function CoachDashboardClient({
   lastCheckIns = {},
   quietClients = [],
   waitingClients = [],
+  alerts = [],
   stats
 }: {
   clients: Client[]
@@ -54,6 +56,7 @@ export function CoachDashboardClient({
   lastCheckIns?: Record<string, string>
   quietClients?: QuietClient[]
   waitingClients?: { id: string; full_name: string; count: number }[]
+  alerts?: CoachAlert[]
   stats: Stats
 }) {
   const router = useRouter()
@@ -183,6 +186,52 @@ export function CoachDashboardClient({
             animate={{ opacity: 1, y: 0 }}
           >
             <PendingReviewsQueue reviews={pendingReviews} />
+          </motion.div>
+        )}
+
+        {/* Needs your call — rules over labs, energy, adherence and symptoms.
+            Sits above everything else because these are time-sensitive. */}
+        {alerts.length > 0 && (
+          <motion.div className="mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Zap size={16} style={{ color: "#fb7185" }} />
+              <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>Needs your call</h3>
+              <span className="text-xs" style={{ color: "#7e8a9e" }}>
+                · {alerts.length} flag{alerts.length === 1 ? "" : "s"} across your roster
+              </span>
+            </div>
+            <div className="space-y-2">
+              {alerts.map((a, i) => {
+                const tone =
+                  a.severity === "urgent"
+                    ? { color: "#fb7185", bg: "rgba(251,113,133,0.05)", border: "rgba(251,113,133,0.2)", label: "Urgent" }
+                    : a.severity === "attention"
+                    ? { color: "#f59e0b", bg: "rgba(245,158,11,0.05)", border: "rgba(245,158,11,0.18)", label: "Review" }
+                    : { color: "#34d399", bg: "rgba(52,211,153,0.05)", border: "rgba(52,211,153,0.18)", label: "Send a win" }
+                return (
+                  <Link
+                    key={`${a.clientId}-${a.kind}-${i}`}
+                    href={a.href}
+                    className="flex items-start gap-3 p-3.5 rounded-2xl"
+                    style={{ background: tone.bg, border: `1px solid ${tone.border}` }}
+                  >
+                    <span
+                      className="shrink-0 text-[9.5px] font-bold uppercase rounded-full px-2 py-1 mt-0.5"
+                      style={{ color: tone.color, background: `${tone.color}1f`, letterSpacing: "0.06em" }}
+                    >
+                      {tone.label}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>
+                        {a.clientName} — {a.title}
+                      </p>
+                      <p className="text-[11.5px] mt-0.5" style={{ color: "#7e8a9e" }}>{a.detail}</p>
+                    </div>
+                    <ChevronRight size={16} className="shrink-0 mt-1" style={{ color: tone.color }} />
+                  </Link>
+                )
+              })}
+            </div>
           </motion.div>
         )}
 
