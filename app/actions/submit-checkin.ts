@@ -17,7 +17,8 @@ export interface CheckInSubmissionData {
   medsTaken: number
   medsTarget: number
   weight?: number
-  symptoms: string[]
+  /** Thyroid symptom cluster scored 0 (none) – 3 (severe). */
+  symptoms: Record<string, number>
   reflectionText: string
 }
 
@@ -124,7 +125,7 @@ export async function submitWeeklyCheckIn(
       meds_taken: formData.medsTaken,
       meds_target: formData.medsTarget,
       weight: formData.weight || null,
-      symptoms: formData.symptoms.length > 0 ? formData.symptoms : null,
+      symptoms: Object.keys(formData.symptoms || {}).length > 0 ? formData.symptoms : null,
       reflection_text: formData.reflectionText || null,
       status: 'submitted',
       submitted_at: new Date().toISOString(),

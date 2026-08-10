@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
+import { parseSymptoms, symptomBurden, symptomChanges } from "@/lib/health/symptoms"
 
 export interface CheckinPoint {
   week_number: number
@@ -16,6 +17,7 @@ export interface CheckinPoint {
   digestion_score: number | null
   adherence_score: number | null
   steps: number | null
+  symptoms?: unknown
 }
 
 const METRICS: { key: keyof CheckinPoint; label: string; unit: string; goal?: "down" | "up" }[] = [
@@ -88,6 +90,68 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             </p>
           )}
         </div>
+
+        {/* Thyroid symptoms — these usually shift before the scale does, so
+            showing them is what carries a client through a weight plateau. */}
+        {(() => {
+          const scored = sorted
+            .map((c) => ({ week: c.week_number, s: parseSymptoms(c.symptoms) }))
+            .filter((x) => x.s !== null) as { week: number; s: NonNullable<ReturnType<typeof parseSymptoms>> }[]
+          if (scored.length === 0) return null
+
+          const first = scored[0]
+          const latest = scored[scored.length - 1]
+          const changes = symptomChanges(first.s, latest.s)
+          const improved = changes.filter((c) => c.delta < 0).length
+          const burdenPts: TrendPoint[] = scored
+            .map((x) => ({ label: `W${x.week}`, value: symptomBurden(x.s) ?? NaN }))
+            .filter((p) => Number.isFinite(p.value))
+
+          return (
+            <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <h3 className="font-semibold mb-1" style={{ color: "#e8eaf0" }}>Symptoms</h3>
+              {scored.length < 2 ? (
+                <p className="text-[12.5px] mb-3" style={{ color: "#7e8a9e" }}>
+                  Your first symptom check is logged — next week you&apos;ll start seeing what&apos;s changing.
+                </p>
+              ) : (
+                <p className="text-[12.5px] mb-3" style={{ color: improved > 0 ? "#34d399" : "#7e8a9e" }}>
+                  {improved > 0
+                    ? `${improved} of ${changes.length} symptoms improved since week ${first.week}`
+                    : "Holding steady — symptoms often shift before the scale does."}
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {changes.map((c) => {
+                  const better = c.delta < 0
+                  const worse = c.delta > 0
+                  const color = better ? "#34d399" : worse ? "#f59e0b" : "#7e8a9e"
+                  const bg = better ? "rgba(52,211,153,0.1)" : worse ? "rgba(245,158,11,0.1)" : "rgba(255,255,255,0.05)"
+                  return (
+                    <span key={c.key} className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-3 py-1.5"
+                      style={{ color, background: bg, border: `1px solid ${better ? "rgba(52,211,153,0.2)" : worse ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.08)"}` }}>
+                      {c.short}
+                      <span style={{ opacity: 0.85 }}>
+                        {better ? `↓${Math.abs(c.delta)}` : worse ? `↑${c.delta}` : "—"}
+                      </span>
+                    </span>
+                  )
+                })}
+              </div>
+
+              {burdenPts.length >= 2 && (
+                <>
+                  <p className="text-[10.5px] uppercase font-semibold mb-1.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
+                    Total symptom load
+                  </p>
+                  <TrendChart points={burdenPts} height={130} goalDirection="down" color="#34d399" />
+                  <p className="text-[11px] mt-2" style={{ color: "#5a6578" }}>Lower is better — 0 means symptom-free.</p>
+                </>
+              )}
+            </div>
+          )
+        })()}
 
         {/* Milestones — earned from real check-in data only */}
         {(() => {

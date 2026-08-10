@@ -16,6 +16,7 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { submitWeeklyCheckIn } from '@/app/actions/submit-checkin'
+import { SYMPTOMS, SEVERITY_LABELS, type SymptomScores } from '@/lib/health/symptoms'
 
 // Types for check-in data
 interface CheckInData {
@@ -32,7 +33,7 @@ interface CheckInData {
   medsTaken: number
   medsTarget: number
   weight?: number
-  symptoms: string[]
+  symptoms: SymptomScores
   reflectionText: string
 }
 
@@ -512,22 +513,12 @@ function WeightStep({ data, setData, onNext }: StepProps) {
   )
 }
 
-// Step 5: Symptoms (Optional multi-select)
+// Step 5: Thyroid symptoms — severity, not just presence. Scoring each symptom
+// 0–3 every week is what lets Progress show "4 of 6 symptoms improved", the
+// win that keeps a client engaged through a plateau on the scale.
 function SymptomsStep({ data, setData, onNext }: StepProps) {
-  const symptomOptions = [
-    'Cold sensitivity',
-    'Hair thinning',
-    'Brain fog',
-    'Palpitations',
-    'Joint aches',
-    'Dry skin',
-  ]
-
-  const toggleSymptom = (symptom: string) => {
-    const newSymptoms = data.symptoms.includes(symptom)
-      ? data.symptoms.filter((s) => s !== symptom)
-      : [...data.symptoms, symptom]
-    setData({ ...data, symptoms: newSymptoms })
+  const setSeverity = (symptom: string, value: number) => {
+    setData({ ...data, symptoms: { ...data.symptoms, [symptom]: value } })
   }
 
   return (
@@ -535,30 +526,49 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="space-y-6 px-6 py-8"
+      className="space-y-5 px-6 py-8"
     >
-      <div className="space-y-3">
+      <div className="space-y-1">
         <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Any Symptoms This Week? (Optional)
+          How were these this week?
         </label>
-        <div className="flex flex-wrap gap-2">
-          {symptomOptions.map((symptom) => (
-            <motion.button
-              key={symptom}
-              onClick={() => toggleSymptom(symptom)}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-all"
-              style={{
-                background: data.symptoms.includes(symptom) ? 'rgba(45, 212, 191, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-                border: `1px solid ${data.symptoms.includes(symptom) ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
-                color: data.symptoms.includes(symptom) ? '#2dd4bf' : '#8892a4',
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+        <p className="text-xs" style={{ color: '#5a6578' }}>
+          These often improve before the scale moves — tracking them shows your progress early.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {SYMPTOMS.map((s) => {
+          const current = data.symptoms[s.key]
+          return (
+            <div
+              key={s.key}
+              className="p-3.5 rounded-2xl"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
-              {symptom}
-            </motion.button>
-          ))}
-        </div>
+              <p className="text-sm font-medium mb-2.5" style={{ color: '#e8eaf0' }}>{s.key}</p>
+              <div className="flex gap-1.5">
+                {SEVERITY_LABELS.map((label, level) => {
+                  const active = current === level
+                  return (
+                    <button
+                      key={label}
+                      onClick={() => setSeverity(s.key, level)}
+                      className="flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all"
+                      style={{
+                        background: active ? 'rgba(45,212,191,0.16)' : 'rgba(255,255,255,0.04)',
+                        border: `1px solid ${active ? 'rgba(45,212,191,0.4)' : 'rgba(255,255,255,0.07)'}`,
+                        color: active ? '#2dd4bf' : '#7e8a9e',
+                      }}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       <motion.button
@@ -962,7 +972,7 @@ export function WeeklyCheckInFlow() {
     workoutsTarget: 3,
     medsTaken: 0,
     medsTarget: 7,
-    symptoms: [],
+    symptoms: {},
     reflectionText: '',
   })
 
