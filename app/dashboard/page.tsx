@@ -34,7 +34,37 @@ export default async function DashboardPage() {
 
   // If no check-ins exist, show empty state
   if (!allCheckins || allCheckins.length === 0) {
-    return <EmptyCheckInState name={client.full_name?.split(" ")[0] || "Friend"} />
+    // Week 0: give her real things to do while the coach builds her plan, and
+    // reflect what she's already completed instead of a static wall.
+    const [
+      { data: w0Plan },
+      { data: w0Profile },
+      { data: w0Labs },
+      { data: w0Msgs },
+      { data: w0Reads },
+      { data: w0FirstLesson },
+    ] = await Promise.all([
+      supabase.from("plans").select("id").eq("client_id", user.id).limit(1),
+      supabase.from("health_profiles").select("medication").eq("client_id", user.id).maybeSingle(),
+      supabase.from("lab_results").select("id").eq("client_id", user.id).limit(1),
+      supabase.from("messages").select("id").eq("client_id", user.id).eq("from_coach", false).limit(1),
+      supabase.from("lesson_reads").select("id").eq("client_id", user.id).limit(1),
+      supabase.from("lessons").select("slug").eq("published", true).order("week_number").limit(1).maybeSingle(),
+    ])
+
+    return (
+      <EmptyCheckInState
+        name={client.full_name?.split(" ")[0] || "Friend"}
+        status={{
+          hasPlan: (w0Plan?.length ?? 0) > 0,
+          hasMedication: Boolean(w0Profile?.medication),
+          hasLabs: (w0Labs?.length ?? 0) > 0,
+          hasMessaged: (w0Msgs?.length ?? 0) > 0,
+          hasReadLesson: (w0Reads?.length ?? 0) > 0,
+          firstLessonSlug: w0FirstLesson?.slug ?? null,
+        }}
+      />
+    )
   }
 
   const latestCheckin = allCheckins[0]

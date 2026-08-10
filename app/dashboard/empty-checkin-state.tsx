@@ -1,100 +1,198 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Check, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { BottomNavPill } from '@/components/dashboard/BottomNavPill'
 
-export function EmptyCheckInState({ name }: { name: string }) {
+export interface Week0Status {
+  hasPlan: boolean
+  hasLabs: boolean
+  hasMedication: boolean
+  hasMessaged: boolean
+  hasReadLesson: boolean
+  firstLessonSlug: string | null
+}
+
+/**
+ * Week 0 — what a client sees between finishing onboarding and submitting her
+ * first check-in.
+ *
+ * This used to be a single full-screen "do your first check-in" wall with no
+ * navigation, which meant a client who had just paid could not reach her plan,
+ * labs, lessons or coach. That's the highest-churn moment in the funnel, so it
+ * now gives her real things to do today and completes as she does them.
+ */
+export function EmptyCheckInState({ name, status }: { name: string; status?: Week0Status }) {
+  const s: Week0Status = status ?? {
+    hasPlan: false, hasLabs: false, hasMedication: false,
+    hasMessaged: false, hasReadLesson: false, firstLessonSlug: null,
+  }
+
+  const steps = [
+    {
+      done: s.hasMedication,
+      icon: Pill,
+      title: 'Add your thyroid medication',
+      detail: 'So your reminders and plan respect your timing',
+      href: '/dashboard/health',
+      tint: '#34d399',
+    },
+    {
+      done: s.hasLabs,
+      icon: FlaskConical,
+      title: 'Add your latest blood report',
+      detail: 'Optional — but it makes week one far more personal',
+      href: '/dashboard/health',
+      tint: '#60a5fa',
+    },
+    {
+      done: s.hasReadLesson,
+      icon: BookOpen,
+      title: 'Read your first lesson',
+      detail: 'Two minutes on how to take your tablet for best effect',
+      href: s.firstLessonSlug ? `/dashboard/learn/${s.firstLessonSlug}` : '/dashboard/learn',
+      tint: '#a78bfa',
+    },
+    {
+      done: s.hasMessaged,
+      icon: MessageSquare,
+      title: 'Say hello to your coach',
+      detail: 'Tell them what you want out of these three months',
+      href: '/dashboard/messages',
+      tint: '#2dd4bf',
+    },
+  ]
+  const doneCount = steps.filter((x) => x.done).length
+
   return (
-    <div 
-      className="min-h-screen flex flex-col items-center justify-center px-6"
-      style={{ 
-        background: "#090c14",
-      }}
+    <div
+      className="min-h-screen relative"
+      style={{ background: '#090c14', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 24px))' }}
     >
-      <motion.div
-        className="flex flex-col items-center gap-6 max-w-sm"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        {/* Empty State Illustration */}
-        <motion.div
-          className="w-24 h-24 rounded-full flex items-center justify-center mb-2"
-          style={{
-            background: 'radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%)',
-            boxShadow: '0 0 60px rgba(45, 212, 191, 0.1)',
-          }}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 100, delay: 0.2 }}
-        >
-          <div 
-            className="w-12 h-12 rounded-full"
-            style={{ background: 'rgba(45, 212, 191, 0.2)' }}
-          />
+      <div className="tw-glow" style={{ position: 'fixed', top: -150, left: 20, width: 350, height: 300, zIndex: 0 }} />
+
+      <main className="max-w-2xl mx-auto px-6 relative" style={{ zIndex: 1, paddingTop: 'calc(56px + env(safe-area-inset-top, 0px))' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
+            Week one
+          </p>
+          <h1
+            className="mt-1.5"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 31, lineHeight: 1.15, color: '#e8eaf0' }}
+          >
+            Welcome, {name}
+          </h1>
+          <p className="text-sm mt-2" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
+            Everything starts small. Here&rsquo;s what to do while your plan is being built for you.
+          </p>
         </motion.div>
 
-        {/* Heading */}
-        <motion.h1
-          className="text-3xl font-bold text-center"
-          style={{
-            fontFamily: "'Instrument Serif', Georgia, serif",
-            fontStyle: 'italic',
-            color: '#e8eaf0',
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
-          Your first check-in unlocks your trends
-        </motion.h1>
-
-        {/* Subtext */}
-        <motion.p
-          className="text-base text-center leading-relaxed"
-          style={{ color: '#8892a4' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          Once you complete your first weekly check-in, we'll start tracking your energy, sleep, mood, and wellness trends here.
-        </motion.p>
-
-        {/* CTA Button */}
+        {/* Plan status */}
         <motion.div
-          className="w-full"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
+          className="mt-5"
         >
+          {s.hasPlan ? (
+            <Link
+              href="/dashboard/plans"
+              className="flex items-center gap-3 p-5 rounded-3xl"
+              style={{ background: 'rgba(45,212,191,0.09)', border: '1px solid rgba(45,212,191,0.25)' }}
+            >
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(45,212,191,0.15)' }}>
+                <Sparkles size={19} style={{ color: '#2dd4bf' }} />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-sm" style={{ color: '#e8eaf0' }}>Your plan is ready</p>
+                <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>Open it and start when you feel ready</p>
+              </div>
+              <ChevronRight size={18} style={{ color: '#2dd4bf' }} />
+            </Link>
+          ) : (
+            <div
+              className="flex items-center gap-3 p-5 rounded-3xl"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.12)' }}
+            >
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(45,212,191,0.1)' }}>
+                <Sparkles size={19} style={{ color: '#2dd4bf' }} />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-sm" style={{ color: '#e8eaf0' }}>Your coach is building your plan</p>
+                <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>
+                  It&rsquo;ll appear here — the steps below matter more in week one anyway
+                </p>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Starter checklist */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+          <div className="flex items-center justify-between mt-7 mb-2.5 px-0.5">
+            <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
+              Start here
+            </p>
+            <span className="text-[11px] tabular-nums" style={{ color: doneCount === steps.length ? '#34d399' : '#5a6578' }}>
+              {doneCount}/{steps.length} done
+            </span>
+          </div>
+
+          <div className="space-y-2.5">
+            {steps.map((step) => (
+              <Link
+                key={step.title}
+                href={step.href}
+                className="flex items-center gap-3 p-4 rounded-2xl"
+                style={{
+                  background: step.done ? 'rgba(52,211,153,0.06)' : 'rgba(255,255,255,0.03)',
+                  border: `1px solid ${step.done ? 'rgba(52,211,153,0.18)' : 'rgba(255,255,255,0.06)'}`,
+                }}
+              >
+                <span
+                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ background: step.done ? 'rgba(52,211,153,0.14)' : `${step.tint}1f` }}
+                >
+                  {step.done
+                    ? <Check size={17} style={{ color: '#34d399' }} strokeWidth={3} />
+                    : <step.icon size={17} style={{ color: step.tint }} />}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium" style={{ color: step.done ? '#a9b2c1' : '#e8eaf0' }}>
+                    {step.title}
+                  </p>
+                  <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>{step.detail}</p>
+                </div>
+                {!step.done && <ChevronRight size={16} className="shrink-0" style={{ color: '#404858' }} />}
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* First check-in */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-8">
+          <p className="text-sm text-center mb-3" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
+            At the end of your first week, your check-in unlocks your trends —
+            weight, energy, sleep and symptoms, all in one place.
+          </p>
           <Link href="/dashboard/check-in">
-            <motion.button
-              className="w-full py-4 rounded-full font-semibold text-base text-white flex items-center justify-center gap-2"
+            <button
+              className="w-full h-13 py-4 rounded-full font-bold text-sm text-white flex items-center justify-center gap-2"
               style={{
                 background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-                boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+                boxShadow: '0 8px 28px rgba(45, 212, 191, 0.28)',
               }}
-              whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
-              whileTap={{ scale: 0.98 }}
             >
-              Start Your First Check-In
-              <ArrowRight size={18} />
-            </motion.button>
+              Start your first check-in
+              <ArrowRight size={17} />
+            </button>
           </Link>
+          <p className="text-[11px] text-center mt-3" style={{ color: '#5a6578' }}>
+            About 5 minutes · your data stays private to you and your coach
+          </p>
         </motion.div>
+      </main>
 
-        {/* Secondary info */}
-        <motion.p
-          className="text-sm text-center pt-4"
-          style={{ color: '#5a6578' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          Takes about 5 minutes • Your data is secure
-        </motion.p>
-      </motion.div>
+      <BottomNavPill />
     </div>
   )
 }
