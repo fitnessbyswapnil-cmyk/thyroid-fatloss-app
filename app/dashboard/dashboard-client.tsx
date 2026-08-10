@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { BookOpen, ChevronRight } from "lucide-react"
 import { PrototypeHero } from "@/components/dashboard/PrototypeHero"
 import { CoachInsightCard } from "@/components/dashboard/CoachInsightCard"
 import { WeeklyVictory } from "@/components/dashboard/WeeklyVictory"
@@ -18,6 +20,7 @@ interface DashboardData {
   programWeek: number
   dayOfReset: number | null
   medication: { name: string | null; dose: string | null; timing: string | null } | null
+  nextLesson: { slug: string; title: string; summary: string | null; minutes: number; category: string | null } | null
   recoveryPercent: number
   wellnessScore: { current: number; previous: number; delta: number }
   subscores: {
@@ -60,6 +63,32 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         medication={data.medication}
       />
       
+      {/* SECTION 1b — This week's lesson. Education is the cheapest retention
+          lever a solo coach has, so it sits high, right under the hero. */}
+      {data.nextLesson && (
+        <div className="px-6 pt-4">
+          <Link
+            href={`/dashboard/learn/${data.nextLesson.slug}`}
+            className="max-w-2xl mx-auto flex items-start gap-3 p-5 rounded-3xl"
+            style={{ background: "rgba(167,139,250,0.07)", border: "1px solid rgba(167,139,250,0.2)" }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(167,139,250,0.15)" }}>
+              <BookOpen size={19} style={{ color: "#a78bfa" }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#a78bfa", letterSpacing: "0.16em" }}>
+                Learn · {data.nextLesson.minutes} min
+              </p>
+              <p className="font-semibold text-sm mt-1" style={{ color: "#e8eaf0" }}>{data.nextLesson.title}</p>
+              {data.nextLesson.summary && (
+                <p className="text-[11.5px] mt-1" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>{data.nextLesson.summary}</p>
+              )}
+            </div>
+            <ChevronRight size={18} className="shrink-0 mt-1" style={{ color: "#a78bfa" }} />
+          </Link>
+        </div>
+      )}
+
       {/* SECTION 2 — TSH trend (shown whenever real TSH data exists, either direction) */}
       {data.tsh.current > 0 && data.tsh.before > 0 && (
         <div className="py-8">

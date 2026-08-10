@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { DashboardClient } from "./dashboard-client"
 import { EmptyCheckInState } from "./empty-checkin-state"
+import { nextLesson } from "@/app/actions/lessons"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -154,10 +155,16 @@ export default async function DashboardPage() {
   const wellnessScoreDelta = wellnessScoreCurrent - wellnessScorePrevious
 
   // Prepare dashboard data
+  // Next unread, unlocked lesson — drives the home "Learn" card.
+  const upNextLesson = await nextLesson()
+
   const dashboardData = {
     name: client.full_name?.split(" ")[0] || "Friend",
     programWeek,
     dayOfReset,
+    nextLesson: upNextLesson
+      ? { slug: upNextLesson.slug, title: upNextLesson.title, summary: upNextLesson.summary, minutes: upNextLesson.read_minutes, category: upNextLesson.category }
+      : null,
     medication: healthProfile
       ? { name: healthProfile.medication, dose: healthProfile.medication_dose, timing: healthProfile.medication_timing }
       : null,
