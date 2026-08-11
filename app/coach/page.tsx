@@ -131,6 +131,15 @@ export default async function CoachDashboardPage() {
     )
   }
 
+  // App errors in the last 7 days — logging them is only useful if the coach
+  // can see that something is failing without a client having to report it.
+  // RLS on error_logs is coach-read-only, so this returns 0 for anyone else.
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const { count: recentErrorCount } = await supabase
+    .from("error_logs")
+    .select("id", { count: "exact", head: true })
+    .gte("created_at", weekAgo)
+
   // Calculate average stats
   const avgWeight = clients?.reduce((sum, c) => sum + (c.current_weight || 0), 0) / (totalClients || 1)
 
@@ -142,6 +151,7 @@ export default async function CoachDashboardPage() {
       quietClients={quietClients}
       waitingClients={waitingClients}
       alerts={alerts}
+      recentErrorCount={recentErrorCount || 0}
       stats={{
         totalClients,
         activeClients,

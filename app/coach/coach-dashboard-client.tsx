@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client"
 import {
   Users, Activity, Clock, TrendingUp, Search,
   ChevronRight, MessageSquare, LogOut, Home,
-  Scale, Heart, Zap, BookOpen
+  Scale, Heart, Zap, BookOpen, AlertCircle
 } from "lucide-react"
 import { PendingReview } from "@/app/actions/coach-reviews"
 import type { CoachAlert } from "@/lib/coach/alerts"
@@ -49,6 +49,7 @@ export function CoachDashboardClient({
   quietClients = [],
   waitingClients = [],
   alerts = [],
+  recentErrorCount = 0,
   stats
 }: {
   clients: Client[]
@@ -57,6 +58,7 @@ export function CoachDashboardClient({
   quietClients?: QuietClient[]
   waitingClients?: { id: string; full_name: string; count: number }[]
   alerts?: CoachAlert[]
+  recentErrorCount?: number
   stats: Stats
 }) {
   const router = useRouter()
@@ -187,6 +189,24 @@ export function CoachDashboardClient({
           >
             <PendingReviewsQueue reviews={pendingReviews} />
           </motion.div>
+        )}
+
+        {/* App health — only appears when something actually failed, so it
+            stays silent on a normal day rather than becoming background noise. */}
+        {recentErrorCount > 0 && (
+          <div
+            className="mb-4 flex items-center gap-3 px-4 py-3 rounded-2xl"
+            style={{ background: "rgba(251,113,133,0.05)", border: "1px solid rgba(251,113,133,0.18)" }}
+          >
+            <AlertCircle size={15} className="shrink-0" style={{ color: "#fb7185" }} />
+            <p className="text-[12px] flex-1" style={{ color: "#a9b2c1" }}>
+              <span style={{ color: "#fb7185", fontWeight: 600 }}>
+                {recentErrorCount} app error{recentErrorCount === 1 ? "" : "s"}
+              </span>{" "}
+              logged in the last 7 days — clients may have hit a failure. Check the
+              <span style={{ color: "#e8eaf0" }}> error_logs</span> table or your Vercel logs.
+            </p>
+          </div>
         )}
 
         {/* Needs your call — rules over labs, energy, adherence and symptoms.
