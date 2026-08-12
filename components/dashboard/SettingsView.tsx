@@ -8,6 +8,7 @@ import { ArrowLeft, Download, Trash2, Loader2, ShieldCheck, FileText, LogOut, Al
 import { createClient } from "@/lib/supabase/client"
 import { exportMyData, deleteMyAccount } from "@/app/actions/account"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
+import { ReminderToggle } from "@/components/dashboard/ReminderToggle"
 
 export function SettingsView({
   fullName,
@@ -107,6 +108,10 @@ export function SettingsView({
           </div>
           <ChevronRight size={18} style={{ color: "#2dd4bf" }} />
         </Link>
+
+        {/* Reminder opt-in — the only channel that can reach a client who
+            isn't already opening the app. */}
+        <ReminderToggle />
 
         {/* Education library */}
         <Link

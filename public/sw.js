@@ -32,3 +32,44 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(fetch(req).catch(() => caches.match(OFFLINE_URL)))
   }
 })
+
+// ── Web push ────────────────────────────────────────────────────────────────
+self.addEventListener('push', (event) => {
+  let payload = {}
+  try {
+    payload = event.data ? event.data.json() : {}
+  } catch {
+    payload = { title: 'ThyroWell', body: event.data ? event.data.text() : '' }
+  }
+
+  const title = payload.title || 'ThyroWell'
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: payload.body || '',
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      // Same tag replaces rather than stacks, so a client never wakes to five
+      // copies of the same nudge.
+      tag: payload.tag || 'thyrowell',
+      renotify: false,
+      data: { url: payload.url || '/dashboard' },
+    })
+  )
+})
+
+// Focus an already-open tab if there is one, rather than piling up new ones.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const target = (event.notification.data && event.notification.data.url) || '/dashboard'
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      for (const c of list) {
+        if ('focus' in c) {
+          c.navigate(target)
+          return c.focus()
+        }
+      }
+      return self.clients.openWindow(target)
+    })
+  )
+})
