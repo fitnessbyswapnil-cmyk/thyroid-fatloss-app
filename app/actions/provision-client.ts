@@ -41,8 +41,7 @@ export async function inviteClient(input: InviteClientInput) {
 
     const { data: invited, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
       data: { full_name: fullName, role: 'client' },
-      redirectTo,
-    })
+      redirectTo })
 
     // A failed send must NEVER look like success. Log the real cause and return
     // a clear, actionable error to the coach. Do not activate the client here.
@@ -54,8 +53,7 @@ export async function inviteClient(input: InviteClientInput) {
         success: false,
         error: alreadyExists
           ? 'A client with this email already exists.'
-          : 'Invite could not be sent — check Supabase email settings.',
-      }
+          : 'Invite could not be sent — check Supabase email settings.' }
     }
 
     // Invite sent. Ensure the clients row (created by the handle_new_user

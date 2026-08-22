@@ -6,8 +6,7 @@ import { getPlansForClient } from "@/app/actions/plans"
 import { buildEngagement } from "@/lib/coach/engagement"
 
 export default async function ClientDetailPage({
-  params,
-}: {
+  params }: {
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
@@ -66,8 +65,7 @@ export default async function ClientDetailPage({
     hasHealthProfile: !!profile.data,
     pushSubscriptions: pushSubs.count ?? 0,
     lessonsAvailable: lessonCount.count ?? 0,
-    lessonsRead: new Set((lessonReads.data || []).map((r) => r.lesson_id)).size,
-  })
+    lessonsRead: new Set((lessonReads.data || []).map((r) => r.lesson_id)).size })
 
   return (
     <ClientDetailView

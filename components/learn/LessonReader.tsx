@@ -35,10 +35,10 @@ export function LessonReader({ lesson }: { lesson: LessonWithRead }) {
   }
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -160, left: 10, width: 350, height: 300, zIndex: 0 }} />
 
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <Link href="/dashboard/learn" className="p-2 -ml-2 rounded-lg shrink-0" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
           <span className="text-[11px] uppercase font-semibold truncate" style={{ color: "#8b867c", letterSpacing: "0.14em" }}>
@@ -54,7 +54,7 @@ export function LessonReader({ lesson }: { lesson: LessonWithRead }) {
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8 relative" style={{ zIndex: 1 }}>
-        <h1 style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 30, lineHeight: 1.2, color: "#1c1d20" }}>
+        <h1 style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 30, lineHeight: 1.2, color: "#1c1d20" }}>
           {lesson.title}
         </h1>
         <p className="inline-flex items-center gap-1.5 text-[11.5px] mt-2.5 mb-6" style={{ color: "#a09a8e" }}>

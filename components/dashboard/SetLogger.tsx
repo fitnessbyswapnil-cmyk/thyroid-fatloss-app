@@ -23,8 +23,7 @@ export function SetLogger({
   exerciseName,
   exerciseId,
   plannedSets,
-  plannedReps,
-}: {
+  plannedReps }: {
   exerciseName: string
   exerciseId?: string | null
   plannedSets?: number | null
@@ -76,8 +75,7 @@ export function SetLogger({
       exerciseId: exerciseId ?? null,
       setNumber: i + 1,
       weightKg: row.weight === "" ? null : Number(row.weight),
-      reps: row.reps === "" ? null : Number(row.reps),
-    })
+      reps: row.reps === "" ? null : Number(row.reps) })
     setSavingSet(null)
     if (res.success) setRows((p) => p.map((r, idx) => (idx === i ? { ...r, saved: true } : r)))
   }
@@ -86,7 +84,7 @@ export function SetLogger({
     setRows((p) => p.map((r, idx) => (idx === i ? { ...r, ...patch, saved: false } : r)))
 
   const lastFor = (i: number) => last.find((s) => s.set_number === i + 1)
-  const inputStyle = { background: "#f4f0e8", border: "1px solid #cfc7b6", color: "#1c1d20" } as const
+  const inputStyle = { background: "#F1EDE1", border: "1px solid #cfc7b6", color: "#1c1d20" } as const
 
   return (
     <div className="mt-5">
@@ -112,7 +110,7 @@ export function SetLogger({
             const prev = lastFor(i)
             return (
               <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl"
-                style={{ background: "#ffffff", border: `1px solid ${r.saved ? "rgba(21, 94, 86,0.25)" : "#e2dbcd"}` }}>
+                style={{ background: "#FDFBF7", border: `1px solid ${r.saved ? "rgba(21, 94, 86,0.25)" : "#e2dbcd"}` }}>
                 <span className="w-11 shrink-0 text-[11px] font-semibold" style={{ color: "#8b867c" }}>Set {i + 1}</span>
                 <input
                   value={r.weight}

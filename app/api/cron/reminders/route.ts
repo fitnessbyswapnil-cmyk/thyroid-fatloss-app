@@ -99,8 +99,7 @@ export async function GET(request: NextRequest) {
           clientId: c.id, kind: 'coach_reply',
           title: 'Your coach replied',
           body: 'You have a message waiting in ThyroWell.',
-          url: '/dashboard/messages',
-        })
+          url: '/dashboard/messages' })
         continue
       }
 
@@ -111,8 +110,7 @@ export async function GET(request: NextRequest) {
           clientId: c.id, kind: 'checkin_due',
           title: 'Your weekly check-in is ready',
           body: 'Five minutes to log this week — it unlocks your trends.',
-          url: '/dashboard/check-in',
-        })
+          url: '/dashboard/check-in' })
       }
     }
 

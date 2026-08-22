@@ -15,16 +15,14 @@ import type { EngagementSignal, SignalState } from "@/lib/coach/engagement"
 const TONE: Record<SignalState, { dot: string; text: string; label: string }> = {
   active: { dot: "#155e56", text: "#5a564e", label: "on track" },
   stale: { dot: "#97671b", text: "#5a564e", label: "gone quiet" },
-  never: { dot: "#a09a8e", text: "#8b867c", label: "not started" },
-}
+  never: { dot: "#a09a8e", text: "#8b867c", label: "not started" } }
 
 export function EngagementPanel({
   signals,
   active,
   total,
   neverStarted,
-  clientName,
-}: {
+  clientName }: {
   signals: EngagementSignal[]
   active: number
   total: number
@@ -38,7 +36,7 @@ export function EngagementPanel({
   return (
     <div
       className="rounded-2xl overflow-hidden"
-      style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
+      style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}
     >
       <button
         onClick={() => setOpen((v) => !v)}
@@ -54,7 +52,7 @@ export function EngagementPanel({
         <div className="flex-1 min-w-0">
           <h3
             className="text-lg leading-tight"
-            style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}
+            style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}
           >
             App engagement
           </h3>
@@ -108,7 +106,7 @@ export function EngagementPanel({
                 <div
                   key={s.key}
                   className="px-3.5 py-3 rounded-xl"
-                  style={{ background: "#fdfbf7", border: "1px solid #f4f0e8" }}
+                  style={{ background: "#F4F0E8", border: "1px solid #f4f0e8" }}
                 >
                   <div className="flex items-center gap-2.5">
                     <span

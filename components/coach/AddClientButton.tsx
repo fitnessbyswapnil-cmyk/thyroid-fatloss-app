@@ -32,14 +32,14 @@ export function AddClientButton() {
     }
   }
 
-  const inputStyle = { background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
+  const inputStyle = { background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
 
   return (
     <>
       <button
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
-        style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7" }}
+        style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED" }}
       >
         <UserPlus size={16} /> Add client
       </button>
@@ -49,14 +49,14 @@ export function AddClientButton() {
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center px-4"
-            style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+            style={{ background: "rgba(0,0,0,0.6)" }}
             onClick={close}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-md rounded-2xl p-6"
-              style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
+              style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}
             >
               <div className="flex items-center justify-between mb-5">
                 <h3 className="font-semibold" style={{ color: "#1c1d20" }}>Add a client</h3>
@@ -79,13 +79,13 @@ export function AddClientButton() {
                   <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none mb-4" style={inputStyle} placeholder="Priya Sharma" />
                   <label className="block text-xs uppercase mb-1.5" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>Email</label>
                   <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none" style={inputStyle} placeholder="priya@example.com" />
-                  {error && <p className="text-xs mt-3" style={{ color: "#9a3b2e" }}>{error}</p>}
+                  {error && <p className="text-xs mt-3" style={{ color: "#A32B23" }}>{error}</p>}
                   <motion.button
                     onClick={handleSubmit}
                     disabled={sending || !email.trim()}
                     whileTap={{ scale: 0.99 }}
                     className="w-full mt-5 h-12 rounded-xl font-semibold inline-flex items-center justify-center gap-2"
-                    style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7", opacity: !email.trim() ? 0.5 : 1 }}
+                    style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED", opacity: !email.trim() ? 0.5 : 1 }}
                   >
                     {sending ? <Loader2 size={18} className="animate-spin" /> : <><Mail size={16} /> Send invite</>}
                   </motion.button>

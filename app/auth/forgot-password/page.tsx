@@ -23,8 +23,7 @@ export default function ForgotPasswordPage() {
     // session, then land on the reset-password form. URL built from
     // NEXT_PUBLIC_SITE_URL (throws in prod if unset).
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${getSiteUrl()}/auth/callback?next=/auth/reset-password`,
-    })
+      redirectTo: `${getSiteUrl()}/auth/callback?next=/auth/reset-password` })
 
     if (error) {
       setError(error.message)
@@ -40,7 +39,7 @@ export default function ForgotPasswordPage() {
     return (
       <div 
         className="min-h-screen flex items-center justify-center px-4"
-        style={{ background: "#fdfbf7" }}
+        style={{ background: "#F4F0E8" }}
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -54,8 +53,7 @@ export default function ForgotPasswordPage() {
             className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center"
             style={{
               background: "rgba(21, 94, 86, 0.15)",
-              border: "1px solid rgba(21, 94, 86, 0.3)",
-            }}
+              border: "1px solid rgba(21, 94, 86, 0.3)" }}
           >
             <Check size={32} style={{ color: "#155e56" }} />
           </motion.div>
@@ -83,14 +81,13 @@ export default function ForgotPasswordPage() {
   return (
     <div 
       className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: "#fdfbf7" }}
+      style={{ background: "#F4F0E8" }}
     >
       <div 
         className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
           background: "radial-gradient(circle, rgba(21, 94, 86, 0.13) 0%, transparent 70%)",
-          filter: "blur(60px)",
-        }}
+          filter: "blur(60px)" }}
       />
 
       <motion.div
@@ -111,10 +108,8 @@ export default function ForgotPasswordPage() {
         <div
           className="p-8 rounded-3xl"
           style={{
-            background: "#ffffff",
-            border: "1px solid #e2dbcd",
-            backdropFilter: "blur(24px)",
-          }}
+            background: "#FDFBF7",
+            border: "1px solid #e2dbcd" }}
         >
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
@@ -133,10 +128,9 @@ export default function ForgotPasswordPage() {
                 required
                 className="w-full px-4 py-3.5 rounded-xl text-sm focus:outline-none"
                 style={{
-                  background: "#ffffff",
+                  background: "#FDFBF7",
                   border: "1px solid #e2dbcd",
-                  color: "#1c1d20",
-                }}
+                  color: "#1c1d20" }}
                 placeholder="you@example.com"
               />
             </div>
@@ -147,7 +141,7 @@ export default function ForgotPasswordPage() {
                 style={{ 
                   background: "rgba(154, 59, 46, 0.1)", 
                   border: "1px solid rgba(154, 59, 46, 0.2)",
-                  color: "#c98a80"
+                  color: "#A32B23"
                 }}
               >
                 {error}
@@ -162,9 +156,8 @@ export default function ForgotPasswordPage() {
               className="w-full py-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2"
               style={{
                 background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
-                color: "#fdfbf7",
-                boxShadow: "0 8px 32px rgba(21, 94, 86, 0.25)",
-              }}
+                color: "#F6F3ED",
+                boxShadow: "0 8px 32px rgba(21, 94, 86, 0.25)" }}
             >
               {isLoading ? (
                 <Loader2 className="animate-spin" size={18} />

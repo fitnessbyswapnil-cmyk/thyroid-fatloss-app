@@ -115,8 +115,7 @@ export default async function CoachDashboardPage() {
             clientId: c.id,
             clientName: c.full_name || "Client",
             checkins: (ciMap[c.id] || []) as never,
-            labs: (labMap[c.id] || []) as never,
-          })
+            labs: (labMap[c.id] || []) as never })
         )
     )
   }
@@ -140,8 +139,7 @@ export default async function CoachDashboardPage() {
         totalClients,
         activeClients,
         pendingCheckins,
-        avgWeight: avgWeight.toFixed(1),
-      }}
+        avgWeight: avgWeight.toFixed(1) }}
     />
   )
 }

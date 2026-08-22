@@ -27,8 +27,8 @@ function gaugesFrom(lab: LabResult): Gauge[] {
 
 function status(g: Gauge): { label: string; color: string; bg: string } {
   if (g.low === null || g.high === null) return { label: "No range", color: "#8b867c", bg: "#f4f0e8" }
-  if (g.value < g.low) return { label: "Low", color: "#9a3b2e", bg: "rgba(154, 59, 46,0.1)" }
-  if (g.value > g.high) return { label: "High", color: "#9a3b2e", bg: "rgba(154, 59, 46,0.1)" }
+  if (g.value < g.low) return { label: "Low", color: "#A32B23", bg: "rgba(154, 59, 46,0.1)" }
+  if (g.value > g.high) return { label: "High", color: "#A32B23", bg: "rgba(154, 59, 46,0.1)" }
   const span = g.high - g.low
   const edge = Math.min(g.value - g.low, g.high - g.value)
   if (span > 0 && edge / span < 0.08) return { label: "Borderline", color: "#97671b", bg: "rgba(151, 103, 27,0.1)" }
@@ -68,7 +68,7 @@ export function LabGauges({ lab }: { lab: LabResult }) {
   const flagged = gauges.filter((g) => { const s = status(g); return s.label === "Low" || s.label === "High" }).length
 
   return (
-    <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+    <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
       <div className="flex items-center justify-between mb-1">
         <h3 className="font-semibold" style={{ color: "#1c1d20" }}>Latest report</h3>
         <span className="text-[11px]" style={{ color: "#8b867c" }}>
@@ -96,10 +96,10 @@ export function LabGauges({ lab }: { lab: LabResult }) {
                 {inPanel.map((g, i) => {
                   const s = status(g)
                   return (
-                    <div key={i} className="p-3.5 rounded-xl" style={{ background: "#ffffff", border: "1px solid #f4f0e8" }}>
+                    <div key={i} className="p-3.5 rounded-xl" style={{ background: "#FDFBF7", border: "1px solid #f4f0e8" }}>
                       <div className="flex items-center gap-2">
                         <span className="flex-1 text-sm font-medium truncate" style={{ color: "#1c1d20" }}>{g.name}</span>
-                        <span className="tabular-nums" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 20, color: "#1c1d20" }}>
+                        <span className="tabular-nums" style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 20, color: "#1c1d20" }}>
                           {g.value}
                         </span>
                         {g.unit && <span className="text-[10.5px]" style={{ color: "#8b867c" }}>{g.unit}</span>}

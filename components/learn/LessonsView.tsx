@@ -8,22 +8,21 @@ const CATEGORY_TINT: Record<string, string> = {
   Medication: "#155e56",
   Nutrition: "#155e56",
   Training: "#97671b",
-  Mindset: "#b8863f",
-  Labs: "#4a8a80",
-}
+  Mindset: "#155E56",
+  Labs: "#7FA196" }
 
 export function LessonsView({ lessons }: { lessons: LessonWithRead[] }) {
   const available = lessons.filter((l) => !l.locked)
   const readCount = available.filter((l) => l.read).length
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -150, left: 20, width: 340, height: 300, zIndex: 0 }} />
 
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href="/dashboard" className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>Learn</h1>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>Learn</h1>
         </div>
       </header>
 
@@ -46,7 +45,7 @@ export function LessonsView({ lessons }: { lessons: LessonWithRead[] }) {
           const tint = CATEGORY_TINT[l.category || ""] || "#8b867c"
           if (l.locked) {
             return (
-              <div key={l.id} className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: "#fdfbf7", border: "1px solid #f4f0e8" }}>
+              <div key={l.id} className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: "#F4F0E8", border: "1px solid #f4f0e8" }}>
                 <Lock size={16} className="shrink-0" style={{ color: "#cfc7b6" }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate" style={{ color: "#a09a8e" }}>{l.title}</p>
@@ -57,7 +56,7 @@ export function LessonsView({ lessons }: { lessons: LessonWithRead[] }) {
           }
           return (
             <Link key={l.id} href={`/dashboard/learn/${l.slug}`} className="flex items-start gap-3 p-4 rounded-2xl"
-              style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+              style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
               <span className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5"
                 style={{ background: l.read ? "rgba(21, 94, 86,0.12)" : `${tint}1f` }}>
                 {l.read ? <Check size={16} style={{ color: "#155e56" }} strokeWidth={3} /> : <BookOpen size={16} style={{ color: tint }} />}

@@ -15,8 +15,7 @@ export default function ProgressPhotosPage() {
   const [photos, setPhotos] = useState({
     front: null as string | null,
     side: null as string | null,
-    back: null as string | null,
-  })
+    back: null as string | null })
   const [notes, setNotes] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -70,8 +69,7 @@ export default function ProgressPhotosPage() {
           side_photo: photos.side,
           back_photo: photos.back,
           week_number: weekNumber,
-          notes: notes || null,
-        })
+          notes: notes || null })
 
       if (insertError) throw insertError
 
@@ -91,7 +89,7 @@ export default function ProgressPhotosPage() {
     return (
       <div 
         className="min-h-screen flex items-center justify-center p-6"
-        style={{ background: '#fdfbf7' }}
+        style={{ background: '#F4F0E8' }}
       >
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -124,16 +122,14 @@ export default function ProgressPhotosPage() {
   return (
     <div 
       className="min-h-screen pb-32"
-      style={{ background: '#fdfbf7' }}
+      style={{ background: '#F4F0E8' }}
     >
       {/* Header */}
       <div 
         className="sticky top-0 z-50 px-4 py-4"
         style={{
-          background: 'rgba(253, 251, 247, 0.92)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid #e2dbcd',
-        }}
+          background: 'rgba(253, 251, 247, 0.92)', 
+          borderBottom: '1px solid #e2dbcd' }}
       >
         <div className="flex items-center gap-4">
           <Link href="/dashboard">
@@ -164,7 +160,7 @@ export default function ProgressPhotosPage() {
         {/* Week indicator */}
         <div 
           className="flex items-center gap-3 p-4 rounded-2xl"
-          style={{ background: '#ffffff' }}
+          style={{ background: '#FDFBF7' }}
         >
           <div 
             className="w-12 h-12 rounded-full flex items-center justify-center"
@@ -235,10 +231,9 @@ export default function ProgressPhotosPage() {
             rows={4}
             className="w-full rounded-2xl px-4 py-4 text-sm resize-none focus:outline-none"
             style={{
-              background: '#ffffff',
+              background: '#FDFBF7',
               border: '1px solid #e2dbcd',
-              color: '#1c1d20',
-            }}
+              color: '#1c1d20' }}
           />
         </div>
 
@@ -248,7 +243,7 @@ export default function ProgressPhotosPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-4 rounded-xl text-center"
-            style={{ background: 'rgba(154, 59, 46, 0.15)', color: '#9a3b2e' }}
+            style={{ background: 'rgba(154, 59, 46, 0.15)', color: '#A32B23' }}
           >
             {error}
           </motion.div>
@@ -260,8 +255,7 @@ export default function ProgressPhotosPage() {
         className="fixed bottom-0 left-0 right-0 p-4"
         style={{
           background: 'linear-gradient(to top, rgba(10, 13, 20, 1) 0%, rgba(10, 13, 20, 0) 100%)',
-          paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
-        }}
+          paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
       >
         <motion.button
           onClick={handleSubmit}
@@ -270,9 +264,8 @@ export default function ProgressPhotosPage() {
           whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
           className="w-full py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
           style={{
-            background: 'linear-gradient(135deg, #155e56 0%, #7fa89f 100%)',
-            color: '#fdfbf7',
-          }}
+            background: 'linear-gradient(135deg, #155e56 0%, #7FA196 100%)',
+            color: '#F6F3ED' }}
         >
           {isSubmitting ? (
             <>

@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#fdfbf7" }}>
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#F4F0E8" }}>
       <div
         className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(21, 94, 86, 0.13) 0%, transparent 70%)", filter: "blur(60px)" }}
@@ -57,13 +57,13 @@ export default function ResetPasswordPage() {
         className="w-full max-w-md relative"
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
+          <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
             Set a new password
           </h1>
           <p style={{ color: "#8b867c", fontSize: 14 }}>Choose a new password for your account.</p>
         </div>
 
-        <div className="p-8 rounded-3xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd", backdropFilter: "blur(24px)" }}>
+        <div className="p-8 rounded-3xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
           {done ? (
             <div className="text-center py-6">
               <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: "rgba(21, 94, 86,0.15)" }}>
@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="w-full px-4 py-3.5 rounded-xl text-sm focus:outline-none pr-12"
-                    style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                    style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                     placeholder="At least 8 characters"
                   />
                   <button
@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
               </div>
 
               {error && (
-                <div className="p-3 rounded-lg text-sm" style={{ background: "rgba(154, 59, 46,0.1)", border: "1px solid rgba(154, 59, 46,0.2)", color: "#c98a80" }}>
+                <div className="p-3 rounded-lg text-sm" style={{ background: "rgba(154, 59, 46,0.1)", border: "1px solid rgba(154, 59, 46,0.2)", color: "#A32B23" }}>
                   {error}
                 </div>
               )}
@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7", boxShadow: "0 8px 32px rgba(21, 94, 86,0.25)" }}
+                style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED", boxShadow: "0 8px 32px rgba(21, 94, 86,0.25)" }}
               >
                 {isLoading ? <Loader2 className="animate-spin" size={18} /> : <>Update password <ArrowRight size={16} /></>}
               </motion.button>

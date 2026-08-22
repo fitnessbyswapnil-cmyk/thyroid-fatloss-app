@@ -24,8 +24,7 @@ export default function OnboardingPage() {
     thyroidCondition: "",
     medications: "",
     allergies: "",
-    tshBefore: "",
-  })
+    tshBefore: "" })
 
   const updateField = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -59,8 +58,7 @@ export default function OnboardingPage() {
         recovery_score: 0,
         wellness_score: 50,
         streak_current: 0,
-        streak_best: 0,
-      })
+        streak_best: 0 })
       .eq("id", user.id)
 
     if (error) {
@@ -91,15 +89,14 @@ export default function OnboardingPage() {
   return (
     <div 
       className="min-h-screen flex items-center justify-center px-4 py-12"
-      style={{ background: "#fdfbf7" }}
+      style={{ background: "#F4F0E8" }}
     >
       {/* Ambient glow */}
       <div 
         className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
           background: "radial-gradient(circle, rgba(21, 94, 86, 0.13) 0%, transparent 70%)",
-          filter: "blur(60px)",
-        }}
+          filter: "blur(60px)" }}
       />
 
       <div className="w-full max-w-lg relative">
@@ -114,8 +111,7 @@ export default function OnboardingPage() {
                   width: step === s ? 32 : 8,
                   background: ["welcome", "consent", "health", "goals"].indexOf(step) >= i
                     ? "#155e56"
-                    : "#cfc7b6",
-                }}
+                    : "#cfc7b6" }}
               />
             ))}
           </div>
@@ -142,8 +138,7 @@ export default function OnboardingPage() {
               <h1 
                 className="text-3xl font-bold mb-3"
                 style={{ 
-                  fontFamily: "'Newsreader', Georgia, serif",
-                  fontStyle: "italic",
+                  fontFamily: "'Newsreader', Georgia, serif", 
                   color: "#1c1d20"
                 }}
               >
@@ -160,9 +155,8 @@ export default function OnboardingPage() {
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-medium"
                 style={{
                   background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
-                  color: "#fdfbf7",
-                  boxShadow: "0 8px 32px rgba(21, 94, 86, 0.25)",
-                }}
+                  color: "#F6F3ED",
+                  boxShadow: "0 8px 32px rgba(21, 94, 86, 0.25)" }}
               >
                 Begin Setup
                 <ArrowRight size={18} />
@@ -189,7 +183,7 @@ export default function OnboardingPage() {
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+              <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
                 <p className="text-sm leading-relaxed mb-5" style={{ color: "#3c3a34" }}>
                   ThyroWell is a <strong>wellness coaching program, not medical treatment or a
                   substitute for your doctor.</strong> To personalize your coaching, we collect and
@@ -227,8 +221,7 @@ export default function OnboardingPage() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm disabled:opacity-50"
                   style={{
                     background: consent ? "linear-gradient(135deg, #155e56 0%, #155e56 100%)" : "#cfc7b6",
-                    color: consent ? "#fdfbf7" : "#8b867c",
-                  }}
+                    color: consent ? "#fdfbf7" : "#8b867c" }}
                 >
                   Continue <ArrowRight size={16} />
                 </motion.button>
@@ -258,9 +251,8 @@ export default function OnboardingPage() {
               <div
                 className="p-6 rounded-2xl space-y-5"
                 style={{
-                  background: "#ffffff",
-                  border: "1px solid #e2dbcd",
-                }}
+                  background: "#FDFBF7",
+                  border: "1px solid #e2dbcd" }}
               >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -272,7 +264,7 @@ export default function OnboardingPage() {
                       value={formData.age}
                       onChange={(e) => updateField("age", e.target.value)}
                       className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
-                      style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                      style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                       placeholder="35"
                     />
                   </div>
@@ -284,7 +276,7 @@ export default function OnboardingPage() {
                       value={formData.gender}
                       onChange={(e) => updateField("gender", e.target.value)}
                       className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
-                      style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                      style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                     >
                       <option value="female">Female</option>
                       <option value="male">Male</option>
@@ -304,7 +296,7 @@ export default function OnboardingPage() {
                       value={formData.currentWeight}
                       onChange={(e) => updateField("currentWeight", e.target.value)}
                       className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
-                      style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                      style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                       placeholder="75.5"
                     />
                   </div>
@@ -318,7 +310,7 @@ export default function OnboardingPage() {
                       value={formData.tshBefore}
                       onChange={(e) => updateField("tshBefore", e.target.value)}
                       className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
-                      style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                      style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                       placeholder="5.2"
                     />
                   </div>
@@ -332,7 +324,7 @@ export default function OnboardingPage() {
                     value={formData.thyroidCondition}
                     onChange={(e) => updateField("thyroidCondition", e.target.value)}
                     className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
-                    style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                    style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                   >
                     <option value="">Select condition</option>
                     <option value="hypothyroidism">Hypothyroidism</option>
@@ -359,8 +351,7 @@ export default function OnboardingPage() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm"
                   style={{
                     background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
-                    color: "#fdfbf7",
-                  }}
+                    color: "#F6F3ED" }}
                 >
                   Continue
                   <ArrowRight size={16} />
@@ -391,9 +382,8 @@ export default function OnboardingPage() {
               <div
                 className="p-6 rounded-2xl space-y-5"
                 style={{
-                  background: "#ffffff",
-                  border: "1px solid #e2dbcd",
-                }}
+                  background: "#FDFBF7",
+                  border: "1px solid #e2dbcd" }}
               >
                 <div>
                   <label className="block text-xs font-medium uppercase mb-2" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>
@@ -405,7 +395,7 @@ export default function OnboardingPage() {
                     value={formData.targetWeight}
                     onChange={(e) => updateField("targetWeight", e.target.value)}
                     className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
-                    style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                    style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                     placeholder="65.0"
                   />
                 </div>
@@ -419,7 +409,7 @@ export default function OnboardingPage() {
                     onChange={(e) => updateField("medications", e.target.value)}
                     rows={2}
                     className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none resize-none"
-                    style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                    style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                     placeholder="e.g., Thyronorm 50mcg"
                   />
                 </div>
@@ -433,7 +423,7 @@ export default function OnboardingPage() {
                     value={formData.allergies}
                     onChange={(e) => updateField("allergies", e.target.value)}
                     className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
-                    style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                    style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                     placeholder="e.g., Gluten, Dairy"
                   />
                 </div>
@@ -456,8 +446,7 @@ export default function OnboardingPage() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm"
                   style={{
                     background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
-                    color: "#fdfbf7",
-                  }}
+                    color: "#F6F3ED" }}
                 >
                   {isLoading ? (
                     <Loader2 className="animate-spin" size={18} />
@@ -488,8 +477,7 @@ export default function OnboardingPage() {
                 className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center"
                 style={{
                   background: "rgba(21, 94, 86, 0.15)",
-                  border: "1px solid rgba(21, 94, 86, 0.3)",
-                }}
+                  border: "1px solid rgba(21, 94, 86, 0.3)" }}
               >
                 <Check size={36} style={{ color: "#155e56" }} />
               </motion.div>

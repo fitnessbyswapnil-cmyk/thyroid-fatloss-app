@@ -39,7 +39,7 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
         Today&apos;s Log
       </span>
 
-      <div className="p-5 rounded-[22px] space-y-4" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+      <div className="p-5 rounded-[22px] space-y-4" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
         {/* Workout toggle */}
         <button
           onClick={() => { const v = !workoutDone; setWorkoutDone(v); save(v, meals) }}
@@ -47,8 +47,7 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
           className="w-full flex items-center justify-between p-4 rounded-xl transition-all"
           style={{
             background: workoutDone ? "rgba(21, 94, 86,0.12)" : "#ffffff",
-            border: `1px solid ${workoutDone ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}`,
-          }}
+            border: `1px solid ${workoutDone ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}` }}
         >
           <span className="inline-flex items-center gap-3 text-sm font-medium" style={{ color: "#1c1d20" }}>
             <Dumbbell size={18} style={{ color: workoutDone ? "#155e56" : "#8b867c" }} />
@@ -58,12 +57,12 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
             className="w-6 h-6 rounded-full flex items-center justify-center"
             style={{ background: workoutDone ? "#155e56" : "#e2dbcd" }}
           >
-            {workoutDone && <Check size={14} style={{ color: "#fdfbf7" }} />}
+            {workoutDone && <Check size={14} style={{ color: "#F6F3ED" }} />}
           </span>
         </button>
 
         {/* Meals-on-plan stepper */}
-        <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+        <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
           <span className="inline-flex items-center gap-3 text-sm font-medium" style={{ color: "#1c1d20" }}>
             <UtensilsCrossed size={18} style={{ color: meals > 0 ? "#155e56" : "#8b867c" }} />
             Meals on plan
@@ -93,7 +92,7 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
 
         <div className="flex items-center justify-between min-h-[16px]">
           {error ? (
-            <p className="text-xs" style={{ color: "#9a3b2e" }}>{error}</p>
+            <p className="text-xs" style={{ color: "#A32B23" }}>{error}</p>
           ) : (
             <span className="text-[11px]" style={{ color: "#a09a8e" }}>Logging daily keeps your streak alive.</span>
           )}

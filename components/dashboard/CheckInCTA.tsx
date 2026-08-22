@@ -19,8 +19,7 @@ export function CheckInCTA({ programWeek }: { programWeek: number }) {
         style={{
           background: "linear-gradient(135deg, rgba(21, 94, 86,0.14) 0%, rgba(21, 94, 86, 0.13) 100%)",
           border: "1px solid rgba(21, 94, 86,0.28)",
-          boxShadow: "0 0 32px rgba(21, 94, 86,0.10)",
-        }}
+          boxShadow: "0 0 32px rgba(21, 94, 86,0.10)" }}
       >
         <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(21, 94, 86,0.18)" }}>
           <ClipboardList size={20} style={{ color: "#155e56" }} />

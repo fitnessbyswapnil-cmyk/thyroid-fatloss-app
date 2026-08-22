@@ -31,9 +31,8 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
       <motion.div
         className="rounded-2xl p-8 text-center"
         style={{
-          background: '#ffffff',
-          border: '1px solid #e2dbcd',
-        }}
+          background: '#FDFBF7',
+          border: '1px solid #e2dbcd' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -54,7 +53,7 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
 
   return (
     <div className="space-y-3">
-      <h3 className="text-lg font-semibold mb-4" style={{ color: '#1c1d20', fontFamily: "'Newsreader', Georgia, serif", fontStyle: 'italic' }}>
+      <h3 className="text-lg font-semibold mb-4" style={{ color: '#1c1d20', fontFamily: "'Newsreader', Georgia, serif" }}>
         Pending Reviews ({reviews.length})
       </h3>
 
@@ -64,13 +63,11 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
           onClick={() => setSelectedReview(review)}
           className="w-full text-left p-4 rounded-xl border transition-all hover:border-[#155e56]"
           style={{
-            background: '#ffffff',
-            border: '1px solid #e2dbcd',
-          }}
+            background: '#FDFBF7',
+            border: '1px solid #e2dbcd' }}
           whileHover={{
             background: 'rgba(21, 94, 86, 0.13)',
-            borderColor: 'rgba(21, 94, 86, 0.3)',
-          }}
+            borderColor: 'rgba(21, 94, 86, 0.3)' }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.05 }}
@@ -101,10 +98,10 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
                 {/* Deltas */}
                 {review.energy_delta !== undefined && (
                   <div className="flex items-center gap-4 text-xs">
-                    <span style={{ color: review.energy_delta > 0 ? '#155e56' : '#9a3b2e' }}>
+                    <span style={{ color: review.energy_delta > 0 ? '#155e56' : '#A32B23' }}>
                       Energy {review.energy_delta > 0 ? '+' : ''}{review.energy_delta}
                     </span>
-                    <span style={{ color: review.sleep_delta && review.sleep_delta > 0 ? '#155e56' : '#9a3b2e' }}>
+                    <span style={{ color: review.sleep_delta && review.sleep_delta > 0 ? '#155e56' : '#A32B23' }}>
                       Sleep {review.sleep_delta && review.sleep_delta > 0 ? '+' : ''}{review.sleep_delta}
                     </span>
                   </div>
@@ -114,7 +111,7 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
               {/* Flag Chip & Time Waiting */}
               <div className="flex items-center gap-2">
                 {review.is_flagged && (
-                  <span className="text-xs px-2 py-1 rounded-md font-semibold" style={{ background: 'rgba(154, 59, 46, 0.15)', color: '#9a3b2e' }}>
+                  <span className="text-xs px-2 py-1 rounded-md font-semibold" style={{ background: 'rgba(154, 59, 46, 0.15)', color: '#A32B23' }}>
                     🚩 {review.flag_reason}
                   </span>
                 )}

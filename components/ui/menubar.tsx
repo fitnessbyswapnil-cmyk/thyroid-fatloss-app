@@ -272,5 +272,4 @@ export {
   MenubarRadioItem,
   MenubarSub,
   MenubarSubTrigger,
-  MenubarSubContent,
-}
+  MenubarSubContent }

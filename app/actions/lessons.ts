@@ -47,8 +47,7 @@ export async function listLessons(): Promise<LessonWithRead[]> {
     return (lessons || []).map((l) => ({
       ...(l as Lesson),
       read: readIds.has(l.id),
-      locked: !isCoach && l.week_number > programWeek,
-    }))
+      locked: !isCoach && l.week_number > programWeek }))
   })
 }
 

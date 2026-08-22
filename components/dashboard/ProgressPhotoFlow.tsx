@@ -24,8 +24,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
   const handlePhotoCapture = (blob: Blob) => {
     setPhotos((prev) => ({
       ...prev,
-      [currentAngle]: blob,
-    }))
+      [currentAngle]: blob }))
 
     if (currentAngle === 'front') {
       setCurrentAngle('side')
@@ -47,8 +46,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
         sidePhotoBlob: photos.side,
         backPhotoBlob: lastBlob,
         weekNumber: checkInWeek,
-        notes: 'First-time progress photos',
-      })
+        notes: 'First-time progress photos' })
 
       if (!result.success) {
         setUploadError(result.error || 'Upload failed')
@@ -85,8 +83,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             className="w-16 h-16 rounded-full flex items-center justify-center"
             style={{
               background: 'radial-gradient(circle, rgba(21, 94, 86, 0.2) 0%, transparent 70%)',
-              boxShadow: '0 0 40px rgba(21, 94, 86, 0.15)',
-            }}
+              boxShadow: '0 0 40px rgba(21, 94, 86, 0.15)' }}
           >
             <div className="w-8 h-8 rounded-full" style={{ background: '#155e56' }} />
           </motion.div>
@@ -100,10 +97,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             <h2
               className="text-3xl font-bold"
               style={{
-                fontFamily: "'Newsreader', Georgia, serif",
-                fontStyle: 'italic',
-                color: '#1c1d20',
-              }}
+                fontFamily: "'Newsreader', Georgia, serif", 
+                color: '#1c1d20' }}
             >
               A Gift to Tomorrow
             </h2>
@@ -125,10 +120,9 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
               onClick={handleSkip}
               className="flex-1 py-3 rounded-full font-semibold"
               style={{
-                background: '#f4f0e8',
+                background: '#F1EDE1',
                 color: '#8b867c',
-                border: '1px solid #cfc7b6',
-              }}
+                border: '1px solid #cfc7b6' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -139,8 +133,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
               className="flex-1 py-3 rounded-full font-semibold text-white"
               style={{
                 background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-                boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
-              }}
+                boxShadow: '0 0 32px rgba(21, 94, 86,0.3)' }}
               whileHover={{ transform: 'translateY(-2px)' }}
               whileTap={{ scale: 0.98 }}
             >
@@ -165,8 +158,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             transition={{ type: 'spring', stiffness: 200 }}
             className="p-4 rounded-full"
             style={{
-              background: 'rgba(21, 94, 86, 0.1)',
-            }}
+              background: 'rgba(21, 94, 86, 0.1)' }}
           >
             <Lock size={48} style={{ color: '#155e56' }} />
           </motion.div>
@@ -180,10 +172,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             <h2
               className="text-3xl font-bold"
               style={{
-                fontFamily: "'Newsreader', Georgia, serif",
-                fontStyle: 'italic',
-                color: '#1c1d20',
-              }}
+                fontFamily: "'Newsreader', Georgia, serif", 
+                color: '#1c1d20' }}
             >
               Your Privacy Protected
             </h2>
@@ -213,8 +203,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             className="w-full max-w-sm py-4 rounded-full font-semibold text-white"
             style={{
               background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-              boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
-            }}
+              boxShadow: '0 0 32px rgba(21, 94, 86,0.3)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
@@ -238,10 +227,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
           <motion.h2
             className="text-3xl font-bold"
             style={{
-              fontFamily: "'Newsreader', Georgia, serif",
-              fontStyle: 'italic',
-              color: '#1c1d20',
-            }}
+              fontFamily: "'Newsreader', Georgia, serif", 
+              color: '#1c1d20' }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -254,7 +241,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             transition={{ delay: 0.2 }}
             className="w-full max-w-sm space-y-4"
           >
-            <label className="flex items-start gap-4 p-4 rounded-xl cursor-pointer" style={{ background: '#ffffff' }}>
+            <label className="flex items-start gap-4 p-4 rounded-xl cursor-pointer" style={{ background: '#FDFBF7' }}>
               <input
                 type="checkbox"
                 checked={consent}
@@ -274,8 +261,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             className="w-full max-w-sm py-4 rounded-full font-semibold text-white disabled:opacity-50"
             style={{
               background: consent ? 'linear-gradient(135deg, #155e56 0%, #155e56 100%)' : '#cfc7b6',
-              boxShadow: consent ? '0 0 32px rgba(21, 94, 86,0.3)' : 'none',
-            }}
+              boxShadow: consent ? '0 0 32px rgba(21, 94, 86,0.3)' : 'none' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -299,10 +285,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
           <motion.h2
             className="text-3xl font-bold"
             style={{
-              fontFamily: "'Newsreader', Georgia, serif",
-              fontStyle: 'italic',
-              color: '#1c1d20',
-            }}
+              fontFamily: "'Newsreader', Georgia, serif", 
+              color: '#1c1d20' }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -326,7 +310,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
                 className="flex items-center gap-4 p-4 rounded-xl"
-                style={{ background: '#ffffff' }}
+                style={{ background: '#FDFBF7' }}
               >
                 <span className="text-2xl">{icon}</span>
                 <p style={{ color: '#1c1d20' }}>{tip}</p>
@@ -339,8 +323,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             className="w-full max-w-sm py-4 rounded-full font-semibold text-white"
             style={{
               background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-              boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
-            }}
+              boxShadow: '0 0 32px rgba(21, 94, 86,0.3)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
@@ -388,14 +371,14 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
               >
                 <span className="text-2xl">⚠️</span>
               </div>
-              <p style={{ color: '#9a3b2e' }}>{uploadError}</p>
+              <p style={{ color: '#A32B23' }}>{uploadError}</p>
               <motion.button
                 onClick={() => {
                   setUploadError(null)
                   setStep('capture')
                 }}
                 className="px-6 py-2 rounded-full font-semibold"
-                style={{ background: 'rgba(154, 59, 46,0.15)', color: '#9a3b2e' }}
+                style={{ background: 'rgba(154, 59, 46,0.15)', color: '#A32B23' }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -411,8 +394,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 className="flex items-center justify-center w-16 h-16 rounded-full"
                 style={{
                   background: 'radial-gradient(circle, rgba(21, 94, 86, 0.3) 0%, transparent 70%)',
-                  boxShadow: '0 0 40px rgba(21, 94, 86, 0.2)',
-                }}
+                  boxShadow: '0 0 40px rgba(21, 94, 86, 0.2)' }}
               >
                 <CheckCircle2 size={40} style={{ color: '#155e56' }} />
               </motion.div>
@@ -426,10 +408,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 <h2
                   className="text-3xl font-bold"
                   style={{
-                    fontFamily: "'Newsreader', Georgia, serif",
-                    fontStyle: 'italic',
-                    color: '#1c1d20',
-                  }}
+                    fontFamily: "'Newsreader', Georgia, serif", 
+                    color: '#1c1d20' }}
                 >
                   That Took Courage
                 </h2>
@@ -446,8 +426,7 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 className="w-full max-w-sm py-4 rounded-full font-semibold text-white"
                 style={{
                   background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-                  boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
-                }}
+                  boxShadow: '0 0 32px rgba(21, 94, 86,0.3)' }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}

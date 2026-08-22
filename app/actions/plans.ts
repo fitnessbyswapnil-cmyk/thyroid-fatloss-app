@@ -96,8 +96,7 @@ export async function savePlan(input: SavePlanInput) {
     const content: PlanContent = {
       sections,
       ...(workoutItems.length ? { workoutItems } : {}),
-      ...(mealItems.length ? { mealItems } : {}),
-    }
+      ...(mealItems.length ? { mealItems } : {}) }
 
     const { data: existing } = await supabase
       .from('plans')
@@ -113,8 +112,7 @@ export async function savePlan(input: SavePlanInput) {
           title: input.title.trim() || (input.type === 'meal' ? 'Meal Plan' : 'Workout Plan'),
           content,
           file_path: input.filePath ?? null,
-          updated_at: new Date().toISOString(),
-        })
+          updated_at: new Date().toISOString() })
         .eq('id', existing.id)
       if (error) return { success: false, error: error.message }
     } else {
@@ -124,8 +122,7 @@ export async function savePlan(input: SavePlanInput) {
         type: input.type,
         title: input.title.trim() || (input.type === 'meal' ? 'Meal Plan' : 'Workout Plan'),
         content,
-        file_path: input.filePath ?? null,
-      })
+        file_path: input.filePath ?? null })
       if (error) return { success: false, error: error.message }
     }
 
@@ -180,11 +177,8 @@ export async function getPlansForClient(clientId: string): Promise<{ meal: Plan 
                 demoUrl: e.demo_url ?? it.demoUrl ?? null,
                 imageStart: e.image_start ?? it.imageStart ?? null,
                 imageEnd: e.image_end ?? it.imageEnd ?? null,
-                notes: it.notes ?? e.cues ?? null,
-              }
-            }),
-          },
-        }
+                notes: it.notes ?? e.cues ?? null }
+            }) } }
       } catch {
         /* enrichment is best-effort — fall back to the embedded snapshot */
       }

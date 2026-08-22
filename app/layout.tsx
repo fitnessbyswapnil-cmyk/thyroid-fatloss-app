@@ -11,8 +11,7 @@ const instrumentSans = Instrument_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-sans-loaded',
-  display: 'swap',
-})
+  display: 'swap' })
 
 // Newsreader carries the display moments — the greeting, "11 kg down".
 const newsreader = Newsreader({
@@ -20,8 +19,7 @@ const newsreader = Newsreader({
   weight: ['300', '400', '500'],
   style: ['normal', 'italic'],
   variable: '--font-serif-loaded',
-  display: 'swap',
-})
+  display: 'swap' })
 
 export const metadata: Metadata = {
   title: 'ThyroWell | Premium Wellness Coaching',
@@ -34,38 +32,30 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: 'ThyroWell',
-    statusBarStyle: 'black-translucent',
-  },
+    statusBarStyle: 'black-translucent' },
   icons: {
     icon: [
       {
         url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
+        media: '(prefers-color-scheme: light)' },
       {
         url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
+        media: '(prefers-color-scheme: dark)' },
       {
         url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+        type: 'image/svg+xml' },
     ],
-    apple: '/apple-icon.png',
-  },
-}
+    apple: '/apple-icon.png' } }
 
 export const viewport: Viewport = {
-  themeColor: '#fdfbf7',
+  themeColor: '#F6F3ED',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false,
-}
+  userScalable: false }
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+  children }: Readonly<{
   children: React.ReactNode
 }>) {
   return (

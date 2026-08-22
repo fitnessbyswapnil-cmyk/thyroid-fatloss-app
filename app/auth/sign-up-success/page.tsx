@@ -8,15 +8,14 @@ export default function SignUpSuccessPage() {
   return (
     <div 
       className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: "#fdfbf7" }}
+      style={{ background: "#F4F0E8" }}
     >
       {/* Ambient glow */}
       <div 
         className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
           background: "radial-gradient(circle, rgba(21, 94, 86, 0.12) 0%, transparent 70%)",
-          filter: "blur(60px)",
-        }}
+          filter: "blur(60px)" }}
       />
 
       <motion.div
@@ -33,8 +32,7 @@ export default function SignUpSuccessPage() {
           className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center"
           style={{
             background: "rgba(21, 94, 86, 0.15)",
-            border: "1px solid rgba(21, 94, 86, 0.3)",
-          }}
+            border: "1px solid rgba(21, 94, 86, 0.3)" }}
         >
           <Mail size={32} style={{ color: "#155e56" }} />
         </motion.div>
@@ -58,9 +56,8 @@ export default function SignUpSuccessPage() {
         <div
           className="p-6 rounded-2xl mb-6"
           style={{
-            background: "#ffffff",
-            border: "1px solid #e2dbcd",
-          }}
+            background: "#FDFBF7",
+            border: "1px solid #e2dbcd" }}
         >
           <p className="text-sm" style={{ color: "#8b867c" }}>
             Didn&apos;t receive the email? Check your spam folder or{" "}

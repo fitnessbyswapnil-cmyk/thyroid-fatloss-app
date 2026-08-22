@@ -58,8 +58,7 @@ export async function submitWeeklyCheckIn(
     // Get current user
     const {
       data: { user },
-      error: userError,
-    } = await supabase.auth.getUser()
+      error: userError } = await supabase.auth.getUser()
 
     if (userError || !user) {
       return { success: false, error: 'Authentication failed. Please log in again.' }
@@ -114,8 +113,7 @@ export async function submitWeeklyCheckIn(
       symptoms: Object.keys(formData.symptoms || {}).length > 0 ? formData.symptoms : null,
       reflection_text: formData.reflectionText || null,
       status: 'submitted',
-      submitted_at: new Date().toISOString(),
-    }
+      submitted_at: new Date().toISOString() }
 
     let upsertError
     if (existingCheckin) {
@@ -166,9 +164,7 @@ export async function submitWeeklyCheckIn(
         weightDelta,
         prevEnergy,
         prevSleep,
-        prevWeight,
-      },
-    }
+        prevWeight } }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'An unexpected error occurred'
     return { success: false, error: message }

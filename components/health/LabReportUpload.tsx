@@ -7,7 +7,7 @@ import { addLab } from "@/app/actions/health"
 import { parseLabText, type ParsedLab } from "@/lib/labs/parse"
 import { extractReportDates, type DetectedDate } from "@/lib/labs/dates"
 
-const inputStyle = { background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
+const inputStyle = { background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
 
 interface Row extends ParsedLab { id: number }
 
@@ -80,8 +80,7 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
       taken_on: date,
       ...core,
       extras: clean.map(({ name, value, unit, low, high }) => ({ name, value, unit, low, high })),
-      source: "upload",
-    } as never)
+      source: "upload" } as never)
     setSaving(false)
     if (!res.success) { setErr(res.error || "Could not save"); return }
     setOpen(false); reset()
@@ -105,14 +104,14 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center" style={{ background: "rgba(28, 29, 32, 0.45)", backdropFilter: "blur(6px)" }} onClick={() => !saving && setOpen(false)}>
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center" style={{ background: "rgba(28, 29, 32, 0.45)" }} onClick={() => !saving && setOpen(false)}>
           <div
             className="w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-3xl p-6 tw-fade-up"
-            style={{ background: "#ffffff", border: "1px solid #cfc7b6" }}
+            style={{ background: "#FDFBF7", border: "1px solid #cfc7b6" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-1">
-              <h3 className="text-xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
+              <h3 className="text-xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
                 {phase === "review" ? "Confirm your values" : "Upload blood report"}
               </h3>
               <button onClick={() => !saving && setOpen(false)} style={{ color: "#8b867c" }} aria-label="Close"><X size={18} /></button>
@@ -182,8 +181,8 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
                             onClick={() => setDate(d.iso)}
                             className="text-[11.5px] font-medium px-2.5 py-1.5 rounded-lg"
                             style={on
-                              ? { background: "#155e56", color: "#fdfbf7" }
-                              : { background: "#f4f0e8", color: "#3c3a34" }}
+                              ? { background: "#155e56", color: "#F6F3ED" }
+                              : { background: "#F1EDE1", color: "#3c3a34" }}
                           >
                             {new Date(d.iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                           </button>
@@ -210,7 +209,7 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
 
                 <div className="space-y-2.5">
                   {rows.map((r) => (
-                    <div key={r.id} className="p-3 rounded-xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+                    <div key={r.id} className="p-3 rounded-xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
                       <div className="flex items-center gap-2">
                         <input value={r.name} onChange={(e) => setRow(r.id, { name: e.target.value })} placeholder="Test name" className="flex-1 px-2.5 py-1.5 rounded-lg text-sm font-medium" style={inputStyle} />
                         <input value={Number.isFinite(r.value) ? r.value : ""} onChange={(e) => setRow(r.id, { value: Number(e.target.value) })} inputMode="decimal" placeholder="Value" className="w-20 px-2.5 py-1.5 rounded-lg text-sm text-right tabular-nums" style={inputStyle} />
@@ -231,7 +230,7 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
                   <Plus size={14} /> Add another test
                 </button>
 
-                {err && <p className="text-xs mt-3" style={{ color: "#9a3b2e" }}>{err}</p>}
+                {err && <p className="text-xs mt-3" style={{ color: "#A32B23" }}>{err}</p>}
 
                 <button
                   onClick={save}

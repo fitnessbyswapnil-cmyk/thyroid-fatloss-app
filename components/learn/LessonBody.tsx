@@ -21,7 +21,7 @@ function inline(text: string, keyPrefix: string) {
 }
 
 export function LessonBody({ body }: { body: string }) {
-  const blocks = body.split(/\n{2,}/).map((b) => b.trim()).filter(Boolean)
+  const blocks = body.split(/\n{2 }/).map((b) => b.trim()).filter(Boolean)
 
   return (
     <div className="space-y-4">
@@ -65,7 +65,7 @@ export function LessonBody({ body }: { body: string }) {
         if (isNote) {
           return (
             <p key={bi} className="text-[12.5px] rounded-xl px-4 py-3"
-              style={{ color: "#8b867c", lineHeight: 1.6, background: "#ffffff", border: "1px solid #e2dbcd" }}>
+              style={{ color: "#8b867c", lineHeight: 1.6, background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
               {block.slice(1, -1)}
             </p>
           )

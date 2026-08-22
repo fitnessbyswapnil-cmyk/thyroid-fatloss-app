@@ -80,7 +80,7 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
 
   if (sessions.length < 2) {
     return (
-      <div className="p-6 rounded-2xl text-center" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+      <div className="p-6 rounded-2xl text-center" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
         <ImageIcon size={32} className="mx-auto mb-3" style={{ color: "#cfc7b6" }} />
         <p className="text-sm" style={{ color: "#8b867c" }}>
           Need at least two photo sessions to compare.
@@ -96,8 +96,7 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
       clientId,
       comparisonLabel: `${label(left)} → ${label(right)} (${pose})`,
       afterDate: right?.upload_date || new Date().toISOString(),
-      body,
-    })
+      body })
     setSending(false)
     if (result.success) {
       setBody("")
@@ -109,15 +108,15 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
     }
   }
 
-  const selectStyle = { background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
+  const selectStyle = { background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
   const chip = (labelText: string, value: number | null, goodWhenNegative = false, Icon: typeof Zap, unit = "") => {
     if (value == null) return null
     const improved = goodWhenNegative ? value < 0 : value > 0
     const neutral = value === 0
-    const color = neutral ? "#8b867c" : improved ? "#155e56" : "#9a3b2e"
+    const color = neutral ? "#8b867c" : improved ? "#155e56" : "#A32B23"
     const sign = value > 0 ? "+" : ""
     return (
-      <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+      <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
         <Icon size={14} style={{ color }} />
         <span className="text-xs" style={{ color: "#8b867c" }}>{labelText}</span>
         <span className="text-sm font-semibold" style={{ color }}>{sign}{value}{unit}</span>
@@ -126,7 +125,7 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
   }
 
   return (
-    <div className="p-6 rounded-2xl space-y-5" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+    <div className="p-6 rounded-2xl space-y-5" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
       <h3 className="font-semibold" style={{ color: "#1c1d20" }}>Before / After Comparison</h3>
 
       {/* Controls */}
@@ -160,7 +159,7 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
       </div>
 
       {/* Slider comparison */}
-      <div className="relative w-full max-w-sm mx-auto aspect-[3/4] rounded-2xl overflow-hidden select-none" style={{ background: "#ffffff" }}>
+      <div className="relative w-full max-w-sm mx-auto aspect-[3/4] rounded-2xl overflow-hidden select-none" style={{ background: "#FDFBF7" }}>
         {leftImg ? (
           <img src={leftImg} alt="before" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
         ) : (
@@ -181,8 +180,8 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
         )}
         {/* divider line */}
         <div className="absolute top-0 bottom-0 pointer-events-none" style={{ left: `${slider}%`, width: 2, background: "#155e56", boxShadow: "0 0 12px rgba(21, 94, 86,0.6)" }} />
-        <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7" }}>Before</span>
-        <span className="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7" }}>After</span>
+        <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.62)", color: "#F6F3ED" }}>Before</span>
+        <span className="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.62)", color: "#F6F3ED" }}>After</span>
         <input
           type="range" min={0} max={100} value={slider}
           onChange={(e) => setSlider(Number(e.target.value))}
@@ -219,14 +218,14 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
           className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none resize-none"
           style={selectStyle}
         />
-        {error && <p className="text-xs mt-2" style={{ color: "#9a3b2e" }}>{error}</p>}
+        {error && <p className="text-xs mt-2" style={{ color: "#A32B23" }}>{error}</p>}
         <motion.button
           onClick={handleSubmit}
           disabled={sending || !body.trim()}
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
           className="w-full mt-3 h-12 rounded-xl font-semibold inline-flex items-center justify-center gap-2"
-          style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7", opacity: !body.trim() ? 0.5 : 1 }}
+          style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED", opacity: !body.trim() ? 0.5 : 1 }}
         >
           {sending ? <Loader2 size={18} className="animate-spin" /> : sent ? <><Check size={18} /> Sent to client</> : <><Send size={18} /> Send Feedback</>}
         </motion.button>

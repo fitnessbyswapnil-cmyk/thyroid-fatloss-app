@@ -45,9 +45,7 @@ export async function exportMyData() {
           // no longer be a complete copy of the client's health data.
           health_profile: health.data ?? [],
           lab_results: labs.data ?? [],
-          messages: messages.data ?? [],
-        },
-      }
+          messages: messages.data ?? [] } }
     }
   )
 }

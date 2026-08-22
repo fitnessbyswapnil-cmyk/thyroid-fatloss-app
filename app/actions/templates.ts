@@ -35,8 +35,7 @@ export async function saveTemplate(input: { type: PlanType; title: string; conte
       coach_id: user.id,
       type: input.type,
       title: input.title.trim() || 'Untitled template',
-      content: input.content,
-    })
+      content: input.content })
     if (error) return { success: false, error: error.message }
     revalidatePath('/coach')
     return { success: true }

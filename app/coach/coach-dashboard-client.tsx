@@ -110,7 +110,7 @@ export function CoachDashboardClient({
       label: "Avg Weight", 
       value: `${stats.avgWeight} kg`, 
       icon: TrendingUp, 
-      color: "#9a3b2e",
+      color: "#A32B23",
       subtext: "Current"
     },
   ]
@@ -118,24 +118,21 @@ export function CoachDashboardClient({
   return (
     <div 
       className="min-h-screen"
-      style={{ background: "#fdfbf7" }}
+      style={{ background: "#F4F0E8" }}
     >
       {/* Header */}
       <header 
         className="sticky top-0 z-50 px-6 py-4"
         style={{
-          background: "rgba(253, 251, 247, 0.85)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid #e2dbcd",
-        }}
+          background: "rgba(253, 251, 247, 0.85)", 
+          borderBottom: "1px solid #e2dbcd" }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 
               className="text-xl font-bold"
               style={{ 
-                fontFamily: "'Newsreader', Georgia, serif",
-                fontStyle: "italic",
+                fontFamily: "'Newsreader', Georgia, serif", 
                 color: "#1c1d20"
               }}
             >
@@ -156,7 +153,7 @@ export function CoachDashboardClient({
             <Link
               href="/coach/library"
               className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
-              style={{ background: "#f4f0e8", color: "#3c3a34", border: "1px solid #e2dbcd" }}
+              style={{ background: "#F1EDE1", color: "#3c3a34", border: "1px solid #e2dbcd" }}
             >
               <BookOpen size={15} /> Library
             </Link>
@@ -198,9 +195,9 @@ export function CoachDashboardClient({
             className="mb-4 flex items-center gap-3 px-4 py-3 rounded-2xl"
             style={{ background: "rgba(154, 59, 46, 0.12)", border: "1px solid rgba(154, 59, 46,0.18)" }}
           >
-            <AlertCircle size={15} className="shrink-0" style={{ color: "#9a3b2e" }} />
+            <AlertCircle size={15} className="shrink-0" style={{ color: "#A32B23" }} />
             <p className="text-[12px] flex-1" style={{ color: "#5a564e" }}>
-              <span style={{ color: "#9a3b2e", fontWeight: 600 }}>
+              <span style={{ color: "#A32B23", fontWeight: 600 }}>
                 {recentErrorCount} app error{recentErrorCount === 1 ? "" : "s"}
               </span>{" "}
               logged in the last 7 days — clients may have hit a failure. Check the
@@ -214,7 +211,7 @@ export function CoachDashboardClient({
         {alerts.length > 0 && (
           <motion.div className="mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-3">
-              <Zap size={16} style={{ color: "#9a3b2e" }} />
+              <Zap size={16} style={{ color: "#A32B23" }} />
               <h3 className="font-semibold" style={{ color: "#1c1d20" }}>Needs your call</h3>
               <span className="text-xs" style={{ color: "#8b867c" }}>
                 · {alerts.length} flag{alerts.length === 1 ? "" : "s"} across your roster
@@ -224,7 +221,7 @@ export function CoachDashboardClient({
               {alerts.map((a, i) => {
                 const tone =
                   a.severity === "urgent"
-                    ? { color: "#9a3b2e", bg: "rgba(154, 59, 46, 0.12)", border: "rgba(154, 59, 46,0.2)", label: "Urgent" }
+                    ? { color: "#A32B23", bg: "rgba(154, 59, 46, 0.12)", border: "rgba(154, 59, 46,0.2)", label: "Urgent" }
                     : a.severity === "attention"
                     ? { color: "#97671b", bg: "rgba(151, 103, 27, 0.13)", border: "rgba(151, 103, 27,0.18)", label: "Review" }
                     : { color: "#155e56", bg: "rgba(21, 94, 86, 0.13)", border: "rgba(21, 94, 86,0.18)", label: "Send a win" }
@@ -274,7 +271,7 @@ export function CoachDashboardClient({
                   key={w.id}
                   href={`/coach/client/${w.id}/messages`}
                   className="flex items-center justify-between p-3 rounded-xl"
-                  style={{ background: "#ffffff" }}
+                  style={{ background: "#FDFBF7" }}
                 >
                   <span className="text-sm font-medium" style={{ color: "#1c1d20" }}>{w.full_name}</span>
                   <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(21, 94, 86,0.15)", color: "#155e56" }}>
@@ -304,7 +301,7 @@ export function CoachDashboardClient({
                 <div
                   key={q.id}
                   className="flex items-center gap-3 p-3 rounded-xl"
-                  style={{ background: "#ffffff" }}
+                  style={{ background: "#FDFBF7" }}
                 >
                   <Link href={`/coach/client/${q.id}`} className="flex-1 min-w-0">
                     <span className="block text-sm font-medium truncate" style={{ color: "#1c1d20" }}>{q.full_name}</span>
@@ -335,9 +332,8 @@ export function CoachDashboardClient({
               transition={{ delay: i * 0.1 }}
               className="p-5 rounded-2xl"
               style={{
-                background: "#ffffff",
-                border: "1px solid #e2dbcd",
-              }}
+                background: "#FDFBF7",
+                border: "1px solid #e2dbcd" }}
             >
               <div className="flex items-start justify-between mb-3">
                 <div 
@@ -351,9 +347,7 @@ export function CoachDashboardClient({
                 className="text-2xl font-bold mb-1 tabular-nums"
                 style={{ 
                   color: "#1c1d20",
-                  fontFamily: "'Newsreader', Georgia, serif",
-                  fontStyle: "italic"
-                }}
+                  fontFamily: "'Newsreader', Georgia, serif" }}
               >
                 {stat.value}
               </div>
@@ -382,10 +376,9 @@ export function CoachDashboardClient({
               placeholder="Search clients..."
               className="w-full pl-11 pr-4 py-3 rounded-xl text-sm focus:outline-none"
               style={{
-                background: "#ffffff",
+                background: "#FDFBF7",
                 border: "1px solid #e2dbcd",
-                color: "#1c1d20",
-              }}
+                color: "#1c1d20" }}
             />
           </div>
           <div className="flex items-center gap-2">
@@ -399,8 +392,7 @@ export function CoachDashboardClient({
                     ? "rgba(21, 94, 86, 0.15)" 
                     : "#ffffff",
                   color: selectedFilter === filter ? "#155e56" : "#8b867c",
-                  border: `1px solid ${selectedFilter === filter ? "rgba(21, 94, 86, 0.3)" : "#e2dbcd"}`,
-                }}
+                  border: `1px solid ${selectedFilter === filter ? "rgba(21, 94, 86, 0.3)" : "#e2dbcd"}` }}
               >
                 {filter}
               </button>
@@ -414,9 +406,8 @@ export function CoachDashboardClient({
             <div 
               className="text-center py-12 rounded-2xl"
               style={{
-                background: "#fdfbf7",
-                border: "1px solid #ffffff",
-              }}
+                background: "#F4F0E8",
+                border: "1px solid #ffffff" }}
             >
               <Users size={40} className="mx-auto mb-4" style={{ color: "#cfc7b6" }} />
               <p style={{ color: "#8b867c" }}>No clients found</p>
@@ -433,9 +424,8 @@ export function CoachDashboardClient({
                   href={`/coach/client/${client.id}`}
                   className="block p-5 rounded-2xl transition-all hover:scale-[1.01]"
                   style={{
-                    background: "#ffffff",
-                    border: "1px solid #e2dbcd",
-                  }}
+                    background: "#FDFBF7",
+                    border: "1px solid #e2dbcd" }}
                 >
                   <div className="flex items-center gap-4">
                     {/* Avatar */}
@@ -461,8 +451,7 @@ export function CoachDashboardClient({
                             background: client.subscription_status === "active" 
                               ? "rgba(21, 94, 86, 0.15)" 
                               : "rgba(151, 103, 27, 0.15)",
-                            color: client.subscription_status === "active" ? "#155e56" : "#97671b",
-                          }}
+                            color: client.subscription_status === "active" ? "#155e56" : "#97671b" }}
                         >
                           {client.subscription_status}
                         </span>
@@ -470,8 +459,7 @@ export function CoachDashboardClient({
                           className="px-2 py-0.5 rounded text-[10px] font-medium uppercase"
                           style={{
                             background: "#e2dbcd",
-                            color: "#8b867c",
-                          }}
+                            color: "#8b867c" }}
                         >
                           {client.plan_type}
                         </span>
@@ -512,7 +500,7 @@ export function CoachDashboardClient({
                       <button 
                         className="p-2 rounded-lg transition-colors"
                         style={{ 
-                          background: "#ffffff",
+                          background: "#FDFBF7",
                           color: "#8b867c" 
                         }}
                         onClick={(e) => {

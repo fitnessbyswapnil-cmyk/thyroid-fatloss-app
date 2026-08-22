@@ -17,10 +17,10 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#fdfbf7' }}>
+    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#F4F0E8' }}>
       <div className="w-full max-w-sm text-center">
         <h1
-          style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: 'italic', fontSize: 28, color: '#1c1d20' }}
+          style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 28, color: '#1c1d20' }}
         >
           Something went wrong
         </h1>

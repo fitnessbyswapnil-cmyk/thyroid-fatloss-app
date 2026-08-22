@@ -12,8 +12,7 @@ import { MealLogger } from "@/components/dashboard/MealLogger"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#155e56" },
-  workout: { label: "Workout Plan", icon: Dumbbell, tint: "#155e56" },
-}
+  workout: { label: "Workout Plan", icon: Dumbbell, tint: "#155e56" } }
 
 export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) {
   const meta = META[type]
@@ -33,9 +32,8 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="rounded-2xl overflow-hidden"
       style={{
-        background: "#ffffff",
-        border: "1px solid #e2dbcd",
-      }}
+        background: "#FDFBF7",
+        border: "1px solid #e2dbcd" }}
     >
       <div className="p-6">
         <div className="flex items-center gap-3 mb-5">
@@ -48,7 +46,7 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
           <div>
             <h3
               className="text-xl"
-              style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}
+              style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}
             >
               {plan?.title || meta.label}
             </h3>
@@ -97,8 +95,7 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                             style={{
                               height: 54,
                               background: active ? "rgba(21, 94, 86,0.16)" : has ? "#ffffff" : "transparent",
-                              border: `1px solid ${active ? "rgba(21, 94, 86,0.45)" : has ? "#e2dbcd" : "#ffffff"}`,
-                            }}
+                              border: `1px solid ${active ? "rgba(21, 94, 86,0.45)" : has ? "#e2dbcd" : "#ffffff"}` }}
                             aria-label={d.label}
                           >
                             <span className="text-[12px] font-semibold" style={{ color: active ? "#155e56" : has ? "#1c1d20" : "#a09a8e" }}>
@@ -127,7 +124,7 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                         key={i}
                         onClick={() => setActive(it)}
                         className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white/[0.06]"
-                        style={{ background: "#ffffff" }}
+                        style={{ background: "#FDFBF7" }}
                         aria-label={`View ${it.name} demo`}
                       >
                         <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={48} rounded={10} />
@@ -153,7 +150,7 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                     key={i}
                     onClick={() => setActiveMeal(it)}
                     className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white/[0.06]"
-                    style={{ background: "#ffffff" }}
+                    style={{ background: "#FDFBF7" }}
                     aria-label={`${it.name} — recipe and alternatives`}
                   >
                     {it.meal && (
@@ -181,8 +178,7 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                       const q = m.qty || 1
                       return {
                         kcal: acc.kcal + (m.calories || 0) * q,
-                        p: acc.p + (Number(m.protein) || 0) * q,
-                      }
+                        p: acc.p + (Number(m.protein) || 0) * q }
                     },
                     { kcal: 0, p: 0 }
                   )

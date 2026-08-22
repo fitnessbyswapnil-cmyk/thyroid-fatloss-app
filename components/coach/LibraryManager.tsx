@@ -9,8 +9,7 @@ import { RecipeComposer } from "@/components/coach/RecipeComposer"
 import {
   type Exercise, type Food,
   upsertExercise, deleteExercise, upsertFood, deleteFood,
-  importExercises, importFoods,
-} from "@/app/actions/library"
+  importExercises, importFoods } from "@/app/actions/library"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 
 /**
@@ -42,8 +41,8 @@ function parseCsv(text: string): Record<string, string>[] {
   return rows.slice(1).map((r) => Object.fromEntries(headers.map((h, i) => [h, (r[i] ?? "").trim()])))
 }
 
-const card = { background: "#ffffff", border: "1px solid #e2dbcd" } as const
-const inputStyle = { background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
+const card = { background: "#FDFBF7", border: "1px solid #e2dbcd" } as const
+const inputStyle = { background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
 
 export function LibraryManager({ initialExercises, initialFoods }: { initialExercises: Exercise[]; initialFoods: Food[] }) {
   const router = useRouter()
@@ -74,11 +73,11 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#fdfbf7" }}>
-      <header className="sticky top-0 z-50 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
+    <div className="min-h-screen" style={{ background: "#F4F0E8" }}>
+      <header className="sticky top-0 z-50 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-4xl mx-auto flex items-center gap-4">
           <Link href="/coach" className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>Library</h1>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>Library</h1>
           <div className="flex items-center gap-2 ml-4">
             {(["workouts", "foods"] as const).map((t) => {
               const count = t === "workouts" ? initialExercises.length : initialFoods.length
@@ -88,8 +87,7 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
                   style={{
                     background: tab === t ? "rgba(21, 94, 86,0.15)" : "#ffffff",
                     border: `1px solid ${tab === t ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}`,
-                    color: tab === t ? "#155e56" : "#8b867c",
-                  }}>
+                    color: tab === t ? "#155e56" : "#8b867c" }}>
                   {t === "workouts" ? <Dumbbell size={15} /> : <Apple size={15} />} {t}
                   <span className="text-[10px] px-1.5 py-0.5 rounded-full tabular-nums"
                     style={{ background: tab === t ? "rgba(21, 94, 86,0.2)" : "#e2dbcd" }}>
@@ -112,13 +110,13 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
               className="w-full pl-11 pr-4 py-3 rounded-xl text-sm focus:outline-none" style={inputStyle} />
           </div>
           <label className="inline-flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium cursor-pointer shrink-0"
-            style={{ background: "#f4f0e8", color: "#3c3a34", border: "1px solid #e2dbcd" }}>
+            style={{ background: "#F1EDE1", color: "#3c3a34", border: "1px solid #e2dbcd" }}>
             {importing ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
             Import CSV
             <input type="file" accept=".csv,text/csv" onChange={handleCsv} className="hidden" disabled={importing} />
           </label>
         </div>
-        <p className="text-[11px] mb-5" style={{ color: importMsg?.endsWith("✓") ? "#155e56" : importMsg ? "#9a3b2e" : "#a09a8e" }}>
+        <p className="text-[11px] mb-5" style={{ color: importMsg?.endsWith("✓") ? "#155e56" : importMsg ? "#A32B23" : "#a09a8e" }}>
           {importMsg || (tab === "workouts"
             ? "CSV headers: name, muscle_group, equipment, video_url, cues — starter file: data/exercises-starter.csv"
             : "CSV headers: name, portion, calories, protein, carbs, fats, is_veg, tags — starter file: data/foods-starter.csv")}
@@ -160,7 +158,7 @@ function ExerciseList({ items, search, onChanged }: { items: Exercise[]; search:
   return (
     <div className="space-y-3">
       <button onClick={() => setEditing({})} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
-        style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7" }}>
+        style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED" }}>
         <Plus size={16} /> Add exercise
       </button>
 
@@ -177,9 +175,9 @@ function ExerciseList({ items, search, onChanged }: { items: Exercise[]; search:
           </div>
           <input placeholder="Video URL (YouTube etc., optional)" value={editing.video_url || ""} onChange={(e) => setEditing({ ...editing, video_url: e.target.value })} className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none" style={inputStyle} />
           <textarea placeholder="Coaching cues (optional)" rows={2} value={editing.cues || ""} onChange={(e) => setEditing({ ...editing, cues: e.target.value })} className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none resize-none" style={inputStyle} />
-          {error && <p className="text-xs" style={{ color: "#9a3b2e" }}>{error}</p>}
+          {error && <p className="text-xs" style={{ color: "#A32B23" }}>{error}</p>}
           <button onClick={save} disabled={busy} className="px-5 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2"
-            style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7" }}>
+            style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED" }}>
             {busy ? <Loader2 size={15} className="animate-spin" /> : null} Save
           </button>
         </motion.div>
@@ -210,7 +208,7 @@ function ExerciseList({ items, search, onChanged }: { items: Exercise[]; search:
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <button onClick={() => setEditing(e)} className="p-2 rounded-lg" style={{ color: "#8b867c" }} aria-label="Edit"><Pencil size={15} /></button>
-            <button onClick={() => remove(e.id)} className="p-2 rounded-lg" style={{ color: "#9a3b2e" }} aria-label="Delete"><Trash2 size={15} /></button>
+            <button onClick={() => remove(e.id)} className="p-2 rounded-lg" style={{ color: "#A32B23" }} aria-label="Delete"><Trash2 size={15} /></button>
           </div>
         </div>
       ))}
@@ -254,7 +252,7 @@ function FoodList({ items, search, onChanged }: { items: Food[]; search: string;
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         <button onClick={() => setEditing({ is_veg: true })} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
-          style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7" }}>
+          style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED" }}>
           <Plus size={16} /> Add food
         </button>
         {/* Compose from measured ingredients instead of typing macros by hand. */}
@@ -288,9 +286,9 @@ function FoodList({ items, search, onChanged }: { items: Food[]; search: string;
             </label>
             <input placeholder="Tags (breakfast, high-protein…)" value={editing.tags || ""} onChange={(e) => setEditing({ ...editing, tags: e.target.value })} className="flex-1 px-3 py-2.5 rounded-lg text-sm focus:outline-none" style={inputStyle} />
           </div>
-          {error && <p className="text-xs" style={{ color: "#9a3b2e" }}>{error}</p>}
+          {error && <p className="text-xs" style={{ color: "#A32B23" }}>{error}</p>}
           <button onClick={save} disabled={busy} className="px-5 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2"
-            style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7" }}>
+            style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED" }}>
             {busy ? <Loader2 size={15} className="animate-spin" /> : null} Save
           </button>
         </motion.div>
@@ -307,7 +305,7 @@ function FoodList({ items, search, onChanged }: { items: Food[]; search: string;
         <div key={f.id} className="p-4 rounded-2xl flex items-start justify-between gap-4" style={card}>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              {f.is_veg ? <Leaf size={13} style={{ color: "#155e56" }} /> : <Drumstick size={13} style={{ color: "#9a3b2e" }} />}
+              {f.is_veg ? <Leaf size={13} style={{ color: "#155e56" }} /> : <Drumstick size={13} style={{ color: "#A32B23" }} />}
               <span className="text-sm font-semibold" style={{ color: "#1c1d20" }}>{f.name}</span>
               <span className="text-[11px]" style={{ color: "#8b867c" }}>· {f.portion}</span>
             </div>
@@ -319,7 +317,7 @@ function FoodList({ items, search, onChanged }: { items: Food[]; search: string;
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <button onClick={() => setEditing(f)} className="p-2 rounded-lg" style={{ color: "#8b867c" }} aria-label="Edit"><Pencil size={15} /></button>
-            <button onClick={() => remove(f.id)} className="p-2 rounded-lg" style={{ color: "#9a3b2e" }} aria-label="Delete"><Trash2 size={15} /></button>
+            <button onClick={() => remove(f.id)} className="p-2 rounded-lg" style={{ color: "#A32B23" }} aria-label="Delete"><Trash2 size={15} /></button>
           </div>
         </div>
       ))}

@@ -10,8 +10,8 @@ import { LabReportUpload } from "@/components/health/LabReportUpload"
 import { LabGauges } from "@/components/health/LabGauges"
 import { LabDeltas } from "@/components/health/LabDeltas"
 
-const card = { background: "#ffffff", border: "1px solid #e2dbcd" } as const
-const inputStyle = { background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
+const card = { background: "#FDFBF7", border: "1px solid #e2dbcd" } as const
+const inputStyle = { background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
 
 interface MetricDef {
   key: string
@@ -47,8 +47,7 @@ function buildMetrics(labs: LabResult[]): MetricDef[] {
       key: `x:${name}`,
       label: name.length > 14 ? name.slice(0, 13) + "…" : name,
       unit: v.unit || "",
-      get: (l: LabResult) => l.extras?.find((e) => e.name === name)?.value ?? null,
-    }))
+      get: (l: LabResult) => l.extras?.find((e) => e.name === name)?.value ?? null }))
   return [...CORE_METRICS, ...extras]
 }
 
@@ -67,8 +66,7 @@ export function HealthView({
   labs,
   clientId,
   clientName,
-  asCoach = false,
-}: {
+  asCoach = false }: {
   profile: HealthProfile | null
   labs: LabResult[]
   clientId?: string
@@ -118,16 +116,15 @@ export function HealthView({
     .filter((x): x is { l: LabResult; v: number } => typeof x.v === "number")
     .map(({ l, v }) => ({
       label: new Date(l.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
-      value: v,
-    }))
+      value: v }))
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -150, left: 10, width: 360, height: 300, zIndex: 0 }} />
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href={asCoach && clientId ? `/coach/client/${clientId}` : "/dashboard"} className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
             {asCoach ? `${clientName || "Client"} · Health` : "My Health"}
           </h1>
         </div>
@@ -165,7 +162,7 @@ export function HealthView({
             <Field label="Other conditions"><input value={p.conditions || ""} onChange={(e) => set("conditions", e.target.value)} placeholder="PCOS, diabetes…" className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} /></Field>
             <Field label="Allergies" full><input value={p.allergies || ""} onChange={(e) => set("allergies", e.target.value)} placeholder="None / list them" className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} /></Field>
           </div>
-          <button onClick={saveProfile} disabled={savingP} className="mt-4 h-11 px-5 rounded-xl font-medium inline-flex items-center gap-2" style={{ background: "#155e56", color: "#fdfbf7" }}>
+          <button onClick={saveProfile} disabled={savingP} className="mt-4 h-11 px-5 rounded-xl font-medium inline-flex items-center gap-2" style={{ background: "#155e56", color: "#F6F3ED" }}>
             {savingP ? <Loader2 size={16} className="animate-spin" /> : savedP ? <Check size={16} /> : null}
             {savedP ? "Saved" : "Save profile"}
           </button>
@@ -179,7 +176,7 @@ export function HealthView({
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar mb-3 pb-0.5">
             {METRICS.map((m) => (
               <button key={m.key} onClick={() => setMetric(m.key)} className="shrink-0 text-[12px] font-medium px-3 py-1 rounded-full whitespace-nowrap"
-                style={metric === m.key ? { background: "#155e56", color: "#fdfbf7" } : { background: "#f4f0e8", color: "#3c3a34" }}>
+                style={metric === m.key ? { background: "#155e56", color: "#F6F3ED" } : { background: "#F1EDE1", color: "#3c3a34" }}>
                 {m.label}
               </button>
             ))}
@@ -215,14 +212,14 @@ export function HealthView({
             {adding ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />} Add lab result
           </button>
 
-          {err && <p className="text-xs mb-3" style={{ color: "#9a3b2e" }}>{err}</p>}
+          {err && <p className="text-xs mb-3" style={{ color: "#A32B23" }}>{err}</p>}
 
           {labs.length === 0 ? (
             <p className="text-sm" style={{ color: "#8b867c" }}>No labs recorded yet. Add your latest report above.</p>
           ) : (
             <div className="space-y-1.5">
               {[...labs].reverse().map((l) => (
-                <div key={l.id} className="flex items-center gap-3 p-2.5 rounded-xl text-sm" style={{ background: "#ffffff" }}>
+                <div key={l.id} className="flex items-center gap-3 p-2.5 rounded-xl text-sm" style={{ background: "#FDFBF7" }}>
                   <span className="w-16 shrink-0 tabular-nums" style={{ color: "#1c1d20" }}>{new Date(l.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" })}</span>
                   <span className="flex-1 text-xs tabular-nums" style={{ color: "#5a564e" }}>
                     {l.tsh != null && `TSH ${l.tsh}  `}{l.t4 != null && `T4 ${l.t4}  `}{l.vitamin_d != null && `D ${l.vitamin_d}  `}{l.ferritin != null && `Fer ${l.ferritin}  `}{l.weight_kg != null && `${l.weight_kg}kg`}

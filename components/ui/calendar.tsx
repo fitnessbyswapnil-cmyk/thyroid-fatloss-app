@@ -4,8 +4,7 @@ import * as React from 'react'
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
-  ChevronRightIcon,
-} from 'lucide-react'
+  ChevronRightIcon } from 'lucide-react'
 import { DayButton, DayPicker, getDefaultClassNames } from 'react-day-picker'
 
 import { cn } from '@/lib/utils'
@@ -38,8 +37,7 @@ function Calendar({
       formatters={{
         formatMonthDropdown: (date) =>
           date.toLocaleString('default', { month: 'short' }),
-        ...formatters,
-      }}
+        ...formatters }}
       classNames={{
         root: cn('w-fit', defaultClassNames.root),
         months: cn(
@@ -122,8 +120,7 @@ function Calendar({
           defaultClassNames.disabled,
         ),
         hidden: cn('invisible', defaultClassNames.hidden),
-        ...classNames,
-      }}
+        ...classNames }}
       components={{
         Root: ({ className, rootRef, ...props }) => {
           return (
@@ -165,8 +162,7 @@ function Calendar({
             </td>
           )
         },
-        ...components,
-      }}
+        ...components }}
       {...props}
     />
   )

@@ -34,7 +34,7 @@ export function CoachFeedbackCard({ feedback }: { feedback: CoachFeedbackItem[] 
           <div
             key={f.id}
             className="p-5 rounded-2xl"
-            style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
+            style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="inline-flex items-center gap-2 text-[12px]" style={{ color: "#155e56" }}>

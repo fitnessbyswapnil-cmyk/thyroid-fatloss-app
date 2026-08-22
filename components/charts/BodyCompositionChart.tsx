@@ -18,7 +18,7 @@ import { SITES, siteChanges, totalCmLost, type Measurements } from "@/lib/health
 
 const LOSS = "#155e56"
 const GAIN = "#97671b"
-const FLAT = "#7fa89f"
+const FLAT = "#7FA196"
 const NEUTRAL = "#a09a8e"  /* genuinely no change */
 
 export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
@@ -72,13 +72,11 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
         <div className="mb-5">
           <p
             style={{
-              fontFamily: "'Newsreader', Georgia, serif",
-              fontStyle: "italic",
+              fontFamily: "'Newsreader', Georgia, serif", 
               fontSize: 34,
               lineHeight: 1.05,
               color: "#1c1d20",
-              textShadow: "0 0 34px rgba(21, 94, 86,0.28)",
-            }}
+              textShadow: "0 0 34px rgba(21, 94, 86,0.28)" }}
           >
             {lost} cm off
           </p>
@@ -133,8 +131,7 @@ export function MetricBar({
   pct,
   color,
   tone,
-  children,
-}: {
+  children }: {
   label: string
   pct: number
   color: string
@@ -147,15 +144,14 @@ export function MetricBar({
         {label}
       </span>
 
-      <div className="flex-1 h-[26px] rounded-lg relative overflow-hidden" style={{ background: "#f4f0e8" }}>
+      <div className="flex-1 h-[26px] rounded-lg relative overflow-hidden" style={{ background: "#F1EDE1" }}>
         <div
           className="h-full rounded-lg"
           style={{
             width: `${Math.max(pct, 3)}%`,
             background: `linear-gradient(90deg, ${tone} 0%, ${color} 62%, ${color} 100%)`,
             boxShadow: "none",
-            transition: "width 600ms cubic-bezier(0.22,1,0.36,1)",
-          }}
+            transition: "width 600ms cubic-bezier(0.22,1,0.36,1)" }}
         />
       </div>
 

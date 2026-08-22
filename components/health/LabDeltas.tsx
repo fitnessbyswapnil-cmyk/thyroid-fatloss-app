@@ -79,14 +79,12 @@ const TONE: Record<Verdict, { color: string; label: string }> = {
   improved: { color: "#155e56", label: "Improved" },
   stable: { color: "#8b867c", label: "Stable" },
   worsened: { color: "#97671b", label: "Worse" },
-  "now-out-of-range": { color: "#9a3b2e", label: "Now out of range" },
-  "no-range": { color: "#8b867c", label: "Changed" },
-}
+  "now-out-of-range": { color: "#A32B23", label: "Now out of range" },
+  "no-range": { color: "#8b867c", label: "Changed" } }
 
 // Most meaningful first: range crossings, then movement, then the rest.
 const RANK: Record<Verdict, number> = {
-  "now-in-range": 0, "now-out-of-range": 1, improved: 2, worsened: 3, stable: 4, "no-range": 5,
-}
+  "now-in-range": 0, "now-out-of-range": 1, improved: 2, worsened: 3, stable: 4, "no-range": 5 }
 
 export function LabDeltas({ labs }: { labs: LabResult[] }) {
   if (labs.length < 2) return null
@@ -112,7 +110,7 @@ export function LabDeltas({ labs }: { labs: LabResult[] }) {
   const d = (s: string) => new Date(s).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" })
 
   return (
-    <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+    <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
       <h3 className="font-semibold" style={{ color: "#1c1d20" }}>What changed</h3>
       <p className="text-[11.5px] mt-0.5 mb-1" style={{ color: "#a09a8e" }}>
         {d(previous.taken_on)} → {d(latest.taken_on)} · {gap} days apart
@@ -129,7 +127,7 @@ export function LabDeltas({ labs }: { labs: LabResult[] }) {
           const Icon = c.delta < 0 ? ArrowDown : c.delta > 0 ? ArrowUp : Minus
           return (
             <div key={i} className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl"
-              style={{ background: "#ffffff", border: "1px solid #f4f0e8" }}>
+              style={{ background: "#FDFBF7", border: "1px solid #f4f0e8" }}>
               <span className="flex-1 min-w-0 text-sm truncate" style={{ color: "#1c1d20" }}>{c.name}</span>
               <span className="text-[11.5px] tabular-nums shrink-0" style={{ color: "#a09a8e" }}>
                 {c.prev} → <span style={{ color: "#5a564e" }}>{c.latest}</span>{c.unit ? ` ${c.unit}` : ""}

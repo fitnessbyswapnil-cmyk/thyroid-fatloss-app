@@ -83,8 +83,7 @@ export function ClientDetailView({
   mealPlan,
   workoutPlan,
   coachId,
-  engagement,
-}: {
+  engagement }: {
   client: Client
   checkins: Checkin[]
   photos: Photo[]
@@ -129,8 +128,7 @@ export function ClientDetailView({
       .insert({
         client_id: client.id,
         coach_id: coachId,
-        insight: newInsight,
-      })
+        insight: newInsight })
 
     if (!error) {
       setNewInsight("")
@@ -140,15 +138,13 @@ export function ClientDetailView({
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#fdfbf7" }}>
+    <div className="min-h-screen" style={{ background: "#F4F0E8" }}>
       {/* Header */}
       <header
         className="sticky top-0 z-50 px-6 py-4"
         style={{
-          background: "rgba(253, 251, 247, 0.85)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid #e2dbcd",
-        }}
+          background: "rgba(253, 251, 247, 0.85)", 
+          borderBottom: "1px solid #e2dbcd" }}
       >
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -196,8 +192,7 @@ export function ClientDetailView({
                 background: client.subscription_status === "active"
                   ? "rgba(21, 94, 86, 0.15)"
                   : "rgba(151, 103, 27, 0.15)",
-                color: client.subscription_status === "active" ? "#155e56" : "#97671b",
-              }}
+                color: client.subscription_status === "active" ? "#155e56" : "#97671b" }}
             >
               {client.subscription_status}
             </span>
@@ -210,8 +205,7 @@ export function ClientDetailView({
         className="px-6 py-3 border-b sticky top-[72px] z-40"
         style={{
           background: "rgba(253, 251, 247, 0.85)",
-          borderColor: "#e2dbcd",
-        }}
+          borderColor: "#e2dbcd" }}
       >
         <div className="max-w-5xl mx-auto flex items-center gap-1.5 overflow-x-auto hide-scrollbar">
           {([
@@ -229,8 +223,7 @@ export function ClientDetailView({
               style={{
                 background: activeTab === tab.id ? "rgba(21, 94, 86, 0.15)" : "#ffffff",
                 border: `1px solid ${activeTab === tab.id ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}`,
-                color: activeTab === tab.id ? "#155e56" : "#8b867c",
-              }}
+                color: activeTab === tab.id ? "#155e56" : "#8b867c" }}
             >
               <tab.icon size={14} />
               {tab.label}
@@ -247,16 +240,15 @@ export function ClientDetailView({
               {[
                 { label: "Current Weight", value: `${client.current_weight || "-"} kg`, icon: Scale, delta: `-${weightLost} kg`, color: "#155e56" },
                 { label: "TSH Level", value: client.tsh_current || "-", icon: Activity, delta: tshImprovement > 0 ? `-${tshImprovement}%` : null, color: "#155e56" },
-                { label: "Recovery Score", value: `${client.recovery_score || 0}%`, icon: Heart, delta: null, color: "#9a3b2e" },
+                { label: "Recovery Score", value: `${client.recovery_score || 0}%`, icon: Heart, delta: null, color: "#A32B23" },
                 { label: "Current Streak", value: `${client.streak_current || 0} days`, icon: Zap, delta: `Best: ${client.streak_best || 0}`, color: "#97671b" },
               ].map((metric) => (
                 <div
                   key={metric.label}
                   className="p-5 rounded-2xl"
                   style={{
-                    background: "#ffffff",
-                    border: "1px solid #e2dbcd",
-                  }}
+                    background: "#FDFBF7",
+                    border: "1px solid #e2dbcd" }}
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <metric.icon size={16} style={{ color: metric.color }} />
@@ -289,9 +281,8 @@ export function ClientDetailView({
             <div
               className="p-6 rounded-2xl"
               style={{
-                background: "#ffffff",
-                border: "1px solid #e2dbcd",
-              }}
+                background: "#FDFBF7",
+                border: "1px solid #e2dbcd" }}
             >
               <h3 className="font-semibold mb-4" style={{ color: "#1c1d20" }}>Client Information</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -322,9 +313,8 @@ export function ClientDetailView({
             <div
               className="p-6 rounded-2xl"
               style={{
-                background: "#ffffff",
-                border: "1px solid #e2dbcd",
-              }}
+                background: "#FDFBF7",
+                border: "1px solid #e2dbcd" }}
             >
               <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#1c1d20" }}>
                 <MessageSquare size={16} style={{ color: "#155e56" }} />
@@ -338,10 +328,9 @@ export function ClientDetailView({
                   rows={3}
                   className="flex-1 px-4 py-3 rounded-xl text-sm focus:outline-none resize-none"
                   style={{
-                    background: "#ffffff",
+                    background: "#FDFBF7",
                     border: "1px solid #e2dbcd",
-                    color: "#1c1d20",
-                  }}
+                    color: "#1c1d20" }}
                 />
                 <motion.button
                   onClick={handleSendInsight}
@@ -351,10 +340,9 @@ export function ClientDetailView({
                   className="px-4 rounded-xl self-end"
                   style={{
                     background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
-                    color: "#fdfbf7",
+                    color: "#F6F3ED",
                     opacity: !newInsight.trim() ? 0.5 : 1,
-                    height: 44,
-                  }}
+                    height: 44 }}
                 >
                   {isSending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                 </motion.button>
@@ -373,7 +361,7 @@ export function ClientDetailView({
               <div
                 key={chart.title}
                 className="p-5 rounded-2xl"
-                style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
+                style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}
               >
                 <h3 className="text-sm font-semibold mb-3" style={{ color: "#1c1d20" }}>{chart.title}</h3>
                 {chart.series.length >= 2 ? (
@@ -401,9 +389,8 @@ export function ClientDetailView({
                   key={checkin.id}
                   className="p-5 rounded-2xl"
                   style={{
-                    background: "#ffffff",
-                    border: "1px solid #e2dbcd",
-                  }}
+                    background: "#FDFBF7",
+                    border: "1px solid #e2dbcd" }}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -441,7 +428,7 @@ export function ClientDetailView({
                     ))}
                   </div>
                   {checkin.notes && (
-                    <div className="mt-4 p-3 rounded-lg" style={{ background: "#fdfbf7" }}>
+                    <div className="mt-4 p-3 rounded-lg" style={{ background: "#F4F0E8" }}>
                       <div className="text-xs uppercase mb-1" style={{ color: "#8b867c" }}>Notes</div>
                       <p className="text-sm" style={{ color: "#3c3a34" }}>{checkin.notes}</p>
                     </div>
@@ -468,9 +455,8 @@ export function ClientDetailView({
                       key={photo.id}
                       className="p-5 rounded-2xl"
                       style={{
-                        background: "#ffffff",
-                        border: "1px solid #e2dbcd",
-                      }}
+                        background: "#FDFBF7",
+                        border: "1px solid #e2dbcd" }}
                     >
                       <div className="flex items-center gap-2 mb-4">
                         <Calendar size={14} style={{ color: "#8b867c" }} />
@@ -483,7 +469,7 @@ export function ClientDetailView({
                           <div
                             key={i}
                             className="aspect-[3/4] rounded-lg flex items-center justify-center overflow-hidden"
-                            style={{ background: "#ffffff" }}
+                            style={{ background: "#FDFBF7" }}
                           >
                             {url ? (
                               <img src={`/api/file?pathname=${encodeURIComponent(url)}`} alt="" className="w-full h-full object-cover rounded-lg" />
@@ -521,9 +507,8 @@ export function ClientDetailView({
                   key={insight.id}
                   className="p-5 rounded-2xl"
                   style={{
-                    background: "#ffffff",
-                    border: "1px solid #e2dbcd",
-                  }}
+                    background: "#FDFBF7",
+                    border: "1px solid #e2dbcd" }}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <span className="text-xs" style={{ color: "#8b867c" }}>
@@ -531,8 +516,7 @@ export function ClientDetailView({
                         month: "short",
                         day: "numeric",
                         hour: "numeric",
-                        minute: "2-digit",
-                      })}
+                        minute: "2-digit" })}
                     </span>
                     {insight.is_read && (
                       <span className="flex items-center gap-1 text-[10px]" style={{ color: "#155e56" }}>

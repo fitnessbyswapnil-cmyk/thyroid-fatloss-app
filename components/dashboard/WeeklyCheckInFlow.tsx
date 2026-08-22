@@ -13,8 +13,7 @@ import {
   ArrowUp,
   ArrowDown,
   Award,
-  AlertCircle,
-} from 'lucide-react'
+  AlertCircle } from 'lucide-react'
 import { submitWeeklyCheckIn } from '@/app/actions/submit-checkin'
 import { SYMPTOMS, SEVERITY_LABELS, parseSymptoms, type SymptomScores } from '@/lib/health/symptoms'
 import { SITES, type Measurements } from '@/lib/health/measurements'
@@ -63,10 +62,8 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
         <motion.h2
           className="text-4xl font-bold"
           style={{
-            fontFamily: "'Newsreader', Georgia, serif",
-            fontStyle: 'italic',
-            color: '#1c1d20',
-          }}
+            fontFamily: "'Newsreader', Georgia, serif", 
+            color: '#1c1d20' }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
@@ -89,8 +86,7 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
         className="w-full max-w-xs py-4 rounded-full font-semibold text-base text-white"
         style={{
           background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.6 }}
@@ -137,8 +133,7 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
             onChange={(e) => setData({ ...data, energy: parseInt(e.target.value) })}
             className="flex-1 h-2 rounded-full appearance-none bg-gradient-to-r from-[#f4f0e8] to-[#f4f0e8] cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(data.energy / 10) * 100}%, #f4f0e8 ${(data.energy / 10) * 100}%, #f4f0e8 100%)`,
-            }}
+              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(data.energy / 10) * 100}%, #f4f0e8 ${(data.energy / 10) * 100}%, #f4f0e8 100%)` }}
           />
           <span className="text-sm font-semibold tabular-nums" style={{ color: '#155e56', minWidth: '40px' }}>
             {data.energy}
@@ -164,8 +159,7 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
                 className="flex-1 p-3 rounded-xl transition-all"
                 style={{
                   background: data.mood === face.value ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
-                  border: `1px solid ${data.mood === face.value ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
-                }}
+                  border: `1px solid ${data.mood === face.value ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}` }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -196,8 +190,7 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
             onChange={(e) => setData({ ...data, sleepQuality: parseInt(e.target.value) })}
             className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(data.sleepQuality / 10) * 100}%, #f4f0e8 ${(data.sleepQuality / 10) * 100}%, #f4f0e8 100%)`,
-            }}
+              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(data.sleepQuality / 10) * 100}%, #f4f0e8 ${(data.sleepQuality / 10) * 100}%, #f4f0e8 100%)` }}
           />
           <span className="text-sm font-semibold tabular-nums" style={{ color: '#155e56', minWidth: '40px' }}>
             {data.sleepQuality}
@@ -222,10 +215,9 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
             onChange={(e) => setData({ ...data, stress: parseInt(e.target.value) })}
             className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(10 - data.stress / 10) * 100}%, #9a3b2e ${(10 - data.stress / 10) * 100}%, #9a3b2e 100%)`,
-            }}
+              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(10 - data.stress / 10) * 100}%, #A32B23 ${(10 - data.stress / 10) * 100}%, #A32B23 100%)` }}
           />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: '#9a3b2e', minWidth: '40px' }}>
+          <span className="text-sm font-semibold tabular-nums" style={{ color: '#A32B23', minWidth: '40px' }}>
             {data.stress}
           </span>
         </div>
@@ -240,8 +232,7 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
           background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
         whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(21, 94, 86, 0.4)' }}
         whileTap={{ scale: 0.98 }}
       >
@@ -257,8 +248,7 @@ function BodyStep({ data, setData, onNext }: StepProps) {
     label,
     options,
     value,
-    onChange,
-  }: {
+    onChange }: {
     label: string
     options: string[]
     value: string
@@ -277,8 +267,7 @@ function BodyStep({ data, setData, onNext }: StepProps) {
             style={{
               background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
               border: `1px solid ${value === opt ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
-              color: value === opt ? '#155e56' : '#8b867c',
-            }}
+              color: value === opt ? '#155e56' : '#8b867c' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -320,8 +309,7 @@ function BodyStep({ data, setData, onNext }: StepProps) {
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
           background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
@@ -337,8 +325,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
     label,
     value,
     target,
-    onChange,
-  }: {
+    onChange }: {
     label: string
     value: number
     target: number
@@ -348,7 +335,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
       <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
         {label}
       </label>
-      <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: '#ffffff' }}>
+      <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: '#FDFBF7' }}>
         <span style={{ color: '#8b867c' }}>
           {value} of {target}
         </span>
@@ -358,8 +345,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
             className="px-3 py-1 rounded-lg font-semibold"
             style={{
               background: 'rgba(21, 94, 86, 0.15)',
-              color: '#155e56',
-            }}
+              color: '#155e56' }}
           >
             −
           </button>
@@ -368,8 +354,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
             className="px-3 py-1 rounded-lg font-semibold"
             style={{
               background: 'rgba(21, 94, 86, 0.15)',
-              color: '#155e56',
-            }}
+              color: '#155e56' }}
           >
             +
           </button>
@@ -382,8 +367,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
     label,
     options,
     value,
-    onChange,
-  }: {
+    onChange }: {
     label: string
     options: string[]
     value: string
@@ -402,8 +386,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
             style={{
               background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
               border: `1px solid ${value === opt ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
-              color: value === opt ? '#155e56' : '#8b867c',
-            }}
+              color: value === opt ? '#155e56' : '#8b867c' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -455,7 +438,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
           inputMode="numeric"
           placeholder="e.g. 6000 — leave blank if you don't track"
           className="w-full px-4 py-3 rounded-xl text-base tabular-nums focus:outline-none"
-          style={{ background: '#ffffff', border: '1px solid #e2dbcd', color: '#1c1d20' }}
+          style={{ background: '#FDFBF7', border: '1px solid #e2dbcd', color: '#1c1d20' }}
         />
       </div>
 
@@ -464,8 +447,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
           background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
@@ -513,8 +495,7 @@ function WeightStep({ data, setData, onNext }: StepProps) {
           className="w-full py-4 rounded-full font-semibold text-base text-white"
           style={{
             background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-            boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-          }}
+            boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
           whileHover={{ transform: 'translateY(-2px)' }}
           whileTap={{ scale: 0.98 }}
         >
@@ -524,10 +505,9 @@ function WeightStep({ data, setData, onNext }: StepProps) {
           onClick={handleSkip}
           className="w-full py-4 rounded-full font-semibold text-base"
           style={{
-            background: '#ffffff',
+            background: '#FDFBF7',
             border: '1px solid #e2dbcd',
-            color: '#8b867c',
-          }}
+            color: '#8b867c' }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -565,7 +545,7 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
 
       <div className="grid grid-cols-2 gap-2.5">
         {SITES.map((s) => (
-          <div key={s.key} className="p-3 rounded-2xl" style={{ background: '#ffffff', border: '1px solid #e2dbcd' }}>
+          <div key={s.key} className="p-3 rounded-2xl" style={{ background: '#FDFBF7', border: '1px solid #e2dbcd' }}>
             <label className="block text-[12px] font-semibold" style={{ color: '#1c1d20' }}>{s.label}</label>
             <p className="text-[9.5px] mb-1.5" style={{ color: '#a09a8e', lineHeight: 1.3 }}>{s.hint}</p>
             <input
@@ -574,7 +554,7 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
               inputMode="decimal"
               placeholder="—"
               className="w-full px-2.5 py-2 rounded-lg text-sm tabular-nums focus:outline-none"
-              style={{ background: '#ffffff', border: '1px solid #e2dbcd', color: '#1c1d20' }}
+              style={{ background: '#FDFBF7', border: '1px solid #e2dbcd', color: '#1c1d20' }}
             />
           </div>
         ))}
@@ -585,8 +565,7 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-6"
         style={{
           background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
@@ -632,7 +611,7 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
             <div
               key={s.key}
               className="p-3.5 rounded-2xl"
-              style={{ background: '#ffffff', border: '1px solid #e2dbcd' }}
+              style={{ background: '#FDFBF7', border: '1px solid #e2dbcd' }}
             >
               <p className="text-sm font-medium mb-2.5" style={{ color: '#1c1d20' }}>{s.key}</p>
               <div className="flex gap-1.5">
@@ -646,8 +625,7 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
                       style={{
                         background: active ? 'rgba(21, 94, 86,0.16)' : '#ffffff',
                         border: `1px solid ${active ? 'rgba(21, 94, 86,0.4)' : '#e2dbcd'}`,
-                        color: active ? '#155e56' : '#8b867c',
-                      }}
+                        color: active ? '#155e56' : '#8b867c' }}
                     >
                       {label}
                     </button>
@@ -664,8 +642,7 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
           background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
@@ -707,8 +684,7 @@ function ReflectionStep({ data, setData, onNext, onSubmit, isLoading }: StepProp
         className="w-full py-4 rounded-full font-semibold text-base text-white disabled:opacity-60"
         style={{
           background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
         whileHover={!isLoading ? { transform: 'translateY(-2px)' } : {}}
         whileTap={!isLoading ? { scale: 0.98 } : {}}
       >
@@ -735,16 +711,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           className="w-16 h-16 rounded-full flex items-center justify-center"
           style={{ background: 'rgba(154, 59, 46, 0.2)' }}
         >
-          <AlertCircle size={32} style={{ color: '#9a3b2e' }} />
+          <AlertCircle size={32} style={{ color: '#A32B23' }} />
         </motion.div>
 
         <motion.h2
           className="text-2xl font-bold text-center"
           style={{
-            fontFamily: "'Newsreader', Georgia, serif",
-            fontStyle: 'italic',
-            color: '#1c1d20',
-          }}
+            fontFamily: "'Newsreader', Georgia, serif", 
+            color: '#1c1d20' }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -754,7 +728,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
 
         <motion.p
           className="text-base text-center max-w-sm"
-          style={{ color: '#9a3b2e' }}
+          style={{ color: '#A32B23' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -767,9 +741,8 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           className="px-8 py-3 rounded-full font-semibold"
           style={{
             background: 'rgba(154, 59, 46, 0.15)',
-            color: '#9a3b2e',
-            border: '1px solid rgba(154, 59, 46, 0.3)',
-          }}
+            color: '#A32B23',
+            border: '1px solid rgba(154, 59, 46, 0.3)' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
@@ -800,28 +773,24 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
       return {
         title: `You took your meds ${data.medsTaken} of ${data.medsTarget} days`,
         subtitle: 'Your best week yet',
-        emoji: '💊',
-      }
+        emoji: '💊' }
     }
     if (workoutAdherence > 80) {
       return {
         title: `You completed ${data.workoutsCompleted} of ${data.workoutsTarget} workouts`,
         subtitle: 'Incredible consistency',
-        emoji: '🏃',
-      }
+        emoji: '🏃' }
     }
     if (data.mood >= 4) {
       return {
         title: 'You maintained a positive mood all week',
         subtitle: 'Emotional resilience is strength',
-        emoji: '✨',
-      }
+        emoji: '✨' }
     }
     return {
       title: 'You showed up for yourself',
       subtitle: 'Every check-in is progress',
-      emoji: '🌱',
-    }
+      emoji: '🌱' }
   }
   
   const highlight = getHighlight()
@@ -841,14 +810,12 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         className="relative w-40 h-40 rounded-full flex items-center justify-center"
         style={{
           background: 'radial-gradient(circle, rgba(21, 94, 86, 0.1) 0%, transparent 70%)',
-          boxShadow: '0 0 60px rgba(21, 94, 86, 0.15)',
-        }}
+          boxShadow: '0 0 60px rgba(21, 94, 86, 0.15)' }}
       >
         {/* Inner ring background */}
         <div className="absolute inset-0 rounded-full" style={{ 
-          background: '#ffffff',
-          border: '2px solid rgba(21, 94, 86, 0.2)',
-        }} />
+          background: '#FDFBF7',
+          border: '2px solid rgba(21, 94, 86, 0.2)' }} />
         
         {/* Animated SVG ring */}
         <svg
@@ -864,8 +831,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
             fill="none"
             strokeLinecap="round"
             style={{
-              filter: 'drop-shadow(0 0 8px rgba(21, 94, 86, 0.3))',
-            }}
+              filter: 'drop-shadow(0 0 8px rgba(21, 94, 86, 0.3))' }}
             as={motion.circle}
             strokeDasharray="565"
             strokeDashoffset="565"
@@ -915,14 +881,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         </div>
         
         {/* Energy Delta */}
-        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#FDFBF7' }}>
           <span style={{ color: '#1c1d20' }}>Energy</span>
           <div className="flex items-center gap-2">
             <span style={{ color: '#155e56', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
               {data.energy}
             </span>
             {energyDelta !== 0 && (
-              <div className="flex items-center gap-1" style={{ color: energyDelta > 0 ? '#155e56' : '#9a3b2e' }}>
+              <div className="flex items-center gap-1" style={{ color: energyDelta > 0 ? '#155e56' : '#A32B23' }}>
                 {energyDelta > 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                 <span className="text-xs font-semibold">{Math.abs(energyDelta)}</span>
               </div>
@@ -931,14 +897,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         </div>
 
         {/* Sleep Delta */}
-        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#FDFBF7' }}>
           <span style={{ color: '#1c1d20' }}>Sleep Quality</span>
           <div className="flex items-center gap-2">
             <span style={{ color: '#155e56', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
               {data.sleepQuality}
             </span>
             {sleepDelta !== 0 && (
-              <div className="flex items-center gap-1" style={{ color: sleepDelta > 0 ? '#155e56' : '#9a3b2e' }}>
+              <div className="flex items-center gap-1" style={{ color: sleepDelta > 0 ? '#155e56' : '#A32B23' }}>
                 {sleepDelta > 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                 <span className="text-xs font-semibold">{Math.abs(sleepDelta)}</span>
               </div>
@@ -948,14 +914,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
 
         {/* Weight Delta */}
         {data.weight !== undefined && (
-          <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+          <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#FDFBF7' }}>
             <span style={{ color: '#1c1d20' }}>Weight</span>
             <div className="flex items-center gap-2">
               <span style={{ color: '#155e56', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
                 {data.weight.toFixed(1)} kg
               </span>
               {weightDelta !== null && weightDelta !== 0 && (
-                <div className="flex items-center gap-1" style={{ color: weightDelta < 0 ? '#155e56' : '#9a3b2e' }}>
+                <div className="flex items-center gap-1" style={{ color: weightDelta < 0 ? '#155e56' : '#A32B23' }}>
                   {weightDelta < 0 ? <ArrowDown size={14} /> : <ArrowUp size={14} />}
                   <span className="text-xs font-semibold">{Math.abs(weightDelta).toFixed(1)}</span>
                 </div>
@@ -971,8 +937,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         style={{
           background: 'rgba(21, 94, 86, 0.13)',
           border: '1px solid rgba(21, 94, 86, 0.25)',
-          boxShadow: '0 0 32px rgba(21, 94, 86, 0.1)',
-        }}
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.1)' }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.6 }}
@@ -1016,8 +981,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           className="w-full py-4 rounded-full font-semibold text-base text-white"
           style={{
             background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-            boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
-          }}
+            boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)' }}
           whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(21, 94, 86, 0.4)' }}
           whileTap={{ scale: 0.98 }}
         >
@@ -1027,10 +991,9 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           onClick={() => window.location.href = '/dashboard'}
           className="w-full py-4 rounded-full font-semibold text-base"
           style={{
-            background: '#f4f0e8',
+            background: '#F1EDE1',
             color: '#8b867c',
-            border: '1px solid #cfc7b6',
-          }}
+            border: '1px solid #cfc7b6' }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -1116,8 +1079,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
     steps: typeof existing?.steps === 'number' ? existing.steps : undefined,
     measurements: seedMeasurements(existing),
     symptoms: parseSymptoms(existing?.symptoms) ?? {},
-    reflectionText: existing?.reflection_text || '',
-  })
+    reflectionText: existing?.reflection_text || '' })
 
   const handleSubmitCheckIn = async (checkInData: CheckInData) => {
     setIsSubmitting(true)
@@ -1165,7 +1127,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
   ]
 
   return (
-    <div className="min-h-screen w-full" style={{ background: '#fdfbf7' }}>
+    <div className="min-h-screen w-full" style={{ background: '#F4F0E8' }}>
       {/* Progress dots at top */}
       <div className="flex justify-center gap-1.5 px-6 py-6 sticky top-0 z-40">
         {[...Array(COMPLETION_STEP)].map((_, idx) => (
@@ -1174,8 +1136,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
             className="h-1 rounded-full"
             style={{
               width: idx < currentStep ? 24 : 6,
-              background: idx < currentStep ? '#155e56' : '#cfc7b6',
-            }}
+              background: idx < currentStep ? '#155e56' : '#cfc7b6' }}
             initial={{ width: 6 }}
             animate={{ width: idx < currentStep ? 24 : 6 }}
             transition={{ duration: 0.4 }}
@@ -1188,7 +1149,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
         <motion.button
           onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
           className="absolute top-8 left-6 p-2 rounded-lg"
-          style={{ background: '#ffffff' }}
+          style={{ background: '#FDFBF7' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           whileHover={{ background: '#e2dbcd' }}

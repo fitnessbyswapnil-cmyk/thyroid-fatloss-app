@@ -80,7 +80,7 @@ export function StreakAchievements({
           <div className="flex items-baseline gap-2">
             <span
               className="tabular-nums"
-              style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 64, color: "#97671b" }}
+              style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 64, color: "#97671b" }}
             >
               {animatedStreak}
             </span>

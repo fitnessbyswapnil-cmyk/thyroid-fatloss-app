@@ -16,19 +16,15 @@ const ANGLE_CONFIG: Record<AngleType, { title: string; instructions: string; tip
   front: {
     title: 'Front Photo',
     instructions: 'Stand facing the camera, feet shoulder-width apart. Full body in frame.',
-    tips: ['Keep arms at sides', 'Neutral expression', 'Let your light shine'],
-  },
+    tips: ['Keep arms at sides', 'Neutral expression', 'Let your light shine'] },
   side: {
     title: 'Side Photo',
     instructions: 'Turn to your side (right side recommended). Full body visible.',
-    tips: ['Look forward', 'Natural posture', 'Shoulders relaxed'],
-  },
+    tips: ['Look forward', 'Natural posture', 'Shoulders relaxed'] },
   back: {
     title: 'Back Photo',
     instructions: 'Face away from camera, feet shoulder-width apart. Full body visible.',
-    tips: ['Keep arms relaxed', 'Slight tension OK', 'You\'re capturing progress'],
-  },
-}
+    tips: ['Keep arms relaxed', 'Slight tension OK', 'You\'re capturing progress'] } }
 
 export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -41,8 +37,7 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } },
-      })
+        video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } } })
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
@@ -108,7 +103,7 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
         </button>
         <h2
           className="text-lg font-semibold"
-          style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: 'italic' }}
+          style={{ fontFamily: "'Newsreader', Georgia, serif" }}
         >
           {config.title}
         </h2>
@@ -125,9 +120,9 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
                   className="w-12 h-12 rounded-full flex items-center justify-center"
                   style={{ background: 'rgba(154, 59, 46,0.2)' }}
                 >
-                  <Smartphone size={24} style={{ color: '#9a3b2e' }} />
+                  <Smartphone size={24} style={{ color: '#A32B23' }} />
                 </div>
-                <p className="text-center" style={{ color: '#9a3b2e' }}>
+                <p className="text-center" style={{ color: '#A32B23' }}>
                   {error}
                 </p>
               </div>
@@ -192,8 +187,7 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
                 style={{
                   background: 'rgba(21, 94, 86,0.15)',
                   color: '#155e56',
-                  border: '1px solid rgba(21, 94, 86,0.3)',
-                }}
+                  border: '1px solid rgba(21, 94, 86,0.3)' }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -205,8 +199,7 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
                 className="flex-1 py-3 rounded-full font-semibold text-white"
                 style={{
                   background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-                  boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
-                }}
+                  boxShadow: '0 0 32px rgba(21, 94, 86,0.3)' }}
                 whileHover={{ transform: 'translateY(-2px)' }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -219,8 +212,7 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
               className="w-20 h-20 rounded-full mx-auto flex items-center justify-center"
               style={{
                 background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-                boxShadow: '0 0 48px rgba(21, 94, 86,0.4)',
-              }}
+                boxShadow: '0 0 48px rgba(21, 94, 86,0.4)' }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             />

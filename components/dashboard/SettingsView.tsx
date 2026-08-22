@@ -15,8 +15,7 @@ export function SettingsView({
   email,
   consentAt,
   isActive = true,
-  isCoach = false,
-}: {
+  isCoach = false }: {
   fullName: string
   email: string
   consentAt: string | null
@@ -61,14 +60,14 @@ export function SettingsView({
     router.push("/auth/login")
   }
 
-  const card = { background: "#ffffff", border: "1px solid #e2dbcd" } as const
+  const card = { background: "#FDFBF7", border: "1px solid #e2dbcd" } as const
 
   return (
-    <div className="min-h-screen" style={{ background: "#fdfbf7", paddingBottom: "calc(100px + env(safe-area-inset-bottom, 24px))" }}>
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
+    <div className="min-h-screen" style={{ background: "#F4F0E8", paddingBottom: "calc(100px + env(safe-area-inset-bottom, 24px))" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>Settings</h1>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>Settings</h1>
         </div>
       </header>
 
@@ -117,7 +116,7 @@ export function SettingsView({
         <Link
           href="/dashboard/learn"
           className="flex items-center gap-3 p-5 rounded-2xl"
-          style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
+          style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}
         >
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(184, 134, 63,0.14)" }}>
             <BookOpen size={20} style={{ color: "#b8863f" }} />
@@ -133,7 +132,7 @@ export function SettingsView({
         <Link
           href="/dashboard/health"
           className="flex items-center gap-3 p-5 rounded-2xl"
-          style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
+          style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}
         >
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(21, 94, 86,0.12)" }}>
             <Activity size={20} style={{ color: "#155e56" }} />
@@ -166,7 +165,7 @@ export function SettingsView({
             onClick={handleExport}
             disabled={exporting}
             className="w-full mb-3 h-12 rounded-xl font-medium inline-flex items-center justify-center gap-2"
-            style={{ background: "#f4f0e8", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+            style={{ background: "#F1EDE1", border: "1px solid #e2dbcd", color: "#1c1d20" }}
           >
             {exporting ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
             Download my data
@@ -175,12 +174,12 @@ export function SettingsView({
           <button
             onClick={() => setConfirmOpen(true)}
             className="w-full h-12 rounded-xl font-medium inline-flex items-center justify-center gap-2"
-            style={{ background: "rgba(154, 59, 46,0.1)", border: "1px solid rgba(154, 59, 46,0.25)", color: "#9a3b2e" }}
+            style={{ background: "rgba(154, 59, 46,0.1)", border: "1px solid rgba(154, 59, 46,0.25)", color: "#A32B23" }}
           >
             <Trash2 size={18} /> Delete my account and data
           </button>
 
-          {error && <p className="text-xs mt-3" style={{ color: "#9a3b2e" }}>{error}</p>}
+          {error && <p className="text-xs mt-3" style={{ color: "#A32B23" }}>{error}</p>}
         </div>
 
         {/* Legal */}
@@ -205,18 +204,18 @@ export function SettingsView({
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center px-4"
-            style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+            style={{ background: "rgba(0,0,0,0.6)" }}
             onClick={() => !deleting && setConfirmOpen(false)}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-md rounded-2xl p-6"
-              style={{ background: "#ffffff", border: "1px solid rgba(154, 59, 46,0.2)" }}
+              style={{ background: "#FDFBF7", border: "1px solid rgba(154, 59, 46,0.2)" }}
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle size={18} style={{ color: "#9a3b2e" }} />
+                  <AlertTriangle size={18} style={{ color: "#A32B23" }} />
                   <h3 className="font-semibold" style={{ color: "#1c1d20" }}>Delete everything?</h3>
                 </div>
                 <button onClick={() => !deleting && setConfirmOpen(false)} style={{ color: "#8b867c" }} aria-label="Close"><X size={18} /></button>
@@ -229,14 +228,14 @@ export function SettingsView({
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none mb-4"
-                style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                 placeholder="DELETE"
               />
               <button
                 onClick={handleDelete}
                 disabled={confirmText !== "DELETE" || deleting}
                 className="w-full h-12 rounded-xl font-semibold inline-flex items-center justify-center gap-2"
-                style={{ background: confirmText === "DELETE" ? "#9a3b2e" : "rgba(154, 59, 46,0.3)", color: "#fff", opacity: confirmText === "DELETE" ? 1 : 0.6 }}
+                style={{ background: confirmText === "DELETE" ? "#A32B23" : "rgba(154, 59, 46,0.3)", color: "#fff", opacity: confirmText === "DELETE" ? 1 : 0.6 }}
               >
                 {deleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
                 Permanently delete

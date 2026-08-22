@@ -25,15 +25,12 @@ export function BottomNavPill() {
       style={{
         bottom: 24,
         left: "50%",
-        transform: "translateX(-50%)",
-        backdropFilter: "blur(28px) saturate(180%)",
-        WebkitBackdropFilter: "blur(28px) saturate(180%)",
+        transform: "translateX(-50%)", 
         background: "rgba(253, 251, 247, 0.92)",
         border: "1px solid #e2dbcd",
         borderRadius: 9999,
         padding: "10px 32px",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 #cfc7b6",
-      }}
+        boxShadow: "none" }}
     >
       <div className="flex items-center gap-2 relative">
         <motion.div
@@ -59,8 +56,7 @@ export function BottomNavPill() {
                   width: isActive ? 22 : 20,
                   height: isActive ? 22 : 20,
                   color: isActive ? "#155e56" : "#8b867c",
-                  transition: "color 200ms ease",
-                }}
+                  transition: "color 200ms ease" }}
               />
             </Link>
           )

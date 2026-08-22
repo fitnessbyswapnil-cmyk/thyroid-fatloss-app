@@ -47,7 +47,7 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
   if (ordered.length < 2) {
     return (
       <Shell>
-        <div className="rounded-3xl p-8 text-center" style={{ background: "#ffffff", border: "1.5px dashed #cfc7b6" }}>
+        <div className="rounded-3xl p-8 text-center" style={{ background: "#FDFBF7", border: "1.5px dashed #cfc7b6" }}>
           <Camera size={30} style={{ color: "#cfc7b6" }} className="mx-auto" />
           <p className="text-sm font-semibold mt-4" style={{ color: "#1c1d20" }}>
             {ordered.length === 0 ? "No photos yet" : "One set so far"}
@@ -76,7 +76,7 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
   return (
     <Shell>
       {/* Pose selector */}
-      <div className="flex gap-1.5 p-1 rounded-full mb-4" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+      <div className="flex gap-1.5 p-1 rounded-full mb-4" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
         {POSES.map((p) => {
           const active = pose === p.key
           const count = ordered.filter((s) => s[p.field]).length
@@ -88,7 +88,7 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
               className="flex-1 py-2 rounded-full text-[12.5px] font-semibold transition-colors"
               style={
                 active
-                  ? { background: "#155e56", color: "#fdfbf7" }
+                  ? { background: "#155e56", color: "#F6F3ED" }
                   : { color: count === 0 ? "#cfc7b6" : "#5a564e" }
               }
             >
@@ -110,13 +110,13 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
               <div key={i}>
                 <div
                   className="relative w-full overflow-hidden rounded-2xl"
-                  style={{ aspectRatio: "3 / 4", background: "#ffffff", border: "1px solid #e2dbcd" }}
+                  style={{ aspectRatio: "3 / 4", background: "#FDFBF7", border: "1px solid #e2dbcd" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={src(s[field] as string)} alt={`${pose} ${i === 0 ? "before" : "after"}`} className="w-full h-full object-cover" />
                   <span
                     className="absolute top-2 left-2 text-[9.5px] font-bold uppercase rounded-full px-2 py-1"
-                    style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7", backdropFilter: "blur(4px)", letterSpacing: "0.06em" }}
+                    style={{ background: "rgba(28, 29, 32, 0.62)", color: "#F6F3ED",  letterSpacing: "0.06em" }}
                   >
                     {i === 0 ? "Before" : "Now"}
                   </span>
@@ -131,7 +131,7 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
 
           {/* The delta line — the sentence she screenshots */}
           <div className="mt-4 p-4 rounded-2xl text-center" style={{ background: "rgba(21, 94, 86, 0.13)", border: "1px solid rgba(21, 94, 86,0.2)" }}>
-            <p style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#1c1d20" }}>
+            <p style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 22, color: "#1c1d20" }}>
               {daysApart} days apart
             </p>
             {weightDelta !== null && (
@@ -151,7 +151,7 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
                   value={Math.min(val, available.length - 1)}
                   onChange={(e) => setter(Number(e.target.value))}
                   className="w-full px-3 py-2.5 rounded-xl text-[12.5px] focus:outline-none"
-                  style={{ background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                  style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
                 >
                   {available.map((s, i) => (
                     <option key={s.id} value={i}>{fmt(s.upload_date)}{s.week_number ? ` · Wk ${s.week_number}` : ""}</option>
@@ -172,12 +172,12 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -150, left: 20, width: 340, height: 300, zIndex: 0 }} />
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href="/dashboard/progress" className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>Before &amp; After</h1>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>Before &amp; After</h1>
         </div>
       </header>
       <main className="max-w-2xl mx-auto px-6 py-6 relative" style={{ zIndex: 1 }}>{children}</main>

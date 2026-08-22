@@ -9,8 +9,7 @@ export function TrendChart({
   points,
   color = "#155e56",
   height = 120,
-  unit = "",
-}: {
+  unit = "" }: {
   points: Array<{ label: string; value: number }>
   color?: string
   height?: number

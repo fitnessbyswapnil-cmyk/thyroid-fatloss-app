@@ -81,7 +81,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
           <ChevronLeft size={24} style={{ color: '#155e56' }} />
         </button>
         <div className="text-center flex-1">
-          <h2 className="font-semibold" style={{ color: '#1c1d20', fontFamily: "'Newsreader', Georgia, serif", fontStyle: 'italic' }}>
+          <h2 className="font-semibold" style={{ color: '#1c1d20', fontFamily: "'Newsreader', Georgia, serif" }}>
             {review.client_name}
           </h2>
           <p className="text-xs" style={{ color: '#8b867c' }}>
@@ -97,8 +97,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
           className="rounded-xl p-4 border"
           style={{
             background: 'rgba(21, 94, 86, 0.13)',
-            border: '1px solid rgba(21, 94, 86, 0.25)',
-          }}
+            border: '1px solid rgba(21, 94, 86, 0.25)' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -116,7 +115,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             {review.energy_delta !== undefined && (
               <div className="flex items-center justify-between text-sm">
                 <span style={{ color: '#1c1d20' }}>Energy</span>
-                <span style={{ color: review.energy_delta > 0 ? '#155e56' : '#9a3b2e', fontWeight: 600 }}>
+                <span style={{ color: review.energy_delta > 0 ? '#155e56' : '#A32B23', fontWeight: 600 }}>
                   {review.energy} {review.energy_delta > 0 ? '+' : ''}{review.energy_delta}
                 </span>
               </div>
@@ -124,7 +123,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             {review.sleep_delta !== undefined && (
               <div className="flex items-center justify-between text-sm">
                 <span style={{ color: '#1c1d20' }}>Sleep</span>
-                <span style={{ color: review.sleep_delta > 0 ? '#155e56' : '#9a3b2e', fontWeight: 600 }}>
+                <span style={{ color: review.sleep_delta > 0 ? '#155e56' : '#A32B23', fontWeight: 600 }}>
                   {review.sleep_quality} {review.sleep_delta > 0 ? '+' : ''}{review.sleep_delta}
                 </span>
               </div>
@@ -132,7 +131,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             {review.weight_delta !== undefined && review.weight !== undefined && (
               <div className="flex items-center justify-between text-sm">
                 <span style={{ color: '#1c1d20' }}>Weight</span>
-                <span style={{ color: review.weight_delta < 0 ? '#155e56' : '#9a3b2e', fontWeight: 600 }}>
+                <span style={{ color: review.weight_delta < 0 ? '#155e56' : '#A32B23', fontWeight: 600 }}>
                   {review.weight.toFixed(1)}kg {review.weight_delta < 0 ? '' : '+'}{review.weight_delta.toFixed(1)}
                 </span>
               </div>
@@ -145,9 +144,8 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
           <motion.div
             className="rounded-xl p-4 border"
             style={{
-              background: '#ffffff',
-              border: '1px solid #e2dbcd',
-            }}
+              background: '#FDFBF7',
+              border: '1px solid #e2dbcd' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -176,7 +174,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
                 <div
                   key={photo.id}
                   className="aspect-square rounded-lg overflow-hidden border"
-                  style={{ background: '#ffffff', border: '1px solid #e2dbcd' }}
+                  style={{ background: '#FDFBF7', border: '1px solid #e2dbcd' }}
                 >
                   <img
                     src={`/api/file?pathname=${encodeURIComponent(photo.file_path)}`}
@@ -202,7 +200,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             <div className="space-y-2">
               {/* Digestion */}
               {detail.checkin?.digestion_score && (
-                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#FDFBF7' }}>
                   <span style={{ color: '#1c1d20' }}>Digestion</span>
                   <span style={{ color: '#155e56', fontWeight: 600 }}>
                     {detail.checkin.digestion_score}/10
@@ -211,9 +209,9 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
               )}
               {/* Stress */}
               {review.stress !== undefined && (
-                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#FDFBF7' }}>
                   <span style={{ color: '#1c1d20' }}>Stress Level</span>
-                  <span style={{ color: review.stress > 7 ? '#9a3b2e' : '#155e56', fontWeight: 600 }}>
+                  <span style={{ color: review.stress > 7 ? '#A32B23' : '#155e56', fontWeight: 600 }}>
                     {review.stress}/10
                   </span>
                 </div>
@@ -230,8 +228,8 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <AlertCircle size={16} style={{ color: '#9a3b2e', marginTop: '2px', flexShrink: 0 }} />
-            <p className="text-sm" style={{ color: '#9a3b2e' }}>
+            <AlertCircle size={16} style={{ color: '#A32B23', marginTop: '2px', flexShrink: 0 }} />
+            <p className="text-sm" style={{ color: '#A32B23' }}>
               {submitError}
             </p>
           </motion.div>
@@ -243,8 +241,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
         className="border-t p-4"
         style={{
           background: 'rgba(253, 251, 247, 0.92)',
-          borderColor: '#e2dbcd',
-        }}
+          borderColor: '#e2dbcd' }}
       >
         <label className="text-xs uppercase font-medium mb-2 block" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Your Feedback
@@ -264,8 +261,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             className="px-4 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 transition"
             style={{
               background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-              boxShadow: '0 0 24px rgba(21, 94, 86, 0.2)',
-            }}
+              boxShadow: '0 0 24px rgba(21, 94, 86, 0.2)' }}
           >
             <Send size={18} style={{ color: 'white' }} />
           </button>

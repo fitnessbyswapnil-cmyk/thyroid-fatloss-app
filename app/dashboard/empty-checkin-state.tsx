@@ -27,8 +27,7 @@ export interface Week0Status {
 export function EmptyCheckInState({ name, status }: { name: string; status?: Week0Status }) {
   const s: Week0Status = status ?? {
     hasPlan: false, hasLabs: false, hasMedication: false,
-    hasMessaged: false, hasReadLesson: false, hasBaselinePhotos: false, firstLessonSlug: null,
-  }
+    hasMessaged: false, hasReadLesson: false, hasBaselinePhotos: false, firstLessonSlug: null }
 
   const steps = [
     {
@@ -37,8 +36,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
       title: 'Add your thyroid medication',
       detail: 'So your reminders and plan respect your timing',
       href: '/dashboard/health',
-      tint: '#155e56',
-    },
+      tint: '#155e56' },
     {
       // Deliberately high in the list: week-1 photos are the only ones that
       // can never be taken later, and without them there is no 3-month
@@ -48,39 +46,35 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
       title: 'Take your week-1 photos',
       detail: "Today's the only day you can capture your starting point",
       href: '/dashboard/progress-photos',
-      tint: '#97671b',
-    },
+      tint: '#97671b' },
     {
       done: s.hasLabs,
       icon: FlaskConical,
       title: 'Add your latest blood report',
       detail: 'Optional — but it makes week one far more personal',
       href: '/dashboard/health',
-      tint: '#4a8a80',
-    },
+      tint: '#7FA196' },
     {
       done: s.hasReadLesson,
       icon: BookOpen,
       title: 'Read your first lesson',
       detail: 'Two minutes on how to take your tablet for best effect',
       href: s.firstLessonSlug ? `/dashboard/learn/${s.firstLessonSlug}` : '/dashboard/learn',
-      tint: '#b8863f',
-    },
+      tint: '#155E56' },
     {
       done: s.hasMessaged,
       icon: MessageSquare,
       title: 'Say hello to your coach',
       detail: 'Tell them what you want out of these three months',
       href: '/dashboard/messages',
-      tint: '#155e56',
-    },
+      tint: '#155e56' },
   ]
   const doneCount = steps.filter((x) => x.done).length
 
   return (
     <div
       className="min-h-screen relative"
-      style={{ background: '#fdfbf7', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 24px))' }}
+      style={{ background: '#F4F0E8', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 24px))' }}
     >
       <div className="tw-glow" style={{ position: 'fixed', top: -150, left: 20, width: 350, height: 300, zIndex: 0 }} />
 
@@ -91,7 +85,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
           </p>
           <h1
             className="mt-1.5"
-            style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: 'italic', fontSize: 31, lineHeight: 1.15, color: '#1c1d20' }}
+            style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 31, lineHeight: 1.15, color: '#1c1d20' }}
           >
             Welcome, {name}
           </h1>
@@ -123,7 +117,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
           ) : (
             <div
               className="flex items-center gap-3 p-5 rounded-3xl"
-              style={{ background: '#ffffff', border: '1px dashed #cfc7b6' }}
+              style={{ background: '#FDFBF7', border: '1px dashed #cfc7b6' }}
             >
               <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(21, 94, 86,0.1)' }}>
                 <Sparkles size={19} style={{ color: '#155e56' }} />
@@ -157,8 +151,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
                 className="flex items-center gap-3 p-4 rounded-2xl"
                 style={{
                   background: step.done ? 'rgba(21, 94, 86, 0.13)' : '#ffffff',
-                  border: `1px solid ${step.done ? 'rgba(21, 94, 86,0.18)' : '#e2dbcd'}`,
-                }}
+                  border: `1px solid ${step.done ? 'rgba(21, 94, 86,0.18)' : '#e2dbcd'}` }}
               >
                 <span
                   className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -191,8 +184,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
               className="w-full h-13 py-4 rounded-full font-bold text-sm text-white flex items-center justify-center gap-2"
               style={{
                 background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-                boxShadow: '0 8px 28px rgba(21, 94, 86, 0.28)',
-              }}
+                boxShadow: '0 8px 28px rgba(21, 94, 86, 0.28)' }}
             >
               Start your first check-in
               <ArrowRight size={17} />

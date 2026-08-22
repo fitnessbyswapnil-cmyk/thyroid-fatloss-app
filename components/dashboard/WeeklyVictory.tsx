@@ -126,8 +126,7 @@ export function WeeklyVictory({
               <span
                 className="tabular-nums block"
                 style={{
-                  fontFamily: "'Newsreader', Georgia, serif",
-                  fontStyle: "italic",
+                  fontFamily: "'Newsreader', Georgia, serif", 
                   fontSize: 28,
                   color: "#1c1d20"
                 }}
@@ -152,8 +151,7 @@ export function WeeklyVictory({
               <span
                 className="tabular-nums block"
                 style={{
-                  fontFamily: "'Newsreader', Georgia, serif",
-                  fontStyle: "italic",
+                  fontFamily: "'Newsreader', Georgia, serif", 
                   fontSize: 28,
                   color: "#1c1d20"
                 }}

@@ -16,8 +16,7 @@ export function ExerciseDemo({
   alt,
   size = 64,
   rounded = 14,
-  interval = 900,
-}: {
+  interval = 900 }: {
   demo?: string | null   // animated GIF/MP4 — takes priority when present
   start?: string | null
   end?: string | null
@@ -73,7 +72,7 @@ export function ExerciseDemo({
     <div
       ref={ref}
       className="relative shrink-0 overflow-hidden"
-      style={{ width: size, height: size, borderRadius: rounded, background: "#f4f0e8" }}
+      style={{ width: size, height: size, borderRadius: rounded, background: "#F1EDE1" }}
     >
       {frames.length === 0 ? (
         <div className="w-full h-full flex items-center justify-center">

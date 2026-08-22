@@ -65,8 +65,7 @@ export function PhotoUpload({
 
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData,
-      })
+        body: formData })
 
       clearInterval(progressInterval)
 
@@ -113,8 +112,7 @@ export function PhotoUpload({
         className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden"
         style={{
           background: displayImage ? 'transparent' : '#ffffff',
-          border: '1px dashed #cfc7b6',
-        }}
+          border: '1px dashed #cfc7b6' }}
         whileHover={{ scale: isUploading ? 1 : 1.02 }}
         whileTap={{ scale: isUploading ? 1 : 0.98 }}
       >
@@ -148,7 +146,7 @@ export function PhotoUpload({
               className="absolute inset-0 flex flex-col items-center justify-center gap-3"
               style={{ background: 'rgba(28, 29, 32, 0.62)' }}
             >
-              <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#fdfbf7' }} />
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#F6F3ED' }} />
               <div className="w-32 h-1.5 rounded-full overflow-hidden" style={{ background: '#cfc7b6' }}>
                 <motion.div
                   className="h-full rounded-full"
@@ -184,7 +182,7 @@ export function PhotoUpload({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="absolute -bottom-8 left-0 right-0 text-center text-xs"
-            style={{ color: '#9a3b2e' }}
+            style={{ color: '#A32B23' }}
           >
             {error}
           </motion.div>

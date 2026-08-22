@@ -6,7 +6,7 @@ import { Search, Plus, Trash2, Loader2, Check, X, FlaskConical } from "lucide-re
 import { lookupIngredients, saveComposedFood } from "@/app/actions/nutrition"
 import type { Ingredient, RecipePart } from "@/lib/nutrition/ifct"
 
-const inputStyle = { background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
+const inputStyle = { background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
 
 /**
  * Compose a library food from measured ingredients.
@@ -39,8 +39,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
     setParts((p) => [...p, {
       name: ing.name, grams: 100,
       kcal: ing.kcal, protein: ing.protein, carbs: ing.carbs, fats: ing.fats,
-      source: ing.energyBasis === "derived" ? "IFCT 2017 (energy derived)" : "IFCT 2017",
-    }])
+      source: ing.energyBasis === "derived" ? "IFCT 2017 (energy derived)" : "IFCT 2017" }])
     setResults([])
     setQuery("")
   }
@@ -54,8 +53,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
         protein: acc.protein + p.protein * f,
         carbs: acc.carbs + p.carbs * f,
         fats: acc.fats + p.fats * f,
-        grams: acc.grams + (Number(p.grams) || 0),
-      }
+        grams: acc.grams + (Number(p.grams) || 0) }
     },
     { calories: 0, protein: 0, carbs: 0, fats: 0, grams: 0 }
   )
@@ -63,8 +61,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
   const save = async () => {
     setSaving(true); setErr(null)
     const res = await saveComposedFood({
-      name, portion, parts, recipe: method, tags, isVeg,
-    })
+      name, portion, parts, recipe: method, tags, isVeg })
     setSaving(false)
     if (!res.success) { setErr(res.error || "Could not save"); return }
     router.refresh()
@@ -72,11 +69,11 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center" style={{ background: "rgba(28, 29, 32, 0.45)", backdropFilter: "blur(6px)" }} onClick={() => !saving && onClose()}>
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center" style={{ background: "rgba(28, 29, 32, 0.45)" }} onClick={() => !saving && onClose()}>
       <div className="w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-3xl p-6 tw-fade-up"
-        style={{ background: "#ffffff", border: "1px solid #cfc7b6" }} onClick={(e) => e.stopPropagation()}>
+        style={{ background: "#FDFBF7", border: "1px solid #cfc7b6" }} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
+          <h3 className="text-xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
             Build from ingredients
           </h3>
           <button onClick={onClose} style={{ color: "#8b867c" }} aria-label="Close"><X size={18} /></button>
@@ -127,7 +124,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
         {parts.length > 0 && (
           <div className="space-y-1.5 mb-3">
             {parts.map((p, i) => (
-              <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+              <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
                 <span className="flex-1 min-w-0 text-[13px] truncate" style={{ color: "#1c1d20" }}>{p.name}</span>
                 <input
                   value={p.grams}
@@ -151,7 +148,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
               <FlaskConical size={13} style={{ color: "#155e56" }} />
               <span className="text-[10.5px] uppercase font-semibold" style={{ color: "#155e56", letterSpacing: "0.14em" }}>Computed</span>
             </div>
-            <p style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 24, color: "#1c1d20" }}>
+            <p style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 24, color: "#1c1d20" }}>
               {Math.round(totals.calories)} kcal
             </p>
             <p className="text-[12px] tabular-nums" style={{ color: "#5a564e" }}>
@@ -169,7 +166,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
           style={inputStyle}
         />
 
-        {err && <p className="text-xs mb-2" style={{ color: "#9a3b2e" }}>{err}</p>}
+        {err && <p className="text-xs mb-2" style={{ color: "#A32B23" }}>{err}</p>}
 
         <button onClick={save} disabled={saving || !name.trim() || parts.length === 0}
           className="w-full h-12 rounded-full font-bold text-sm inline-flex items-center justify-center gap-2"

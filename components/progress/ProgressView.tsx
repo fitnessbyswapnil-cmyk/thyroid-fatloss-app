@@ -73,12 +73,12 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
   const lost = startW != null && nowW != null ? +(startW - nowW).toFixed(1) : null
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -140, left: 30, width: 340, height: 300, zIndex: 0 }} />
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>My Progress</h1>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>My Progress</h1>
         </div>
       </header>
 
@@ -89,7 +89,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>
               Over {weightPts.length} check-ins
             </p>
-            <p className="mt-2" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 48, lineHeight: 1.05, color: "#1c1d20", textShadow: "0 0 44px rgba(21, 94, 86,0.35)" }}>
+            <p className="mt-2" style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 48, lineHeight: 1.05, color: "#1c1d20", textShadow: "0 0 44px rgba(21, 94, 86,0.35)" }}>
               {lost > 0 ? `${lost} kg down` : lost < 0 ? `${Math.abs(lost)} kg up` : "Holding steady"}
             </p>
             <p className="text-sm mt-2 mx-auto" style={{ color: "#5a564e", maxWidth: 300, lineHeight: 1.5 }}>
@@ -100,15 +100,15 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           </div>
         )}
 
-        <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+        <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
           <div className="flex items-center gap-1.5 mb-5">
             {VIEWS.map((v) => (
               <button key={v.key} onClick={() => setView(v.key)}
                 className="flex-1 text-[12.5px] font-medium px-3 py-2 rounded-xl whitespace-nowrap transition-colors"
                 aria-pressed={view === v.key}
                 style={view === v.key
-                  ? { background: "#155e56", color: "#fdfbf7" }
-                  : { background: "#f4f0e8", color: "#3c3a34" }}>
+                  ? { background: "#155e56", color: "#F6F3ED" }
+                  : { background: "#F1EDE1", color: "#3c3a34" }}>
                 {v.label}
               </button>
             ))}
@@ -198,7 +198,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             .filter((p) => Number.isFinite(p.value))
 
           return (
-            <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+            <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
               <h3 className="font-semibold mb-1" style={{ color: "#1c1d20" }}>Symptoms</h3>
               {scored.length < 2 ? (
                 <p className="text-[12.5px] mb-3" style={{ color: "#8b867c" }}>
@@ -281,7 +281,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           <Link href="/dashboard/progress-photos/compare" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-semibold" style={{ background: "rgba(21, 94, 86,0.1)", border: "1px solid rgba(21, 94, 86,0.25)", color: "#155e56" }}>
             Before &amp; after
           </Link>
-          <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "#f4f0e8", border: "1px solid #e2dbcd", color: "#1c1d20" }}>
+          <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "#F1EDE1", border: "1px solid #e2dbcd", color: "#1c1d20" }}>
             Add photos
           </Link>
         </div>

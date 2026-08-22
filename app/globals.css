@@ -4,106 +4,232 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* ThyroWell — warm paper with dark moments.
-     Palette from the Claude Design system (direction 1c): paper carries the
-     data, dark carries the emotional beats. Every value below is a token so a
-     future change is one file rather than seventy-one. */
+  /* ThyroWell design system — verbatim from the Claude Design spec.
+     Two surfaces: ink for feelings, paper for anything countable. */
 
-  /* --- Paper surfaces (the default ground) --- */
-  --paper:            #fdfbf7;  /* page */
-  --paper-card:       #ffffff;  /* elevated card */
-  --paper-subtle:     #f4f0e8;  /* recessed / secondary fill */
-  --paper-warm:       #ece5d6;  /* accent surface, callouts */
-  --paper-sage:       #dfe7dd;  /* soft positive surface */
-  --line:             #e2dbcd;  /* hairline on paper */
-  --line-firm:        #cfc7b6;  /* stronger divider */
+  /* ── Ink surface · feelings only (greeting block, coach's voice) ── */
+  --ink-ground:            #17181C;
+  --ink-raised:            #23242A;
+  --ink-text:              #F6F3ED;
+  --ink-text-secondary:    #B8B3AB;
+  --ink-text-muted:        #8E8A84;
+  --ink-text-faint:        #6F6B64;
+  --ink-accent:            #E8C894; /* brass — hero figures, mark. Ink only. */
+  --ink-accent-deep:       #B8863F;
+  --ink-hairline:          rgba(246, 243, 237, 0.09);
 
-  /* --- Dark surfaces (greeting, hero moments, immersive views) --- */
-  --ink:              #17181c;  /* dark ground */
-  --ink-raised:       #1c1d20;  /* dark card */
-  --ink-line:         #2b2c31;  /* hairline on dark */
-  --on-ink:           #fdfbf7;  /* text on dark */
-  --on-ink-muted:     #8a8e96;  /* muted text on dark */
+  /* ── Paper surface · everything countable ── */
+  --paper-ground:          #F4F0E8;
+  --paper-card:            #FDFBF7;
+  --paper-sunken:          #F1EDE1;
+  --paper-hairline:        #E2DBCD;
+  --paper-hairline-inner:  #ECE5D6;
+  --paper-border-strong:   #CFC7B6;
 
-  /* --- Text on paper --- */
-  --text:             #1c1d20;
-  --text-strong:      #1a1a1a;
-  --text-2:           #3c3a34;
-  --text-muted:       #5a564e;
-  --text-faint:       #8b867c;
-  --text-ghost:       #a09a8e;
+  --text-primary:          #1C1D20;
+  --text-secondary:        #3C3A34;
+  --text-body:             #5A564E;
+  --text-tertiary:         #7C776D;
+  --text-label:            #8B867C;
+  --text-quiet:            #A09A8E;
 
-  /* --- Brand --- */
-  --accent:           #155e56;  /* deep teal — buttons, active state */
-  --accent-ink:       #fdfbf7;  /* text on accent */
-  --accent-soft:      #dfe7dd;  /* accent surface */
-  --accent-line:      rgba(21, 94, 86, 0.22);
+  /* ── Data accent · pine. Every line, marker, axis, link ── */
+  --data:                  #155E56;
+  --data-on-dark:          #7FA196;
+  --data-fill:             #DFE7DD;
+  --data-on-fill:          #F6F9F7;
 
-  /* --- Semantic. Gold, not red, for attention: on a health screen a red
-         badge on a slightly-high value reads as a failed test. --- */
-  --good:             #155e56;
-  --good-soft:        #dfe7dd;
-  --attention:        #97671b;
-  --attention-soft:   #f4ead6;
-  --gold:             #b8863f;
-  --gold-light:       #e8c894;
-  --danger:           #9a3b2e;  /* genuine errors only */
-  --danger-soft:      #f6e4e0;
+  /* ── Attention · amber. Out-of-range and nothing else ── */
+  --attn:                  #97671B;
+  --attn-fill:             #FBF3E4;
+  --attn-hairline:         #ECD9B4;
 
-  /* Legacy aliases — older rules still reference these. */
-  --bg-primary: var(--paper);
+  /* ── Failure · red is the APP failing, never a body value ── */
+  --error:                 #A32B23;
+  --error-fill:            #FBEDEB;
+
+  /* ── Type ── */
+  --face-sans:  var(--font-sans-loaded), 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --face-serif: var(--font-serif-loaded), 'Newsreader', Georgia, 'Times New Roman', serif;
+  --face-mono:  ui-monospace, Menlo, Consolas, monospace;
+  --num-feature: tabular-nums;
+
+  --t-hero-xl-size: 52px;  --t-hero-xl-weight: 400; --t-hero-xl-lh: 1;    --t-hero-xl-track: -0.02em;
+  --t-hero-size:    30px;  --t-hero-weight:    400; --t-hero-lh:    1.24; --t-hero-track:    -0.01em;
+  --t-hero-sm-size: 25px;  --t-hero-sm-weight: 400; --t-hero-sm-lh: 1;    --t-hero-sm-track: -0.01em;
+  --t-title-size:   24px;  --t-title-weight:   400; --t-title-lh:   1.25;
+  --t-quote-size:   16px;  --t-quote-weight:   400; --t-quote-lh:   1.5;
+  --t-stat-size:    32px;  --t-stat-weight:    600; --t-stat-lh:    1;    --t-stat-track:    -0.03em;
+  --t-value-size:   17px;  --t-value-weight:   600; --t-value-lh:   1.2;
+  --t-value-sm-size:13px;  --t-value-sm-weight:600; --t-value-sm-lh:1.2;
+  --t-item-size:    14px;  --t-item-weight:    500; --t-item-lh:    1.35;
+  --t-body-size:    13px;  --t-body-weight:    400; --t-body-lh:    1.6;
+  --t-body-sm-size: 12.5px;--t-body-sm-weight: 400; --t-body-sm-lh: 1.55;
+  --t-meta-size:    11.5px;--t-meta-weight:    400; --t-meta-lh:    1.5;
+  --t-label-size:   10px;  --t-label-weight:   600; --t-label-lh:   1;    --t-label-track:   0.14em;
+  --t-label-wide-track: 0.16em;
+  --t-axis-size:    9.5px; --t-axis-weight:    400; --t-axis-lh:    1;
+  --t-status-size:  11px;  --t-status-weight:  600;
+
+  /* ── Spacing · 390px phone canvas ── */
+  --s-1: 3px;  --s-2: 5px;  --s-3: 7px;  --s-4: 9px;  --s-5: 11px;
+  --s-6: 12px; --s-7: 14px; --s-8: 16px; --s-9: 18px; --s-10: 20px;
+  --s-11: 22px; --s-12: 26px; --s-13: 30px; --s-14: 34px; --s-15: 44px;
+
+  --screen-pad-x: 20px;
+  --screen-pad-b: 22px;
+  --stack-gap:    14px;
+  --card-gap:     11px;
+  --seam-overlap: -14px;
+
+  /* ── Radii ── */
+  --r-1: 3px;  --r-2: 4px;  --r-3: 6px;  --r-4: 7px;  --r-5: 10px;
+  --r-6: 12px; --r-7: 13px; --r-8: 16px; --r-9: 20px; --r-10: 22px; --r-11: 26px;
+  --r-full: 9999px;
+
+  /* ── Elevation · solid surfaces only. No backdrop-filter, ever. ── */
+  --shadow-none:  none;
+  --shadow-frame: 0 2px 10px rgba(0,0,0,0.10);
+  --shadow-sheet: 0 -2px 14px rgba(0,0,0,0.16);
+  --shadow-modal: 0 8px 34px rgba(0,0,0,0.22);
+
+  /* ── Card ── */
+  --card-bg:          var(--paper-card);
+  --card-border:      1px solid var(--paper-hairline);
+  --card-radius:      var(--r-6);
+  --card-pad:         17px 18px;
+  --card-pad-compact: 15px 16px;
+  --card-pad-list:    14px 17px;
+  --card-pad-ink:     18px 19px;
+  --card-divider:     1px solid var(--paper-hairline-inner);
+  --card-divider-gap: 14px;
+
+  /* ── Buttons ── */
+  --btn-h: 46px;  --btn-h-primary: 50px;  --btn-radius: var(--r-6);
+  --btn-label-size: 14px; --btn-label-weight: 600; --btn-label-track: 0.01em;
+  --btn-label-size-sm: 12.5px;
+  --btn-primary-bg: var(--data);
+  --btn-primary-fg: var(--data-on-fill);
+  --btn-secondary-fg: var(--data);
+  --btn-secondary-border: 1px solid var(--paper-border-strong);
+  --btn-quiet-fg: var(--text-tertiary);
+  --btn-gap: 9px;
+
+  /* ── Inputs · never below 16px, or iOS zooms on focus ── */
+  --input-h: 50px;
+  --input-bg: var(--paper-card);
+  --input-border: 1px solid var(--paper-border-strong);
+  --input-border-focus: 1.5px solid var(--data);
+  --input-border-error: 1.5px solid var(--error);
+  --input-radius: var(--r-6);
+  --input-pad: 0 16px;
+  --input-text-size: 16px;
+  --input-text-weight: 500;
+  --input-placeholder: var(--text-quiet);
+  --input-numeric-size: 26px;
+
+  /* ── Tap targets / tabs ── */
+  --tap-min: 46px; --tab-h: 46px; --tab-radius: var(--r-6);
+  --tab-active-bg: #E9E2D2; --tab-active-fg: #8A5F1F;
+  --tab-idle-fg: var(--text-label);
+  --tab-icon: 19px; --tab-icon-stroke: 1.6px; --tab-gap: 7px;
+
+  --check-size: 22px;
+  --check-border: 1.5px solid var(--data);
+  --check-border-idle: 1.5px solid var(--paper-border-strong);
+  --check-tick-stroke: 3px;
+
+  /* ── Charts ── */
+  --chart-line: 2.1px; --chart-line-secondary: 1.6px;
+  --chart-stroke: var(--data);
+  --chart-baseline: 1px solid var(--paper-hairline);
+  --chart-grid: 1px dashed var(--paper-hairline-inner);
+  --chart-grid-dash: 3 5;
+  --chart-band: var(--paper-sunken);
+  --chart-dot-r: 4px; --chart-dot-stroke: 2.6px; --chart-dot-fill: var(--paper-card);
+  --chart-dot-r-sm: 3.6px; --chart-dot-stroke-sm: 2.4px; --chart-dot-empty-dash: 2.4 3;
+  --chart-bar-radius: var(--r-1) var(--r-1) 0 0;
+  --chart-bar-fill: var(--data-fill);
+  --chart-bar-fill-latest: var(--data);
+  --chart-bar-gap: 9px;
+  --chart-h-sm: 96px; --chart-h: 124px;
+  --rating-dot: 9px; --rating-dot-gap: 4px;
+  --rating-dot-on: var(--data); --rating-dot-off: var(--paper-hairline-inner);
+
+  /* ── Range bar · one primitive, every value ── */
+  --range-h: 8px; --range-h-sm: 6px; --range-radius: var(--r-2);
+  --range-track: var(--paper-hairline-inner);
+  --range-band: var(--data-fill);
+  --marker-size: 14px; --marker-size-sm: 12px; --marker-offset: -3px;
+  --marker-stroke: 2.5px; --marker-stroke-sm: 2.2px;
+  --marker-fill: var(--paper-card);
+  --marker-in-range: var(--data);
+  --marker-out-of-range: var(--attn);
+
+  /* ── Icon / splash ── */
+  --icon-ground: var(--ink-ground);
+  --icon-mark: var(--ink-accent);
+  --icon-mark-base: var(--ink-accent-deep);
+  --icon-ghost-op: 0.34;
+  --icon-safe-circle: 70%;
+  --splash-mark: 58px;
+
+  /* ── Motion · no ambient loops ── */
+  --dur-instant: 90ms; --dur-fast: 160ms; --dur-base: 220ms; --dur-slow: 320ms;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── Legacy aliases so older rules keep resolving ── */
+  --bg-primary: var(--paper-ground);
   --bg-surface: var(--paper-card);
-  --bg-surface-2: var(--paper-subtle);
-  --bg-surface-3: var(--paper-warm);
-  --teal-primary: var(--accent);
-  --teal-deep: #0f4640;
-  --teal-glow: rgba(21, 94, 86, 0.18);
-  --amber-gold: var(--gold);
-  --amber-glow: rgba(184, 134, 63, 0.18);
-  --text-primary: var(--text);
-  --text-secondary: var(--text-muted);
+  --bg-surface-2: var(--paper-sunken);
+  --bg-surface-3: var(--paper-hairline-inner);
+  --teal-primary: var(--data);
+  --teal-deep: var(--data);
+  --teal-glow: var(--data-fill);
+  --amber-gold: var(--attn);
+  --amber-glow: var(--attn-fill);
+  --text-faint: var(--text-quiet);
   --glass-bg: var(--paper-card);
-  --glass-border: var(--line);
-  --glass-highlight: rgba(28, 29, 32, 0.04);
+  --glass-border: var(--paper-hairline);
+  --glass-highlight: transparent;
 
-  /* --- shadcn/system tokens --- */
-  --background: var(--paper);
-  --foreground: var(--text);
+  /* ── shadcn/system tokens ── */
+  --background: var(--paper-ground);
+  --foreground: var(--text-primary);
   --card: var(--paper-card);
-  --card-foreground: var(--text);
+  --card-foreground: var(--text-primary);
   --popover: var(--paper-card);
-  --popover-foreground: var(--text);
-  --primary: var(--accent);
-  --primary-foreground: var(--accent-ink);
-  --secondary: var(--paper-subtle);
-  --secondary-foreground: var(--text);
-  --muted: var(--paper-subtle);
-  --muted-foreground: var(--text-faint);
-  --destructive: var(--danger);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--data);
+  --primary-foreground: var(--data-on-fill);
+  --secondary: var(--paper-sunken);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--paper-sunken);
+  --muted-foreground: var(--text-label);
+  --accent: var(--data);
+  --accent-foreground: var(--data-on-fill);
+  --destructive: var(--error);
   --destructive-foreground: #ffffff;
-  --border: var(--line);
-  --input: var(--line);
-  --ring: var(--accent);
-  --success: var(--good);
-  --success-foreground: #ffffff;
-  --warning: var(--attention);
+  --border: var(--paper-hairline);
+  --input: var(--paper-border-strong);
+  --ring: var(--data);
+  --success: var(--data);
+  --success-foreground: var(--data-on-fill);
+  --warning: var(--attn);
   --warning-foreground: #ffffff;
-  --accent-foreground: var(--accent-ink);
+  --radius: var(--r-6);
 
-  --radius: 1.25rem;
-
-  /* Charts — sequential teals with gold for the odd one out, so a chart never
-     implies pass/fail the way red-versus-green does. */
-  --chart-1: #155e56;
-  --chart-2: #4a8a80;
-  --chart-3: #b8863f;
-  --chart-4: #7fa89f;
-  --chart-5: #e8c894;
+  --chart-1: #155E56;
+  --chart-2: #7FA196;
+  --chart-3: #97671B;
+  --chart-4: #DFE7DD;
+  --chart-5: #CFC7B6;
 }
 
 @theme inline {
-  --font-sans: var(--font-sans-loaded), 'Instrument Sans', system-ui, sans-serif;
-  --font-serif: var(--font-serif-loaded), 'Newsreader', Georgia, serif;
+  --font-sans: var(--face-sans);
+  --font-serif: var(--face-serif);
   --font-mono: 'Geist Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -150,7 +276,8 @@
   body {
     @apply bg-background text-foreground antialiased;
     background: var(--bg-primary);
-    font-family: var(--font-sans-loaded), 'Instrument Sans', system-ui, sans-serif;
+    font-family: var(--face-sans);
+    font-variant-numeric: var(--num-feature);
   }
 }
 
@@ -214,7 +341,7 @@
 }
 
 .ambient-glow {
-  animation: ambientPulse 4s ease-in-out infinite;
+  animation: none;
 }
 
 /* Breathing Rhythm Animation - 4s inhale/exhale cycle */
@@ -230,7 +357,7 @@
 }
 
 .breathing-rhythm {
-  animation: breathingRhythm 4s ease-in-out infinite;
+  animation: none;
 }
 
 /* Recovery Ring Draw Animation */
@@ -323,7 +450,7 @@
 }
 
 .flame-pulse {
-  animation: flamePulse 2s ease-in-out infinite;
+  animation: none;
 }
 
 /* Active indicator pulse */
@@ -339,7 +466,7 @@
 }
 
 .active-pulse {
-  animation: activePulse 2s ease-in-out infinite;
+  animation: none;
 }
 
 /* Shimmer effect */
@@ -547,9 +674,9 @@
   filter: blur(26px);
   pointer-events: none;
   background: radial-gradient(closest-side, rgba(21, 94, 86, 0.07), transparent 70%);
-  animation: twBreathe 7s ease-in-out infinite;
+  animation: none;
 }
-.tw-breathe { animation: twBreathe 7s ease-in-out infinite; }
+.tw-breathe { animation: none; }
 .tw-fade-up { animation: twFadeUp .35s ease-out; }
 
 /* Skeleton shimmer for instant loading states. Reduced-motion users get a

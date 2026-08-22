@@ -38,7 +38,7 @@ function RecoveryRing({ progress }: { progress: number }) {
         <defs>
           <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#155e56" />
-            <stop offset="100%" stopColor="#7fa89f" />
+            <stop offset="100%" stopColor="#7FA196" />
           </linearGradient>
           <filter id="ringGlow">
             <feGaussianBlur stdDeviation="3" result="blur" />
@@ -79,7 +79,6 @@ function RecoveryRing({ progress }: { progress: number }) {
           className="text-white tabular-nums"
           style={{ 
             fontFamily: "'Newsreader', Georgia, serif", 
-            fontStyle: "italic",
             fontSize: 52
           }}
         >
@@ -125,7 +124,7 @@ export function HeroSection({
       className="relative flex flex-col justify-center items-center overflow-hidden"
       style={{ 
         minHeight: "88vh",
-        background: "#fdfbf7",
+        background: "#F4F0E8",
         padding: "72px 24px 48px"
       }}
     >
@@ -228,7 +227,7 @@ export function HeroSection({
             key={stat?.label || index}
             className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-medium"
             style={{
-              background: "#ffffff",
+              background: "#FDFBF7",
               border: "1px solid #e2dbcd",
               color: "#1c1d20"
             }}

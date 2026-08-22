@@ -48,7 +48,7 @@ export function WellnessScorecard({
     { label: "Mood", value: 82, color: "#155e56" },
     { label: "Energy", value: 75, color: "#97671b" },
     { label: "Sleep", value: 88, color: "#155e56" },
-    { label: "Mental Clarity", value: 71, color: "#9a3b2e" }
+    { label: "Mental Clarity", value: 71, color: "#A32B23" }
   ],
   insight = "Great progress! Focus on sleep consistency to boost your score further."
 }: WellnessScorecardProps) {
@@ -78,8 +78,7 @@ export function WellnessScorecard({
         <span 
           className="tabular-nums"
           style={{ 
-            fontFamily: "'Newsreader', Georgia, serif",
-            fontStyle: "italic",
+            fontFamily: "'Newsreader', Georgia, serif", 
             fontSize: 64,
             color: "#1c1d20"
           }}
@@ -136,7 +135,7 @@ function SubScoreCard({
     <motion.div
       className="p-4 rounded-2xl"
       style={{
-        background: "#ffffff",
+        background: "#FDFBF7",
         border: "1px solid #e2dbcd"
       }}
       initial={{ opacity: 0, y: 16 }}
@@ -157,8 +156,7 @@ function SubScoreCard({
       <span 
         className="tabular-nums block mb-3"
         style={{ 
-          fontFamily: "'Newsreader', Georgia, serif",
-          fontStyle: "italic",
+          fontFamily: "'Newsreader', Georgia, serif", 
           fontSize: 28,
           color: "#1c1d20"
         }}

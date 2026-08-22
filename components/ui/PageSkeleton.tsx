@@ -13,7 +13,7 @@ export function PageSkeleton({ rows = 3, header = true }: { rows?: number; heade
   return (
     <div
       className="min-h-screen"
-      style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}
+      style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}
       aria-busy="true"
       aria-live="polite"
     >
@@ -37,12 +37,11 @@ export function PageSkeleton({ rows = 3, header = true }: { rows?: number; heade
             key={i}
             className="p-6 rounded-2xl flex flex-col gap-3.5"
             style={{
-              background: "#ffffff",
+              background: "#FDFBF7",
               border: "1px solid #e2dbcd",
               // Stagger so the page resolves downward rather than pulsing as one
               // block, which reads as content arriving instead of a spinner.
-              animationDelay: `${i * 90}ms`,
-            }}
+              animationDelay: `${i * 90}ms` }}
           >
             <Bone w="42%" h={15} r={5} />
             <Bone w="72%" h={11} r={4} />
@@ -58,8 +57,7 @@ export function PageSkeleton({ rows = 3, header = true }: { rows?: number; heade
 function Bone({
   w,
   h,
-  r = 6,
-}: {
+  r = 6 }: {
   w: number | string
   h: number
   r?: number
@@ -71,8 +69,7 @@ function Bone({
         width: typeof w === "number" ? `${w}px` : w,
         height: h,
         borderRadius: r,
-        background: "#f4f0e8",
-      }}
+        background: "#F1EDE1" }}
     />
   )
 }

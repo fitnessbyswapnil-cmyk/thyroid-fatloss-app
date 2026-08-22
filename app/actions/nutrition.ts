@@ -54,8 +54,7 @@ export async function saveComposedFood(input: {
         protein: Number(p.protein) || 0,
         carbs: Number(p.carbs) || 0,
         fats: Number(p.fats) || 0,
-        source: p.source || 'IFCT 2017',
-      }))
+        source: p.source || 'IFCT 2017' }))
     if (!parts.length) return { success: false, error: 'Add at least one ingredient' }
 
     const totals = computeRecipe(parts)
@@ -70,8 +69,7 @@ export async function saveComposedFood(input: {
       tags: input.tags?.trim() || null,
       recipe: input.recipe?.trim() || null,
       ingredients: parts,
-      updated_at: new Date().toISOString(),
-    }
+      updated_at: new Date().toISOString() }
 
     const { error } = input.id
       ? await supabase.from('foods').update(row).eq('id', input.id)
@@ -109,8 +107,7 @@ export async function getClientTargets(clientId: string) {
       heightCm: c.height_cm != null ? Number(c.height_cm) : null,
       age: c.age,
       gender: c.gender,
-      activity: (c.activity_level as ActivityLevel | null) ?? null,
-    })
+      activity: (c.activity_level as ActivityLevel | null) ?? null })
 
     return { ...targets, clientName: c.full_name as string | null }
   })
@@ -197,8 +194,7 @@ export async function generateMealPlan(input: {
       targetProtein: Math.max(20, Math.min(400, input.targetProtein)),
       isVeg: input.isVeg,
       avoid,
-      variety: input.variety ?? 0,
-    })
+      variety: input.variety ?? 0 })
 
     return {
       items: plan.items.map((i) => ({
@@ -210,12 +206,10 @@ export async function generateMealPlan(input: {
         calories: i.food.calories,
         protein: i.food.protein,
         carbs: i.food.carbs,
-        fats: i.food.fats,
-      })),
+        fats: i.food.fats })),
       totals: plan.totals,
       warnings: plan.warnings,
-      excluded: avoid,
-    }
+      excluded: avoid }
   })
 }
 
@@ -315,7 +309,6 @@ export async function getSwapOptions(foodName: string, mealSlot?: string | null)
       portion: f.portion,
       calories: f.calories,
       protein: f.protein,
-      is_veg: f.is_veg,
-    }))
+      is_veg: f.is_veg }))
   })
 }

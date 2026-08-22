@@ -48,8 +48,7 @@ export async function uploadProgressPhotos(input: PhotoUploadInput) {
         side_photo: sidePath,
         back_photo: backPath,
         week_number: input.weekNumber,
-        notes: input.notes || null,
-      })
+        notes: input.notes || null })
       .select()
       .single()
 
@@ -63,7 +62,6 @@ export async function uploadProgressPhotos(input: PhotoUploadInput) {
     console.error('[v0] Photo upload error:', error)
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Upload failed',
-    }
+      error: error instanceof Error ? error.message : 'Upload failed' }
   }
 }

@@ -14,11 +14,11 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#fdfbf7" }}>
+    <div className="min-h-screen" style={{ background: "#F4F0E8" }}>
       <header className="px-6 py-5 border-b" style={{ borderColor: "#e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
           <Link href="/" className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
             Terms of Service
           </h1>
         </div>

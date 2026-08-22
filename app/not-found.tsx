@@ -7,14 +7,14 @@ import { Home } from 'lucide-react'
  */
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#fdfbf7' }}>
+    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#F4F0E8' }}>
       <div className="w-full max-w-sm text-center">
         <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#8b867c', letterSpacing: '0.16em' }}>
           404
         </p>
         <h1
           className="mt-2"
-          style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: 'italic', fontSize: 28, color: '#1c1d20' }}
+          style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 28, color: '#1c1d20' }}
         >
           We couldn&rsquo;t find that page
         </h1>

@@ -83,7 +83,7 @@ export function MealLogger({ meals }: { meals: string[] }) {
               style={
                 isDone
                   ? { background: "rgba(21, 94, 86,0.14)", color: "#155e56", border: "1px solid rgba(21, 94, 86,0.3)" }
-                  : { background: "#ffffff", color: "#5a564e", border: "1px solid #e2dbcd" }
+                  : { background: "#FDFBF7", color: "#5a564e", border: "1px solid #e2dbcd" }
               }
             >
               {busy === m

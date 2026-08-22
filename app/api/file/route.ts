@@ -34,8 +34,7 @@ export async function GET(request: NextRequest) {
 
     const result = await get(pathname, {
       access: 'private',
-      ifNoneMatch: request.headers.get('if-none-match') ?? undefined,
-    })
+      ifNoneMatch: request.headers.get('if-none-match') ?? undefined })
 
     if (!result) {
       return new NextResponse('Not found', { status: 404 })
@@ -47,18 +46,14 @@ export async function GET(request: NextRequest) {
         status: 304,
         headers: {
           ETag: result.blob.etag,
-          'Cache-Control': 'private, no-cache',
-        },
-      })
+          'Cache-Control': 'private, no-cache' } })
     }
 
     return new NextResponse(result.stream, {
       headers: {
         'Content-Type': result.blob.contentType,
         ETag: result.blob.etag,
-        'Cache-Control': 'private, no-cache',
-      },
-    })
+        'Cache-Control': 'private, no-cache' } })
   } catch (error) {
     console.error('Error serving file:', error)
     return NextResponse.json({ error: 'Failed to serve file' }, { status: 500 })

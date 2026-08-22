@@ -59,30 +59,24 @@ export function CoachInsightCard({
       whileInView="visible"
       viewport={{ once: true, margin: "-60px" }}
       className="relative mx-4 overflow-hidden"
-      style={{
-        backdropFilter: 'blur(32px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(32px) saturate(180%)',
-        background: '#e2dbcd',
+      style={{ background: '#e2dbcd',
         border: '1px solid rgba(21, 94, 86, 0.15)',
         borderRadius: 28,
         padding: '26px 22px',
-        boxShadow: 'inset 0 1px 0 #cfc7b6, 0 28px 70px rgba(0, 0, 0, 0.35), 0 4px 20px rgba(21, 94, 86, 0.13)',
-      }}
+        boxShadow: 'inset 0 1px 0 #cfc7b6, 0 28px 70px rgba(0, 0, 0, 0.35), 0 4px 20px rgba(21, 94, 86, 0.13)' }}
     >
       {/* Specular highlight */}
       <div 
         className="absolute top-0 left-0 right-0 h-px pointer-events-none"
         style={{
-          background: 'linear-gradient(90deg, transparent, #cfc7b6, transparent)',
-        }}
+          background: 'linear-gradient(90deg, transparent, #cfc7b6, transparent)' }}
       />
       
       {/* Gradient tint overlay */}
       <div 
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, rgba(21, 94, 86, 0.13) 0%, transparent 55%)',
-        }}
+          background: 'linear-gradient(135deg, rgba(21, 94, 86, 0.13) 0%, transparent 55%)' }}
       />
       
       <div className="relative z-10">
@@ -138,8 +132,7 @@ export function CoachInsightCard({
           <div 
             className="px-3 py-1.5 rounded-full"
             style={{
-              background: 'rgba(21, 94, 86, 0.12)',
-            }}
+              background: 'rgba(21, 94, 86, 0.12)' }}
           >
             <span 
               className="text-[10px] font-medium uppercase"
@@ -172,8 +165,7 @@ export function CoachInsightCard({
               style={{
                 color: '#1c1d20',
                 fontSize: 15,
-                lineHeight: 1.75,
-              }}
+                lineHeight: 1.75 }}
             >
               {segment}{' '}
             </motion.span>
@@ -186,9 +178,7 @@ export function CoachInsightCard({
             className="text-[13px]"
             style={{ 
               color: '#8b867c', 
-              fontFamily: "'Newsreader', Georgia, serif",
-              fontStyle: 'italic'
-            }}
+              fontFamily: "'Newsreader', Georgia, serif" }}
           >
             — {coachName}
           </p>

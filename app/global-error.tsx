@@ -14,7 +14,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
 
   return (
     <html lang="en">
-      <body style={{ margin: 0, background: '#fdfbf7', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <body style={{ margin: 0, background: '#F4F0E8', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <div style={{ maxWidth: 340, textAlign: 'center' }}>
             <h1 style={{ color: '#1c1d20', fontSize: 24, fontWeight: 600, margin: 0 }}>ThyroWell is temporarily unavailable</h1>
@@ -25,8 +25,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
               onClick={reset}
               style={{
                 marginTop: 24, width: '100%', height: 48, borderRadius: 999, border: 0,
-                background: '#155e56', color: '#dfe7dd', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-              }}
+                background: '#155e56', color: '#dfe7dd', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}
             >
               Try again
             </button>

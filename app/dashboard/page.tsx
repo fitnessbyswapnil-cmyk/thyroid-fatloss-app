@@ -75,8 +75,7 @@ export default async function DashboardPage() {
           hasMessaged: (w0Msgs?.length ?? 0) > 0,
           hasReadLesson: (w0Reads?.length ?? 0) > 0,
           hasBaselinePhotos: (w0Photos?.length ?? 0) > 0,
-          firstLessonSlug: w0FirstLesson?.slug ?? null,
-        }}
+          firstLessonSlug: w0FirstLesson?.slug ?? null }}
       />
     )
   }
@@ -97,8 +96,7 @@ export default async function DashboardPage() {
     id: f.id as string,
     weekNumber: (checkinIdToWeek.get(f.checkin_id) ?? null) as number | null,
     body: f.body as string,
-    createdAt: f.created_at as string,
-  }))
+    createdAt: f.created_at as string }))
 
   // Daily adherence logs → REAL streaks (last 180 days). Degrades to zeros if
   // the daily_logs table isn't provisioned yet (migration 008).
@@ -187,8 +185,7 @@ export default async function DashboardPage() {
     hasSchedule,
     count: todaysSession.length,
     // Only call it a rest day when the coach actually scheduled a week.
-    isRestDay: hasSchedule && todaysSession.length === 0,
-  }
+    isRestDay: hasSchedule && todaysSession.length === 0 }
 
   const dashboardData = {
     name: client.full_name?.split(" ")[0] || "Friend",
@@ -214,18 +211,15 @@ export default async function DashboardPage() {
       mood: (latestCheckin.mood || 7) * 10,
       energyLevels: energyScore,
       sleepQuality: sleepScore,
-      mentalClarity: stressScore,
-    },
+      mentalClarity: stressScore },
     // Real streaks computed from daily_logs (not the never-written clients columns)
     streak: {
       current: streakCurrent,
-      best: Math.max(streakBest, streakCurrent),
-    },
+      best: Math.max(streakBest, streakCurrent) },
     monthlyGoal: { current: monthlyCount, target: 30 },
     todayLog: {
       workoutDone: Boolean(todayLog?.workout_done),
-      mealsFollowed: todayLog?.meals_followed || 0,
-    },
+      mealsFollowed: todayLog?.meals_followed || 0 },
     weight: { 
       current: client.current_weight || 0, 
       start: client.start_weight || 0, 
@@ -255,8 +249,7 @@ export default async function DashboardPage() {
       energy_level: c.energy_level || 0,
       sleep_score: c.sleep_quality || c.sleep_score || 0
     })) || [],
-    coachFeedback,
-  }
+    coachFeedback }
 
   return <DashboardClient data={dashboardData} />
 }

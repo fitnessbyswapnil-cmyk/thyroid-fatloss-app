@@ -55,14 +55,14 @@ export function MealDetail({ item, onClose }: { item: MealItem; onClose: () => v
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
-      style={{ background: "rgba(28, 29, 32, 0.45)", backdropFilter: "blur(6px)" }}
+      style={{ background: "rgba(28, 29, 32, 0.45)" }}
       onClick={onClose} role="dialog" aria-modal="true" aria-label={item.name}>
       <div className="w-full sm:max-w-md max-h-[90dvh] overflow-y-auto rounded-t-3xl sm:rounded-3xl p-6 tw-fade-up"
-        style={{ background: "#ffffff", border: "1px solid #cfc7b6" }}
+        style={{ background: "#FDFBF7", border: "1px solid #cfc7b6" }}
         onClick={(e) => e.stopPropagation()}>
 
         <div className="flex items-start justify-between gap-3 mb-1">
-          <h3 className="text-[26px] leading-tight" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
+          <h3 className="text-[26px] leading-tight" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
             {item.name}
           </h3>
           <button onClick={onClose} style={{ color: "#8b867c" }} aria-label="Close"><X size={18} /></button>
@@ -81,8 +81,8 @@ export function MealDetail({ item, onClose }: { item: MealItem; onClose: () => v
             ["Carbs", item.carbs != null ? `${Math.round(item.carbs * qty)}g` : null],
             ["Fats", item.fats != null ? `${Math.round(item.fats * qty)}g` : null],
           ].map(([label, val]) => (
-            <div key={String(label)} className="rounded-xl p-2.5 text-center" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
-              <p className="tabular-nums" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 18, color: "#1c1d20" }}>
+            <div key={String(label)} className="rounded-xl p-2.5 text-center" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
+              <p className="tabular-nums" style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 18, color: "#1c1d20" }}>
                 {val ?? "—"}
               </p>
               <p className="text-[9px] font-semibold mt-0.5" style={{ color: "#8b867c" }}>{label}</p>
@@ -103,7 +103,7 @@ export function MealDetail({ item, onClose }: { item: MealItem; onClose: () => v
                 <div className="space-y-1.5">
                   {detail.ingredients.map((g, i) => (
                     <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-xl"
-                      style={{ background: "#ffffff", border: "1px solid #f4f0e8" }}>
+                      style={{ background: "#FDFBF7", border: "1px solid #f4f0e8" }}>
                       <span className="flex-1 text-[13px]" style={{ color: "#5a564e" }}>{g.name}</span>
                       <span className="text-[12px] tabular-nums" style={{ color: "#1c1d20" }}>{g.grams} g</span>
                     </div>
@@ -122,7 +122,7 @@ export function MealDetail({ item, onClose }: { item: MealItem; onClose: () => v
             ) : null}
 
             {!detail?.ingredients?.length && !detail?.recipe && (
-              <div className="mt-5 flex items-start gap-2.5 px-3.5 py-3 rounded-xl" style={{ background: "#ffffff" }}>
+              <div className="mt-5 flex items-start gap-2.5 px-3.5 py-3 rounded-xl" style={{ background: "#FDFBF7" }}>
                 <UtensilsCrossed size={14} style={{ color: "#a09a8e", marginTop: 2 }} />
                 <p className="text-[12px]" style={{ color: "#8b867c", lineHeight: 1.5 }}>
                   No recipe saved for this one yet — ask your coach if you&rsquo;re unsure how to prepare it.
@@ -154,10 +154,10 @@ export function MealDetail({ item, onClose }: { item: MealItem; onClose: () => v
                 <div className="space-y-1.5">
                   {swaps.map((s) => (
                     <div key={s.id} className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl"
-                      style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+                      style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
                       {s.is_veg
                         ? <Leaf size={13} className="shrink-0" style={{ color: "#155e56" }} />
-                        : <Drumstick size={13} className="shrink-0" style={{ color: "#9a3b2e" }} />}
+                        : <Drumstick size={13} className="shrink-0" style={{ color: "#A32B23" }} />}
                       <span className="flex-1 min-w-0">
                         <span className="block text-[13px] truncate" style={{ color: "#1c1d20" }}>{s.name}</span>
                         <span className="block text-[11px] truncate" style={{ color: "#8b867c" }}>{s.portion}</span>

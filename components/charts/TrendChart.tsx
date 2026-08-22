@@ -16,8 +16,7 @@ export function TrendChart({
   height = 160,
   unit = "",
   goalDirection,
-  band,
-}: {
+  band }: {
   points: TrendPoint[]
   color?: string
   height?: number
@@ -28,7 +27,7 @@ export function TrendChart({
   const clean = points.filter((p) => typeof p.value === "number" && !Number.isNaN(p.value))
   if (clean.length === 0) {
     return (
-      <div className="flex items-center justify-center rounded-xl" style={{ height, background: "#ffffff", color: "#a09a8e", fontSize: 13 }}>
+      <div className="flex items-center justify-center rounded-xl" style={{ height, background: "#FDFBF7", color: "#a09a8e", fontSize: 13 }}>
         No data yet
       </div>
     )
@@ -50,7 +49,7 @@ export function TrendChart({
   const first = clean[0].value, last = clean[clean.length - 1].value
   const delta = last - first
   const good = goalDirection ? (goalDirection === "down" ? delta < 0 : delta > 0) : undefined
-  const deltaColor = good === undefined ? "#8b867c" : good ? "#155e56" : "#9a3b2e"
+  const deltaColor = good === undefined ? "#8b867c" : good ? "#155e56" : "#A32B23"
 
   return (
     <div>

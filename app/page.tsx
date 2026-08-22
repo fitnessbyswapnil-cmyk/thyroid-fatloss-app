@@ -19,14 +19,13 @@ const testimonials = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#fdfbf7" }}>
+    <div className="min-h-screen" style={{ background: "#F4F0E8" }}>
       {/* Ambient Glow */}
       <div 
         className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none"
         style={{
           background: "radial-gradient(ellipse at center, rgba(21, 94, 86, 0.12) 0%, transparent 70%)",
-          filter: "blur(80px)",
-        }}
+          filter: "blur(80px)" }}
       />
 
       {/* Header */}
@@ -34,8 +33,7 @@ export default function LandingPage() {
         <h1 
           className="text-2xl font-bold"
           style={{ 
-            fontFamily: "'Newsreader', Georgia, serif",
-            fontStyle: "italic",
+            fontFamily: "'Newsreader', Georgia, serif", 
             color: "#1c1d20"
           }}
         >
@@ -91,8 +89,7 @@ export default function LandingPage() {
             <br />
             <span
               style={{
-                fontFamily: "'Newsreader', Georgia, serif",
-                fontStyle: "italic",
+                fontFamily: "'Newsreader', Georgia, serif", 
                 color: "#155e56"
               }}
             >
@@ -116,9 +113,8 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold"
                 style={{
                   background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
-                  color: "#fdfbf7",
-                  boxShadow: "0 12px 40px rgba(21, 94, 86, 0.3)",
-                }}
+                  color: "#F6F3ED",
+                  boxShadow: "0 12px 40px rgba(21, 94, 86, 0.3)" }}
               >
                 Start Your Transformation
                 <ArrowRight size={18} />
@@ -147,9 +143,8 @@ export default function LandingPage() {
               transition={{ delay: i * 0.1, duration: 0.5 }}
               className="p-6 rounded-2xl text-center"
               style={{
-                background: "#ffffff",
-                border: "1px solid #e2dbcd",
-              }}
+                background: "#FDFBF7",
+                border: "1px solid #e2dbcd" }}
             >
               <div 
                 className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center"
@@ -185,9 +180,8 @@ export default function LandingPage() {
               transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
               className="p-6 rounded-2xl"
               style={{
-                background: "#ffffff",
-                border: "1px solid #e2dbcd",
-              }}
+                background: "#FDFBF7",
+                border: "1px solid #e2dbcd" }}
             >
               <div 
                 className="inline-block px-3 py-1 rounded-full mb-4"
@@ -199,7 +193,7 @@ export default function LandingPage() {
               </div>
               <p 
                 className="mb-4 leading-relaxed"
-                style={{ color: "#3c3a34", fontSize: 14, fontStyle: "italic" }}
+                style={{ color: "#3c3a34", fontSize: 14 }}
               >
                 &quot;{t.quote}&quot;
               </p>
@@ -217,8 +211,7 @@ export default function LandingPage() {
           className="p-10 rounded-3xl"
           style={{
             background: "linear-gradient(135deg, rgba(21, 94, 86, 0.1) 0%, rgba(21, 94, 86, 0.13) 100%)",
-            border: "1px solid rgba(21, 94, 86, 0.2)",
-          }}
+            border: "1px solid rgba(21, 94, 86, 0.2)" }}
         >
           <h3
             className="text-2xl md:text-3xl font-bold mb-4"
@@ -235,9 +228,8 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold"
               style={{
                 background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
-                color: "#fdfbf7",
-                boxShadow: "0 12px 40px rgba(21, 94, 86, 0.3)",
-              }}
+                color: "#F6F3ED",
+                boxShadow: "0 12px 40px rgba(21, 94, 86, 0.3)" }}
             >
               Start Your Transformation
               <ArrowRight size={18} />

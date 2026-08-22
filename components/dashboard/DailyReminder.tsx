@@ -47,8 +47,7 @@ export function DailyReminder({
       <p 
         className="max-w-sm mx-auto mb-4"
         style={{ 
-          fontFamily: "'Newsreader', Georgia, serif",
-          fontStyle: "italic",
+          fontFamily: "'Newsreader', Georgia, serif", 
           fontSize: 20,
           lineHeight: 1.7,
           color: "#1c1d20"

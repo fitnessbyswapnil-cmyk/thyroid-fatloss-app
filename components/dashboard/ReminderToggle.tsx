@@ -56,13 +56,11 @@ export function ReminderToggle() {
 
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(key),
-      })
+        applicationServerKey: urlBase64ToUint8Array(key) })
       const json = sub.toJSON() as { endpoint?: string; keys?: { p256dh?: string; auth?: string } }
       const res = await savePushSubscription({
         endpoint: json.endpoint!,
-        keys: { p256dh: json.keys!.p256dh!, auth: json.keys!.auth! },
-      })
+        keys: { p256dh: json.keys!.p256dh!, auth: json.keys!.auth! } })
       setState(res.success ? "on" : "off")
     } catch {
       setState("off")
@@ -92,8 +90,7 @@ export function ReminderToggle() {
 
   const card = {
     background: state === "on" ? "rgba(21, 94, 86, 0.13)" : "#ffffff",
-    border: `1px solid ${state === "on" ? "rgba(21, 94, 86,0.2)" : "#e2dbcd"}`,
-  } as const
+    border: `1px solid ${state === "on" ? "rgba(21, 94, 86,0.2)" : "#e2dbcd"}` } as const
 
   return (
     <div className="flex items-center gap-3 p-5 rounded-2xl" style={card}>

@@ -55,8 +55,7 @@ export async function submitPhotoReview(input: PhotoReviewInput) {
       const { error: fbError } = await supabase.from('checkin_feedback').insert({
         checkin_id: nearestCheckinId,
         coach_id: user.id,
-        body: note,
-      })
+        body: note })
       if (fbError) return { success: false, error: fbError.message }
     }
 
@@ -64,8 +63,7 @@ export async function submitPhotoReview(input: PhotoReviewInput) {
     const { error: insightError } = await supabase.from('coach_insights').insert({
       client_id: input.clientId,
       coach_id: user.id,
-      insight: note,
-    })
+      insight: note })
     if (insightError) return { success: false, error: insightError.message }
 
     revalidatePath(`/coach/client/${input.clientId}`)

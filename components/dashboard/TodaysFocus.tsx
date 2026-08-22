@@ -41,7 +41,7 @@ export function TodaysFocus({
 
         <p
           className="text-[15px] font-medium mb-4"
-          style={{ color: "#1c1d20", lineHeight: 1.7, fontStyle: "italic" }}
+          style={{ color: "#1c1d20", lineHeight: 1.7 }}
         >
           {intention}
         </p>

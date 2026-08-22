@@ -80,8 +80,7 @@ export function TransformationMetrics({
           <span
             className="tabular-nums"
             style={{
-              fontFamily: "'Newsreader', Georgia, serif",
-              fontStyle: "italic",
+              fontFamily: "'Newsreader', Georgia, serif", 
               fontSize: 42,
               color: "white"
             }}

@@ -46,7 +46,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
   return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(28, 29, 32, 0.45)", backdropFilter: "blur(6px)" }}
+      style={{ background: "rgba(28, 29, 32, 0.45)" }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -54,14 +54,14 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
     >
       <div
         className="relative w-full max-w-md rounded-3xl overflow-hidden"
-        style={{ background: "#ffffff", border: "1px solid #cfc7b6", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}
+        style={{ background: "#FDFBF7", border: "1px solid #cfc7b6", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           aria-label="Close"
           className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center"
-          style={{ background: "rgba(0,0,0,0.45)", color: "#fff", backdropFilter: "blur(4px)" }}
+          style={{ background: "rgba(0,0,0,0.45)", color: "#fff" }}
         >
           <X size={18} />
         </button>
@@ -77,7 +77,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
               onError={() => setDemoBroken(true)}
             />
           ) : frames.length === 0 ? (
-            <div className="w-full h-full flex items-center justify-center" style={{ background: "#f4f0e8" }}>
+            <div className="w-full h-full flex items-center justify-center" style={{ background: "#F1EDE1" }}>
               <Dumbbell size={64} style={{ color: "#cfc7b6" }} />
             </div>
           ) : (
@@ -95,7 +95,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
           {(showDemo || frames.length >= 2) && (
             <span
               className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-medium"
-              style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7", backdropFilter: "blur(4px)" }}
+              style={{ background: "rgba(28, 29, 32, 0.62)", color: "#F6F3ED" }}
             >
               ● Looping demo
             </span>
@@ -105,11 +105,11 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
         {/* Details */}
         <div className="p-5">
           <div className="flex items-center gap-2.5 mb-3">
-            <h3 className="text-[26px] leading-tight" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
+            <h3 className="text-[26px] leading-tight" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
               {item.name}
             </h3>
             {item.day && (
-              <span className="text-[10px] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ background: "#f4f0e8", color: "#5a564e" }}>
+              <span className="text-[10px] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ background: "#F1EDE1", color: "#5a564e" }}>
                 {item.day}
               </span>
             )}
@@ -118,12 +118,12 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
           {/* Prototype stat tiles */}
           {(item.sets || item.reps) && (
             <div className="grid grid-cols-2 gap-2.5 mb-4">
-              <div className="rounded-2xl p-3 text-center" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
-                <p style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#1c1d20" }}>{item.sets ?? "—"}</p>
+              <div className="rounded-2xl p-3 text-center" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
+                <p style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 22, color: "#1c1d20" }}>{item.sets ?? "—"}</p>
                 <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#8b867c" }}>sets</p>
               </div>
-              <div className="rounded-2xl p-3 text-center" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
-                <p style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#1c1d20" }}>{item.reps ?? "—"}</p>
+              <div className="rounded-2xl p-3 text-center" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
+                <p style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 22, color: "#1c1d20" }}>{item.reps ?? "—"}</p>
                 <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#8b867c" }}>reps</p>
               </div>
             </div>
@@ -140,7 +140,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
                   .filter(Boolean)
                   .slice(0, 6)
                   .map((cue, i) => (
-                    <div key={i} className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+                    <div key={i} className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
                       <span className="w-[19px] h-[19px] rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(21, 94, 86,0.12)" }}>
                         <svg width="9" height="9" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#155e56", strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
                       </span>
