@@ -18,7 +18,8 @@ import { SITES, siteChanges, totalCmLost, type Measurements } from "@/lib/health
 
 const LOSS = "#155e56"
 const GAIN = "#97671b"
-const FLAT = "#8b867c"
+const FLAT = "#7fa89f"
+const NEUTRAL = "#a09a8e"  /* genuinely no change */
 
 export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
   const changes = siteChanges(rows)
@@ -50,7 +51,7 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
         </p>
         <div className="flex flex-col gap-2.5">
           {current.map((c) => (
-            <MetricBar key={c.key} label={c.label} pct={max > 0 ? (c.value / max) * 100 : 0} color={FLAT} tone="#e2dbcd">
+            <MetricBar key={c.key} label={c.label} pct={max > 0 ? (c.value / max) * 100 : 0} color={FLAT} tone="#dfe7dd">
               <span className="tabular-nums text-[12.5px]" style={{ color: "#1c1d20" }}>{c.value} cm</span>
             </MetricBar>
           ))}
@@ -95,14 +96,14 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
         {ordered.map((c) => {
           const better = c.delta < 0
           const flat = c.delta === 0
-          const color = flat ? FLAT : better ? LOSS : GAIN
+          const color = flat ? NEUTRAL : better ? LOSS : GAIN
           return (
             <MetricBar
               key={c.key}
               label={c.label}
               pct={max > 0 ? (Math.abs(c.delta) / max) * 100 : 0}
               color={color}
-              tone={`${color}22`}
+              tone={`${color}66`}
             >
               <span className="tabular-nums text-[11px]" style={{ color: "#a09a8e" }}>
                 {c.first}→{c.latest}
@@ -146,13 +147,13 @@ export function MetricBar({
         {label}
       </span>
 
-      <div className="flex-1 h-[26px] rounded-lg relative overflow-hidden" style={{ background: "#ffffff" }}>
+      <div className="flex-1 h-[26px] rounded-lg relative overflow-hidden" style={{ background: "#f4f0e8" }}>
         <div
           className="h-full rounded-lg"
           style={{
             width: `${Math.max(pct, 3)}%`,
-            background: `linear-gradient(90deg, ${tone} 0%, ${color} 100%)`,
-            boxShadow: `0 0 18px ${color}33`,
+            background: `linear-gradient(90deg, ${tone} 0%, ${color} 62%, ${color} 100%)`,
+            boxShadow: "none",
             transition: "width 600ms cubic-bezier(0.22,1,0.36,1)",
           }}
         />
