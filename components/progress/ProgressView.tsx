@@ -5,7 +5,8 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
 import { parseSymptoms, symptomBurden, symptomChanges } from "@/lib/health/symptoms"
-import { siteChanges, totalCmLost, type Measurements } from "@/lib/health/measurements"
+import { type Measurements } from "@/lib/health/measurements"
+import { BodyCompositionChart, MetricBar } from "@/components/charts/BodyCompositionChart"
 
 export interface CheckinPoint {
   week_number: number
@@ -26,31 +27,39 @@ export interface CheckinPoint {
   symptoms?: unknown
 }
 
-const METRICS: { key: keyof CheckinPoint; label: string; unit: string; goal?: "down" | "up" }[] = [
-  { key: "weight", label: "Weight", unit: "kg", goal: "down" },
-  { key: "waist", label: "Waist", unit: "cm", goal: "down" },
-  { key: "hips", label: "Hips", unit: "cm", goal: "down" },
-  { key: "chest", label: "Chest", unit: "cm", goal: "down" },
-  { key: "thigh", label: "Thigh", unit: "cm", goal: "down" },
-  { key: "arm", label: "Arm", unit: "cm", goal: "down" },
-  { key: "neck", label: "Neck", unit: "cm", goal: "down" },
-  { key: "calf", label: "Calf", unit: "cm", goal: "down" },
-  { key: "energy_level", label: "Energy", unit: "/10", goal: "up" },
-  { key: "sleep_score", label: "Sleep", unit: "/10", goal: "up" },
-  { key: "mood", label: "Mood", unit: "/10", goal: "up" },
-  { key: "digestion_score", label: "Digestion", unit: "/10", goal: "up" },
-  { key: "adherence_score", label: "Adherence", unit: "%", goal: "up" },
-  { key: "steps", label: "Steps", unit: "", goal: "up" },
+/**
+ * Three views, not fourteen chips.
+ *
+ * The seven body sites share centimetres and the useful question about them is
+ * comparative — where is it coming off — so they belong on one chart together.
+ * Weight is kilograms and is the headline, so it keeps its own trend. The
+ * subjective scores share a 1-10 feel and answer a third question entirely.
+ * Putting all three groups on one axis would compare nothing.
+ */
+type ViewKey = "weight" | "body" | "wellbeing"
+
+const VIEWS: { key: ViewKey; label: string }[] = [
+  { key: "weight", label: "Weight" },
+  { key: "body", label: "Body" },
+  { key: "wellbeing", label: "How you feel" },
+]
+
+/** Scored out of their own maximum, so a bar length means the same thing across rows. */
+const WELLBEING: { key: keyof CheckinPoint; label: string; max: number; suffix: string }[] = [
+  { key: "energy_level", label: "Energy", max: 10, suffix: "/10" },
+  { key: "sleep_score", label: "Sleep", max: 10, suffix: "/10" },
+  { key: "mood", label: "Mood", max: 10, suffix: "/10" },
+  { key: "digestion_score", label: "Digestion", max: 10, suffix: "/10" },
+  { key: "adherence_score", label: "Nutrition", max: 100, suffix: "%" },
 ]
 
 export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: CheckinPoint[]; backHref?: string }) {
-  const [metric, setMetric] = useState<keyof CheckinPoint>("weight")
-  const meta = METRICS.find((m) => m.key === metric)!
+  const [view, setView] = useState<ViewKey>("weight")
 
   const sorted = [...checkins].sort((a, b) => a.week_number - b.week_number)
   const points: TrendPoint[] = sorted
-    .filter((c) => c[metric] != null)
-    .map((c) => ({ label: `W${c.week_number}`, value: Number(c[metric]) }))
+    .filter((c) => c.weight != null)
+    .map((c) => ({ label: `W${c.week_number}`, value: Number(c.weight) }))
 
   const weightPts = sorted.filter((c) => c.weight != null)
   const startW = weightPts[0]?.weight ?? null
@@ -86,67 +95,85 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
         )}
 
         <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar mb-4 pb-0.5">
-            {METRICS.map((m) => (
-              <button key={m.key} onClick={() => setMetric(m.key)} className="shrink-0 text-[12px] font-medium px-3 py-1 rounded-full whitespace-nowrap"
-                style={metric === m.key ? { background: "#2dd4bf", color: "#04121a" } : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
-                {m.label}
+          <div className="flex items-center gap-1.5 mb-5">
+            {VIEWS.map((v) => (
+              <button key={v.key} onClick={() => setView(v.key)}
+                className="flex-1 text-[12.5px] font-medium px-3 py-2 rounded-xl whitespace-nowrap transition-colors"
+                aria-pressed={view === v.key}
+                style={view === v.key
+                  ? { background: "#2dd4bf", color: "#04121a" }
+                  : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
+                {v.label}
               </button>
             ))}
           </div>
-          <TrendChart points={points} height={200} unit={meta.unit} goalDirection={meta.goal} />
-          {points.length < 2 && (
-            <p className="text-xs mt-3 text-center" style={{ color: "#7e8a9e" }}>
-              Submit weekly check-ins to build your {meta.label.toLowerCase()} trend.
-            </p>
-          )}
-        </div>
 
-        {/* Measurements — the other half of the plateau story. Weight can sit
-            still for a month while centimetres keep coming off. */}
-        {(() => {
-          const rows = sorted as unknown as Measurements[]
-          const changes = siteChanges(rows)
-          if (changes.length === 0) return null
-          const lost = totalCmLost(rows)
-          const down = changes.filter((c) => c.delta < 0)
-
-          return (
-            <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <h3 className="font-semibold mb-1" style={{ color: "#e8eaf0" }}>Measurements</h3>
-              {lost > 0 ? (
-                <p className="text-[12.5px] mb-4" style={{ color: "#34d399" }}>
-                  {lost} cm off across {down.length} {down.length === 1 ? "site" : "sites"} — this is progress the scale can hide.
-                </p>
-              ) : (
-                <p className="text-[12.5px] mb-4" style={{ color: "#7e8a9e" }}>
-                  Keep measuring weekly — the trend needs a few entries before it means anything.
+          {view === "weight" && (
+            <>
+              <TrendChart points={points} height={200} unit="kg" goalDirection="down" />
+              {points.length < 2 && (
+                <p className="text-xs mt-3 text-center" style={{ color: "#7e8a9e" }}>
+                  Submit weekly check-ins to build your weight trend.
                 </p>
               )}
+            </>
+          )}
 
-              <div className="space-y-2">
-                {changes.map((c) => {
-                  const better = c.delta < 0
-                  const same = c.delta === 0
-                  const color = better ? "#34d399" : same ? "#7e8a9e" : "#f59e0b"
-                  return (
-                    <div key={c.key} className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl"
-                      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
-                      <span className="flex-1 text-sm" style={{ color: "#e8eaf0" }}>{c.label}</span>
-                      <span className="text-[11.5px] tabular-nums" style={{ color: "#5a6578" }}>
-                        {c.first} → {c.latest} cm
-                      </span>
-                      <span className="text-[11.5px] font-bold tabular-nums rounded-full px-2.5 py-1"
-                        style={{ color, background: `${color}1f`, minWidth: 58, textAlign: "center" }}>
-                        {better ? `−${Math.abs(c.delta)}` : same ? "—" : `+${c.delta}`}
-                      </span>
-                    </div>
-                  )
-                })}
+          {view === "body" && <BodyCompositionChart rows={sorted as unknown as Measurements[]} />}
+
+          {view === "wellbeing" && (() => {
+            // Latest recorded value per metric, with the change since the first.
+            const scored = WELLBEING.map((m) => {
+              const vals = sorted
+                .map((c) => c[m.key])
+                .filter((v): v is number => typeof v === "number" && Number.isFinite(v))
+              if (vals.length === 0) return null
+              const first = vals[0]
+              const latest = vals[vals.length - 1]
+              return { ...m, first, latest, delta: +(latest - first).toFixed(1) }
+            }).filter(Boolean) as ({ label: string; max: number; suffix: string; first: number; latest: number; delta: number })[]
+
+            if (scored.length === 0) {
+              return (
+                <p className="text-[12.5px] py-6 text-center" style={{ color: "#7e8a9e", lineHeight: 1.55 }}>
+                  Your first check-in will fill this in.
+                </p>
+              )
+            }
+
+            const improved = scored.filter((m) => m.delta > 0).length
+            return (
+              <div>
+                <p className="text-[12.5px] mb-4" style={{ color: improved > 0 ? "#34d399" : "#a9b2c1", lineHeight: 1.55 }}>
+                  {scored.every((m) => m.delta === 0)
+                    ? "How you're feeling right now. These often shift before the scale does."
+                    : improved > 0
+                      ? `${improved} of ${scored.length} improving since your first check-in.`
+                      : "Worth mentioning to your coach — these often move before weight does."}
+                </p>
+                <div className="flex flex-col gap-2.5">
+                  {scored.map((m) => {
+                    // Up is better for every metric in this group.
+                    const color = m.delta > 0 ? "#2dd4bf" : m.delta < 0 ? "#e0a53a" : "#7e8a9e"
+                    return (
+                      <MetricBar key={m.label} label={m.label} pct={(m.latest / m.max) * 100} color={color} tone={`${color}22`}>
+                        <span className="tabular-nums text-[12.5px]" style={{ color: "#e8eaf0" }}>
+                          {m.latest}{m.suffix}
+                        </span>
+                        <span className="tabular-nums text-[11.5px] font-semibold" style={{ color, minWidth: 42, textAlign: "right" }}>
+                          {m.delta === 0 ? "—" : `${m.delta > 0 ? "↑" : "↓"} ${Math.abs(m.delta)}`}
+                        </span>
+                      </MetricBar>
+                    )
+                  })}
+                </div>
+                <p className="text-[11px] mt-4" style={{ color: "#5a6578", lineHeight: 1.5 }}>
+                  Bar length is where you are now. The arrow is the change since your first check-in.
+                </p>
               </div>
-            </div>
-          )
-        })()}
+            )
+          })()}
+        </div>
 
         {/* Thyroid symptoms — these usually shift before the scale does, so
             showing them is what carries a client through a weight plateau. */}
