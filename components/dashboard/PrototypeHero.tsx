@@ -75,7 +75,7 @@ export function PrototypeHero({
             <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#155e56", letterSpacing: "0.16em" }}>Today&rsquo;s focus</p>
             {/* Answers "what do I do today" on the home screen itself, rather
                 than making her open the plan and work it out. */}
-            <p className="mt-1.5" style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 24, color: "#1c1d20" }}>
+            <p className="mt-1.5 tabular-nums" style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.02em", color: "#1C1D20" }}>
               {!todayFocus?.hasPlan
                 ? "Your training plan"
                 : todayFocus.isRestDay
@@ -102,20 +102,20 @@ export function PrototypeHero({
         {/* Streak + next check-in */}
         <div className="grid grid-cols-2 gap-3 mt-3">
           <div className="p-4 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>Check-in streak</p>
+            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8B867C", letterSpacing: "0.16em" }}>Weeks together</p>
             <div className="flex items-baseline gap-1.5 mt-2">
-              <span style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 36, lineHeight: 1, color: "#1c1d20" }}>{streak}</span>
-              <span className="text-xs" style={{ color: "#8b867c" }}>days</span>
+              <span className="tabular-nums" style={{ fontSize: 32, fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1, color: "#1C1D20" }}>{programWeek}</span>
+              <span className="text-xs" style={{ color: "#8B867C" }}>{programWeek === 1 ? "week" : "weeks"}</span>
             </div>
             <div className="flex gap-1.5 mt-3">
               {dots.map((_, i) => (
-                <div key={i} style={{ width: 15, height: 15, borderRadius: "50%", background: i < Math.min(streak, 7) ? "rgba(21, 94, 86,0.9)" : "rgba(21, 94, 86,0.2)", border: `1px solid ${i < Math.min(streak, 7) ? "#155e56" : "rgba(21, 94, 86,0.2)"}` }} />
+                <div key={i} style={{ width: 15, height: 15, borderRadius: "50%", background: i < Math.min(programWeek, 7) ? "#155E56" : "#ECE5D6", border: "none" }} />
               ))}
             </div>
           </div>
           <Link href="/dashboard/check-in" className="p-4 rounded-2xl block" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
             <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>Weekly check-in</p>
-            <p className="mt-2" style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 22, color: "#1c1d20" }}>Week {programWeek}</p>
+            <p className="mt-2 tabular-nums" style={{ fontSize: 17, fontWeight: 600, color: "#1C1D20" }}>Week {programWeek}</p>
             <p className="text-[11.5px] mt-1" style={{ color: "#8b867c" }}>Tap to submit yours</p>
             <div className="h-[5px] rounded-full mt-3 overflow-hidden" style={{ background: "#e2dbcd" }}>
               <div style={{ width: "62%", height: "100%", borderRadius: 999, background: "linear-gradient(90deg,#155e56,#155e56)" }} />
