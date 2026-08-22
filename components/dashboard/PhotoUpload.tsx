@@ -146,9 +146,9 @@ export function PhotoUpload({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-3"
-              style={{ background: 'rgba(28, 29, 32, 0.45)' }}
+              style={{ background: 'rgba(28, 29, 32, 0.62)' }}
             >
-              <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#155e56' }} />
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#fdfbf7' }} />
               <div className="w-32 h-1.5 rounded-full overflow-hidden" style={{ background: '#cfc7b6' }}>
                 <motion.div
                   className="h-full rounded-full"

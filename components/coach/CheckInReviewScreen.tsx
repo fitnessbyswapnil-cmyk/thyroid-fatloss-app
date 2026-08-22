@@ -73,7 +73,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
       exit={{ opacity: 0, x: 100 }}
     >
       {/* Header with back button */}
-      <div className="sticky top-0 z-40 px-6 py-4 flex items-center justify-between border-b" style={{ background: 'rgba(28, 29, 32, 0.45)', borderColor: '#e2dbcd' }}>
+      <div className="sticky top-0 z-40 px-6 py-4 flex items-center justify-between border-b" style={{ background: 'rgba(253, 251, 247, 0.92)', borderColor: '#e2dbcd' }}>
         <button
           onClick={onClose}
           className="p-2 rounded-lg hover:bg-white/10 transition"
@@ -242,7 +242,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
       <div
         className="border-t p-4"
         style={{
-          background: 'rgba(28, 29, 32, 0.45)',
+          background: 'rgba(253, 251, 247, 0.92)',
           borderColor: '#e2dbcd',
         }}
       >

@@ -28,8 +28,8 @@ export function BottomNavPill() {
         transform: "translateX(-50%)",
         backdropFilter: "blur(28px) saturate(180%)",
         WebkitBackdropFilter: "blur(28px) saturate(180%)",
-        background: "rgba(28, 29, 32, 0.45)",
-        border: "1px solid #cfc7b6",
+        background: "rgba(253, 251, 247, 0.92)",
+        border: "1px solid #e2dbcd",
         borderRadius: 9999,
         padding: "10px 32px",
         boxShadow: "0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 #cfc7b6",
@@ -58,7 +58,7 @@ export function BottomNavPill() {
                 style={{
                   width: isActive ? 22 : 20,
                   height: isActive ? 22 : 20,
-                  color: isActive ? "#155e56" : "#cfc7b6",
+                  color: isActive ? "#155e56" : "#8b867c",
                   transition: "color 200ms ease",
                 }}
               />

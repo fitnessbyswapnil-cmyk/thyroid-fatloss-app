@@ -181,8 +181,8 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
         )}
         {/* divider line */}
         <div className="absolute top-0 bottom-0 pointer-events-none" style={{ left: `${slider}%`, width: 2, background: "#155e56", boxShadow: "0 0 12px rgba(21, 94, 86,0.6)" }} />
-        <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.45)", color: "#8b867c" }}>Before</span>
-        <span className="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.45)", color: "#155e56" }}>After</span>
+        <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7" }}>Before</span>
+        <span className="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7" }}>After</span>
         <input
           type="range" min={0} max={100} value={slider}
           onChange={(e) => setSlider(Number(e.target.value))}

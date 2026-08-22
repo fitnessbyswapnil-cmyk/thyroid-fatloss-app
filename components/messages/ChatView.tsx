@@ -104,7 +104,7 @@ export function ChatView({
         </div>
       </main>
 
-      <div className="shrink-0 px-4 py-3" style={{ background: "rgba(28, 29, 32, 0.45)", borderTop: "1px solid #e2dbcd", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))" }}>
+      <div className="shrink-0 px-4 py-3" style={{ background: "rgba(253, 251, 247, 0.92)", borderTop: "1px solid #e2dbcd", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))" }}>
         <div className="max-w-2xl mx-auto flex items-end gap-2">
           <textarea
             value={text}

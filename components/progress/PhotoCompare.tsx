@@ -116,7 +116,7 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
                   <img src={src(s[field] as string)} alt={`${pose} ${i === 0 ? "before" : "after"}`} className="w-full h-full object-cover" />
                   <span
                     className="absolute top-2 left-2 text-[9.5px] font-bold uppercase rounded-full px-2 py-1"
-                    style={{ background: "rgba(28, 29, 32, 0.45)", color: i === 0 ? "#5a564e" : "#155e56", backdropFilter: "blur(4px)", letterSpacing: "0.06em" }}
+                    style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7", backdropFilter: "blur(4px)", letterSpacing: "0.06em" }}
                   >
                     {i === 0 ? "Before" : "Now"}
                   </span>

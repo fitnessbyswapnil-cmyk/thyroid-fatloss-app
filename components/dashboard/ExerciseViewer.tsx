@@ -95,7 +95,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
           {(showDemo || frames.length >= 2) && (
             <span
               className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-medium"
-              style={{ background: "rgba(28, 29, 32, 0.45)", color: "#155e56", backdropFilter: "blur(4px)" }}
+              style={{ background: "rgba(28, 29, 32, 0.62)", color: "#fdfbf7", backdropFilter: "blur(4px)" }}
             >
               ● Looping demo
             </span>

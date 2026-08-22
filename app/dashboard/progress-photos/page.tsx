@@ -130,7 +130,7 @@ export default function ProgressPhotosPage() {
       <div 
         className="sticky top-0 z-50 px-4 py-4"
         style={{
-          background: 'rgba(28, 29, 32, 0.45)',
+          background: 'rgba(253, 251, 247, 0.92)',
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid #e2dbcd',
         }}
