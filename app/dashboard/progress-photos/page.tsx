@@ -91,7 +91,7 @@ export default function ProgressPhotosPage() {
     return (
       <div 
         className="min-h-screen flex items-center justify-center p-6"
-        style={{ background: '#0a0d14' }}
+        style={{ background: '#fdfbf7' }}
       >
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -103,17 +103,17 @@ export default function ProgressPhotosPage() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: 'spring' }}
             className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center"
-            style={{ background: 'rgba(45, 212, 191, 0.15)' }}
+            style={{ background: 'rgba(21, 94, 86, 0.15)' }}
           >
-            <Check className="w-10 h-10" style={{ color: '#2dd4bf' }} />
+            <Check className="w-10 h-10" style={{ color: '#155e56' }} />
           </motion.div>
           <h2 
             className="text-2xl font-semibold mb-2"
-            style={{ color: '#e8eaf0' }}
+            style={{ color: '#1c1d20' }}
           >
             Photos Submitted!
           </h2>
-          <p style={{ color: '#7e8a9e' }}>
+          <p style={{ color: '#8b867c' }}>
             Your coach will review them soon
           </p>
         </motion.div>
@@ -124,15 +124,15 @@ export default function ProgressPhotosPage() {
   return (
     <div 
       className="min-h-screen pb-32"
-      style={{ background: '#0a0d14' }}
+      style={{ background: '#fdfbf7' }}
     >
       {/* Header */}
       <div 
         className="sticky top-0 z-50 px-4 py-4"
         style={{
-          background: 'rgba(10, 13, 20, 0.9)',
+          background: 'rgba(28, 29, 32, 0.45)',
           backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid #e2dbcd',
         }}
       >
         <div className="flex items-center gap-4">
@@ -141,19 +141,19 @@ export default function ProgressPhotosPage() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.06)' }}
+              style={{ background: '#e2dbcd' }}
             >
-              <ArrowLeft className="w-5 h-5" style={{ color: '#e8eaf0' }} />
+              <ArrowLeft className="w-5 h-5" style={{ color: '#1c1d20' }} />
             </motion.div>
           </Link>
           <div>
             <h1 
               className="text-xl font-semibold"
-              style={{ color: '#e8eaf0' }}
+              style={{ color: '#1c1d20' }}
             >
               Progress Photos
             </h1>
-            <p className="text-sm" style={{ color: '#7e8a9e' }}>
+            <p className="text-sm" style={{ color: '#8b867c' }}>
               Week {weekNumber} Check-in
             </p>
           </div>
@@ -164,21 +164,21 @@ export default function ProgressPhotosPage() {
         {/* Week indicator */}
         <div 
           className="flex items-center gap-3 p-4 rounded-2xl"
-          style={{ background: 'rgba(255,255,255,0.04)' }}
+          style={{ background: '#ffffff' }}
         >
           <div 
             className="w-12 h-12 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(45, 212, 191, 0.15)' }}
+            style={{ background: 'rgba(21, 94, 86, 0.15)' }}
           >
-            <Calendar className="w-6 h-6" style={{ color: '#2dd4bf' }} />
+            <Calendar className="w-6 h-6" style={{ color: '#155e56' }} />
           </div>
           <div>
-            <p className="text-sm" style={{ color: '#7e8a9e' }}>
+            <p className="text-sm" style={{ color: '#8b867c' }}>
               Submitting for
             </p>
             <p 
               className="text-lg font-semibold"
-              style={{ color: '#e8eaf0' }}
+              style={{ color: '#1c1d20' }}
             >
               Week {weekNumber}
             </p>
@@ -189,7 +189,7 @@ export default function ProgressPhotosPage() {
         <div>
           <h2 
             className="text-sm font-medium uppercase mb-4"
-            style={{ color: '#7e8a9e', letterSpacing: '0.08em' }}
+            style={{ color: '#8b867c', letterSpacing: '0.08em' }}
           >
             Your Progress Photos
           </h2>
@@ -215,7 +215,7 @@ export default function ProgressPhotosPage() {
             />
           </div>
 
-          <p className="text-xs mt-3" style={{ color: '#505668' }}>
+          <p className="text-xs mt-3" style={{ color: '#a09a8e' }}>
             Tip: Take photos in good lighting, wearing fitted clothing
           </p>
         </div>
@@ -224,7 +224,7 @@ export default function ProgressPhotosPage() {
         <div>
           <h2 
             className="text-sm font-medium uppercase mb-3"
-            style={{ color: '#7e8a9e', letterSpacing: '0.08em' }}
+            style={{ color: '#8b867c', letterSpacing: '0.08em' }}
           >
             Notes (Optional)
           </h2>
@@ -235,9 +235,9 @@ export default function ProgressPhotosPage() {
             rows={4}
             className="w-full rounded-2xl px-4 py-4 text-sm resize-none focus:outline-none"
             style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#e8eaf0',
+              background: '#ffffff',
+              border: '1px solid #e2dbcd',
+              color: '#1c1d20',
             }}
           />
         </div>
@@ -248,7 +248,7 @@ export default function ProgressPhotosPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-4 rounded-xl text-center"
-            style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' }}
+            style={{ background: 'rgba(154, 59, 46, 0.15)', color: '#9a3b2e' }}
           >
             {error}
           </motion.div>
@@ -270,8 +270,8 @@ export default function ProgressPhotosPage() {
           whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
           className="w-full py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
           style={{
-            background: 'linear-gradient(135deg, #2dd4bf 0%, #6ee7b7 100%)',
-            color: '#0a0d14',
+            background: 'linear-gradient(135deg, #155e56 0%, #7fa89f 100%)',
+            color: '#fdfbf7',
           }}
         >
           {isSubmitting ? (

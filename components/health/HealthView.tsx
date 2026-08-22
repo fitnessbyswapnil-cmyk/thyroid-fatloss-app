@@ -10,8 +10,8 @@ import { LabReportUpload } from "@/components/health/LabReportUpload"
 import { LabGauges } from "@/components/health/LabGauges"
 import { LabDeltas } from "@/components/health/LabDeltas"
 
-const card = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" } as const
-const inputStyle = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" } as const
+const card = { background: "#ffffff", border: "1px solid #e2dbcd" } as const
+const inputStyle = { background: "#ffffff", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
 
 interface MetricDef {
   key: string
@@ -122,12 +122,12 @@ export function HealthView({
     }))
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -150, left: 10, width: 360, height: 300, zIndex: 0 }} />
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href={asCoach && clientId ? `/coach/client/${clientId}` : "/dashboard"} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
+          <Link href={asCoach && clientId ? `/coach/client/${clientId}` : "/dashboard"} className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
             {asCoach ? `${clientName || "Client"} · Health` : "My Health"}
           </h1>
         </div>
@@ -146,8 +146,8 @@ export function HealthView({
 
         {/* Thyroid intake */}
         <div className="p-6 rounded-2xl" style={card}>
-          <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
-            <Pill size={16} style={{ color: "#2dd4bf" }} /> Thyroid profile
+          <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#1c1d20" }}>
+            <Pill size={16} style={{ color: "#155e56" }} /> Thyroid profile
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Diagnosis"><select value={p.diagnosis || ""} onChange={(e) => set("diagnosis", e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle}>
@@ -165,7 +165,7 @@ export function HealthView({
             <Field label="Other conditions"><input value={p.conditions || ""} onChange={(e) => set("conditions", e.target.value)} placeholder="PCOS, diabetes…" className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} /></Field>
             <Field label="Allergies" full><input value={p.allergies || ""} onChange={(e) => set("allergies", e.target.value)} placeholder="None / list them" className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} /></Field>
           </div>
-          <button onClick={saveProfile} disabled={savingP} className="mt-4 h-11 px-5 rounded-xl font-medium inline-flex items-center gap-2" style={{ background: "#2dd4bf", color: "#04121a" }}>
+          <button onClick={saveProfile} disabled={savingP} className="mt-4 h-11 px-5 rounded-xl font-medium inline-flex items-center gap-2" style={{ background: "#155e56", color: "#fdfbf7" }}>
             {savingP ? <Loader2 size={16} className="animate-spin" /> : savedP ? <Check size={16} /> : null}
             {savedP ? "Saved" : "Save profile"}
           </button>
@@ -173,13 +173,13 @@ export function HealthView({
 
         {/* Lab trend */}
         <div className="p-6 rounded-2xl" style={card}>
-          <h3 className="font-semibold mb-3 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
-            <Activity size={16} style={{ color: "#2dd4bf" }} /> Trends
+          <h3 className="font-semibold mb-3 flex items-center gap-2" style={{ color: "#1c1d20" }}>
+            <Activity size={16} style={{ color: "#155e56" }} /> Trends
           </h3>
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar mb-3 pb-0.5">
             {METRICS.map((m) => (
               <button key={m.key} onClick={() => setMetric(m.key)} className="shrink-0 text-[12px] font-medium px-3 py-1 rounded-full whitespace-nowrap"
-                style={metric === m.key ? { background: "#2dd4bf", color: "#04121a" } : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
+                style={metric === m.key ? { background: "#155e56", color: "#fdfbf7" } : { background: "#f4f0e8", color: "#3c3a34" }}>
                 {m.label}
               </button>
             ))}
@@ -191,14 +191,14 @@ export function HealthView({
             band={metric === "tsh" ? { min: 0.4, max: 4.0, label: "target ≤ 4.0" } : undefined}
           />
           {metric === "tsh" && (
-            <p className="text-[11px] mt-2" style={{ color: "#5a6578" }}>Shaded band = typical target range, 0.4–4.0 mIU/L. Your doctor's target may differ.</p>
+            <p className="text-[11px] mt-2" style={{ color: "#a09a8e" }}>Shaded band = typical target range, 0.4–4.0 mIU/L. Your doctor's target may differ.</p>
           )}
         </div>
 
         {/* Labs history + add */}
         <div className="p-6 rounded-2xl" style={card}>
-          <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
-            <FlaskConical size={16} style={{ color: "#2dd4bf" }} /> Lab results
+          <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#1c1d20" }}>
+            <FlaskConical size={16} style={{ color: "#155e56" }} /> Lab results
           </h3>
 
           {/* add row */}
@@ -211,30 +211,30 @@ export function HealthView({
               </Field>
             ))}
           </div>
-          <button onClick={submitLab} disabled={adding} className="h-10 px-4 rounded-xl font-medium inline-flex items-center gap-2 mb-4" style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}>
+          <button onClick={submitLab} disabled={adding} className="h-10 px-4 rounded-xl font-medium inline-flex items-center gap-2 mb-4" style={{ background: "rgba(21, 94, 86,0.12)", color: "#155e56" }}>
             {adding ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />} Add lab result
           </button>
 
-          {err && <p className="text-xs mb-3" style={{ color: "#fb7185" }}>{err}</p>}
+          {err && <p className="text-xs mb-3" style={{ color: "#9a3b2e" }}>{err}</p>}
 
           {labs.length === 0 ? (
-            <p className="text-sm" style={{ color: "#7e8a9e" }}>No labs recorded yet. Add your latest report above.</p>
+            <p className="text-sm" style={{ color: "#8b867c" }}>No labs recorded yet. Add your latest report above.</p>
           ) : (
             <div className="space-y-1.5">
               {[...labs].reverse().map((l) => (
-                <div key={l.id} className="flex items-center gap-3 p-2.5 rounded-xl text-sm" style={{ background: "rgba(255,255,255,0.03)" }}>
-                  <span className="w-16 shrink-0 tabular-nums" style={{ color: "#e8eaf0" }}>{new Date(l.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" })}</span>
-                  <span className="flex-1 text-xs tabular-nums" style={{ color: "#a9b2c1" }}>
+                <div key={l.id} className="flex items-center gap-3 p-2.5 rounded-xl text-sm" style={{ background: "#ffffff" }}>
+                  <span className="w-16 shrink-0 tabular-nums" style={{ color: "#1c1d20" }}>{new Date(l.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" })}</span>
+                  <span className="flex-1 text-xs tabular-nums" style={{ color: "#5a564e" }}>
                     {l.tsh != null && `TSH ${l.tsh}  `}{l.t4 != null && `T4 ${l.t4}  `}{l.vitamin_d != null && `D ${l.vitamin_d}  `}{l.ferritin != null && `Fer ${l.ferritin}  `}{l.weight_kg != null && `${l.weight_kg}kg`}
                   </span>
-                  <button onClick={() => removeLab(l.id)} style={{ color: "#5a6578" }} aria-label="Delete"><Trash2 size={14} /></button>
+                  <button onClick={() => removeLab(l.id)} style={{ color: "#a09a8e" }} aria-label="Delete"><Trash2 size={14} /></button>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <p className="text-xs px-1" style={{ color: "#5a6578" }}>
+        <p className="text-xs px-1" style={{ color: "#a09a8e" }}>
           ThyroWell is coaching, not medical care. Always follow your doctor for medication and lab interpretation.
         </p>
       </main>
@@ -245,7 +245,7 @@ export function HealthView({
 function Field({ label, children, full }: { label: string; children: ReactNode; full?: boolean }) {
   return (
     <div className={full ? "col-span-2" : ""}>
-      <label className="block text-[11px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.06em" }}>{label}</label>
+      <label className="block text-[11px] uppercase mb-1" style={{ color: "#8b867c", letterSpacing: "0.06em" }}>{label}</label>
       {children}
     </div>
   )

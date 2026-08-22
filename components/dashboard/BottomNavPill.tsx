@@ -28,17 +28,17 @@ export function BottomNavPill() {
         transform: "translateX(-50%)",
         backdropFilter: "blur(28px) saturate(180%)",
         WebkitBackdropFilter: "blur(28px) saturate(180%)",
-        background: "rgba(9, 12, 20, 0.75)",
-        border: "1px solid rgba(255, 255, 255, 0.10)",
+        background: "rgba(28, 29, 32, 0.45)",
+        border: "1px solid #cfc7b6",
         borderRadius: 9999,
         padding: "10px 32px",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12)",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 #cfc7b6",
       }}
     >
       <div className="flex items-center gap-2 relative">
         <motion.div
           className="absolute rounded-full"
-          style={{ background: "rgba(45, 212, 191, 0.15)", width: 40, height: 40, top: "50%", marginTop: -20 }}
+          style={{ background: "rgba(21, 94, 86, 0.15)", width: 40, height: 40, top: "50%", marginTop: -20 }}
           animate={{ left: activeIndex * 48 }}
           transition={{ type: "spring", stiffness: 300, damping: 26 }}
         />
@@ -58,7 +58,7 @@ export function BottomNavPill() {
                 style={{
                   width: isActive ? 22 : 20,
                   height: isActive ? 22 : 20,
-                  color: isActive ? "#2dd4bf" : "rgba(255, 255, 255, 0.40)",
+                  color: isActive ? "#155e56" : "#cfc7b6",
                   transition: "color 200ms ease",
                 }}
               />

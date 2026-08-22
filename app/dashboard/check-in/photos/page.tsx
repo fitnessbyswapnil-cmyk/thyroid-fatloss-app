@@ -16,7 +16,7 @@ export default async function ProgressPhotoPage() {
   const currentWeek = getWeekNumber(new Date())
 
   return (
-    <div className="h-screen bg-[#090c14]">
+    <div className="h-screen bg-[#fdfbf7]">
       <ProgressPhotoFlow checkInWeek={currentWeek} />
     </div>
   )

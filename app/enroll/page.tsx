@@ -30,32 +30,32 @@ export default async function EnrollPage() {
   const firstName = client?.full_name?.split(" ")[0]
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "#090c14" }}>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "#fdfbf7" }}>
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at center, rgba(45,212,191,0.12) 0%, transparent 70%)", filter: "blur(80px)" }}
+        style={{ background: "radial-gradient(ellipse at center, rgba(21, 94, 86,0.12) 0%, transparent 70%)", filter: "blur(80px)" }}
       />
       <div className="w-full max-w-lg relative">
-        <div className="rounded-2xl p-8" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)" }}>
-            <Sparkles size={14} style={{ color: "#f59e0b" }} />
-            <span className="text-xs font-medium" style={{ color: "#f59e0b" }}>Premium Coaching</span>
+        <div className="rounded-2xl p-8" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: "rgba(151, 103, 27,0.1)", border: "1px solid rgba(151, 103, 27,0.2)" }}>
+            <Sparkles size={14} style={{ color: "#97671b" }} />
+            <span className="text-xs font-medium" style={{ color: "#97671b" }}>Premium Coaching</span>
           </div>
 
-          <h1 className="text-3xl mb-3" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
+          <h1 className="text-3xl mb-3" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
             {firstName ? `Welcome, ${firstName}` : "Complete your enrollment"}
           </h1>
-          <p className="text-sm leading-relaxed mb-7" style={{ color: "#7e8a9e" }}>
+          <p className="text-sm leading-relaxed mb-7" style={{ color: "#8b867c" }}>
             Your account is set up. Complete enrollment to unlock your personalized thyroid coaching program and dashboard.
           </p>
 
           <div className="space-y-3 mb-8">
             {benefits.map((b) => (
               <div key={b} className="flex items-start gap-3">
-                <div className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(45,212,191,0.15)" }}>
-                  <Check size={12} style={{ color: "#2dd4bf" }} />
+                <div className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(21, 94, 86,0.15)" }}>
+                  <Check size={12} style={{ color: "#155e56" }} />
                 </div>
-                <span className="text-sm" style={{ color: "#c9cdd5" }}>{b}</span>
+                <span className="text-sm" style={{ color: "#3c3a34" }}>{b}</span>
               </div>
             ))}
           </div>
@@ -63,21 +63,21 @@ export default async function EnrollPage() {
           <a
             href={PAYMENT_URL}
             className="w-full h-13 py-4 rounded-2xl font-semibold inline-flex items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)", color: "#0a0d14", boxShadow: "0 12px 40px rgba(45,212,191,0.3)" }}
+            style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7", boxShadow: "0 12px 40px rgba(21, 94, 86,0.3)" }}
           >
             Complete Enrollment
             <ArrowRight size={18} />
           </a>
-          <p className="text-xs text-center mt-4" style={{ color: "#5a6578" }}>
+          <p className="text-xs text-center mt-4" style={{ color: "#a09a8e" }}>
             Already paid? Your coach will activate your access shortly.
           </p>
         </div>
 
         <div className="mt-6 flex items-center justify-center gap-5">
-          <Link href="/account" className="text-xs" style={{ color: "#7e8a9e" }}>
+          <Link href="/account" className="text-xs" style={{ color: "#8b867c" }}>
             Manage or delete my data
           </Link>
-          <Link href="/auth/login" className="inline-flex items-center gap-2 text-xs" style={{ color: "#7e8a9e" }}>
+          <Link href="/auth/login" className="inline-flex items-center gap-2 text-xs" style={{ color: "#8b867c" }}>
             <LogOut size={14} /> Back to sign in
           </Link>
         </div>

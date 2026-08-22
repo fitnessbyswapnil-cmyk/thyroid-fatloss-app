@@ -73,12 +73,12 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
   const lost = startW != null && nowW != null ? +(startW - nowW).toFixed(1) : null
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -140, left: 30, width: 340, height: 300, zIndex: 0 }} />
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>My Progress</h1>
+          <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>My Progress</h1>
         </div>
       </header>
 
@@ -86,13 +86,13 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
         {/* Glowing headline moment (prototype style) */}
         {lost != null && (
           <div className="text-center py-4">
-            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
+            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>
               Over {weightPts.length} check-ins
             </p>
-            <p className="mt-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 48, lineHeight: 1.05, color: "#e8eaf0", textShadow: "0 0 44px rgba(45,212,191,0.35)" }}>
+            <p className="mt-2" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 48, lineHeight: 1.05, color: "#1c1d20", textShadow: "0 0 44px rgba(21, 94, 86,0.35)" }}>
               {lost > 0 ? `${lost} kg down` : lost < 0 ? `${Math.abs(lost)} kg up` : "Holding steady"}
             </p>
-            <p className="text-sm mt-2 mx-auto" style={{ color: "#a9b2c1", maxWidth: 300, lineHeight: 1.5 }}>
+            <p className="text-sm mt-2 mx-auto" style={{ color: "#5a564e", maxWidth: 300, lineHeight: 1.5 }}>
               {lost > 0
                 ? "Slow is exactly right on thyroid — this pace protects your energy."
                 : "Weight isn't the whole story on thyroid — watch your energy, sleep and mood too."}
@@ -100,15 +100,15 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           </div>
         )}
 
-        <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
           <div className="flex items-center gap-1.5 mb-5">
             {VIEWS.map((v) => (
               <button key={v.key} onClick={() => setView(v.key)}
                 className="flex-1 text-[12.5px] font-medium px-3 py-2 rounded-xl whitespace-nowrap transition-colors"
                 aria-pressed={view === v.key}
                 style={view === v.key
-                  ? { background: "#2dd4bf", color: "#04121a" }
-                  : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
+                  ? { background: "#155e56", color: "#fdfbf7" }
+                  : { background: "#f4f0e8", color: "#3c3a34" }}>
                 {v.label}
               </button>
             ))}
@@ -118,7 +118,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             <>
               <TrendChart points={points} height={200} unit="kg" goalDirection="down" />
               {points.length < 2 && (
-                <p className="text-xs mt-3 text-center" style={{ color: "#7e8a9e" }}>
+                <p className="text-xs mt-3 text-center" style={{ color: "#8b867c" }}>
                   Submit weekly check-ins to build your weight trend.
                 </p>
               )}
@@ -141,7 +141,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
 
             if (scored.length === 0) {
               return (
-                <p className="text-[12.5px] py-6 text-center" style={{ color: "#7e8a9e", lineHeight: 1.55 }}>
+                <p className="text-[12.5px] py-6 text-center" style={{ color: "#8b867c", lineHeight: 1.55 }}>
                   Your first check-in will fill this in.
                 </p>
               )
@@ -150,7 +150,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             const improved = scored.filter((m) => m.delta > 0).length
             return (
               <div>
-                <p className="text-[12.5px] mb-4" style={{ color: improved > 0 ? "#34d399" : "#a9b2c1", lineHeight: 1.55 }}>
+                <p className="text-[12.5px] mb-4" style={{ color: improved > 0 ? "#155e56" : "#5a564e", lineHeight: 1.55 }}>
                   {scored.every((m) => m.delta === 0)
                     ? "How you're feeling right now. These often shift before the scale does."
                     : improved > 0
@@ -160,10 +160,10 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
                 <div className="flex flex-col gap-2.5">
                   {scored.map((m) => {
                     // Up is better for every metric in this group.
-                    const color = m.delta > 0 ? "#2dd4bf" : m.delta < 0 ? "#e0a53a" : "#7e8a9e"
+                    const color = m.delta > 0 ? "#155e56" : m.delta < 0 ? "#97671b" : "#8b867c"
                     return (
                       <MetricBar key={m.label} label={m.label} pct={(m.latest / m.max) * 100} color={color} tone={`${color}22`}>
-                        <span className="tabular-nums text-[12.5px]" style={{ color: "#e8eaf0" }}>
+                        <span className="tabular-nums text-[12.5px]" style={{ color: "#1c1d20" }}>
                           {m.latest}{m.suffix}
                         </span>
                         <span className="tabular-nums text-[11.5px] font-semibold" style={{ color, minWidth: 42, textAlign: "right" }}>
@@ -173,7 +173,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
                     )
                   })}
                 </div>
-                <p className="text-[11px] mt-4" style={{ color: "#5a6578", lineHeight: 1.5 }}>
+                <p className="text-[11px] mt-4" style={{ color: "#a09a8e", lineHeight: 1.5 }}>
                   Bar length is where you are now. The arrow is the change since your first check-in.
                 </p>
               </div>
@@ -198,14 +198,14 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             .filter((p) => Number.isFinite(p.value))
 
           return (
-            <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <h3 className="font-semibold mb-1" style={{ color: "#e8eaf0" }}>Symptoms</h3>
+            <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+              <h3 className="font-semibold mb-1" style={{ color: "#1c1d20" }}>Symptoms</h3>
               {scored.length < 2 ? (
-                <p className="text-[12.5px] mb-3" style={{ color: "#7e8a9e" }}>
+                <p className="text-[12.5px] mb-3" style={{ color: "#8b867c" }}>
                   Your first symptom check is logged — next week you&apos;ll start seeing what&apos;s changing.
                 </p>
               ) : (
-                <p className="text-[12.5px] mb-3" style={{ color: improved > 0 ? "#34d399" : "#7e8a9e" }}>
+                <p className="text-[12.5px] mb-3" style={{ color: improved > 0 ? "#155e56" : "#8b867c" }}>
                   {improved > 0
                     ? `${improved} of ${changes.length} symptoms improved since week ${first.week}`
                     : "Holding steady — symptoms often shift before the scale does."}
@@ -216,11 +216,11 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
                 {changes.map((c) => {
                   const better = c.delta < 0
                   const worse = c.delta > 0
-                  const color = better ? "#34d399" : worse ? "#f59e0b" : "#7e8a9e"
-                  const bg = better ? "rgba(52,211,153,0.1)" : worse ? "rgba(245,158,11,0.1)" : "rgba(255,255,255,0.05)"
+                  const color = better ? "#155e56" : worse ? "#97671b" : "#8b867c"
+                  const bg = better ? "rgba(21, 94, 86,0.1)" : worse ? "rgba(151, 103, 27,0.1)" : "#f4f0e8"
                   return (
                     <span key={c.key} className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-3 py-1.5"
-                      style={{ color, background: bg, border: `1px solid ${better ? "rgba(52,211,153,0.2)" : worse ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.08)"}` }}>
+                      style={{ color, background: bg, border: `1px solid ${better ? "rgba(21, 94, 86,0.2)" : worse ? "rgba(151, 103, 27,0.2)" : "#e2dbcd"}` }}>
                       {c.short}
                       <span style={{ opacity: 0.85 }}>
                         {better ? `↓${Math.abs(c.delta)}` : worse ? `↑${c.delta}` : "—"}
@@ -232,11 +232,11 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
 
               {burdenPts.length >= 2 && (
                 <>
-                  <p className="text-[10.5px] uppercase font-semibold mb-1.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
+                  <p className="text-[10.5px] uppercase font-semibold mb-1.5" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>
                     Total symptom load
                   </p>
-                  <TrendChart points={burdenPts} height={130} goalDirection="down" color="#34d399" />
-                  <p className="text-[11px] mt-2" style={{ color: "#5a6578" }}>Lower is better — 0 means symptom-free.</p>
+                  <TrendChart points={burdenPts} height={130} goalDirection="down" color="#155e56" />
+                  <p className="text-[11px] mt-2" style={{ color: "#a09a8e" }}>Lower is better — 0 means symptom-free.</p>
                 </>
               )}
             </div>
@@ -256,18 +256,18 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           if (milestones.length === 0) return null
           return (
             <div>
-              <p className="text-[10.5px] uppercase font-semibold mb-2.5 ml-0.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>Milestones</p>
+              <p className="text-[10.5px] uppercase font-semibold mb-2.5 ml-0.5" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>Milestones</p>
               <div className="flex flex-wrap gap-2">
                 {milestones.map((m) => (
                   <span
                     key={m.label}
                     className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-3 py-1.5"
                     style={m.done
-                      ? { color: "#34d399", background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.2)" }
-                      : { color: "#5a6578", border: "1px dashed rgba(255,255,255,0.12)" }}
+                      ? { color: "#155e56", background: "rgba(21, 94, 86,0.1)", border: "1px solid rgba(21, 94, 86,0.2)" }
+                      : { color: "#a09a8e", border: "1px dashed #cfc7b6" }}
                   >
                     {m.done && (
-                      <svg width="11" height="11" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#34d399", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
+                      <svg width="11" height="11" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#155e56", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
                     )}
                     {m.label}
                   </span>
@@ -278,15 +278,15 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
         })()}
 
         <div className="grid grid-cols-2 gap-2.5">
-          <Link href="/dashboard/progress-photos/compare" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-semibold" style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.25)", color: "#2dd4bf" }}>
+          <Link href="/dashboard/progress-photos/compare" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-semibold" style={{ background: "rgba(21, 94, 86,0.1)", border: "1px solid rgba(21, 94, 86,0.25)", color: "#155e56" }}>
             Before &amp; after
           </Link>
-          <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" }}>
+          <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "#f4f0e8", border: "1px solid #e2dbcd", color: "#1c1d20" }}>
             Add photos
           </Link>
         </div>
 
-        <p className="text-xs px-1" style={{ color: "#5a6578" }}>
+        <p className="text-xs px-1" style={{ color: "#a09a8e" }}>
           The scale moves slowly with thyroid — energy, sleep and mood often improve first. Watch all of them, not just weight.
         </p>
       </main>

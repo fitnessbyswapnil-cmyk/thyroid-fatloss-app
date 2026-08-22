@@ -12,7 +12,7 @@ export interface TrendPoint {
 
 export function TrendChart({
   points,
-  color = "#2dd4bf",
+  color = "#155e56",
   height = 160,
   unit = "",
   goalDirection,
@@ -28,7 +28,7 @@ export function TrendChart({
   const clean = points.filter((p) => typeof p.value === "number" && !Number.isNaN(p.value))
   if (clean.length === 0) {
     return (
-      <div className="flex items-center justify-center rounded-xl" style={{ height, background: "rgba(255,255,255,0.03)", color: "#5a6578", fontSize: 13 }}>
+      <div className="flex items-center justify-center rounded-xl" style={{ height, background: "#ffffff", color: "#a09a8e", fontSize: 13 }}>
         No data yet
       </div>
     )
@@ -50,7 +50,7 @@ export function TrendChart({
   const first = clean[0].value, last = clean[clean.length - 1].value
   const delta = last - first
   const good = goalDirection ? (goalDirection === "down" ? delta < 0 : delta > 0) : undefined
-  const deltaColor = good === undefined ? "#7e8a9e" : good ? "#34d399" : "#fb7185"
+  const deltaColor = good === undefined ? "#8b867c" : good ? "#155e56" : "#9a3b2e"
 
   return (
     <div>
@@ -64,10 +64,10 @@ export function TrendChart({
         {/* Target band (prototype style: shaded range + dashed ceiling) */}
         {band && (
           <g>
-            <rect x={padX} y={y(band.max)} width={innerW} height={Math.max(2, y(band.min) - y(band.max))} rx="5" fill="rgba(45,212,191,0.05)" />
-            <line x1={padX} y1={y(band.max)} x2={padX + innerW} y2={y(band.max)} stroke="rgba(45,212,191,0.35)" strokeWidth="1" strokeDasharray="4 4" />
+            <rect x={padX} y={y(band.max)} width={innerW} height={Math.max(2, y(band.min) - y(band.max))} rx="5" fill="rgba(21, 94, 86,0.05)" />
+            <line x1={padX} y1={y(band.max)} x2={padX + innerW} y2={y(band.max)} stroke="rgba(21, 94, 86,0.35)" strokeWidth="1" strokeDasharray="4 4" />
             {band.label && (
-              <text x={padX + innerW} y={y(band.max) - 5} fontSize="9" fill="#5a6578" textAnchor="end">{band.label}</text>
+              <text x={padX + innerW} y={y(band.max) - 5} fontSize="9" fill="#a09a8e" textAnchor="end">{band.label}</text>
             )}
           </g>
         )}
@@ -77,17 +77,17 @@ export function TrendChart({
           <circle key={i} cx={x(i)} cy={y(p.value)} r="3" fill={color} />
         ))}
         {/* max & min value labels */}
-        <text x="2" y={y(max) + 4} fontSize="9" fill="#5a6578">{max}{unit}</text>
-        <text x="2" y={y(min) + 4} fontSize="9" fill="#5a6578">{min}{unit}</text>
+        <text x="2" y={y(max) + 4} fontSize="9" fill="#a09a8e">{max}{unit}</text>
+        <text x="2" y={y(min) + 4} fontSize="9" fill="#a09a8e">{min}{unit}</text>
       </svg>
       <div className="flex items-center justify-between mt-1 px-1">
-        <span className="text-[11px]" style={{ color: "#5a6578" }}>{clean[0].label}</span>
+        <span className="text-[11px]" style={{ color: "#a09a8e" }}>{clean[0].label}</span>
         {clean.length > 1 && (
           <span className="text-[11px] tabular-nums" style={{ color: deltaColor }}>
             {delta > 0 ? "+" : ""}{Number(delta.toFixed(1))}{unit} overall
           </span>
         )}
-        <span className="text-[11px]" style={{ color: "#5a6578" }}>{clean[clean.length - 1].label}</span>
+        <span className="text-[11px]" style={{ color: "#a09a8e" }}>{clean[clean.length - 1].label}</span>
       </div>
     </div>
   )

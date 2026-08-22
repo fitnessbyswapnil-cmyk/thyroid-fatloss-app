@@ -59,13 +59,13 @@ export function MealLogger({ meals }: { meals: string[] }) {
   const count = meals.filter((m) => done.has(m)).length
 
   return (
-    <div className="mt-4 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+    <div className="mt-4 pt-4" style={{ borderTop: "1px solid #e2dbcd" }}>
       <div className="flex items-center justify-between mb-2.5">
-        <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
+        <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>
           Today&rsquo;s meals
         </p>
         {!loading && (
-          <span className="text-[11px] tabular-nums" style={{ color: count === meals.length ? "#34d399" : "#5a6578" }}>
+          <span className="text-[11px] tabular-nums" style={{ color: count === meals.length ? "#155e56" : "#a09a8e" }}>
             {count}/{meals.length}
           </span>
         )}
@@ -82,15 +82,15 @@ export function MealLogger({ meals }: { meals: string[] }) {
               className="inline-flex items-center gap-1.5 text-[12px] font-semibold rounded-full px-3 py-2 transition-colors"
               style={
                 isDone
-                  ? { background: "rgba(52,211,153,0.14)", color: "#34d399", border: "1px solid rgba(52,211,153,0.3)" }
-                  : { background: "rgba(255,255,255,0.04)", color: "#a9b2c1", border: "1px solid rgba(255,255,255,0.08)" }
+                  ? { background: "rgba(21, 94, 86,0.14)", color: "#155e56", border: "1px solid rgba(21, 94, 86,0.3)" }
+                  : { background: "#ffffff", color: "#5a564e", border: "1px solid #e2dbcd" }
               }
             >
               {busy === m
                 ? <Loader2 size={12} className="animate-spin" />
                 : isDone
                 ? <Check size={12} strokeWidth={3} />
-                : <span className="w-3 h-3 rounded-full" style={{ border: "1.5px solid #5a6578" }} />}
+                : <span className="w-3 h-3 rounded-full" style={{ border: "1.5px solid #a09a8e" }} />}
               {m}
             </button>
           )

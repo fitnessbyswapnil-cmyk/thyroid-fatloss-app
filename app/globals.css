@@ -4,67 +4,106 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* PREMIUM DARK THEME - Exact Spec */
-  /* Backgrounds */
-  --bg-primary: #0a0d14;
-  --bg-surface: #0f1219;
-  --bg-surface-2: #141820;
-  --bg-surface-3: #1a1f2e;
-  
-  /* Brand Colors */
-  --teal-primary: #2dd4bf;
-  --teal-deep: #0d9488;
-  --teal-glow: rgba(45, 212, 191, 0.25);
-  --amber-gold: #f59e0b;
-  --amber-glow: rgba(245, 158, 11, 0.2);
-  
-  /* Text */
-  --text-primary: #e8eaf0;
-  --text-secondary: #8892a4;
-  --text-faint: #4a5366;
-  
-  /* Glass */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-highlight: rgba(255, 255, 255, 0.10);
-  
-  /* System tokens mapped */
-  --background: #0a0d14;
-  --foreground: #e8eaf0;
-  --card: rgba(255, 255, 255, 0.03);
-  --card-foreground: #e8eaf0;
-  --popover: #0f1219;
-  --popover-foreground: #e8eaf0;
-  --primary: #2dd4bf;
-  --primary-foreground: #0a0d14;
-  --secondary: #8892a4;
-  --secondary-foreground: #0a0d14;
-  --muted: #141820;
-  --muted-foreground: #8892a4;
-  --accent: #f59e0b;
-  --accent-foreground: #0a0d14;
-  --destructive: #f87171;
-  --destructive-foreground: #0a0d14;
-  --border: rgba(255, 255, 255, 0.07);
-  --input: rgba(255, 255, 255, 0.07);
-  --ring: #2dd4bf;
-  --success: #34d399;
-  --success-foreground: #0a0d14;
-  --warning: #f59e0b;
-  --warning-foreground: #0a0d14;
+  /* ThyroWell — warm paper with dark moments.
+     Palette from the Claude Design system (direction 1c): paper carries the
+     data, dark carries the emotional beats. Every value below is a token so a
+     future change is one file rather than seventy-one. */
+
+  /* --- Paper surfaces (the default ground) --- */
+  --paper:            #fdfbf7;  /* page */
+  --paper-card:       #ffffff;  /* elevated card */
+  --paper-subtle:     #f4f0e8;  /* recessed / secondary fill */
+  --paper-warm:       #ece5d6;  /* accent surface, callouts */
+  --paper-sage:       #dfe7dd;  /* soft positive surface */
+  --line:             #e2dbcd;  /* hairline on paper */
+  --line-firm:        #cfc7b6;  /* stronger divider */
+
+  /* --- Dark surfaces (greeting, hero moments, immersive views) --- */
+  --ink:              #17181c;  /* dark ground */
+  --ink-raised:       #1c1d20;  /* dark card */
+  --ink-line:         #2b2c31;  /* hairline on dark */
+  --on-ink:           #fdfbf7;  /* text on dark */
+  --on-ink-muted:     #8a8e96;  /* muted text on dark */
+
+  /* --- Text on paper --- */
+  --text:             #1c1d20;
+  --text-strong:      #1a1a1a;
+  --text-2:           #3c3a34;
+  --text-muted:       #5a564e;
+  --text-faint:       #8b867c;
+  --text-ghost:       #a09a8e;
+
+  /* --- Brand --- */
+  --accent:           #155e56;  /* deep teal — buttons, active state */
+  --accent-ink:       #fdfbf7;  /* text on accent */
+  --accent-soft:      #dfe7dd;  /* accent surface */
+  --accent-line:      rgba(21, 94, 86, 0.22);
+
+  /* --- Semantic. Gold, not red, for attention: on a health screen a red
+         badge on a slightly-high value reads as a failed test. --- */
+  --good:             #155e56;
+  --good-soft:        #dfe7dd;
+  --attention:        #97671b;
+  --attention-soft:   #f4ead6;
+  --gold:             #b8863f;
+  --gold-light:       #e8c894;
+  --danger:           #9a3b2e;  /* genuine errors only */
+  --danger-soft:      #f6e4e0;
+
+  /* Legacy aliases — older rules still reference these. */
+  --bg-primary: var(--paper);
+  --bg-surface: var(--paper-card);
+  --bg-surface-2: var(--paper-subtle);
+  --bg-surface-3: var(--paper-warm);
+  --teal-primary: var(--accent);
+  --teal-deep: #0f4640;
+  --teal-glow: rgba(21, 94, 86, 0.18);
+  --amber-gold: var(--gold);
+  --amber-glow: rgba(184, 134, 63, 0.18);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --glass-bg: var(--paper-card);
+  --glass-border: var(--line);
+  --glass-highlight: rgba(28, 29, 32, 0.04);
+
+  /* --- shadcn/system tokens --- */
+  --background: var(--paper);
+  --foreground: var(--text);
+  --card: var(--paper-card);
+  --card-foreground: var(--text);
+  --popover: var(--paper-card);
+  --popover-foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: var(--accent-ink);
+  --secondary: var(--paper-subtle);
+  --secondary-foreground: var(--text);
+  --muted: var(--paper-subtle);
+  --muted-foreground: var(--text-faint);
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--accent);
+  --success: var(--good);
+  --success-foreground: #ffffff;
+  --warning: var(--attention);
+  --warning-foreground: #ffffff;
+  --accent-foreground: var(--accent-ink);
+
   --radius: 1.25rem;
-  
-  /* Chart colors */
-  --chart-1: #2dd4bf;
-  --chart-2: #6ee7b7;
-  --chart-3: #f59e0b;
-  --chart-4: #0d9488;
-  --chart-5: #fbbf24;
+
+  /* Charts — sequential teals with gold for the odd one out, so a chart never
+     implies pass/fail the way red-versus-green does. */
+  --chart-1: #155e56;
+  --chart-2: #4a8a80;
+  --chart-3: #b8863f;
+  --chart-4: #7fa89f;
+  --chart-5: #e8c894;
 }
 
 @theme inline {
-  --font-sans: 'Satoshi', system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: var(--font-sans-loaded), 'Instrument Sans', system-ui, sans-serif;
+  --font-serif: var(--font-serif-loaded), 'Newsreader', Georgia, serif;
   --font-mono: 'Geist Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -111,7 +150,7 @@
   body {
     @apply bg-background text-foreground antialiased;
     background: var(--bg-primary);
-    font-family: 'Satoshi', system-ui, sans-serif;
+    font-family: var(--font-sans-loaded), 'Instrument Sans', system-ui, sans-serif;
   }
 }
 
@@ -135,7 +174,7 @@
   left: 0;
   right: 0;
   height: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, transparent 55%);
+  background: linear-gradient(135deg, rgba(28, 29, 32, 0.02) 0%, transparent 55%);
   border-radius: 24px 24px 0 0;
   pointer-events: none;
 }
@@ -151,7 +190,7 @@
 .premium-card:hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: var(--line-firm);
 }
 
 /* Mobile tap state */
@@ -417,38 +456,35 @@
 }
 
 .section-operational {
-  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(28, 29, 32, 0.015) 50%, transparent 100%);
 }
 
 .section-data {
-  background: linear-gradient(180deg, transparent 0%, rgba(9, 12, 20, 0.3) 100%);
+  background: linear-gradient(180deg, transparent 0%, var(--paper-subtle) 100%);
 }
 
 /* Glass elevation tiers per critique */
 .glass-tier-1 {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid rgba(45, 212, 191, 0.15);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 28px 70px rgba(0, 0, 0, 0.35);
+  background: var(--paper-card);
+  border: 1px solid var(--accent-line);
+  box-shadow: 0 1px 2px rgba(28, 29, 32, 0.04), 0 12px 32px rgba(28, 29, 32, 0.07);
 }
 
 .glass-tier-2 {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 20px 60px rgba(0, 0, 0, 0.30);
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(28, 29, 32, 0.04), 0 8px 24px rgba(28, 29, 32, 0.05);
 }
 
 .glass-tier-3 {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.20);
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(28, 29, 32, 0.03);
 }
 
 /* Focus visible */
 :focus-visible {
-  outline: 2px solid rgba(45, 212, 191, 0.5);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -510,7 +546,7 @@
   border-radius: 50%;
   filter: blur(26px);
   pointer-events: none;
-  background: radial-gradient(closest-side, rgba(45,212,191,0.13), transparent 70%);
+  background: radial-gradient(closest-side, rgba(21, 94, 86, 0.07), transparent 70%);
   animation: twBreathe 7s ease-in-out infinite;
 }
 .tw-breathe { animation: twBreathe 7s ease-in-out infinite; }
@@ -525,9 +561,9 @@
 .tw-shimmer {
   background-image: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.10) 50%,
-    rgba(255, 255, 255, 0.05) 100%
+    var(--paper-subtle) 0%,
+    var(--line) 50%,
+    var(--paper-subtle) 100%
   );
   background-size: 180% 100%;
   animation: tw-shimmer-sweep 1.5s ease-in-out infinite;

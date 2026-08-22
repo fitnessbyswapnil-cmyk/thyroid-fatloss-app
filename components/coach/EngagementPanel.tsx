@@ -13,9 +13,9 @@ import type { EngagementSignal, SignalState } from "@/lib/coach/engagement"
  */
 
 const TONE: Record<SignalState, { dot: string; text: string; label: string }> = {
-  active: { dot: "#34d399", text: "#a9b2c1", label: "on track" },
-  stale: { dot: "#f59e0b", text: "#a9b2c1", label: "gone quiet" },
-  never: { dot: "#4b5563", text: "#7e8a9e", label: "not started" },
+  active: { dot: "#155e56", text: "#5a564e", label: "on track" },
+  stale: { dot: "#97671b", text: "#5a564e", label: "gone quiet" },
+  never: { dot: "#a09a8e", text: "#8b867c", label: "not started" },
 }
 
 export function EngagementPanel({
@@ -38,7 +38,7 @@ export function EngagementPanel({
   return (
     <div
       className="rounded-2xl overflow-hidden"
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
     >
       <button
         onClick={() => setOpen((v) => !v)}
@@ -47,18 +47,18 @@ export function EngagementPanel({
       >
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: "rgba(45,212,191,0.12)" }}
+          style={{ background: "rgba(21, 94, 86,0.12)" }}
         >
-          <Activity size={18} style={{ color: "#2dd4bf" }} />
+          <Activity size={18} style={{ color: "#155e56" }} />
         </div>
         <div className="flex-1 min-w-0">
           <h3
             className="text-lg leading-tight"
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}
+            style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}
           >
             App engagement
           </h3>
-          <p className="text-xs mt-0.5" style={{ color: "#7e8a9e" }}>
+          <p className="text-xs mt-0.5" style={{ color: "#8b867c" }}>
             {neverStarted
               ? "Nothing used yet"
               : `${active} of ${total} signals on track`}
@@ -80,7 +80,7 @@ export function EngagementPanel({
         <ChevronDown
           size={16}
           className="shrink-0 transition-transform"
-          style={{ color: "#5a6578", transform: open ? "rotate(180deg)" : "none" }}
+          style={{ color: "#a09a8e", transform: open ? "rotate(180deg)" : "none" }}
         />
       </button>
 
@@ -89,12 +89,12 @@ export function EngagementPanel({
           {neverStarted && (
             <div
               className="mb-3 px-3.5 py-3 rounded-xl"
-              style={{ background: "rgba(245,158,11,0.07)", border: "1px solid rgba(245,158,11,0.2)" }}
+              style={{ background: "rgba(151, 103, 27,0.07)", border: "1px solid rgba(151, 103, 27,0.2)" }}
             >
-              <p className="text-[12.5px]" style={{ color: "#e8eaf0", lineHeight: 1.55 }}>
+              <p className="text-[12.5px]" style={{ color: "#1c1d20", lineHeight: 1.55 }}>
                 {firstName} has an account but hasn&rsquo;t used anything in it yet.
               </p>
-              <p className="text-[11.5px] mt-1" style={{ color: "#a9b2c1", lineHeight: 1.5 }}>
+              <p className="text-[11.5px] mt-1" style={{ color: "#5a564e", lineHeight: 1.5 }}>
                 That&rsquo;s usually a walkthrough problem rather than a motivation one — most
                 people never find the logging screens on their own.
               </p>
@@ -108,7 +108,7 @@ export function EngagementPanel({
                 <div
                   key={s.key}
                   className="px-3.5 py-3 rounded-xl"
-                  style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}
+                  style={{ background: "#fdfbf7", border: "1px solid #f4f0e8" }}
                 >
                   <div className="flex items-center gap-2.5">
                     <span
@@ -116,7 +116,7 @@ export function EngagementPanel({
                       style={{ width: 7, height: 7, background: tone.dot }}
                       aria-hidden="true"
                     />
-                    <span className="flex-1 text-[13.5px] font-medium" style={{ color: "#e8eaf0" }}>
+                    <span className="flex-1 text-[13.5px] font-medium" style={{ color: "#1c1d20" }}>
                       {s.label}
                     </span>
                     <span className="text-[12px] tabular-nums shrink-0" style={{ color: tone.text }}>
@@ -125,7 +125,7 @@ export function EngagementPanel({
                     <span className="sr-only">{tone.label}</span>
                   </div>
                   {s.hint && (
-                    <p className="text-[11.5px] mt-1.5 ml-[17px]" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>
+                    <p className="text-[11.5px] mt-1.5 ml-[17px]" style={{ color: "#8b867c", lineHeight: 1.5 }}>
                       {s.hint}
                     </p>
                   )}
@@ -135,7 +135,7 @@ export function EngagementPanel({
           </div>
 
           {needsAttention.length === 0 && (
-            <p className="text-[11.5px] mt-3 px-1" style={{ color: "#5a6578", lineHeight: 1.5 }}>
+            <p className="text-[11.5px] mt-3 px-1" style={{ color: "#a09a8e", lineHeight: 1.5 }}>
               Every signal is current. Nothing needs chasing.
             </p>
           )}

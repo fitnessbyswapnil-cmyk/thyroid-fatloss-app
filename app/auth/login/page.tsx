@@ -39,13 +39,13 @@ export default function LoginPage() {
   return (
     <div 
       className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: "#090c14" }}
+      style={{ background: "#fdfbf7" }}
     >
       {/* Ambient glow */}
       <div 
         className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(45, 212, 191, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(21, 94, 86, 0.08) 0%, transparent 70%)",
           filter: "blur(60px)",
         }}
       />
@@ -61,14 +61,14 @@ export default function LoginPage() {
           <h1 
             className="text-3xl font-bold mb-2"
             style={{ 
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "'Newsreader', Georgia, serif",
               fontStyle: "italic",
-              color: "#e8eaf0"
+              color: "#1c1d20"
             }}
           >
             ThyroWell
           </h1>
-          <p style={{ color: "#7e8a9e", fontSize: 14 }}>
+          <p style={{ color: "#8b867c", fontSize: 14 }}>
             Welcome back to your wellness journey
           </p>
         </div>
@@ -77,8 +77,8 @@ export default function LoginPage() {
         <div
           className="p-8 rounded-3xl"
           style={{
-            background: "rgba(255, 255, 255, 0.03)",
-            border: "1px solid rgba(255, 255, 255, 0.06)",
+            background: "#ffffff",
+            border: "1px solid #e2dbcd",
             backdropFilter: "blur(24px)",
           }}
         >
@@ -88,7 +88,7 @@ export default function LoginPage() {
               <label 
                 htmlFor="email" 
                 className="block text-xs font-medium uppercase mb-2"
-                style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}
+                style={{ color: "#8b867c", letterSpacing: "0.08em" }}
               >
                 Email Address
               </label>
@@ -100,9 +100,9 @@ export default function LoginPage() {
                 required
                 className="w-full px-4 py-3.5 rounded-xl text-sm transition-all duration-300 focus:outline-none"
                 style={{
-                  background: "rgba(255, 255, 255, 0.04)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  color: "#e8eaf0",
+                  background: "#ffffff",
+                  border: "1px solid #e2dbcd",
+                  color: "#1c1d20",
                 }}
                 placeholder="you@example.com"
               />
@@ -113,7 +113,7 @@ export default function LoginPage() {
               <label 
                 htmlFor="password" 
                 className="block text-xs font-medium uppercase mb-2"
-                style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}
+                style={{ color: "#8b867c", letterSpacing: "0.08em" }}
               >
                 Password
               </label>
@@ -126,9 +126,9 @@ export default function LoginPage() {
                   required
                   className="w-full px-4 py-3.5 rounded-xl text-sm transition-all duration-300 focus:outline-none pr-12"
                   style={{
-                    background: "rgba(255, 255, 255, 0.04)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    color: "#e8eaf0",
+                    background: "#ffffff",
+                    border: "1px solid #e2dbcd",
+                    color: "#1c1d20",
                   }}
                   placeholder="Enter your password"
                 />
@@ -136,7 +136,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: "#7e8a9e" }}
+                  style={{ color: "#8b867c" }}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -148,7 +148,7 @@ export default function LoginPage() {
               <Link 
                 href="/auth/forgot-password"
                 className="text-xs transition-colors hover:underline"
-                style={{ color: "#2dd4bf" }}
+                style={{ color: "#155e56" }}
               >
                 Forgot your password?
               </Link>
@@ -161,9 +161,9 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="p-3 rounded-lg text-sm"
                 style={{ 
-                  background: "rgba(239, 68, 68, 0.1)", 
-                  border: "1px solid rgba(239, 68, 68, 0.2)",
-                  color: "#fca5a5"
+                  background: "rgba(154, 59, 46, 0.1)", 
+                  border: "1px solid rgba(154, 59, 46, 0.2)",
+                  color: "#c98a80"
                 }}
               >
                 {error}
@@ -178,9 +178,9 @@ export default function LoginPage() {
               whileTap={{ scale: 0.98 }}
               className="w-full py-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all duration-300"
               style={{
-                background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
-                color: "#0a0d14",
-                boxShadow: "0 8px 32px rgba(45, 212, 191, 0.25)",
+                background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
+                color: "#fdfbf7",
+                boxShadow: "0 8px 32px rgba(21, 94, 86, 0.25)",
               }}
             >
               {isLoading ? (
@@ -196,18 +196,18 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 my-6">
-            <div className="flex-1 h-px" style={{ background: "rgba(255, 255, 255, 0.06)" }} />
-            <span className="text-xs" style={{ color: "#7e8a9e" }}>or</span>
-            <div className="flex-1 h-px" style={{ background: "rgba(255, 255, 255, 0.06)" }} />
+            <div className="flex-1 h-px" style={{ background: "#e2dbcd" }} />
+            <span className="text-xs" style={{ color: "#8b867c" }}>or</span>
+            <div className="flex-1 h-px" style={{ background: "#e2dbcd" }} />
           </div>
 
           {/* Request access link */}
-          <p className="text-center text-sm" style={{ color: "#7e8a9e" }}>
+          <p className="text-center text-sm" style={{ color: "#8b867c" }}>
             New to ThyroWell?{" "}
             <Link
               href="/request-access"
               className="font-medium transition-colors hover:underline"
-              style={{ color: "#2dd4bf" }}
+              style={{ color: "#155e56" }}
             >
               Request your spot
             </Link>
@@ -215,7 +215,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-xs mt-6" style={{ color: "#404858" }}>
+        <p className="text-center text-xs mt-6" style={{ color: "#cfc7b6" }}>
           By signing in, you agree to our Terms of Service and Privacy Policy
         </p>
       </motion.div>

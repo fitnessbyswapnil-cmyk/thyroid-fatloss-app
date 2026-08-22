@@ -6,26 +6,26 @@ export const metadata = { title: "Privacy Policy · ThyroWell" }
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-8">
-      <h2 className="text-lg font-semibold mb-3" style={{ color: "#e8eaf0" }}>{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed" style={{ color: "#a9b2c1" }}>{children}</div>
+      <h2 className="text-lg font-semibold mb-3" style={{ color: "#1c1d20" }}>{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed" style={{ color: "#5a564e" }}>{children}</div>
     </section>
   )
 }
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#090c14" }}>
-      <header className="px-6 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+    <div className="min-h-screen" style={{ background: "#fdfbf7" }}>
+      <header className="px-6 py-5 border-b" style={{ borderColor: "#e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href="/" className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
+          <Link href="/" className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
+          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}>
             Privacy Policy
           </h1>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-10">
-        <p className="text-xs mb-8" style={{ color: "#5a6578" }}>Last updated: June 2026</p>
+        <p className="text-xs mb-8" style={{ color: "#a09a8e" }}>Last updated: June 2026</p>
 
         <Section title="Who we are">
           <p>ThyroWell is a wellness coaching program. This policy explains what personal
@@ -78,11 +78,11 @@ export default function PrivacyPage() {
 
         <Section title="Contact">
           <p>Questions about your privacy? Email us at{" "}
-          <a href="mailto:hello@thyrowell.example" style={{ color: "#2dd4bf" }}>hello@thyrowell.example</a>.</p>
+          <a href="mailto:hello@thyrowell.example" style={{ color: "#155e56" }}>hello@thyrowell.example</a>.</p>
         </Section>
 
-        <div className="mt-10 pt-6 text-xs" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", color: "#5a6578" }}>
-          See also our <Link href="/terms" style={{ color: "#2dd4bf" }}>Terms of Service</Link>.
+        <div className="mt-10 pt-6 text-xs" style={{ borderTop: "1px solid #e2dbcd", color: "#a09a8e" }}>
+          See also our <Link href="/terms" style={{ color: "#155e56" }}>Terms of Service</Link>.
         </div>
       </main>
     </div>

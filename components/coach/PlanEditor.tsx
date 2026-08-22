@@ -16,14 +16,14 @@ import { generateMealPlan, getClientTargets, saveClientMetrics } from "@/app/act
 import { ACTIVITY, type ActivityLevel } from "@/lib/plans/targets"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
-  meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
-  workout: { label: "Workout Plan", icon: Dumbbell, tint: "#34d399" },
+  meal: { label: "Meal Plan", icon: Apple, tint: "#155e56" },
+  workout: { label: "Workout Plan", icon: Dumbbell, tint: "#155e56" },
 }
 
 const inputStyle = {
-  background: "rgba(255, 255, 255, 0.04)",
-  border: "1px solid rgba(255, 255, 255, 0.08)",
-  color: "#e8eaf0",
+  background: "#ffffff",
+  border: "1px solid #e2dbcd",
+  color: "#1c1d20",
 } as const
 
 /** A single equipment/muscle filter pill in the library picker. */
@@ -35,8 +35,8 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
       className="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
       style={
         active
-          ? { background: "#2dd4bf", color: "#04121a" }
-          : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5", border: "1px solid rgba(255,255,255,0.08)" }
+          ? { background: "#155e56", color: "#fdfbf7" }
+          : { background: "#f4f0e8", color: "#3c3a34", border: "1px solid #e2dbcd" }
       }
     >
       {children}
@@ -274,26 +274,26 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   })
 
   return (
-    <div className="p-6 rounded-2xl" style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
+    <div className="p-6 rounded-2xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(45, 212, 191, 0.12)" }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(21, 94, 86, 0.12)" }}>
             <Icon size={18} style={{ color: meta.tint }} />
           </div>
-          <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>{meta.label}</h3>
+          <h3 className="font-semibold" style={{ color: "#1c1d20" }}>{meta.label}</h3>
         </div>
         {/* Templates */}
         <div className="relative">
-          <button onClick={openTemplates} className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
+          <button onClick={openTemplates} className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg" style={{ background: "#f4f0e8", color: "#3c3a34" }}>
             <FolderOpen size={14} /> Templates
           </button>
           {tplOpen && (
-            <div className="absolute right-0 mt-2 w-64 rounded-xl p-2 z-20" style={{ background: "#0d111b", border: "1px solid rgba(255,255,255,0.1)" }}>
-              {(templates || []).length === 0 && <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>No templates yet.</p>}
+            <div className="absolute right-0 mt-2 w-64 rounded-xl p-2 z-20" style={{ background: "#ffffff", border: "1px solid #cfc7b6" }}>
+              {(templates || []).length === 0 && <p className="text-xs p-2" style={{ color: "#8b867c" }}>No templates yet.</p>}
               {(templates || []).map((t) => (
                 <div key={t.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                  <button onClick={() => applyTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#e8eaf0" }}>{t.title}</button>
-                  <button onClick={() => removeTemplate(t.id)} aria-label="Delete template" style={{ color: "#fb7185" }}><Trash2 size={12} /></button>
+                  <button onClick={() => applyTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#1c1d20" }}>{t.title}</button>
+                  <button onClick={() => removeTemplate(t.id)} aria-label="Delete template" style={{ color: "#9a3b2e" }}><Trash2 size={12} /></button>
                 </div>
               ))}
             </div>
@@ -301,22 +301,22 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         </div>
       </div>
 
-      <label className="block text-xs uppercase mb-2" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>Title</label>
+      <label className="block text-xs uppercase mb-2" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>Title</label>
       <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none mb-5" style={inputStyle} placeholder={meta.label} />
 
       {/* ── Library items ── */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-2">
-          <label className="text-xs uppercase" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
+          <label className="text-xs uppercase" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>
             {type === "workout" ? "Exercises" : "Foods"} (from library)
           </label>
           <div className="flex items-center gap-3">
             {type === "meal" && (
-              <button onClick={openGenerator} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#a78bfa" }}>
+              <button onClick={openGenerator} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#b8863f" }}>
                 <Wand2 size={14} /> Draft a day
               </button>
             )}
-            <button onClick={openPicker} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#2dd4bf" }}>
+            <button onClick={openPicker} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#155e56" }}>
               <Plus size={14} /> Add from library
             </button>
           </div>
@@ -326,18 +326,18 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             target. Replaces the tedious part of plan-writing, not the judgement:
             it fills the editor and the coach edits before assigning. */}
         {type === "meal" && genOpen && (
-          <div className="p-3.5 rounded-xl mb-3" style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.22)" }}>
+          <div className="p-3.5 rounded-xl mb-3" style={{ background: "rgba(184, 134, 63,0.06)", border: "1px solid rgba(184, 134, 63,0.22)" }}>
             {/* Why these numbers. Shown so the coach can judge the estimate
                 rather than trust it, and override it knowing what she is
                 overriding. */}
             {targets && (
-              <div className="mb-3 px-3 py-2.5 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                <p className="text-[11px] uppercase mb-1.5" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>How this was worked out</p>
+              <div className="mb-3 px-3 py-2.5 rounded-xl" style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}>
+                <p className="text-[11px] uppercase mb-1.5" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>How this was worked out</p>
                 {targets.reasoning.map((r, i) => (
-                  <p key={i} className="text-[11.5px]" style={{ color: "#a9b2c1", lineHeight: 1.55 }}>{r}</p>
+                  <p key={i} className="text-[11.5px]" style={{ color: "#5a564e", lineHeight: 1.55 }}>{r}</p>
                 ))}
                 {targets.flooredAt && (
-                  <p className="text-[11.5px] mt-1" style={{ color: "#f59e0b", lineHeight: 1.5 }}>
+                  <p className="text-[11.5px] mt-1" style={{ color: "#97671b", lineHeight: 1.5 }}>
                     Held at the {targets.flooredAt} kcal floor.
                   </p>
                 )}
@@ -347,8 +347,8 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             {/* Height changes the estimate by up to 11%, so ask for it once
                 rather than quietly guessing on every plan. */}
             {targets?.missing?.includes("height") && (
-              <div className="mb-3 px-3 py-3 rounded-xl" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.22)" }}>
-                <p className="text-[12px] mb-2" style={{ color: "#e8eaf0", lineHeight: 1.5 }}>
+              <div className="mb-3 px-3 py-3 rounded-xl" style={{ background: "rgba(151, 103, 27,0.06)", border: "1px solid rgba(151, 103, 27,0.22)" }}>
+                <p className="text-[12px] mb-2" style={{ color: "#1c1d20", lineHeight: 1.5 }}>
                   Her height isn&rsquo;t on file, so this is estimated from weight alone — it can be out by around 10%.
                 </p>
                 <div className="flex items-center gap-2">
@@ -360,56 +360,56 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
                   </select>
                   <button onClick={applyMetrics} disabled={savingMetrics || !heightInput}
                     className="px-3 h-9 rounded-lg text-[12px] font-semibold"
-                    style={{ background: "rgba(245,158,11,0.16)", color: "#f59e0b" }}>
+                    style={{ background: "rgba(151, 103, 27,0.16)", color: "#97671b" }}>
                     {savingMetrics ? "…" : "Save"}
                   </button>
                 </div>
-                <p className="text-[10.5px] mt-1.5" style={{ color: "#7e8a9e" }}>Saved to her profile — you only enter it once.</p>
+                <p className="text-[10.5px] mt-1.5" style={{ color: "#8b867c" }}>Saved to her profile — you only enter it once.</p>
               </div>
             )}
 
             <div className="grid grid-cols-2 gap-2 mb-2.5">
               <div>
-                <label className="block text-[10px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>Calories</label>
+                <label className="block text-[10px] uppercase mb-1" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>Calories</label>
                 <input value={genKcal} onChange={(e) => setGenKcal(e.target.value)} inputMode="numeric" placeholder="1400" className="w-full px-2.5 py-2 rounded-lg text-sm tabular-nums" style={inputStyle} />
               </div>
               <div>
-                <label className="block text-[10px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>Protein (g)</label>
+                <label className="block text-[10px] uppercase mb-1" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>Protein (g)</label>
                 <input value={genProtein} onChange={(e) => setGenProtein(e.target.value)} inputMode="numeric" placeholder="90" className="w-full px-2.5 py-2 rounded-lg text-sm tabular-nums" style={inputStyle} />
               </div>
             </div>
-            <label className="flex items-center gap-2 text-[12px] mb-2.5" style={{ color: "#a9b2c1" }}>
-              <input type="checkbox" checked={genVeg} onChange={(e) => setGenVeg(e.target.checked)} style={{ accentColor: "#a78bfa" }} />
+            <label className="flex items-center gap-2 text-[12px] mb-2.5" style={{ color: "#5a564e" }}>
+              <input type="checkbox" checked={genVeg} onChange={(e) => setGenVeg(e.target.checked)} style={{ accentColor: "#b8863f" }} />
               Vegetarian
             </label>
             <div className="flex items-center gap-2">
               <button onClick={() => runGenerate(0)} disabled={generating}
                 className="flex-1 h-10 rounded-lg text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
-                style={{ background: "#a78bfa", color: "#1a1033" }}>
+                style={{ background: "#b8863f", color: "#ffffff" }}>
                 {generating ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />} Generate
               </button>
               {genResult && (
                 <button onClick={() => runGenerate(genVariety + 1)} disabled={generating}
                   className="h-10 px-3 rounded-lg text-[12px] font-semibold"
-                  style={{ background: "rgba(167,139,250,0.14)", color: "#a78bfa" }}>
+                  style={{ background: "rgba(184, 134, 63,0.14)", color: "#b8863f" }}>
                   Another
                 </button>
               )}
             </div>
             {genResult && (
               <div className="mt-2.5">
-                <p className="text-[12px] tabular-nums" style={{ color: "#e8eaf0" }}>
+                <p className="text-[12px] tabular-nums" style={{ color: "#1c1d20" }}>
                   {genResult.totals.calories} kcal · P {genResult.totals.protein}g · C {genResult.totals.carbs}g · F {genResult.totals.fats}g
                 </p>
                 {genResult.excluded?.length > 0 && (
-                  <p className="text-[11px] mt-1" style={{ color: "#7e8a9e" }}>
+                  <p className="text-[11px] mt-1" style={{ color: "#8b867c" }}>
                     Avoided from her profile: {genResult.excluded.join(", ")}
                   </p>
                 )}
                 {genResult.warnings.map((w: string, i: number) => (
-                  <p key={i} className="text-[11px] mt-1" style={{ color: "#f59e0b" }}>{w}</p>
+                  <p key={i} className="text-[11px] mt-1" style={{ color: "#97671b" }}>{w}</p>
                 ))}
-                <p className="text-[10.5px] mt-2" style={{ color: "#5a6578" }}>
+                <p className="text-[10.5px] mt-2" style={{ color: "#a09a8e" }}>
                   Drafted into the list below — edit anything before saving.
                 </p>
               </div>
@@ -418,11 +418,11 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         )}
 
         {pickerOpen && (
-          <div className="p-3 rounded-xl mb-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(45,212,191,0.2)" }}>
+          <div className="p-3 rounded-xl mb-3" style={{ background: "#fdfbf7", border: "1px solid rgba(21, 94, 86,0.2)" }}>
             <div className="flex items-center gap-2 mb-2">
-              <Search size={14} style={{ color: "#7e8a9e" }} />
+              <Search size={14} style={{ color: "#8b867c" }} />
               <input autoFocus value={libSearch} onChange={(e) => setLibSearch(e.target.value)} placeholder="Search library…" className="flex-1 px-2 py-1.5 rounded-lg text-sm focus:outline-none" style={inputStyle} />
-              <button onClick={() => setPickerOpen(false)} style={{ color: "#7e8a9e" }} aria-label="Close picker"><X size={14} /></button>
+              <button onClick={() => setPickerOpen(false)} style={{ color: "#8b867c" }} aria-label="Close picker"><X size={14} /></button>
             </div>
 
             {/* Expert filter chips — pick by equipment & target muscle (Fittr-style) */}
@@ -430,7 +430,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
               <div className="space-y-1.5 mb-2">
                 {equipOptions.length > 0 && (
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-                    <span className="text-[10px] uppercase shrink-0 pr-0.5" style={{ color: "#5c6672", letterSpacing: "0.06em" }}>Equipment</span>
+                    <span className="text-[10px] uppercase shrink-0 pr-0.5" style={{ color: "#a09a8e", letterSpacing: "0.06em" }}>Equipment</span>
                     <FilterChip active={libEquip === null} onClick={() => setLibEquip(null)}>All</FilterChip>
                     {equipOptions.map((eq) => (
                       <FilterChip key={eq} active={libEquip === eq} onClick={() => setLibEquip(libEquip === eq ? null : eq)}>{eq}</FilterChip>
@@ -439,7 +439,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
                 )}
                 {muscleOptions.length > 0 && (
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-                    <span className="text-[10px] uppercase shrink-0 pr-0.5" style={{ color: "#5c6672", letterSpacing: "0.06em" }}>Muscle</span>
+                    <span className="text-[10px] uppercase shrink-0 pr-0.5" style={{ color: "#a09a8e", letterSpacing: "0.06em" }}>Muscle</span>
                     <FilterChip active={libMuscle === null} onClick={() => setLibMuscle(null)}>All</FilterChip>
                     {muscleOptions.map((mg) => (
                       <FilterChip key={mg} active={libMuscle === mg} onClick={() => setLibMuscle(libMuscle === mg ? null : mg)}>{mg}</FilterChip>
@@ -459,33 +459,33 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             )}
 
             <div className="flex items-center justify-between px-1 mb-1">
-              <span className="text-[11px]" style={{ color: "#5c6672" }}>{libFiltered.length} shown</span>
+              <span className="text-[11px]" style={{ color: "#a09a8e" }}>{libFiltered.length} shown</span>
             </div>
 
             <div className="max-h-60 overflow-y-auto space-y-1">
-              {!libLoaded && <p className="text-xs p-2" style={{ color: "#7e8a9e" }}><Loader2 size={12} className="inline animate-spin mr-1" /> Loading…</p>}
+              {!libLoaded && <p className="text-xs p-2" style={{ color: "#8b867c" }}><Loader2 size={12} className="inline animate-spin mr-1" /> Loading…</p>}
               {libLoaded && libFiltered.length === 0 && (
-                <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>
+                <p className="text-xs p-2" style={{ color: "#8b867c" }}>
                   {(libSearch || libEquip || libMuscle || libVeg)
                     ? "No matches — try clearing a filter."
-                    : <>Nothing in the library yet — add items in <span style={{ color: "#2dd4bf" }}>Coach → Library</span> first.</>}
+                    : <>Nothing in the library yet — add items in <span style={{ color: "#155e56" }}>Coach → Library</span> first.</>}
                 </p>
               )}
               {libFiltered.map((x) => (
                 <button key={x.id} onClick={() => (type === "workout" ? addExercise(x as Exercise) : addFood(x as Food))}
-                  className="w-full flex items-center gap-2.5 text-left px-2 py-1.5 rounded-lg text-sm hover:bg-white/5" style={{ color: "#e8eaf0" }}>
+                  className="w-full flex items-center gap-2.5 text-left px-2 py-1.5 rounded-lg text-sm hover:bg-white/5" style={{ color: "#1c1d20" }}>
                   {type === "workout" && (
                     <ExerciseDemo demo={(x as Exercise).demo_url} start={(x as Exercise).image_start} end={(x as Exercise).image_end} alt={x.name} size={34} rounded={8} />
                   )}
                   <span className="flex-1 min-w-0">
                     <span className="block truncate">{x.name}</span>
-                    <span className="block text-[11px] truncate" style={{ color: "#7e8a9e" }}>
+                    <span className="block text-[11px] truncate" style={{ color: "#8b867c" }}>
                       {type === "workout"
                         ? [(x as Exercise).muscle_group, (x as Exercise).equipment].filter(Boolean).join(" · ")
                         : `${(x as Food).portion} · ${(x as Food).calories ?? "—"} kcal`}
                     </span>
                   </span>
-                  <Plus size={14} className="shrink-0" style={{ color: "#2dd4bf" }} />
+                  <Plus size={14} className="shrink-0" style={{ color: "#155e56" }} />
                 </button>
               ))}
             </div>
@@ -494,7 +494,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
 
         {/* Workout item rows */}
         {type === "workout" && workoutItems.map((it, i) => (
-          <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+          <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "#fdfbf7" }}>
             <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={36} rounded={9} />
             {/* Real weekday slot. Defaults to whatever the legacy freeform
                 "day" text implied, so opening an old plan doesn't silently
@@ -512,30 +512,30 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
               <option value={0}>Any day</option>
               {DAYS.map((d) => <option key={d.n} value={d.n}>{d.label}</option>)}
             </select>
-            <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>
+            <span className="flex-1 text-sm truncate" style={{ color: "#1c1d20" }}>
               {it.name}
-              {it.videoUrl && <Video size={11} className="inline ml-1.5" style={{ color: "#2dd4bf" }} />}
+              {it.videoUrl && <Video size={11} className="inline ml-1.5" style={{ color: "#155e56" }} />}
             </span>
             <input type="number" value={it.sets ?? ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, sets: e.target.value === "" ? null : Number(e.target.value) } : x))} placeholder="Sets" className="w-14 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
             <input value={it.reps ?? ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, reps: e.target.value } : x))} placeholder="Reps" className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
-            <button onClick={() => setWorkoutItems((p) => p.filter((_, idx) => idx !== i))} style={{ color: "#fb7185" }} aria-label="Remove"><Trash2 size={14} /></button>
+            <button onClick={() => setWorkoutItems((p) => p.filter((_, idx) => idx !== i))} style={{ color: "#9a3b2e" }} aria-label="Remove"><Trash2 size={14} /></button>
           </div>
         ))}
 
         {/* Meal item rows */}
         {type === "meal" && mealItems.map((it, i) => (
-          <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+          <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "#fdfbf7" }}>
             <input value={it.meal || ""} onChange={(e) => setMealItems((p) => p.map((x, idx) => idx === i ? { ...x, meal: e.target.value } : x))} placeholder="Meal" className="w-24 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
-            <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>{it.name} <span className="text-[11px]" style={{ color: "#7e8a9e" }}>({it.portion})</span></span>
+            <span className="flex-1 text-sm truncate" style={{ color: "#1c1d20" }}>{it.name} <span className="text-[11px]" style={{ color: "#8b867c" }}>({it.portion})</span></span>
             <input type="number" step="0.5" min="0.5" value={it.qty ?? 1} onChange={(e) => setMealItems((p) => p.map((x, idx) => idx === i ? { ...x, qty: e.target.value === "" ? 1 : Number(e.target.value) } : x))} className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} aria-label="Quantity" />
-            <span className="text-[11px] tabular-nums w-16 text-right" style={{ color: "#7e8a9e" }}>{Math.round((it.calories || 0) * (it.qty || 1))} kcal</span>
-            <button onClick={() => setMealItems((p) => p.filter((_, idx) => idx !== i))} style={{ color: "#fb7185" }} aria-label="Remove"><Trash2 size={14} /></button>
+            <span className="text-[11px] tabular-nums w-16 text-right" style={{ color: "#8b867c" }}>{Math.round((it.calories || 0) * (it.qty || 1))} kcal</span>
+            <button onClick={() => setMealItems((p) => p.filter((_, idx) => idx !== i))} style={{ color: "#9a3b2e" }} aria-label="Remove"><Trash2 size={14} /></button>
           </div>
         ))}
 
         {/* Meal totals */}
         {type === "meal" && mealItems.length > 0 && (
-          <div className="flex items-center justify-end gap-4 px-2 py-2 text-[12px] tabular-nums" style={{ color: "#2dd4bf" }}>
+          <div className="flex items-center justify-end gap-4 px-2 py-2 text-[12px] tabular-nums" style={{ color: "#155e56" }}>
             <span>Total: {Math.round(totals.kcal)} kcal</span>
             <span>P {totals.p.toFixed(0)}g</span>
             <span>C {totals.c.toFixed(0)}g</span>
@@ -547,7 +547,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
       {/* ── Free-text sections (unchanged behavior) ── */}
       <div className="space-y-4">
         {sections.map((section, i) => (
-          <div key={i} className="p-4 rounded-xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
+          <div key={i} className="p-4 rounded-xl" style={{ background: "#fdfbf7", border: "1px solid #f4f0e8" }}>
             <div className="flex items-center gap-2 mb-2">
               <input
                 value={section.heading}
@@ -557,7 +557,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
                 placeholder={`Section heading (e.g. ${type === "meal" ? "Guidelines" : "Warm-up"})`}
               />
               {sections.length > 1 && (
-                <button onClick={() => removeSection(i)} className="p-2 rounded-lg" style={{ color: "#fb7185" }} aria-label="Remove section">
+                <button onClick={() => removeSection(i)} className="p-2 rounded-lg" style={{ color: "#9a3b2e" }} aria-label="Remove section">
                   <Trash2 size={16} />
                 </button>
               )}
@@ -575,23 +575,23 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
       </div>
 
       <div className="flex items-center gap-4 mt-3">
-        <button onClick={addSection} className="inline-flex items-center gap-2 text-sm font-medium" style={{ color: "#2dd4bf" }}>
+        <button onClick={addSection} className="inline-flex items-center gap-2 text-sm font-medium" style={{ color: "#155e56" }}>
           <Plus size={16} /> Add section
         </button>
-        <button onClick={handleSaveTemplate} disabled={tplSaving} className="inline-flex items-center gap-2 text-sm font-medium" style={{ color: "#7e8a9e" }}>
+        <button onClick={handleSaveTemplate} disabled={tplSaving} className="inline-flex items-center gap-2 text-sm font-medium" style={{ color: "#8b867c" }}>
           {tplSaving ? <Loader2 size={14} className="animate-spin" /> : <BookmarkPlus size={15} />} Save as template
         </button>
       </div>
 
       {/* PDF attachment */}
-      <div className="mt-5 pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+      <div className="mt-5 pt-5" style={{ borderTop: "1px solid #e2dbcd" }}>
         <input ref={fileRef} type="file" accept="application/pdf" onChange={handleFile} className="hidden" />
         {filePath ? (
-          <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: "rgba(45, 212, 191, 0.1)" }}>
-            <span className="inline-flex items-center gap-2 text-sm" style={{ color: "#2dd4bf" }}>
+          <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: "rgba(21, 94, 86, 0.1)" }}>
+            <span className="inline-flex items-center gap-2 text-sm" style={{ color: "#155e56" }}>
               <FileText size={16} /> PDF attached
             </span>
-            <button onClick={() => setFilePath(null)} className="p-1 rounded" style={{ color: "#7e8a9e" }} aria-label="Remove PDF">
+            <button onClick={() => setFilePath(null)} className="p-1 rounded" style={{ color: "#8b867c" }} aria-label="Remove PDF">
               <X size={16} />
             </button>
           </div>
@@ -600,7 +600,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
-            style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5", border: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ background: "#f4f0e8", color: "#3c3a34", border: "1px solid #e2dbcd" }}
           >
             {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
             {uploading ? "Uploading..." : "Attach PDF (optional)"}
@@ -608,7 +608,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         )}
       </div>
 
-      {error && <p className="text-xs mt-3" style={{ color: "#fb7185" }}>{error}</p>}
+      {error && <p className="text-xs mt-3" style={{ color: "#9a3b2e" }}>{error}</p>}
 
       <motion.button
         onClick={handleSave}
@@ -616,7 +616,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         className="w-full mt-5 h-12 rounded-xl font-semibold inline-flex items-center justify-center gap-2"
-        style={{ background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)", color: "#0a0d14" }}
+        style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#fdfbf7" }}
       >
         {saving ? <Loader2 size={18} className="animate-spin" /> : saved ? <><Check size={18} /> Saved</> : "Save Plan"}
       </motion.button>

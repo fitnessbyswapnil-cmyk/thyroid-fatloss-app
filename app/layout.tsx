@@ -1,17 +1,27 @@
 import type { Metadata, Viewport } from 'next'
-import { Instrument_Serif } from 'next/font/google'
+import { Instrument_Sans, Newsreader } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { RegisterSW } from '@/components/pwa/RegisterSW'
 import './globals.css'
 
-// Instrument Serif for score numbers and key metrics
-const instrumentSerif = Instrument_Serif({ 
-  subsets: ["latin"],
-  weight: "400",
-  style: "italic",
-  variable: '--font-serif',
+// Self-hosted through next/font rather than a stylesheet link: one less
+// render-blocking request, which matters on the mid-range Android phones this
+// is actually used on.
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans-loaded',
   display: 'swap',
-});
+})
+
+// Newsreader carries the display moments — the greeting, "11 kg down".
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  weight: ['300', '400', '500'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif-loaded',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'ThyroWell | Premium Wellness Coaching',
@@ -46,7 +56,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0a0d14',
+  themeColor: '#fdfbf7',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -59,15 +69,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-[#0a0d14]">
+    <html lang="en" className="bg-[#fdfbf7]">
       <head>
-        {/* Satoshi font from Fontshare */}
-        <link 
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" 
-          rel="stylesheet"
-        />
       </head>
-      <body className={`${instrumentSerif.variable} font-sans antialiased`}>
+      <body className={`${instrumentSans.variable} ${newsreader.variable} font-sans antialiased`}>
         {children}
         <RegisterSW />
         {process.env.NODE_ENV === 'production' && <Analytics />}

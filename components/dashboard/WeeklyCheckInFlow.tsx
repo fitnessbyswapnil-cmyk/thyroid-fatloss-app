@@ -63,9 +63,9 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
         <motion.h2
           className="text-4xl font-bold"
           style={{
-            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontFamily: "'Newsreader', Georgia, serif",
             fontStyle: 'italic',
-            color: '#e8eaf0',
+            color: '#1c1d20',
           }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,7 +75,7 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
         </motion.h2>
         <motion.p
           className="text-lg leading-relaxed"
-          style={{ color: '#8892a4' }}
+          style={{ color: '#8b867c' }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
@@ -88,13 +88,13 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
         onClick={onNext}
         className="w-full max-w-xs py-4 rounded-full font-semibold text-base text-white"
         style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+          background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
         }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.6 }}
-        whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
+        whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(21, 94, 86, 0.4)' }}
         whileTap={{ transform: 'scale(0.98)' }}
       >
         Begin
@@ -122,11 +122,11 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
     >
       {/* Energy Slider */}
       <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Energy Level
         </label>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-medium" style={{ color: '#5a6578', minWidth: '60px' }}>
+          <span className="text-xs font-medium" style={{ color: '#a09a8e', minWidth: '60px' }}>
             Drained
           </span>
           <input
@@ -135,23 +135,23 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
             max="10"
             value={data.energy}
             onChange={(e) => setData({ ...data, energy: parseInt(e.target.value) })}
-            className="flex-1 h-2 rounded-full appearance-none bg-gradient-to-r from-[#1c2438] to-[#1c2438] cursor-pointer"
+            className="flex-1 h-2 rounded-full appearance-none bg-gradient-to-r from-[#f4f0e8] to-[#f4f0e8] cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #2dd4bf 0%, #2dd4bf ${(data.energy / 10) * 100}%, #1c2438 ${(data.energy / 10) * 100}%, #1c2438 100%)`,
+              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(data.energy / 10) * 100}%, #f4f0e8 ${(data.energy / 10) * 100}%, #f4f0e8 100%)`,
             }}
           />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: '#2dd4bf', minWidth: '40px' }}>
+          <span className="text-sm font-semibold tabular-nums" style={{ color: '#155e56', minWidth: '40px' }}>
             {data.energy}
           </span>
         </div>
-        <p className="text-xs" style={{ color: '#5a6578' }}>
+        <p className="text-xs" style={{ color: '#a09a8e' }}>
           How energized do you feel today?
         </p>
       </div>
 
       {/* Mood - Emoji faces */}
       <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Mood
         </label>
         <div className="flex justify-between gap-2">
@@ -163,15 +163,15 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
                 onClick={() => setData({ ...data, mood: face.value })}
                 className="flex-1 p-3 rounded-xl transition-all"
                 style={{
-                  background: data.mood === face.value ? 'rgba(45, 212, 191, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-                  border: `1px solid ${data.mood === face.value ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                  background: data.mood === face.value ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
+                  border: `1px solid ${data.mood === face.value ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Icon
                   size={28}
-                  style={{ margin: '0 auto', color: data.mood === face.value ? '#2dd4bf' : '#8892a4' }}
+                  style={{ margin: '0 auto', color: data.mood === face.value ? '#155e56' : '#8b867c' }}
                 />
               </motion.button>
             )
@@ -181,11 +181,11 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
 
       {/* Sleep Quality Slider */}
       <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Sleep Quality
         </label>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-medium" style={{ color: '#5a6578', minWidth: '60px' }}>
+          <span className="text-xs font-medium" style={{ color: '#a09a8e', minWidth: '60px' }}>
             Poor
           </span>
           <input
@@ -196,10 +196,10 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
             onChange={(e) => setData({ ...data, sleepQuality: parseInt(e.target.value) })}
             className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #2dd4bf 0%, #2dd4bf ${(data.sleepQuality / 10) * 100}%, #1c2438 ${(data.sleepQuality / 10) * 100}%, #1c2438 100%)`,
+              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(data.sleepQuality / 10) * 100}%, #f4f0e8 ${(data.sleepQuality / 10) * 100}%, #f4f0e8 100%)`,
             }}
           />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: '#2dd4bf', minWidth: '40px' }}>
+          <span className="text-sm font-semibold tabular-nums" style={{ color: '#155e56', minWidth: '40px' }}>
             {data.sleepQuality}
           </span>
         </div>
@@ -207,11 +207,11 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
 
       {/* Stress Slider */}
       <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Stress Level
         </label>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-medium" style={{ color: '#5a6578', minWidth: '60px' }}>
+          <span className="text-xs font-medium" style={{ color: '#a09a8e', minWidth: '60px' }}>
             Relaxed
           </span>
           <input
@@ -222,14 +222,14 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
             onChange={(e) => setData({ ...data, stress: parseInt(e.target.value) })}
             className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #34d399 0%, #34d399 ${(10 - data.stress / 10) * 100}%, #ef4444 ${(10 - data.stress / 10) * 100}%, #ef4444 100%)`,
+              background: `linear-gradient(to right, #155e56 0%, #155e56 ${(10 - data.stress / 10) * 100}%, #9a3b2e ${(10 - data.stress / 10) * 100}%, #9a3b2e 100%)`,
             }}
           />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: '#ef4444', minWidth: '40px' }}>
+          <span className="text-sm font-semibold tabular-nums" style={{ color: '#9a3b2e', minWidth: '40px' }}>
             {data.stress}
           </span>
         </div>
-        <p className="text-xs" style={{ color: '#5a6578' }}>
+        <p className="text-xs" style={{ color: '#a09a8e' }}>
           Supportive microcopy: Stress is temporary. You're doing great.
         </p>
       </div>
@@ -239,10 +239,10 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
         onClick={onNext}
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+          background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
         }}
-        whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
+        whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(21, 94, 86, 0.4)' }}
         whileTap={{ scale: 0.98 }}
       >
         Continue
@@ -265,7 +265,7 @@ function BodyStep({ data, setData, onNext }: StepProps) {
     onChange: (val: string) => void
   }) => (
     <div className="space-y-3">
-      <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+      <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
         {label}
       </label>
       <div className="flex flex-wrap gap-2">
@@ -275,9 +275,9 @@ function BodyStep({ data, setData, onNext }: StepProps) {
             onClick={() => onChange(opt)}
             className="px-4 py-2 rounded-full text-sm font-medium transition-all"
             style={{
-              background: value === opt ? 'rgba(45, 212, 191, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-              border: `1px solid ${value === opt ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
-              color: value === opt ? '#2dd4bf' : '#8892a4',
+              background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
+              border: `1px solid ${value === opt ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
+              color: value === opt ? '#155e56' : '#8b867c',
             }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -319,8 +319,8 @@ function BodyStep({ data, setData, onNext }: StepProps) {
         onClick={onNext}
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+          background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
         }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
@@ -345,11 +345,11 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
     onChange: (val: number) => void
   }) => (
     <div className="space-y-2">
-      <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+      <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
         {label}
       </label>
-      <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.04)' }}>
-        <span style={{ color: '#8892a4' }}>
+      <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: '#ffffff' }}>
+        <span style={{ color: '#8b867c' }}>
           {value} of {target}
         </span>
         <div className="flex gap-2">
@@ -357,8 +357,8 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
             onClick={() => onChange(Math.max(0, value - 1))}
             className="px-3 py-1 rounded-lg font-semibold"
             style={{
-              background: 'rgba(45, 212, 191, 0.15)',
-              color: '#2dd4bf',
+              background: 'rgba(21, 94, 86, 0.15)',
+              color: '#155e56',
             }}
           >
             −
@@ -367,8 +367,8 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
             onClick={() => onChange(Math.min(target, value + 1))}
             className="px-3 py-1 rounded-lg font-semibold"
             style={{
-              background: 'rgba(45, 212, 191, 0.15)',
-              color: '#2dd4bf',
+              background: 'rgba(21, 94, 86, 0.15)',
+              color: '#155e56',
             }}
           >
             +
@@ -390,7 +390,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
     onChange: (val: string) => void
   }) => (
     <div className="space-y-3">
-      <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+      <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
         {label}
       </label>
       <div className="flex flex-wrap gap-2">
@@ -400,9 +400,9 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
             onClick={() => onChange(opt)}
             className="px-4 py-2 rounded-full text-sm font-medium transition-all"
             style={{
-              background: value === opt ? 'rgba(45, 212, 191, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-              border: `1px solid ${value === opt ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
-              color: value === opt ? '#2dd4bf' : '#8892a4',
+              background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
+              border: `1px solid ${value === opt ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
+              color: value === opt ? '#155e56' : '#8b867c',
             }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -443,7 +443,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
       {/* Daily step average. The column existed and was charted on Progress,
           but nothing ever collected it — every row was null. */}
       <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Average daily steps
         </label>
         <input
@@ -455,7 +455,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
           inputMode="numeric"
           placeholder="e.g. 6000 — leave blank if you don't track"
           className="w-full px-4 py-3 rounded-xl text-base tabular-nums focus:outline-none"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e8eaf0' }}
+          style={{ background: '#ffffff', border: '1px solid #e2dbcd', color: '#1c1d20' }}
         />
       </div>
 
@@ -463,8 +463,8 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
         onClick={onNext}
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+          background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
         }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
@@ -490,7 +490,7 @@ function WeightStep({ data, setData, onNext }: StepProps) {
       className="space-y-6 px-6 py-8"
     >
       <div className="space-y-2">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Current Weight (kg)
         </label>
         <input
@@ -499,11 +499,11 @@ function WeightStep({ data, setData, onNext }: StepProps) {
           value={data.weight || ''}
           onChange={(e) => setData({ ...data, weight: e.target.value ? parseFloat(e.target.value) : undefined })}
           placeholder="e.g. 72.5"
-          className="w-full px-4 py-3 rounded-xl text-base font-semibold bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-white placeholder-[#5a6578] focus:outline-none focus:border-[#2dd4bf]"
+          className="w-full px-4 py-3 rounded-xl text-base font-semibold bg-[#ffffff] border border-[#e2dbcd] text-white placeholder-[#a09a8e] focus:outline-none focus:border-[#155e56]"
         />
       </div>
 
-      <p className="text-sm leading-relaxed" style={{ color: '#8892a4' }}>
+      <p className="text-sm leading-relaxed" style={{ color: '#8b867c' }}>
         One signal among many. Bodies fluctuate — especially thyroid bodies.
       </p>
 
@@ -512,8 +512,8 @@ function WeightStep({ data, setData, onNext }: StepProps) {
           onClick={onNext}
           className="w-full py-4 rounded-full font-semibold text-base text-white"
           style={{
-            background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-            boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+            background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+            boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
           }}
           whileHover={{ transform: 'translateY(-2px)' }}
           whileTap={{ scale: 0.98 }}
@@ -524,9 +524,9 @@ function WeightStep({ data, setData, onNext }: StepProps) {
           onClick={handleSkip}
           className="w-full py-4 rounded-full font-semibold text-base"
           style={{
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            color: '#8892a4',
+            background: '#ffffff',
+            border: '1px solid #e2dbcd',
+            color: '#8b867c',
           }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -554,10 +554,10 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
       className="space-y-5 px-6 py-8"
     >
       <div className="space-y-1">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Measurements (cm)
         </label>
-        <p className="text-xs" style={{ color: '#5a6578' }}>
+        <p className="text-xs" style={{ color: '#a09a8e' }}>
           Inches move when the scale won&rsquo;t. Fill in what you can — even one site tracked
           consistently tells the story.
         </p>
@@ -565,16 +565,16 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
 
       <div className="grid grid-cols-2 gap-2.5">
         {SITES.map((s) => (
-          <div key={s.key} className="p-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <label className="block text-[12px] font-semibold" style={{ color: '#e8eaf0' }}>{s.label}</label>
-            <p className="text-[9.5px] mb-1.5" style={{ color: '#5a6578', lineHeight: 1.3 }}>{s.hint}</p>
+          <div key={s.key} className="p-3 rounded-2xl" style={{ background: '#ffffff', border: '1px solid #e2dbcd' }}>
+            <label className="block text-[12px] font-semibold" style={{ color: '#1c1d20' }}>{s.label}</label>
+            <p className="text-[9.5px] mb-1.5" style={{ color: '#a09a8e', lineHeight: 1.3 }}>{s.hint}</p>
             <input
               value={data.measurements[s.key] ?? ''}
               onChange={(e) => set(s.key, e.target.value)}
               inputMode="decimal"
               placeholder="—"
               className="w-full px-2.5 py-2 rounded-lg text-sm tabular-nums focus:outline-none"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e8eaf0' }}
+              style={{ background: '#ffffff', border: '1px solid #e2dbcd', color: '#1c1d20' }}
             />
           </div>
         ))}
@@ -584,8 +584,8 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
         onClick={onNext}
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-6"
         style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+          background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
         }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
@@ -593,7 +593,7 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
         {filled > 0 ? `Continue with ${filled} recorded` : 'Continue'}
       </motion.button>
       {filled === 0 && (
-        <button onClick={onNext} className="w-full text-center text-sm" style={{ color: '#5a6578' }}>
+        <button onClick={onNext} className="w-full text-center text-sm" style={{ color: '#a09a8e' }}>
           Skip measurements this week
         </button>
       )}
@@ -617,10 +617,10 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
       className="space-y-5 px-6 py-8"
     >
       <div className="space-y-1">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           How were these this week?
         </label>
-        <p className="text-xs" style={{ color: '#5a6578' }}>
+        <p className="text-xs" style={{ color: '#a09a8e' }}>
           These often improve before the scale moves — tracking them shows your progress early.
         </p>
       </div>
@@ -632,9 +632,9 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
             <div
               key={s.key}
               className="p-3.5 rounded-2xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+              style={{ background: '#ffffff', border: '1px solid #e2dbcd' }}
             >
-              <p className="text-sm font-medium mb-2.5" style={{ color: '#e8eaf0' }}>{s.key}</p>
+              <p className="text-sm font-medium mb-2.5" style={{ color: '#1c1d20' }}>{s.key}</p>
               <div className="flex gap-1.5">
                 {SEVERITY_LABELS.map((label, level) => {
                   const active = current === level
@@ -644,9 +644,9 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
                       onClick={() => setSeverity(s.key, level)}
                       className="flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all"
                       style={{
-                        background: active ? 'rgba(45,212,191,0.16)' : 'rgba(255,255,255,0.04)',
-                        border: `1px solid ${active ? 'rgba(45,212,191,0.4)' : 'rgba(255,255,255,0.07)'}`,
-                        color: active ? '#2dd4bf' : '#7e8a9e',
+                        background: active ? 'rgba(21, 94, 86,0.16)' : '#ffffff',
+                        border: `1px solid ${active ? 'rgba(21, 94, 86,0.4)' : '#e2dbcd'}`,
+                        color: active ? '#155e56' : '#8b867c',
                       }}
                     >
                       {label}
@@ -663,8 +663,8 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
         onClick={onNext}
         className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
         style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+          background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
         }}
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
@@ -689,14 +689,14 @@ function ReflectionStep({ data, setData, onNext, onSubmit, isLoading }: StepProp
       className="space-y-6 px-6 py-8"
     >
       <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <label className="text-sm font-medium uppercase" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Your Reflection
         </label>
         <textarea
           value={data.reflectionText}
           onChange={(e) => setData({ ...data, reflectionText: e.target.value })}
           placeholder="One win this week? Anything you're struggling with?"
-          className="w-full px-4 py-3 rounded-xl text-base bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-white placeholder-[#5a6578] focus:outline-none focus:border-[#2dd4bf] min-h-[120px] resize-none"
+          className="w-full px-4 py-3 rounded-xl text-base bg-[#ffffff] border border-[#e2dbcd] text-white placeholder-[#a09a8e] focus:outline-none focus:border-[#155e56] min-h-[120px] resize-none"
           disabled={isLoading}
         />
       </div>
@@ -706,8 +706,8 @@ function ReflectionStep({ data, setData, onNext, onSubmit, isLoading }: StepProp
         disabled={isLoading}
         className="w-full py-4 rounded-full font-semibold text-base text-white disabled:opacity-60"
         style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+          background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
         }}
         whileHover={!isLoading ? { transform: 'translateY(-2px)' } : {}}
         whileTap={!isLoading ? { scale: 0.98 } : {}}
@@ -733,17 +733,17 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
           className="w-16 h-16 rounded-full flex items-center justify-center"
-          style={{ background: 'rgba(239, 68, 68, 0.2)' }}
+          style={{ background: 'rgba(154, 59, 46, 0.2)' }}
         >
-          <AlertCircle size={32} style={{ color: '#ef4444' }} />
+          <AlertCircle size={32} style={{ color: '#9a3b2e' }} />
         </motion.div>
 
         <motion.h2
           className="text-2xl font-bold text-center"
           style={{
-            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontFamily: "'Newsreader', Georgia, serif",
             fontStyle: 'italic',
-            color: '#e8eaf0',
+            color: '#1c1d20',
           }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -754,7 +754,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
 
         <motion.p
           className="text-base text-center max-w-sm"
-          style={{ color: '#ef4444' }}
+          style={{ color: '#9a3b2e' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -766,9 +766,9 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           onClick={() => window.location.reload()}
           className="px-8 py-3 rounded-full font-semibold"
           style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            color: '#ef4444',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            background: 'rgba(154, 59, 46, 0.15)',
+            color: '#9a3b2e',
+            border: '1px solid rgba(154, 59, 46, 0.3)',
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -840,14 +840,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         transition={{ type: 'spring', stiffness: 100, damping: 15, delay: 0.2 }}
         className="relative w-40 h-40 rounded-full flex items-center justify-center"
         style={{
-          background: 'radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%)',
-          boxShadow: '0 0 60px rgba(45, 212, 191, 0.15)',
+          background: 'radial-gradient(circle, rgba(21, 94, 86, 0.1) 0%, transparent 70%)',
+          boxShadow: '0 0 60px rgba(21, 94, 86, 0.15)',
         }}
       >
         {/* Inner ring background */}
         <div className="absolute inset-0 rounded-full" style={{ 
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '2px solid rgba(45, 212, 191, 0.2)',
+          background: '#ffffff',
+          border: '2px solid rgba(21, 94, 86, 0.2)',
         }} />
         
         {/* Animated SVG ring */}
@@ -864,7 +864,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
             fill="none"
             strokeLinecap="round"
             style={{
-              filter: 'drop-shadow(0 0 8px rgba(45, 212, 191, 0.3))',
+              filter: 'drop-shadow(0 0 8px rgba(21, 94, 86, 0.3))',
             }}
             as={motion.circle}
             strokeDasharray="565"
@@ -875,8 +875,8 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           />
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#2dd4bf" />
-              <stop offset="100%" stopColor="#22c55e" />
+              <stop offset="0%" stopColor="#155e56" />
+              <stop offset="100%" stopColor="#155e56" />
             </linearGradient>
           </defs>
         </svg>
@@ -890,14 +890,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         >
           <motion.div
             className="text-5xl font-bold"
-            style={{ color: '#2dd4bf' }}
+            style={{ color: '#155e56' }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 150, delay: 1.2 }}
           >
             {weekScore}
           </motion.div>
-          <div className="text-xs uppercase font-medium" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+          <div className="text-xs uppercase font-medium" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
             This Week
           </div>
         </motion.div>
@@ -910,19 +910,19 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4 }}
       >
-        <div className="text-xs uppercase font-medium" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+        <div className="text-xs uppercase font-medium" style={{ color: '#8b867c', letterSpacing: '0.08em' }}>
           Week Over Week
         </div>
         
         {/* Energy Delta */}
-        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-          <span style={{ color: '#e8eaf0' }}>Energy</span>
+        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+          <span style={{ color: '#1c1d20' }}>Energy</span>
           <div className="flex items-center gap-2">
-            <span style={{ color: '#2dd4bf', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+            <span style={{ color: '#155e56', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
               {data.energy}
             </span>
             {energyDelta !== 0 && (
-              <div className="flex items-center gap-1" style={{ color: energyDelta > 0 ? '#34d399' : '#ef4444' }}>
+              <div className="flex items-center gap-1" style={{ color: energyDelta > 0 ? '#155e56' : '#9a3b2e' }}>
                 {energyDelta > 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                 <span className="text-xs font-semibold">{Math.abs(energyDelta)}</span>
               </div>
@@ -931,14 +931,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         </div>
 
         {/* Sleep Delta */}
-        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-          <span style={{ color: '#e8eaf0' }}>Sleep Quality</span>
+        <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+          <span style={{ color: '#1c1d20' }}>Sleep Quality</span>
           <div className="flex items-center gap-2">
-            <span style={{ color: '#2dd4bf', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+            <span style={{ color: '#155e56', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
               {data.sleepQuality}
             </span>
             {sleepDelta !== 0 && (
-              <div className="flex items-center gap-1" style={{ color: sleepDelta > 0 ? '#34d399' : '#ef4444' }}>
+              <div className="flex items-center gap-1" style={{ color: sleepDelta > 0 ? '#155e56' : '#9a3b2e' }}>
                 {sleepDelta > 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                 <span className="text-xs font-semibold">{Math.abs(sleepDelta)}</span>
               </div>
@@ -948,14 +948,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
 
         {/* Weight Delta */}
         {data.weight !== undefined && (
-          <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-            <span style={{ color: '#e8eaf0' }}>Weight</span>
+          <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#ffffff' }}>
+            <span style={{ color: '#1c1d20' }}>Weight</span>
             <div className="flex items-center gap-2">
-              <span style={{ color: '#2dd4bf', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+              <span style={{ color: '#155e56', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
                 {data.weight.toFixed(1)} kg
               </span>
               {weightDelta !== null && weightDelta !== 0 && (
-                <div className="flex items-center gap-1" style={{ color: weightDelta < 0 ? '#34d399' : '#ef4444' }}>
+                <div className="flex items-center gap-1" style={{ color: weightDelta < 0 ? '#155e56' : '#9a3b2e' }}>
                   {weightDelta < 0 ? <ArrowDown size={14} /> : <ArrowUp size={14} />}
                   <span className="text-xs font-semibold">{Math.abs(weightDelta).toFixed(1)}</span>
                 </div>
@@ -969,9 +969,9 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
       <motion.div
         className="w-full max-w-sm p-4 rounded-xl border"
         style={{
-          background: 'rgba(45, 212, 191, 0.08)',
-          border: '1px solid rgba(45, 212, 191, 0.25)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.1)',
+          background: 'rgba(21, 94, 86, 0.08)',
+          border: '1px solid rgba(21, 94, 86, 0.25)',
+          boxShadow: '0 0 32px rgba(21, 94, 86, 0.1)',
         }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -979,12 +979,12 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
       >
         <div className="flex items-center gap-3 mb-2">
           <span className="text-2xl">{highlight.emoji}</span>
-          <Award size={18} style={{ color: '#2dd4bf' }} />
+          <Award size={18} style={{ color: '#155e56' }} />
         </div>
-        <p className="font-semibold" style={{ color: '#e8eaf0' }}>
+        <p className="font-semibold" style={{ color: '#1c1d20' }}>
           {highlight.title}
         </p>
-        <p className="text-sm mt-1" style={{ color: '#8892a4' }}>
+        <p className="text-sm mt-1" style={{ color: '#8b867c' }}>
           {highlight.subtitle}
         </p>
       </motion.div>
@@ -996,10 +996,10 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8 }}
       >
-        <p className="text-sm leading-relaxed" style={{ color: '#8892a4' }}>
+        <p className="text-sm leading-relaxed" style={{ color: '#8b867c' }}>
           Your coach will review this and reply
         </p>
-        <p className="text-sm font-medium" style={{ color: '#8892a4' }}>
+        <p className="text-sm font-medium" style={{ color: '#8b867c' }}>
           within 24 hours.
         </p>
       </motion.div>
@@ -1015,10 +1015,10 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           onClick={() => window.location.href = '/dashboard/check-in/photos'}
           className="w-full py-4 rounded-full font-semibold text-base text-white"
           style={{
-            background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-            boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+            background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+            boxShadow: '0 0 32px rgba(21, 94, 86, 0.3)',
           }}
-          whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
+          whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(21, 94, 86, 0.4)' }}
           whileTap={{ scale: 0.98 }}
         >
           Add Progress Photos (Optional)
@@ -1027,9 +1027,9 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           onClick={() => window.location.href = '/dashboard'}
           className="w-full py-4 rounded-full font-semibold text-base"
           style={{
-            background: 'rgba(255,255,255,0.05)',
-            color: '#8892a4',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: '#f4f0e8',
+            color: '#8b867c',
+            border: '1px solid #cfc7b6',
           }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -1165,7 +1165,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
   ]
 
   return (
-    <div className="min-h-screen w-full" style={{ background: '#090c14' }}>
+    <div className="min-h-screen w-full" style={{ background: '#fdfbf7' }}>
       {/* Progress dots at top */}
       <div className="flex justify-center gap-1.5 px-6 py-6 sticky top-0 z-40">
         {[...Array(COMPLETION_STEP)].map((_, idx) => (
@@ -1174,7 +1174,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
             className="h-1 rounded-full"
             style={{
               width: idx < currentStep ? 24 : 6,
-              background: idx < currentStep ? '#2dd4bf' : 'rgba(255, 255, 255, 0.1)',
+              background: idx < currentStep ? '#155e56' : '#cfc7b6',
             }}
             initial={{ width: 6 }}
             animate={{ width: idx < currentStep ? 24 : 6 }}
@@ -1188,12 +1188,12 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
         <motion.button
           onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
           className="absolute top-8 left-6 p-2 rounded-lg"
-          style={{ background: 'rgba(255, 255, 255, 0.04)' }}
+          style={{ background: '#ffffff' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          whileHover={{ background: 'rgba(255, 255, 255, 0.08)' }}
+          whileHover={{ background: '#e2dbcd' }}
         >
-          <ChevronLeft size={24} style={{ color: '#8892a4' }} />
+          <ChevronLeft size={24} style={{ color: '#8b867c' }} />
         </motion.button>
       )}
 

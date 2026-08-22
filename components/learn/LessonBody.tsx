@@ -11,10 +11,10 @@ function inline(text: string, keyPrefix: string) {
   const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).filter(Boolean)
   return parts.map((p, i) => {
     if (p.startsWith("**") && p.endsWith("**")) {
-      return <strong key={`${keyPrefix}-${i}`} style={{ color: "#e8eaf0", fontWeight: 600 }}>{p.slice(2, -2)}</strong>
+      return <strong key={`${keyPrefix}-${i}`} style={{ color: "#1c1d20", fontWeight: 600 }}>{p.slice(2, -2)}</strong>
     }
     if (p.startsWith("*") && p.endsWith("*")) {
-      return <em key={`${keyPrefix}-${i}`} style={{ color: "#7e8a9e" }}>{p.slice(1, -1)}</em>
+      return <em key={`${keyPrefix}-${i}`} style={{ color: "#8b867c" }}>{p.slice(1, -1)}</em>
     }
     return <span key={`${keyPrefix}-${i}`}>{p}</span>
   })
@@ -33,8 +33,8 @@ export function LessonBody({ body }: { body: string }) {
             <ul key={bi} className="space-y-2.5">
               {lines.map((l, li) => (
                 <li key={li} className="flex gap-2.5">
-                  <span className="shrink-0 mt-[7px] w-[5px] h-[5px] rounded-full" style={{ background: "#2dd4bf" }} />
-                  <span className="text-[14.5px]" style={{ color: "#a9b2c1", lineHeight: 1.65 }}>
+                  <span className="shrink-0 mt-[7px] w-[5px] h-[5px] rounded-full" style={{ background: "#155e56" }} />
+                  <span className="text-[14.5px]" style={{ color: "#5a564e", lineHeight: 1.65 }}>
                     {inline(l.slice(2), `${bi}-${li}`)}
                   </span>
                 </li>
@@ -48,10 +48,10 @@ export function LessonBody({ body }: { body: string }) {
             <ol key={bi} className="space-y-2.5">
               {lines.map((l, li) => (
                 <li key={li} className="flex gap-2.5">
-                  <span className="shrink-0 text-[13px] font-bold tabular-nums" style={{ color: "#2dd4bf", minWidth: 16 }}>
+                  <span className="shrink-0 text-[13px] font-bold tabular-nums" style={{ color: "#155e56", minWidth: 16 }}>
                     {l.match(/^(\d+)\./)?.[1]}
                   </span>
-                  <span className="text-[14.5px]" style={{ color: "#a9b2c1", lineHeight: 1.65 }}>
+                  <span className="text-[14.5px]" style={{ color: "#5a564e", lineHeight: 1.65 }}>
                     {inline(l.replace(/^\d+\.\s*/, ""), `${bi}-${li}`)}
                   </span>
                 </li>
@@ -65,14 +65,14 @@ export function LessonBody({ body }: { body: string }) {
         if (isNote) {
           return (
             <p key={bi} className="text-[12.5px] rounded-xl px-4 py-3"
-              style={{ color: "#7e8a9e", lineHeight: 1.6, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              style={{ color: "#8b867c", lineHeight: 1.6, background: "#ffffff", border: "1px solid #e2dbcd" }}>
               {block.slice(1, -1)}
             </p>
           )
         }
 
         return (
-          <p key={bi} className="text-[14.5px]" style={{ color: "#c9cdd5", lineHeight: 1.7 }}>
+          <p key={bi} className="text-[14.5px]" style={{ color: "#3c3a34", lineHeight: 1.7 }}>
             {inline(block, String(bi))}
           </p>
         )

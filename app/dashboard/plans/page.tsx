@@ -17,23 +17,23 @@ export default async function PlansPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: "#090c14", paddingBottom: "calc(100px + env(safe-area-inset-bottom, 24px))" }}
+      style={{ background: "#fdfbf7", paddingBottom: "calc(100px + env(safe-area-inset-bottom, 24px))" }}
     >
       <header
         className="sticky top-0 z-40 px-6 py-4"
         style={{
-          background: "rgba(9, 12, 20, 0.8)",
+          background: "rgba(253, 251, 247, 0.85)",
           backdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+          borderBottom: "1px solid #e2dbcd",
         }}
       >
         <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href="/dashboard" className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}>
+          <Link href="/dashboard" className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}>
             <ArrowLeft size={20} />
           </Link>
           <h1
             className="text-2xl"
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}
+            style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", color: "#1c1d20" }}
           >
             Your Plans
           </h1>

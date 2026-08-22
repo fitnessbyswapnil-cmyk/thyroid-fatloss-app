@@ -84,11 +84,11 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             transition={{ delay: 0.2 }}
             className="w-16 h-16 rounded-full flex items-center justify-center"
             style={{
-              background: 'radial-gradient(circle, rgba(45, 212, 191, 0.2) 0%, transparent 70%)',
-              boxShadow: '0 0 40px rgba(45, 212, 191, 0.15)',
+              background: 'radial-gradient(circle, rgba(21, 94, 86, 0.2) 0%, transparent 70%)',
+              boxShadow: '0 0 40px rgba(21, 94, 86, 0.15)',
             }}
           >
-            <div className="w-8 h-8 rounded-full" style={{ background: '#2dd4bf' }} />
+            <div className="w-8 h-8 rounded-full" style={{ background: '#155e56' }} />
           </motion.div>
 
           <motion.div
@@ -100,17 +100,17 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             <h2
               className="text-3xl font-bold"
               style={{
-                fontFamily: "'Instrument Serif', Georgia, serif",
+                fontFamily: "'Newsreader', Georgia, serif",
                 fontStyle: 'italic',
-                color: '#e8eaf0',
+                color: '#1c1d20',
               }}
             >
               A Gift to Tomorrow
             </h2>
-            <p className="text-lg leading-relaxed" style={{ color: '#8892a4' }}>
+            <p className="text-lg leading-relaxed" style={{ color: '#8b867c' }}>
               These photos are for the you who's 8 weeks from here. You'll look back and see the changes you couldn't see along the way.
             </p>
-            <p className="text-base" style={{ color: '#5a6578' }}>
+            <p className="text-base" style={{ color: '#a09a8e' }}>
               This is your baseline, not a verdict. No judgment, only progress.
             </p>
           </motion.div>
@@ -125,9 +125,9 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
               onClick={handleSkip}
               className="flex-1 py-3 rounded-full font-semibold"
               style={{
-                background: 'rgba(255,255,255,0.05)',
-                color: '#8892a4',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: '#f4f0e8',
+                color: '#8b867c',
+                border: '1px solid #cfc7b6',
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -138,8 +138,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
               onClick={() => setStep('privacy')}
               className="flex-1 py-3 rounded-full font-semibold text-white"
               style={{
-                background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-                boxShadow: '0 0 32px rgba(45,212,191,0.3)',
+                background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+                boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
               }}
               whileHover={{ transform: 'translateY(-2px)' }}
               whileTap={{ scale: 0.98 }}
@@ -165,10 +165,10 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             transition={{ type: 'spring', stiffness: 200 }}
             className="p-4 rounded-full"
             style={{
-              background: 'rgba(45, 212, 191, 0.1)',
+              background: 'rgba(21, 94, 86, 0.1)',
             }}
           >
-            <Lock size={48} style={{ color: '#2dd4bf' }} />
+            <Lock size={48} style={{ color: '#155e56' }} />
           </motion.div>
 
           <motion.div
@@ -180,9 +180,9 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             <h2
               className="text-3xl font-bold"
               style={{
-                fontFamily: "'Instrument Serif', Georgia, serif",
+                fontFamily: "'Newsreader', Georgia, serif",
                 fontStyle: 'italic',
-                color: '#e8eaf0',
+                color: '#1c1d20',
               }}
             >
               Your Privacy Protected
@@ -198,10 +198,10 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                     transition={{ delay: 0.3 + i * 0.1 }}
                     className="flex items-start gap-3"
                   >
-                    <div className="mt-1" style={{ color: '#2dd4bf' }}>
+                    <div className="mt-1" style={{ color: '#155e56' }}>
                       ✓
                     </div>
-                    <p style={{ color: '#e8eaf0' }}>{text}</p>
+                    <p style={{ color: '#1c1d20' }}>{text}</p>
                   </motion.div>
                 )
               )}
@@ -212,8 +212,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             onClick={() => setStep('consent')}
             className="w-full max-w-sm py-4 rounded-full font-semibold text-white"
             style={{
-              background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-              boxShadow: '0 0 32px rgba(45,212,191,0.3)',
+              background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+              boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -238,9 +238,9 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
           <motion.h2
             className="text-3xl font-bold"
             style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "'Newsreader', Georgia, serif",
               fontStyle: 'italic',
-              color: '#e8eaf0',
+              color: '#1c1d20',
             }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -254,15 +254,15 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             transition={{ delay: 0.2 }}
             className="w-full max-w-sm space-y-4"
           >
-            <label className="flex items-start gap-4 p-4 rounded-xl cursor-pointer" style={{ background: 'rgba(255,255,255,0.03)' }}>
+            <label className="flex items-start gap-4 p-4 rounded-xl cursor-pointer" style={{ background: '#ffffff' }}>
               <input
                 type="checkbox"
                 checked={consent}
                 onChange={(e) => setConsent(e.target.checked)}
                 className="w-6 h-6 mt-1"
-                style={{ accentColor: '#2dd4bf' }}
+                style={{ accentColor: '#155e56' }}
               />
-              <span style={{ color: '#e8eaf0' }}>
+              <span style={{ color: '#1c1d20' }}>
                 I consent to capture and store my progress photos securely, understand only my coach sees them, and can delete them anytime.
               </span>
             </label>
@@ -273,8 +273,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             disabled={!consent}
             className="w-full max-w-sm py-4 rounded-full font-semibold text-white disabled:opacity-50"
             style={{
-              background: consent ? 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)' : 'rgba(255,255,255,0.1)',
-              boxShadow: consent ? '0 0 32px rgba(45,212,191,0.3)' : 'none',
+              background: consent ? 'linear-gradient(135deg, #155e56 0%, #155e56 100%)' : '#cfc7b6',
+              boxShadow: consent ? '0 0 32px rgba(21, 94, 86,0.3)' : 'none',
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -299,9 +299,9 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
           <motion.h2
             className="text-3xl font-bold"
             style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "'Newsreader', Georgia, serif",
               fontStyle: 'italic',
-              color: '#e8eaf0',
+              color: '#1c1d20',
             }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -326,10 +326,10 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
                 className="flex items-center gap-4 p-4 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.03)' }}
+                style={{ background: '#ffffff' }}
               >
                 <span className="text-2xl">{icon}</span>
-                <p style={{ color: '#e8eaf0' }}>{tip}</p>
+                <p style={{ color: '#1c1d20' }}>{tip}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -338,8 +338,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             onClick={() => setStep('capture')}
             className="w-full max-w-sm py-4 rounded-full font-semibold text-white"
             style={{
-              background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-              boxShadow: '0 0 32px rgba(45,212,191,0.3)',
+              background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+              boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -376,26 +376,26 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity }}
                 className="w-12 h-12 rounded-full border-2 border-transparent"
-                style={{ borderTopColor: '#2dd4bf', borderRightColor: '#22c55e' }}
+                style={{ borderTopColor: '#155e56', borderRightColor: '#155e56' }}
               />
-              <p style={{ color: '#8892a4' }}>Securing your photos...</p>
+              <p style={{ color: '#8b867c' }}>Securing your photos...</p>
             </>
           ) : uploadError ? (
             <>
               <div
                 className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ background: 'rgba(239,68,68,0.2)' }}
+                style={{ background: 'rgba(154, 59, 46,0.2)' }}
               >
                 <span className="text-2xl">⚠️</span>
               </div>
-              <p style={{ color: '#ef4444' }}>{uploadError}</p>
+              <p style={{ color: '#9a3b2e' }}>{uploadError}</p>
               <motion.button
                 onClick={() => {
                   setUploadError(null)
                   setStep('capture')
                 }}
                 className="px-6 py-2 rounded-full font-semibold"
-                style={{ background: 'rgba(239,68,68,0.15)', color: '#ef4444' }}
+                style={{ background: 'rgba(154, 59, 46,0.15)', color: '#9a3b2e' }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -410,11 +410,11 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 transition={{ type: 'spring', stiffness: 150 }}
                 className="flex items-center justify-center w-16 h-16 rounded-full"
                 style={{
-                  background: 'radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, transparent 70%)',
-                  boxShadow: '0 0 40px rgba(34, 197, 94, 0.2)',
+                  background: 'radial-gradient(circle, rgba(21, 94, 86, 0.3) 0%, transparent 70%)',
+                  boxShadow: '0 0 40px rgba(21, 94, 86, 0.2)',
                 }}
               >
-                <CheckCircle2 size={40} style={{ color: '#22c55e' }} />
+                <CheckCircle2 size={40} style={{ color: '#155e56' }} />
               </motion.div>
 
               <motion.div
@@ -426,17 +426,17 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 <h2
                   className="text-3xl font-bold"
                   style={{
-                    fontFamily: "'Instrument Serif', Georgia, serif",
+                    fontFamily: "'Newsreader', Georgia, serif",
                     fontStyle: 'italic',
-                    color: '#e8eaf0',
+                    color: '#1c1d20',
                   }}
                 >
                   That Took Courage
                 </h2>
-                <p className="text-lg leading-relaxed" style={{ color: '#8892a4' }}>
+                <p className="text-lg leading-relaxed" style={{ color: '#8b867c' }}>
                   Your photos are securely stored. This is your baseline, not a verdict.
                 </p>
-                <p className="text-base" style={{ color: '#5a6578' }}>
+                <p className="text-base" style={{ color: '#a09a8e' }}>
                   Come back in a few weeks to see what's changed. You'll be amazed.
                 </p>
               </motion.div>
@@ -445,8 +445,8 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 onClick={() => (window.location.href = '/dashboard')}
                 className="w-full max-w-sm py-4 rounded-full font-semibold text-white"
                 style={{
-                  background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-                  boxShadow: '0 0 32px rgba(45,212,191,0.3)',
+                  background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
+                  boxShadow: '0 0 32px rgba(21, 94, 86,0.3)',
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

@@ -61,7 +61,7 @@ export function TransformationMetrics({
       {/* Section Label */}
       <span
         className="text-[11px] font-medium uppercase block mb-4"
-        style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}
+        style={{ color: "#8b867c", letterSpacing: "0.10em" }}
       >
         Your weight progress
       </span>
@@ -70,8 +70,8 @@ export function TransformationMetrics({
       <motion.div
         className="p-5 rounded-[20px]"
         style={{
-          background: "linear-gradient(135deg, rgba(45, 212, 191, 0.08) 0%, transparent 60%)",
-          border: "1px solid rgba(255, 255, 255, 0.08)"
+          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.08) 0%, transparent 60%)",
+          border: "1px solid #e2dbcd"
         }}
         whileHover={{ y: -5, boxShadow: "0 20px 60px rgba(0, 0, 0, 0.28)" }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -80,7 +80,7 @@ export function TransformationMetrics({
           <span
             className="tabular-nums"
             style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "'Newsreader', Georgia, serif",
               fontStyle: "italic",
               fontSize: 42,
               color: "white"
@@ -89,15 +89,15 @@ export function TransformationMetrics({
             {animatedWeight} kg
           </span>
         </div>
-        <p className="text-[13px] mb-4" style={{ color: "#7e8a9e" }}>
+        <p className="text-[13px] mb-4" style={{ color: "#8b867c" }}>
           Goal: {weight.goal}kg · {progressToGoal}% there
         </p>
 
         {/* Progress bar */}
-        <div className="h-1.5 rounded-full overflow-hidden mb-3" style={{ background: "rgba(255, 255, 255, 0.08)" }}>
+        <div className="h-1.5 rounded-full overflow-hidden mb-3" style={{ background: "#e2dbcd" }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #2dd4bf, #f59e0b)" }}
+            style={{ background: "linear-gradient(90deg, #155e56, #97671b)" }}
             initial={{ width: 0 }}
             whileInView={{ width: `${progressToGoal}%` }}
             viewport={{ once: true }}
@@ -109,7 +109,7 @@ export function TransformationMetrics({
         {weight.lost > 0 && (
           <span
             className="px-2.5 py-1 rounded-full text-[12px] font-medium"
-            style={{ background: "rgba(52, 211, 153, 0.12)", color: "#34d399" }}
+            style={{ background: "rgba(21, 94, 86, 0.12)", color: "#155e56" }}
           >
             -{weight.lost} kg lost
           </span>

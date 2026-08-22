@@ -24,7 +24,7 @@ export function CoachFeedbackCard({ feedback }: { feedback: CoachFeedbackItem[] 
     >
       <span
         className="text-[11px] font-medium uppercase block mb-4"
-        style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}
+        style={{ color: "#8b867c", letterSpacing: "0.10em" }}
       >
         Your Coach&apos;s Notes
       </span>
@@ -34,18 +34,18 @@ export function CoachFeedbackCard({ feedback }: { feedback: CoachFeedbackItem[] 
           <div
             key={f.id}
             className="p-5 rounded-2xl"
-            style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}
+            style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="inline-flex items-center gap-2 text-[12px]" style={{ color: "#2dd4bf" }}>
+              <span className="inline-flex items-center gap-2 text-[12px]" style={{ color: "#155e56" }}>
                 <MessageSquare size={14} />
                 {f.weekNumber ? `Week ${f.weekNumber} feedback` : "Coach feedback"}
               </span>
-              <span className="text-[11px]" style={{ color: "#7e8a9e" }}>
+              <span className="text-[11px]" style={{ color: "#8b867c" }}>
                 {new Date(f.createdAt).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
               </span>
             </div>
-            <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "#c9cdd5" }}>
+            <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "#3c3a34" }}>
               {f.body}
             </p>
           </div>

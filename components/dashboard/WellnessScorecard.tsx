@@ -45,10 +45,10 @@ export function WellnessScorecard({
   score = 79,
   delta = 11,
   subscores = [
-    { label: "Mood", value: 82, color: "#2dd4bf" },
-    { label: "Energy", value: 75, color: "#f59e0b" },
-    { label: "Sleep", value: 88, color: "#34d399" },
-    { label: "Mental Clarity", value: 71, color: "#fb7185" }
+    { label: "Mood", value: 82, color: "#155e56" },
+    { label: "Energy", value: 75, color: "#97671b" },
+    { label: "Sleep", value: 88, color: "#155e56" },
+    { label: "Mental Clarity", value: 71, color: "#9a3b2e" }
   ],
   insight = "Great progress! Focus on sleep consistency to boost your score further."
 }: WellnessScorecardProps) {
@@ -68,7 +68,7 @@ export function WellnessScorecard({
       {/* Section Label - emotional language */}
       <span 
         className="text-[11px] font-medium uppercase block mb-2"
-        style={{ color: "#2dd4bf", letterSpacing: "0.10em" }}
+        style={{ color: "#155e56", letterSpacing: "0.10em" }}
       >
         Your Wellness Progress
       </span>
@@ -78,22 +78,22 @@ export function WellnessScorecard({
         <span 
           className="tabular-nums"
           style={{ 
-            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontFamily: "'Newsreader', Georgia, serif",
             fontStyle: "italic",
             fontSize: 64,
-            color: "#eaecf4"
+            color: "#1c1d20"
           }}
         >
           {animatedScore}
         </span>
-        <span className="text-[13px]" style={{ color: "#7e8a9e" }}>
+        <span className="text-[13px]" style={{ color: "#8b867c" }}>
           out of 100
         </span>
         <span 
           className="px-2.5 py-1 rounded-full text-[12px] font-medium"
           style={{ 
-            background: "rgba(52, 211, 153, 0.12)",
-            color: "#34d399"
+            background: "rgba(21, 94, 86, 0.12)",
+            color: "#155e56"
           }}
         >
           +{delta} this week
@@ -103,7 +103,7 @@ export function WellnessScorecard({
       {/* Insight */}
       <p 
         className="text-[14px] mb-6"
-        style={{ color: "#7e8a9e" }}
+        style={{ color: "#8b867c" }}
       >
         {insight}
       </p>
@@ -136,8 +136,8 @@ function SubScoreCard({
     <motion.div
       className="p-4 rounded-2xl"
       style={{
-        background: "rgba(255, 255, 255, 0.04)",
-        border: "1px solid rgba(255, 255, 255, 0.08)"
+        background: "#ffffff",
+        border: "1px solid #e2dbcd"
       }}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -150,17 +150,17 @@ function SubScoreCard({
     >
       <span 
         className="text-[11px] font-medium uppercase block mb-2"
-        style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}
+        style={{ color: "#8b867c", letterSpacing: "0.08em" }}
       >
         {label}
       </span>
       <span 
         className="tabular-nums block mb-3"
         style={{ 
-          fontFamily: "'Instrument Serif', Georgia, serif",
+          fontFamily: "'Newsreader', Georgia, serif",
           fontStyle: "italic",
           fontSize: 28,
-          color: "#eaecf4"
+          color: "#1c1d20"
         }}
       >
         {animatedValue}
@@ -168,7 +168,7 @@ function SubScoreCard({
       {/* Progress bar */}
       <div 
         className="h-1 rounded-full overflow-hidden"
-        style={{ background: "rgba(255, 255, 255, 0.08)" }}
+        style={{ background: "#e2dbcd" }}
       >
         <motion.div
           className="h-full rounded-full"

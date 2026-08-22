@@ -73,11 +73,11 @@ export function ExerciseDemo({
     <div
       ref={ref}
       className="relative shrink-0 overflow-hidden"
-      style={{ width: size, height: size, borderRadius: rounded, background: "rgba(255,255,255,0.05)" }}
+      style={{ width: size, height: size, borderRadius: rounded, background: "#f4f0e8" }}
     >
       {frames.length === 0 ? (
         <div className="w-full h-full flex items-center justify-center">
-          <Dumbbell size={size * 0.4} style={{ color: "#404858" }} />
+          <Dumbbell size={size * 0.4} style={{ color: "#cfc7b6" }} />
         </div>
       ) : (
         frames.map((src, idx) => (

@@ -62,7 +62,7 @@ export function StreakAchievements({
     >
       <span
         className="text-[11px] font-medium uppercase block mb-4"
-        style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}
+        style={{ color: "#8b867c", letterSpacing: "0.10em" }}
       >
         Your Consistency Journey
       </span>
@@ -73,22 +73,22 @@ export function StreakAchievements({
           animate={{ scale: [1, 1.18, 1] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
-          <Flame style={{ width: 32, height: 32, color: "#f59e0b" }} />
+          <Flame style={{ width: 32, height: 32, color: "#97671b" }} />
         </motion.div>
 
         <div>
           <div className="flex items-baseline gap-2">
             <span
               className="tabular-nums"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 64, color: "#f59e0b" }}
+              style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 64, color: "#97671b" }}
             >
               {animatedStreak}
             </span>
           </div>
-          <span className="text-[12px] font-medium uppercase block" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
+          <span className="text-[12px] font-medium uppercase block" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>
             Day Streak
           </span>
-          <span className="text-[12px]" style={{ color: "#404858" }}>
+          <span className="text-[12px]" style={{ color: "#cfc7b6" }}>
             Best: {bestStreak} {bestStreak === 1 ? "day" : "days"}
           </span>
         </div>
@@ -97,13 +97,13 @@ export function StreakAchievements({
       {/* Monthly goal bar (real data) */}
       <div className="mb-6">
         <div className="flex justify-between text-[12px] mb-2">
-          <span style={{ color: "#7e8a9e" }}>{monthlyGoal.current}/{monthlyGoal.target} days this month</span>
-          <span style={{ color: "#eaecf4" }}>{goalPct}%</span>
+          <span style={{ color: "#8b867c" }}>{monthlyGoal.current}/{monthlyGoal.target} days this month</span>
+          <span style={{ color: "#1c1d20" }}>{goalPct}%</span>
         </div>
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255, 255, 255, 0.08)" }}>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "#e2dbcd" }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "#2dd4bf" }}
+            style={{ background: "#155e56" }}
             initial={{ width: 0 }}
             whileInView={{ width: `${goalPct}%` }}
             viewport={{ once: true }}
@@ -122,9 +122,9 @@ export function StreakAchievements({
               key={days}
               className="p-3 rounded-xl text-center"
               style={{
-                background: earned ? "rgba(45, 212, 191, 0.12)" : current ? "rgba(245, 158, 11, 0.12)" : "rgba(255, 255, 255, 0.04)",
-                border: `1px solid ${earned ? "rgba(45, 212, 191, 0.3)" : current ? "rgba(245, 158, 11, 0.3)" : "rgba(255, 255, 255, 0.08)"}`,
-                boxShadow: earned ? "0 0 20px rgba(45, 212, 191, 0.2)" : "none"
+                background: earned ? "rgba(21, 94, 86, 0.12)" : current ? "rgba(151, 103, 27, 0.12)" : "#ffffff",
+                border: `1px solid ${earned ? "rgba(21, 94, 86, 0.3)" : current ? "rgba(151, 103, 27, 0.3)" : "#e2dbcd"}`,
+                boxShadow: earned ? "0 0 20px rgba(21, 94, 86, 0.2)" : "none"
               }}
               initial={{ scale: 0 }}
               whileInView={{ scale: 1 }}
@@ -133,11 +133,11 @@ export function StreakAchievements({
             >
               <span
                 className="text-[14px] font-semibold block"
-                style={{ color: earned ? "#2dd4bf" : current ? "#f59e0b" : "#404858" }}
+                style={{ color: earned ? "#155e56" : current ? "#97671b" : "#cfc7b6" }}
               >
                 {days}d
               </span>
-              {earned && <Check className="w-3 h-3 mx-auto mt-1" style={{ color: "#2dd4bf" }} />}
+              {earned && <Check className="w-3 h-3 mx-auto mt-1" style={{ color: "#155e56" }} />}
             </motion.div>
           )
         })}

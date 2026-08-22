@@ -7,7 +7,7 @@
  */
 export function TrendChart({
   points,
-  color = "#2dd4bf",
+  color = "#155e56",
   height = 120,
   unit = "",
 }: {
@@ -47,8 +47,8 @@ export function TrendChart({
       {/* min/max gridlines + labels */}
       {[min, max].map((v) => (
         <g key={v}>
-          <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="rgba(255,255,255,0.07)" strokeDasharray="3 4" />
-          <text x={PAD.left - 6} y={y(v) + 3} textAnchor="end" fontSize="9" fill="#7e8a9e" className="tabular-nums">
+          <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="#e2dbcd" strokeDasharray="3 4" />
+          <text x={PAD.left - 6} y={y(v) + 3} textAnchor="end" fontSize="9" fill="#8b867c" className="tabular-nums">
             {Number.isInteger(v) ? v : v.toFixed(1)}{unit}
           </text>
         </g>
@@ -61,7 +61,7 @@ export function TrendChart({
         <g key={i}>
           <circle cx={x(i)} cy={y(p.value)} r="2.5" fill={color} />
           {i % step === 0 && (
-            <text x={x(i)} y={H - 6} textAnchor="middle" fontSize="9" fill="#5a6578">
+            <text x={x(i)} y={H - 6} textAnchor="middle" fontSize="9" fill="#a09a8e">
               {p.label}
             </text>
           )}

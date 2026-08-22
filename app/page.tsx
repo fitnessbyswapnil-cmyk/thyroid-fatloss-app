@@ -19,12 +19,12 @@ const testimonials = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#090c14" }}>
+    <div className="min-h-screen" style={{ background: "#fdfbf7" }}>
       {/* Ambient Glow */}
       <div 
         className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at center, rgba(45, 212, 191, 0.12) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse at center, rgba(21, 94, 86, 0.12) 0%, transparent 70%)",
           filter: "blur(80px)",
         }}
       />
@@ -34,9 +34,9 @@ export default function LandingPage() {
         <h1 
           className="text-2xl font-bold"
           style={{ 
-            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontFamily: "'Newsreader', Georgia, serif",
             fontStyle: "italic",
-            color: "#e8eaf0"
+            color: "#1c1d20"
           }}
         >
           ThyroWell
@@ -45,7 +45,7 @@ export default function LandingPage() {
           <Link 
             href="/auth/login"
             className="text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-            style={{ color: "#7e8a9e" }}
+            style={{ color: "#8b867c" }}
           >
             Sign In
           </Link>
@@ -53,9 +53,9 @@ export default function LandingPage() {
             href="/request-access"
             className="text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
             style={{ 
-              background: "rgba(45, 212, 191, 0.15)",
-              color: "#2dd4bf",
-              border: "1px solid rgba(45, 212, 191, 0.3)"
+              background: "rgba(21, 94, 86, 0.15)",
+              color: "#155e56",
+              border: "1px solid rgba(21, 94, 86, 0.3)"
             }}
           >
             Get Started
@@ -73,27 +73,27 @@ export default function LandingPage() {
           <div 
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
             style={{ 
-              background: "rgba(245, 158, 11, 0.1)",
-              border: "1px solid rgba(245, 158, 11, 0.2)"
+              background: "rgba(151, 103, 27, 0.1)",
+              border: "1px solid rgba(151, 103, 27, 0.2)"
             }}
           >
-            <Star size={14} style={{ color: "#f59e0b" }} />
-            <span className="text-xs font-medium" style={{ color: "#f59e0b" }}>
+            <Star size={14} style={{ color: "#97671b" }} />
+            <span className="text-xs font-medium" style={{ color: "#97671b" }}>
               Premium Wellness Coaching
             </span>
           </div>
 
           <h2
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
-            style={{ color: "#e8eaf0" }}
+            style={{ color: "#1c1d20" }}
           >
             Feel Your Best,
             <br />
             <span
               style={{
-                fontFamily: "'Instrument Serif', Georgia, serif",
+                fontFamily: "'Newsreader', Georgia, serif",
                 fontStyle: "italic",
-                color: "#2dd4bf"
+                color: "#155e56"
               }}
             >
               One Habit at a Time
@@ -102,7 +102,7 @@ export default function LandingPage() {
 
           <p
             className="text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
-            style={{ color: "#7e8a9e" }}
+            style={{ color: "#8b867c" }}
           >
             Personalized wellness coaching for women navigating thyroid health.
             Build sustainable habits around nutrition, movement, sleep, and energy —
@@ -115,9 +115,9 @@ export default function LandingPage() {
                 href="/request-access"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold"
                 style={{
-                  background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
-                  color: "#0a0d14",
-                  boxShadow: "0 12px 40px rgba(45, 212, 191, 0.3)",
+                  background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
+                  color: "#fdfbf7",
+                  boxShadow: "0 12px 40px rgba(21, 94, 86, 0.3)",
                 }}
               >
                 Start Your Transformation
@@ -127,7 +127,7 @@ export default function LandingPage() {
             <Link
               href="#testimonials"
               className="inline-flex items-center gap-2 px-6 py-4 text-sm font-medium"
-              style={{ color: "#7e8a9e" }}
+              style={{ color: "#8b867c" }}
             >
               See Success Stories
               <ChevronRight size={16} />
@@ -147,20 +147,20 @@ export default function LandingPage() {
               transition={{ delay: i * 0.1, duration: 0.5 }}
               className="p-6 rounded-2xl text-center"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px solid rgba(255, 255, 255, 0.06)",
+                background: "#ffffff",
+                border: "1px solid #e2dbcd",
               }}
             >
               <div 
                 className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center"
-                style={{ background: "rgba(45, 212, 191, 0.1)" }}
+                style={{ background: "rgba(21, 94, 86, 0.1)" }}
               >
-                <feature.icon size={22} style={{ color: "#2dd4bf" }} />
+                <feature.icon size={22} style={{ color: "#155e56" }} />
               </div>
-              <h3 className="font-semibold mb-1" style={{ color: "#e8eaf0", fontSize: 14 }}>
+              <h3 className="font-semibold mb-1" style={{ color: "#1c1d20", fontSize: 14 }}>
                 {feature.label}
               </h3>
-              <p className="text-xs" style={{ color: "#7e8a9e" }}>
+              <p className="text-xs" style={{ color: "#8b867c" }}>
                 {feature.desc}
               </p>
             </motion.div>
@@ -172,7 +172,7 @@ export default function LandingPage() {
       <section id="testimonials" className="relative z-10 px-6 py-20 max-w-5xl mx-auto">
         <h3 
           className="text-2xl font-bold text-center mb-12"
-          style={{ color: "#e8eaf0" }}
+          style={{ color: "#1c1d20" }}
         >
           Real Transformations
         </h3>
@@ -185,25 +185,25 @@ export default function LandingPage() {
               transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
               className="p-6 rounded-2xl"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px solid rgba(255, 255, 255, 0.06)",
+                background: "#ffffff",
+                border: "1px solid #e2dbcd",
               }}
             >
               <div 
                 className="inline-block px-3 py-1 rounded-full mb-4"
-                style={{ background: "rgba(45, 212, 191, 0.1)" }}
+                style={{ background: "rgba(21, 94, 86, 0.1)" }}
               >
-                <span className="text-xs font-medium" style={{ color: "#2dd4bf" }}>
+                <span className="text-xs font-medium" style={{ color: "#155e56" }}>
                   {t.result}
                 </span>
               </div>
               <p 
                 className="mb-4 leading-relaxed"
-                style={{ color: "#c9cdd5", fontSize: 14, fontStyle: "italic" }}
+                style={{ color: "#3c3a34", fontSize: 14, fontStyle: "italic" }}
               >
                 &quot;{t.quote}&quot;
               </p>
-              <p className="text-sm font-medium" style={{ color: "#7e8a9e" }}>
+              <p className="text-sm font-medium" style={{ color: "#8b867c" }}>
                 {t.name}
               </p>
             </motion.div>
@@ -216,17 +216,17 @@ export default function LandingPage() {
         <div
           className="p-10 rounded-3xl"
           style={{
-            background: "linear-gradient(135deg, rgba(45, 212, 191, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%)",
-            border: "1px solid rgba(45, 212, 191, 0.2)",
+            background: "linear-gradient(135deg, rgba(21, 94, 86, 0.1) 0%, rgba(21, 94, 86, 0.05) 100%)",
+            border: "1px solid rgba(21, 94, 86, 0.2)",
           }}
         >
           <h3
             className="text-2xl md:text-3xl font-bold mb-4"
-            style={{ color: "#e8eaf0" }}
+            style={{ color: "#1c1d20" }}
           >
             Ready to Start Your Wellness Journey?
           </h3>
-          <p className="mb-8" style={{ color: "#7e8a9e" }}>
+          <p className="mb-8" style={{ color: "#8b867c" }}>
             Join women building healthier, sustainable habits with personalized coaching and weekly support.
           </p>
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -234,9 +234,9 @@ export default function LandingPage() {
               href="/request-access"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold"
               style={{
-                background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
-                color: "#0a0d14",
-                boxShadow: "0 12px 40px rgba(45, 212, 191, 0.3)",
+                background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
+                color: "#fdfbf7",
+                boxShadow: "0 12px 40px rgba(21, 94, 86, 0.3)",
               }}
             >
               Start Your Transformation
@@ -247,22 +247,22 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 px-6 py-10 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+      <footer className="relative z-10 px-6 py-10 border-t" style={{ borderColor: "#e2dbcd" }}>
         <div className="max-w-3xl mx-auto text-center mb-8">
-          <p className="text-xs leading-relaxed" style={{ color: "#5a6578" }}>
+          <p className="text-xs leading-relaxed" style={{ color: "#a09a8e" }}>
             ThyroWell is a wellness coaching program, not medical treatment or a substitute for your
             doctor. Always consult a qualified healthcare professional about your health. Individual
             results vary.
           </p>
         </div>
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs" style={{ color: "#404858" }}>
+          <p className="text-xs" style={{ color: "#cfc7b6" }}>
             © 2026 ThyroWell. Premium Wellness Coaching.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-xs" style={{ color: "#7e8a9e" }}>Privacy</Link>
-            <Link href="/terms" className="text-xs" style={{ color: "#7e8a9e" }}>Terms</Link>
-            <a href="mailto:hello@thyrowell.example" className="text-xs" style={{ color: "#7e8a9e" }}>Contact</a>
+            <Link href="/privacy" className="text-xs" style={{ color: "#8b867c" }}>Privacy</Link>
+            <Link href="/terms" className="text-xs" style={{ color: "#8b867c" }}>Terms</Link>
+            <a href="mailto:hello@thyrowell.example" className="text-xs" style={{ color: "#8b867c" }}>Contact</a>
           </div>
         </div>
       </footer>

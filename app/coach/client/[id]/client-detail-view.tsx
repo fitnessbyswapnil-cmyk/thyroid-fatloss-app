@@ -140,36 +140,36 @@ export function ClientDetailView({
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#090c14" }}>
+    <div className="min-h-screen" style={{ background: "#fdfbf7" }}>
       {/* Header */}
       <header
         className="sticky top-0 z-50 px-6 py-4"
         style={{
-          background: "rgba(9, 12, 20, 0.8)",
+          background: "rgba(253, 251, 247, 0.85)",
           backdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+          borderBottom: "1px solid #e2dbcd",
         }}
       >
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/coach" className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}>
+            <Link href="/coach" className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}>
               <ArrowLeft size={20} />
             </Link>
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center font-medium"
                 style={{
-                  background: "linear-gradient(135deg, rgba(45, 212, 191, 0.2) 0%, rgba(34, 197, 94, 0.2) 100%)",
-                  color: "#2dd4bf"
+                  background: "linear-gradient(135deg, rgba(21, 94, 86, 0.2) 0%, rgba(21, 94, 86, 0.2) 100%)",
+                  color: "#155e56"
                 }}
               >
                 {client.full_name?.charAt(0) || "?"}
               </div>
               <div>
-                <h1 className="font-semibold" style={{ color: "#e8eaf0" }}>
+                <h1 className="font-semibold" style={{ color: "#1c1d20" }}>
                   {client.full_name}
                 </h1>
-                <p className="text-xs" style={{ color: "#7e8a9e" }}>
+                <p className="text-xs" style={{ color: "#8b867c" }}>
                   Week {programWeek} · {client.plan_type} plan
                 </p>
               </div>
@@ -179,14 +179,14 @@ export function ClientDetailView({
             <Link
               href={`/coach/client/${client.id}/messages`}
               className="px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5"
-              style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.25)" }}
+              style={{ background: "rgba(21, 94, 86,0.12)", color: "#155e56", border: "1px solid rgba(21, 94, 86,0.25)" }}
             >
               <MessageSquare size={13} /> Chat
             </Link>
             <Link
               href={`/coach/client/${client.id}/health`}
               className="px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5"
-              style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.25)" }}
+              style={{ background: "rgba(21, 94, 86,0.12)", color: "#155e56", border: "1px solid rgba(21, 94, 86,0.25)" }}
             >
               <Activity size={13} /> Health &amp; Labs
             </Link>
@@ -194,9 +194,9 @@ export function ClientDetailView({
               className="px-3 py-1 rounded-lg text-xs font-medium"
               style={{
                 background: client.subscription_status === "active"
-                  ? "rgba(45, 212, 191, 0.15)"
-                  : "rgba(245, 158, 11, 0.15)",
-                color: client.subscription_status === "active" ? "#2dd4bf" : "#f59e0b",
+                  ? "rgba(21, 94, 86, 0.15)"
+                  : "rgba(151, 103, 27, 0.15)",
+                color: client.subscription_status === "active" ? "#155e56" : "#97671b",
               }}
             >
               {client.subscription_status}
@@ -209,8 +209,8 @@ export function ClientDetailView({
       <div
         className="px-6 py-3 border-b sticky top-[72px] z-40"
         style={{
-          background: "rgba(9, 12, 20, 0.95)",
-          borderColor: "rgba(255, 255, 255, 0.06)",
+          background: "rgba(253, 251, 247, 0.85)",
+          borderColor: "#e2dbcd",
         }}
       >
         <div className="max-w-5xl mx-auto flex items-center gap-1.5 overflow-x-auto hide-scrollbar">
@@ -227,9 +227,9 @@ export function ClientDetailView({
               onClick={() => setActiveTab(tab.id)}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium whitespace-nowrap shrink-0 transition-all"
               style={{
-                background: activeTab === tab.id ? "rgba(45, 212, 191, 0.15)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${activeTab === tab.id ? "rgba(45,212,191,0.3)" : "rgba(255,255,255,0.06)"}`,
-                color: activeTab === tab.id ? "#2dd4bf" : "#7e8a9e",
+                background: activeTab === tab.id ? "rgba(21, 94, 86, 0.15)" : "#ffffff",
+                border: `1px solid ${activeTab === tab.id ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}`,
+                color: activeTab === tab.id ? "#155e56" : "#8b867c",
               }}
             >
               <tab.icon size={14} />
@@ -245,28 +245,28 @@ export function ClientDetailView({
             {/* Key Metrics */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { label: "Current Weight", value: `${client.current_weight || "-"} kg`, icon: Scale, delta: `-${weightLost} kg`, color: "#2dd4bf" },
-                { label: "TSH Level", value: client.tsh_current || "-", icon: Activity, delta: tshImprovement > 0 ? `-${tshImprovement}%` : null, color: "#34d399" },
-                { label: "Recovery Score", value: `${client.recovery_score || 0}%`, icon: Heart, delta: null, color: "#fb7185" },
-                { label: "Current Streak", value: `${client.streak_current || 0} days`, icon: Zap, delta: `Best: ${client.streak_best || 0}`, color: "#f59e0b" },
+                { label: "Current Weight", value: `${client.current_weight || "-"} kg`, icon: Scale, delta: `-${weightLost} kg`, color: "#155e56" },
+                { label: "TSH Level", value: client.tsh_current || "-", icon: Activity, delta: tshImprovement > 0 ? `-${tshImprovement}%` : null, color: "#155e56" },
+                { label: "Recovery Score", value: `${client.recovery_score || 0}%`, icon: Heart, delta: null, color: "#9a3b2e" },
+                { label: "Current Streak", value: `${client.streak_current || 0} days`, icon: Zap, delta: `Best: ${client.streak_best || 0}`, color: "#97671b" },
               ].map((metric) => (
                 <div
                   key={metric.label}
                   className="p-5 rounded-2xl"
                   style={{
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.06)",
+                    background: "#ffffff",
+                    border: "1px solid #e2dbcd",
                   }}
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <metric.icon size={16} style={{ color: metric.color }} />
-                    <span className="text-xs" style={{ color: "#7e8a9e" }}>{metric.label}</span>
+                    <span className="text-xs" style={{ color: "#8b867c" }}>{metric.label}</span>
                   </div>
-                  <div className="text-2xl font-bold" style={{ color: "#e8eaf0" }}>
+                  <div className="text-2xl font-bold" style={{ color: "#1c1d20" }}>
                     {metric.value}
                   </div>
                   {metric.delta && (
-                    <div className="text-xs mt-1" style={{ color: "#2dd4bf" }}>
+                    <div className="text-xs mt-1" style={{ color: "#155e56" }}>
                       {metric.delta}
                     </div>
                   )}
@@ -289,11 +289,11 @@ export function ClientDetailView({
             <div
               className="p-6 rounded-2xl"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px solid rgba(255, 255, 255, 0.06)",
+                background: "#ffffff",
+                border: "1px solid #e2dbcd",
               }}
             >
-              <h3 className="font-semibold mb-4" style={{ color: "#e8eaf0" }}>Client Information</h3>
+              <h3 className="font-semibold mb-4" style={{ color: "#1c1d20" }}>Client Information</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
                   { label: "Email", value: client.email },
@@ -307,10 +307,10 @@ export function ClientDetailView({
                   { label: "Allergies", value: client.allergies || "None" },
                 ].map((item) => (
                   <div key={item.label}>
-                    <div className="text-xs uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
+                    <div className="text-xs uppercase mb-1" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>
                       {item.label}
                     </div>
-                    <div className="text-sm" style={{ color: "#e8eaf0" }}>
+                    <div className="text-sm" style={{ color: "#1c1d20" }}>
                       {item.value}
                     </div>
                   </div>
@@ -322,12 +322,12 @@ export function ClientDetailView({
             <div
               className="p-6 rounded-2xl"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px solid rgba(255, 255, 255, 0.06)",
+                background: "#ffffff",
+                border: "1px solid #e2dbcd",
               }}
             >
-              <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
-                <MessageSquare size={16} style={{ color: "#2dd4bf" }} />
+              <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: "#1c1d20" }}>
+                <MessageSquare size={16} style={{ color: "#155e56" }} />
                 Send Insight
               </h3>
               <div className="flex gap-3">
@@ -338,9 +338,9 @@ export function ClientDetailView({
                   rows={3}
                   className="flex-1 px-4 py-3 rounded-xl text-sm focus:outline-none resize-none"
                   style={{
-                    background: "rgba(255, 255, 255, 0.04)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    color: "#e8eaf0",
+                    background: "#ffffff",
+                    border: "1px solid #e2dbcd",
+                    color: "#1c1d20",
                   }}
                 />
                 <motion.button
@@ -350,8 +350,8 @@ export function ClientDetailView({
                   whileTap={{ scale: 0.98 }}
                   className="px-4 rounded-xl self-end"
                   style={{
-                    background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
-                    color: "#0a0d14",
+                    background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)",
+                    color: "#fdfbf7",
                     opacity: !newInsight.trim() ? 0.5 : 1,
                     height: 44,
                   }}
@@ -366,20 +366,20 @@ export function ClientDetailView({
         {activeTab === "trends" && (
           <div className="space-y-5">
             {[
-              { title: "Weight (kg)", series: weightSeries, color: "#2dd4bf", unit: "" },
-              { title: "Energy (/10)", series: energySeries, color: "#f59e0b", unit: "" },
-              { title: "Sleep (/10)", series: sleepSeries, color: "#34d399", unit: "" },
+              { title: "Weight (kg)", series: weightSeries, color: "#155e56", unit: "" },
+              { title: "Energy (/10)", series: energySeries, color: "#97671b", unit: "" },
+              { title: "Sleep (/10)", series: sleepSeries, color: "#155e56", unit: "" },
             ].map((chart) => (
               <div
                 key={chart.title}
                 className="p-5 rounded-2xl"
-                style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}
+                style={{ background: "#ffffff", border: "1px solid #e2dbcd" }}
               >
-                <h3 className="text-sm font-semibold mb-3" style={{ color: "#e8eaf0" }}>{chart.title}</h3>
+                <h3 className="text-sm font-semibold mb-3" style={{ color: "#1c1d20" }}>{chart.title}</h3>
                 {chart.series.length >= 2 ? (
                   <TrendChart points={chart.series} color={chart.color} unit={chart.unit} />
                 ) : (
-                  <p className="text-xs py-4" style={{ color: "#7e8a9e" }}>
+                  <p className="text-xs py-4" style={{ color: "#8b867c" }}>
                     Not enough check-in data yet — needs at least 2 entries.
                   </p>
                 )}
@@ -391,8 +391,8 @@ export function ClientDetailView({
         {activeTab === "checkins" && (
           <div className="space-y-4">
             {checkins.length === 0 ? (
-              <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
-                <Clock size={40} className="mx-auto mb-4" style={{ color: "#404858" }} />
+              <div className="text-center py-12" style={{ color: "#8b867c" }}>
+                <Clock size={40} className="mx-auto mb-4" style={{ color: "#cfc7b6" }} />
                 <p>No check-ins yet</p>
               </div>
             ) : (
@@ -401,24 +401,24 @@ export function ClientDetailView({
                   key={checkin.id}
                   className="p-5 rounded-2xl"
                   style={{
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.06)",
+                    background: "#ffffff",
+                    border: "1px solid #e2dbcd",
                   }}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <span
                         className="px-3 py-1 rounded-lg text-sm font-medium"
-                        style={{ background: "rgba(45, 212, 191, 0.15)", color: "#2dd4bf" }}
+                        style={{ background: "rgba(21, 94, 86, 0.15)", color: "#155e56" }}
                       >
                         Week {checkin.week_number}
                       </span>
-                      <span className="text-xs" style={{ color: "#7e8a9e" }}>
+                      <span className="text-xs" style={{ color: "#8b867c" }}>
                         {new Date(checkin.submitted_at).toLocaleDateString()}
                       </span>
                     </div>
                     {checkin.adherence_score && (
-                      <span className="text-sm font-medium" style={{ color: "#2dd4bf" }}>
+                      <span className="text-sm font-medium" style={{ color: "#155e56" }}>
                         {checkin.adherence_score}% adherence
                       </span>
                     )}
@@ -432,18 +432,18 @@ export function ClientDetailView({
                       { label: "Mood", value: checkin.mood ? `${checkin.mood}/10` : "-", icon: Brain },
                     ].map((item) => (
                       <div key={item.label} className="flex items-center gap-2">
-                        <item.icon size={14} style={{ color: "#7e8a9e" }} />
+                        <item.icon size={14} style={{ color: "#8b867c" }} />
                         <div>
-                          <div className="text-xs" style={{ color: "#7e8a9e" }}>{item.label}</div>
-                          <div className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{item.value}</div>
+                          <div className="text-xs" style={{ color: "#8b867c" }}>{item.label}</div>
+                          <div className="text-sm font-medium" style={{ color: "#1c1d20" }}>{item.value}</div>
                         </div>
                       </div>
                     ))}
                   </div>
                   {checkin.notes && (
-                    <div className="mt-4 p-3 rounded-lg" style={{ background: "rgba(255, 255, 255, 0.02)" }}>
-                      <div className="text-xs uppercase mb-1" style={{ color: "#7e8a9e" }}>Notes</div>
-                      <p className="text-sm" style={{ color: "#c9cdd5" }}>{checkin.notes}</p>
+                    <div className="mt-4 p-3 rounded-lg" style={{ background: "#fdfbf7" }}>
+                      <div className="text-xs uppercase mb-1" style={{ color: "#8b867c" }}>Notes</div>
+                      <p className="text-sm" style={{ color: "#3c3a34" }}>{checkin.notes}</p>
                     </div>
                   )}
                 </div>
@@ -455,8 +455,8 @@ export function ClientDetailView({
         {activeTab === "photos" && (
           <div className="space-y-6">
             {photos.length === 0 ? (
-              <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
-                <Image size={40} className="mx-auto mb-4" style={{ color: "#404858" }} />
+              <div className="text-center py-12" style={{ color: "#8b867c" }}>
+                <Image size={40} className="mx-auto mb-4" style={{ color: "#cfc7b6" }} />
                 <p>No progress photos yet</p>
               </div>
             ) : (
@@ -468,13 +468,13 @@ export function ClientDetailView({
                       key={photo.id}
                       className="p-5 rounded-2xl"
                       style={{
-                        background: "rgba(255, 255, 255, 0.03)",
-                        border: "1px solid rgba(255, 255, 255, 0.06)",
+                        background: "#ffffff",
+                        border: "1px solid #e2dbcd",
                       }}
                     >
                       <div className="flex items-center gap-2 mb-4">
-                        <Calendar size={14} style={{ color: "#7e8a9e" }} />
-                        <span className="text-sm" style={{ color: "#7e8a9e" }}>
+                        <Calendar size={14} style={{ color: "#8b867c" }} />
+                        <span className="text-sm" style={{ color: "#8b867c" }}>
                           {photo.week_number ? `Week ${photo.week_number}` : ""} · {new Date(photo.upload_date).toLocaleDateString()}
                         </span>
                       </div>
@@ -483,12 +483,12 @@ export function ClientDetailView({
                           <div
                             key={i}
                             className="aspect-[3/4] rounded-lg flex items-center justify-center overflow-hidden"
-                            style={{ background: "rgba(255, 255, 255, 0.04)" }}
+                            style={{ background: "#ffffff" }}
                           >
                             {url ? (
                               <img src={`/api/file?pathname=${encodeURIComponent(url)}`} alt="" className="w-full h-full object-cover rounded-lg" />
                             ) : (
-                              <Image size={20} style={{ color: "#404858" }} />
+                              <Image size={20} style={{ color: "#cfc7b6" }} />
                             )}
                           </div>
                         ))}
@@ -511,8 +511,8 @@ export function ClientDetailView({
         {activeTab === "insights" && (
           <div className="space-y-4">
             {insights.length === 0 ? (
-              <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
-                <MessageSquare size={40} className="mx-auto mb-4" style={{ color: "#404858" }} />
+              <div className="text-center py-12" style={{ color: "#8b867c" }}>
+                <MessageSquare size={40} className="mx-auto mb-4" style={{ color: "#cfc7b6" }} />
                 <p>No insights sent yet</p>
               </div>
             ) : (
@@ -521,12 +521,12 @@ export function ClientDetailView({
                   key={insight.id}
                   className="p-5 rounded-2xl"
                   style={{
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.06)",
+                    background: "#ffffff",
+                    border: "1px solid #e2dbcd",
                   }}
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <span className="text-xs" style={{ color: "#7e8a9e" }}>
+                    <span className="text-xs" style={{ color: "#8b867c" }}>
                       {new Date(insight.created_at).toLocaleDateString("en-IN", {
                         month: "short",
                         day: "numeric",
@@ -535,13 +535,13 @@ export function ClientDetailView({
                       })}
                     </span>
                     {insight.is_read && (
-                      <span className="flex items-center gap-1 text-[10px]" style={{ color: "#2dd4bf" }}>
+                      <span className="flex items-center gap-1 text-[10px]" style={{ color: "#155e56" }}>
                         <Check size={12} />
                         Read
                       </span>
                     )}
                   </div>
-                  <p className="text-sm leading-relaxed" style={{ color: "#c9cdd5" }}>
+                  <p className="text-sm leading-relaxed" style={{ color: "#3c3a34" }}>
                     {insight.insight}
                   </p>
                 </div>

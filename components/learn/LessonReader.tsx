@@ -35,18 +35,18 @@ export function LessonReader({ lesson }: { lesson: LessonWithRead }) {
   }
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#fdfbf7", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -160, left: 10, width: 350, height: 300, zIndex: 0 }} />
 
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e2dbcd" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <Link href="/dashboard/learn" className="p-2 -ml-2 rounded-lg shrink-0" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
-          <span className="text-[11px] uppercase font-semibold truncate" style={{ color: "#7e8a9e", letterSpacing: "0.14em" }}>
+          <Link href="/dashboard/learn" className="p-2 -ml-2 rounded-lg shrink-0" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
+          <span className="text-[11px] uppercase font-semibold truncate" style={{ color: "#8b867c", letterSpacing: "0.14em" }}>
             {lesson.category || "Lesson"}
           </span>
           {done && (
             <span className="ml-auto inline-flex items-center gap-1 text-[10.5px] font-bold rounded-full px-2.5 py-1 shrink-0"
-              style={{ color: "#34d399", background: "rgba(52,211,153,0.12)" }}>
+              style={{ color: "#155e56", background: "rgba(21, 94, 86,0.12)" }}>
               <Check size={11} strokeWidth={3} /> Read
             </span>
           )}
@@ -54,10 +54,10 @@ export function LessonReader({ lesson }: { lesson: LessonWithRead }) {
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8 relative" style={{ zIndex: 1 }}>
-        <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 30, lineHeight: 1.2, color: "#e8eaf0" }}>
+        <h1 style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 30, lineHeight: 1.2, color: "#1c1d20" }}>
           {lesson.title}
         </h1>
-        <p className="inline-flex items-center gap-1.5 text-[11.5px] mt-2.5 mb-6" style={{ color: "#5a6578" }}>
+        <p className="inline-flex items-center gap-1.5 text-[11.5px] mt-2.5 mb-6" style={{ color: "#a09a8e" }}>
           <Clock size={12} /> {lesson.read_minutes} min read
         </p>
 
@@ -68,14 +68,14 @@ export function LessonReader({ lesson }: { lesson: LessonWithRead }) {
           disabled={done || saving}
           className="w-full mt-8 h-12 rounded-full font-bold text-sm inline-flex items-center justify-center gap-2"
           style={done
-            ? { background: "rgba(52,211,153,0.12)", color: "#34d399" }
-            : { background: "#2dd4bf", color: "#06231f", boxShadow: "0 8px 24px rgba(45,212,191,0.25)" }}
+            ? { background: "rgba(21, 94, 86,0.12)", color: "#155e56" }
+            : { background: "#155e56", color: "#dfe7dd", boxShadow: "0 8px 24px rgba(21, 94, 86,0.25)" }}
         >
           {saving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} strokeWidth={3} />}
           {done ? "Completed" : "Mark as read"}
         </button>
 
-        <Link href="/dashboard/learn" className="block text-center text-[12.5px] mt-4" style={{ color: "#7e8a9e" }}>
+        <Link href="/dashboard/learn" className="block text-center text-[12.5px] mt-4" style={{ color: "#8b867c" }}>
           Back to all lessons
         </Link>
       </main>

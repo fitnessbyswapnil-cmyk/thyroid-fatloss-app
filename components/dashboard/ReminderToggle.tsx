@@ -91,28 +91,28 @@ export function ReminderToggle() {
   if (state === "loading" || state === "unsupported") return null
 
   const card = {
-    background: state === "on" ? "rgba(52,211,153,0.06)" : "rgba(255,255,255,0.03)",
-    border: `1px solid ${state === "on" ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.06)"}`,
+    background: state === "on" ? "rgba(21, 94, 86,0.06)" : "#ffffff",
+    border: `1px solid ${state === "on" ? "rgba(21, 94, 86,0.2)" : "#e2dbcd"}`,
   } as const
 
   return (
     <div className="flex items-center gap-3 p-5 rounded-2xl" style={card}>
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-        style={{ background: state === "on" ? "rgba(52,211,153,0.14)" : "rgba(45,212,191,0.12)" }}
+        style={{ background: state === "on" ? "rgba(21, 94, 86,0.14)" : "rgba(21, 94, 86,0.12)" }}
       >
         {state === "on"
-          ? <Check size={19} style={{ color: "#34d399" }} strokeWidth={3} />
+          ? <Check size={19} style={{ color: "#155e56" }} strokeWidth={3} />
           : state === "blocked"
-          ? <BellOff size={19} style={{ color: "#7e8a9e" }} />
-          : <Bell size={19} style={{ color: "#2dd4bf" }} />}
+          ? <BellOff size={19} style={{ color: "#8b867c" }} />
+          : <Bell size={19} style={{ color: "#155e56" }} />}
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm" style={{ color: "#e8eaf0" }}>
+        <p className="font-semibold text-sm" style={{ color: "#1c1d20" }}>
           {state === "on" ? "Reminders are on" : "Gentle reminders"}
         </p>
-        <p className="text-[11.5px] mt-0.5" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>
+        <p className="text-[11.5px] mt-0.5" style={{ color: "#8b867c", lineHeight: 1.5 }}>
           {state === "on" && "We'll nudge you when your check-in is due or your coach replies."}
           {state === "off" && "A quiet nudge when your check-in is due or your coach replies."}
           {state === "blocked" && "Notifications are blocked in your browser settings — enable them there to turn this on."}
@@ -127,8 +127,8 @@ export function ReminderToggle() {
           className="shrink-0 text-[11.5px] font-semibold rounded-full px-3.5 py-2"
           style={
             state === "on"
-              ? { color: "#7e8a9e", border: "1px solid rgba(255,255,255,0.1)" }
-              : { color: "#06231f", background: "#2dd4bf" }
+              ? { color: "#8b867c", border: "1px solid #cfc7b6" }
+              : { color: "#dfe7dd", background: "#155e56" }
           }
         >
           {busy ? <Loader2 size={13} className="animate-spin" /> : state === "on" ? "Turn off" : "Turn on"}

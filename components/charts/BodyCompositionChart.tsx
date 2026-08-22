@@ -16,9 +16,9 @@ import { SITES, siteChanges, totalCmLost, type Measurements } from "@/lib/health
  * the current figures instead of an empty frame.
  */
 
-const LOSS = "#2dd4bf"
-const GAIN = "#e0a53a"
-const FLAT = "#7e8a9e"
+const LOSS = "#155e56"
+const GAIN = "#97671b"
+const FLAT = "#8b867c"
 
 export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
   const changes = siteChanges(rows)
@@ -35,7 +35,7 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
 
     if (current.length === 0) {
       return (
-        <p className="text-[12.5px] py-6 text-center" style={{ color: "#7e8a9e", lineHeight: 1.55 }}>
+        <p className="text-[12.5px] py-6 text-center" style={{ color: "#8b867c", lineHeight: 1.55 }}>
           Add measurements in your weekly check-in and they&rsquo;ll all appear here together.
         </p>
       )
@@ -44,14 +44,14 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
     const max = Math.max(...current.map((c) => c.value))
     return (
       <div>
-        <p className="text-[12.5px] mb-4" style={{ color: "#a9b2c1", lineHeight: 1.55 }}>
+        <p className="text-[12.5px] mb-4" style={{ color: "#5a564e", lineHeight: 1.55 }}>
           Your starting numbers. Measure again next week and this becomes a comparison of where
           you&rsquo;re losing.
         </p>
         <div className="flex flex-col gap-2.5">
           {current.map((c) => (
-            <MetricBar key={c.key} label={c.label} pct={max > 0 ? (c.value / max) * 100 : 0} color={FLAT} tone="rgba(255,255,255,0.06)">
-              <span className="tabular-nums text-[12.5px]" style={{ color: "#e8eaf0" }}>{c.value} cm</span>
+            <MetricBar key={c.key} label={c.label} pct={max > 0 ? (c.value / max) * 100 : 0} color={FLAT} tone="#e2dbcd">
+              <span className="tabular-nums text-[12.5px]" style={{ color: "#1c1d20" }}>{c.value} cm</span>
             </MetricBar>
           ))}
         </div>
@@ -71,22 +71,22 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
         <div className="mb-5">
           <p
             style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "'Newsreader', Georgia, serif",
               fontStyle: "italic",
               fontSize: 34,
               lineHeight: 1.05,
-              color: "#e8eaf0",
-              textShadow: "0 0 34px rgba(45,212,191,0.28)",
+              color: "#1c1d20",
+              textShadow: "0 0 34px rgba(21, 94, 86,0.28)",
             }}
           >
             {lost} cm off
           </p>
-          <p className="text-[12.5px] mt-1" style={{ color: "#a9b2c1", lineHeight: 1.5 }}>
+          <p className="text-[12.5px] mt-1" style={{ color: "#5a564e", lineHeight: 1.5 }}>
             across {down.length} {down.length === 1 ? "site" : "sites"} — progress the scale can hide.
           </p>
         </div>
       ) : (
-        <p className="text-[12.5px] mb-4" style={{ color: "#a9b2c1", lineHeight: 1.55 }}>
+        <p className="text-[12.5px] mb-4" style={{ color: "#5a564e", lineHeight: 1.55 }}>
           Nothing down yet. Circumference often moves before weight does, so keep measuring.
         </p>
       )}
@@ -104,7 +104,7 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
               color={color}
               tone={`${color}22`}
             >
-              <span className="tabular-nums text-[11px]" style={{ color: "#5a6578" }}>
+              <span className="tabular-nums text-[11px]" style={{ color: "#a09a8e" }}>
                 {c.first}→{c.latest}
               </span>
               <span
@@ -118,7 +118,7 @@ export function BodyCompositionChart({ rows }: { rows: Measurements[] }) {
         })}
       </div>
 
-      <p className="text-[11px] mt-4" style={{ color: "#5a6578", lineHeight: 1.5 }}>
+      <p className="text-[11px] mt-4" style={{ color: "#a09a8e", lineHeight: 1.5 }}>
         Bar length is how much each site moved, longest first. Measured from your first recorded
         figure to your most recent.
       </p>
@@ -142,11 +142,11 @@ export function MetricBar({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="text-[12.5px] shrink-0" style={{ color: "#c9cdd5", width: 52 }}>
+      <span className="text-[12.5px] shrink-0" style={{ color: "#3c3a34", width: 52 }}>
         {label}
       </span>
 
-      <div className="flex-1 h-[26px] rounded-lg relative overflow-hidden" style={{ background: "rgba(255,255,255,0.035)" }}>
+      <div className="flex-1 h-[26px] rounded-lg relative overflow-hidden" style={{ background: "#ffffff" }}>
         <div
           className="h-full rounded-lg"
           style={{
