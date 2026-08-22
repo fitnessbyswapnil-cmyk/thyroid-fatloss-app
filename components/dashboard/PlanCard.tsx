@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Apple, Dumbbell, FileText, Sparkles, ChevronRight } from "lucide-react"
-import type { Plan, PlanType, WorkoutItem } from "@/app/actions/plans"
+import type { Plan, PlanType, WorkoutItem, MealItem } from "@/app/actions/plans"
+import { MealDetail } from "@/components/dashboard/MealDetail"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 import { ExerciseViewer } from "@/components/dashboard/ExerciseViewer"
 import { DAYS, dayLabel, scheduledDays, sessionFor, todayDayOfWeek } from "@/lib/plans/schedule"
@@ -18,12 +19,14 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
   const meta = META[type]
   const Icon = meta.icon
   const [active, setActive] = useState<WorkoutItem | null>(null)
+  const [activeMeal, setActiveMeal] = useState<MealItem | null>(null)
   const today = todayDayOfWeek()
   const [selectedDay, setSelectedDay] = useState(today)
 
   return (
     <>
     {active && <ExerciseViewer item={active} onClose={() => setActive(null)} />}
+    {activeMeal && <MealDetail item={activeMeal} onClose={() => setActiveMeal(null)} />}
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
@@ -146,7 +149,13 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
             {(plan.content?.mealItems?.length ?? 0) > 0 && (
               <div className="space-y-2">
                 {plan.content.mealItems!.map((it, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.03)" }}>
+                  <button
+                    key={i}
+                    onClick={() => setActiveMeal(it)}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white/[0.06]"
+                    style={{ background: "rgba(255,255,255,0.03)" }}
+                    aria-label={`${it.name} — recipe and alternatives`}
+                  >
                     {it.meal && (
                       <span className="px-2 py-0.5 rounded text-[10px] uppercase shrink-0" style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}>
                         {it.meal}
@@ -163,7 +172,8 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                         {Math.round((it.calories || 0) * (it.qty || 1))} kcal
                       </span>
                     )}
-                  </div>
+                    <ChevronRight size={15} className="shrink-0" style={{ color: "#4b5563" }} />
+                  </button>
                 ))}
                 {(() => {
                   const t = plan.content.mealItems!.reduce(

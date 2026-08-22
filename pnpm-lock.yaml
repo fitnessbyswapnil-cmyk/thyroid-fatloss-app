@@ -17,6 +17,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.10.0(react-hook-form@7.71.1(react@19.2.4))
+      '@ifct2017/compositions':
+        specifier: ^2.0.9
+        version: 2.0.9
       '@radix-ui/react-accordion':
         specifier: 1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -294,6 +297,9 @@ packages:
   '@hutson/parse-repository-url@3.0.2':
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
+
+  '@ifct2017/compositions@2.0.9':
+    resolution: {integrity: sha512-ir8tb2r9k8OWAOWBDiljLuB5MD6dy4/ct+kLuNgyRGqH0PVpI+totq+NCkvP7+gX12O3qp0uPPbuHGzwgN2uLA==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -1920,6 +1926,9 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
+  csv-parse@5.6.0:
+    resolution: {integrity: sha512-l3nz3euub2QMg5ouu5U09Ew9Wf6/wQ8I++ch1loQ0ljmzhmfZYrH9fflS22i/PQEvsPvxCwxgz5q7UB8K1JO4Q==}
+
   d3-array@3.2.4:
     resolution: {integrity: sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==}
     engines: {node: '>=12'}
@@ -2521,6 +2530,9 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  lunr@2.3.9:
+    resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
+
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
@@ -3118,6 +3130,9 @@ packages:
   split@1.0.1:
     resolution: {integrity: sha512-mTyOoPbrivtXnwnIxZRFYRrPNtEFKlpB2fvjSnCQUiAA6qAZzqwna5envK4uk6OIeP17CsdF3rSBGYVBsU0Tkg==}
 
+  sql-extra@0.1.13:
+    resolution: {integrity: sha512-TRuGNJPX7gMdNZFLkUZADtK7Lmqq1zeXf+56Mkj7XP8xCqm+jcFE80B94BsGXVNkdIexOPhHgwqI2kLRhbhSFg==}
+
   stream-buffers@2.2.0:
     resolution: {integrity: sha512-uyQK/mx5QjHun80FLJTfaWE7JtwfRMKBLkMne6udYOmvH0CawotVa7TfgYHzAnpphn4+TweIx1QKMnRIbipmUg==}
     engines: {node: '>= 0.10.0'}
@@ -3632,6 +3647,12 @@ snapshots:
       react-hook-form: 7.71.1(react@19.2.4)
 
   '@hutson/parse-repository-url@3.0.2': {}
+
+  '@ifct2017/compositions@2.0.9':
+    dependencies:
+      csv-parse: 5.6.0
+      lunr: 2.3.9
+      sql-extra: 0.1.13
 
   '@img/colour@1.1.0':
     optional: true
@@ -5265,6 +5286,8 @@ snapshots:
 
   csstype@3.2.3: {}
 
+  csv-parse@5.6.0: {}
+
   d3-array@3.2.4:
     dependencies:
       internmap: 2.0.3
@@ -5757,6 +5780,8 @@ snapshots:
   lucide-react@0.564.0(react@19.2.4):
     dependencies:
       react: 19.2.4
+
+  lunr@2.3.9: {}
 
   magic-string@0.30.21:
     dependencies:
@@ -6385,6 +6410,8 @@ snapshots:
   split@1.0.1:
     dependencies:
       through: 2.3.8
+
+  sql-extra@0.1.13: {}
 
   stream-buffers@2.2.0: {}
 

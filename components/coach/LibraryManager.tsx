@@ -4,7 +4,8 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { ArrowLeft, Dumbbell, Apple, Plus, Pencil, Trash2, Loader2, Search, X, Video, Leaf, Drumstick, Upload } from "lucide-react"
+import { ArrowLeft, Dumbbell, Apple, Plus, Pencil, Trash2, Loader2, Search, X, Video, Leaf, Drumstick, Upload, FlaskConical } from "lucide-react"
+import { RecipeComposer } from "@/components/coach/RecipeComposer"
 import {
   type Exercise, type Food,
   upsertExercise, deleteExercise, upsertFood, deleteFood,
@@ -221,6 +222,7 @@ function ExerciseList({ items, search, onChanged }: { items: Exercise[]; search:
 
 function FoodList({ items, search, onChanged }: { items: Food[]; search: string; onChanged: () => void }) {
   const [editing, setEditing] = useState<Partial<Food> | null>(null)
+  const [composing, setComposing] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -250,10 +252,18 @@ function FoodList({ items, search, onChanged }: { items: Food[]; search: string;
 
   return (
     <div className="space-y-3">
-      <button onClick={() => setEditing({ is_veg: true })} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
-        style={{ background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)", color: "#0a0d14" }}>
-        <Plus size={16} /> Add food
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button onClick={() => setEditing({ is_veg: true })} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
+          style={{ background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)", color: "#0a0d14" }}>
+          <Plus size={16} /> Add food
+        </button>
+        {/* Compose from measured ingredients instead of typing macros by hand. */}
+        <button onClick={() => setComposing(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
+          style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.28)" }}>
+          <FlaskConical size={16} /> Build from ingredients
+        </button>
+      </div>
+      {composing && <RecipeComposer onClose={() => setComposing(false)} />}
 
       {editing && (
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="p-5 rounded-2xl space-y-3" style={card}>
