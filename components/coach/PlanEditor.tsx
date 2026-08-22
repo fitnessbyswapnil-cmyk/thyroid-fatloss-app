@@ -12,7 +12,8 @@ import { listExercises, listFoods, type Exercise, type Food } from "@/app/action
 import { listTemplates, saveTemplate, deleteTemplate, type PlanTemplate } from "@/app/actions/templates"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 import { DAYS, dayLabel, inferDayOfWeek } from "@/lib/plans/schedule"
-import { generateMealPlan } from "@/app/actions/nutrition"
+import { generateMealPlan, getClientTargets, saveClientMetrics } from "@/app/actions/nutrition"
+import { ACTIVITY, type ActivityLevel } from "@/lib/plans/targets"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
@@ -84,6 +85,39 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const [genVariety, setGenVariety] = useState(0)
   const [generating, setGenerating] = useState(false)
   const [genResult, setGenResult] = useState<Awaited<ReturnType<typeof generateMealPlan>>>(null)
+  const [targets, setTargets] = useState<Awaited<ReturnType<typeof getClientTargets>>>(null)
+  const [targetsLoaded, setTargetsLoaded] = useState(false)
+  const [heightInput, setHeightInput] = useState("")
+  const [activityInput, setActivityInput] = useState<ActivityLevel>("light")
+  const [savingMetrics, setSavingMetrics] = useState(false)
+
+  /** Work the targets out from her record the first time the panel opens. */
+  const openGenerator = async () => {
+    const next = !genOpen
+    setGenOpen(next)
+    if (!next || targetsLoaded) return
+    setTargetsLoaded(true)
+    const t = await getClientTargets(clientId)
+    if (!t) return
+    setTargets(t)
+    setGenKcal(String(t.calories))
+    setGenProtein(String(t.protein))
+  }
+
+  const applyMetrics = async () => {
+    setSavingMetrics(true)
+    const res = await saveClientMetrics({
+      clientId,
+      heightCm: heightInput ? Number(heightInput) : null,
+      activityLevel: activityInput,
+    })
+    if (res?.success) {
+      const t = await getClientTargets(clientId)
+      if (t) { setTargets(t); setGenKcal(String(t.calories)); setGenProtein(String(t.protein)) }
+      setHeightInput("")
+    }
+    setSavingMetrics(false)
+  }
 
   const runGenerate = async (variety: number) => {
     setGenerating(true)
@@ -278,7 +312,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
           </label>
           <div className="flex items-center gap-3">
             {type === "meal" && (
-              <button onClick={() => setGenOpen((v) => !v)} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#a78bfa" }}>
+              <button onClick={openGenerator} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#a78bfa" }}>
                 <Wand2 size={14} /> Draft a day
               </button>
             )}
@@ -293,6 +327,47 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             it fills the editor and the coach edits before assigning. */}
         {type === "meal" && genOpen && (
           <div className="p-3.5 rounded-xl mb-3" style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.22)" }}>
+            {/* Why these numbers. Shown so the coach can judge the estimate
+                rather than trust it, and override it knowing what she is
+                overriding. */}
+            {targets && (
+              <div className="mb-3 px-3 py-2.5 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <p className="text-[11px] uppercase mb-1.5" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>How this was worked out</p>
+                {targets.reasoning.map((r, i) => (
+                  <p key={i} className="text-[11.5px]" style={{ color: "#a9b2c1", lineHeight: 1.55 }}>{r}</p>
+                ))}
+                {targets.flooredAt && (
+                  <p className="text-[11.5px] mt-1" style={{ color: "#f59e0b", lineHeight: 1.5 }}>
+                    Held at the {targets.flooredAt} kcal floor.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Height changes the estimate by up to 11%, so ask for it once
+                rather than quietly guessing on every plan. */}
+            {targets?.missing?.includes("height") && (
+              <div className="mb-3 px-3 py-3 rounded-xl" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.22)" }}>
+                <p className="text-[12px] mb-2" style={{ color: "#e8eaf0", lineHeight: 1.5 }}>
+                  Her height isn&rsquo;t on file, so this is estimated from weight alone — it can be out by around 10%.
+                </p>
+                <div className="flex items-center gap-2">
+                  <input value={heightInput} onChange={(e) => setHeightInput(e.target.value)} inputMode="numeric"
+                    placeholder="Height in cm" className="flex-1 px-2.5 py-2 rounded-lg text-sm tabular-nums" style={inputStyle} />
+                  <select value={activityInput} onChange={(e) => setActivityInput(e.target.value as ActivityLevel)}
+                    className="px-2 py-2 rounded-lg text-[12px]" style={inputStyle}>
+                    {ACTIVITY.map((a) => <option key={a.key} value={a.key}>{a.label}</option>)}
+                  </select>
+                  <button onClick={applyMetrics} disabled={savingMetrics || !heightInput}
+                    className="px-3 h-9 rounded-lg text-[12px] font-semibold"
+                    style={{ background: "rgba(245,158,11,0.16)", color: "#f59e0b" }}>
+                    {savingMetrics ? "…" : "Save"}
+                  </button>
+                </div>
+                <p className="text-[10.5px] mt-1.5" style={{ color: "#7e8a9e" }}>Saved to her profile — you only enter it once.</p>
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-2 mb-2.5">
               <div>
                 <label className="block text-[10px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>Calories</label>

@@ -5,6 +5,8 @@ import { guard, failed } from '@/lib/errors'
 import { searchIngredients as ifctSearch, computeRecipe, type Ingredient, type RecipePart } from '@/lib/nutrition/ifct'
 import type { Food } from '@/app/actions/library'
 import { generatePlan } from '@/lib/plans/generate'
+import { computeTargets, type ActivityLevel } from '@/lib/plans/targets'
+import { getAuthUser } from '@/lib/supabase/auth'
 
 /** Ingredient search for the recipe composer (coach only). */
 export async function lookupIngredients(query: string): Promise<Ingredient[]> {
@@ -76,6 +78,75 @@ export async function saveComposedFood(input: {
       : await supabase.from('foods').insert({ ...row, created_by: user.id })
     if (error) return { success: false, error: error.message }
     return { success: true, totals }
+  })
+}
+
+/**
+ * A starting calorie and protein target for this client, worked out from her
+ * own record rather than typed in from the coach's head every time.
+ *
+ * Returns the reasoning alongside the numbers. The coach is still the one
+ * deciding — this removes the arithmetic, not the judgement.
+ */
+export async function getClientTargets(clientId: string) {
+  return guard('nutrition.getClientTargets', null, async () => {
+    const supabase = await createClient()
+    const user = await getAuthUser(supabase)
+    if (!user) return null
+    const { data: me } = await supabase.from('clients').select('role').eq('id', user.id).single()
+    if (me?.role !== 'coach' && me?.role !== 'admin') return null
+
+    const { data: c } = await supabase
+      .from('clients')
+      .select('full_name, age, gender, current_weight, target_weight, height_cm, activity_level, thyroid_condition')
+      .eq('id', clientId)
+      .maybeSingle()
+    if (!c?.current_weight) return null
+
+    const targets = computeTargets({
+      weightKg: Number(c.current_weight),
+      targetWeightKg: c.target_weight != null ? Number(c.target_weight) : null,
+      heightCm: c.height_cm != null ? Number(c.height_cm) : null,
+      age: c.age,
+      gender: c.gender,
+      activity: (c.activity_level as ActivityLevel | null) ?? null,
+    })
+
+    return { ...targets, clientName: c.full_name as string | null }
+  })
+}
+
+/** Save the two details the target calculation needs but onboarding never asked for. */
+export async function saveClientMetrics(input: {
+  clientId: string
+  heightCm?: number | null
+  activityLevel?: ActivityLevel | null
+}) {
+  return guard('nutrition.saveClientMetrics', failed('Could not save that.'), async () => {
+    const supabase = await createClient()
+    const user = await getAuthUser(supabase)
+    if (!user) return { success: false, error: 'Not authenticated' }
+    const { data: me } = await supabase.from('clients').select('role').eq('id', user.id).single()
+    if (me?.role !== 'coach' && me?.role !== 'admin') {
+      return { success: false, error: 'Only the coach can edit client details' }
+    }
+
+    const patch: Record<string, unknown> = {}
+    if (input.heightCm != null) {
+      const h = Number(input.heightCm)
+      // Matches the database constraint, so a typo fails here with a readable
+      // message instead of surfacing as a Postgres error.
+      if (!Number.isFinite(h) || h < 100 || h > 250) {
+        return { success: false, error: 'Height should be between 100 and 250 cm' }
+      }
+      patch.height_cm = h
+    }
+    if (input.activityLevel) patch.activity_level = input.activityLevel
+    if (!Object.keys(patch).length) return { success: true }
+
+    const { error } = await supabase.from('clients').update(patch).eq('id', input.clientId)
+    if (error) return { success: false, error: error.message }
+    return { success: true }
   })
 }
 
