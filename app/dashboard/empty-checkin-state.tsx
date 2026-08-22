@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, Check, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill, Sparkles } from 'lucide-react'
+import { ArrowRight, Camera, Check, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { BottomNavPill } from '@/components/dashboard/BottomNavPill'
 
