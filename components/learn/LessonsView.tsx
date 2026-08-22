@@ -28,7 +28,7 @@ export function LessonsView({ lessons }: { lessons: LessonWithRead[] }) {
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8 space-y-3 relative" style={{ zIndex: 1 }}>
-        <div className="flex items-center gap-3 p-4 rounded-2xl mb-2" style={{ background: "rgba(21, 94, 86,0.06)", border: "1px solid rgba(21, 94, 86,0.16)" }}>
+        <div className="flex items-center gap-3 p-4 rounded-2xl mb-2" style={{ background: "rgba(21, 94, 86, 0.13)", border: "1px solid rgba(21, 94, 86,0.16)" }}>
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(21, 94, 86,0.14)" }}>
             <BookOpen size={19} style={{ color: "#155e56" }} />
           </div>

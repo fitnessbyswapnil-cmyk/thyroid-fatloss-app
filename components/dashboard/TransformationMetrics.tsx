@@ -70,7 +70,7 @@ export function TransformationMetrics({
       <motion.div
         className="p-5 rounded-[20px]"
         style={{
-          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.08) 0%, transparent 60%)",
+          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.13) 0%, transparent 60%)",
           border: "1px solid #e2dbcd"
         }}
         whileHover={{ y: -5, boxShadow: "0 20px 60px rgba(0, 0, 0, 0.28)" }}

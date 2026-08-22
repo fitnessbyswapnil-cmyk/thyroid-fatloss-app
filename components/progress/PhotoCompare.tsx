@@ -130,7 +130,7 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
           </div>
 
           {/* The delta line — the sentence she screenshots */}
-          <div className="mt-4 p-4 rounded-2xl text-center" style={{ background: "rgba(21, 94, 86,0.07)", border: "1px solid rgba(21, 94, 86,0.2)" }}>
+          <div className="mt-4 p-4 rounded-2xl text-center" style={{ background: "rgba(21, 94, 86, 0.13)", border: "1px solid rgba(21, 94, 86,0.2)" }}>
             <p style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#1c1d20" }}>
               {daysApart} days apart
             </p>

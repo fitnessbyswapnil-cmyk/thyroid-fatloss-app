@@ -64,7 +64,7 @@ export function TrendChart({
         {/* Target band (prototype style: shaded range + dashed ceiling) */}
         {band && (
           <g>
-            <rect x={padX} y={y(band.max)} width={innerW} height={Math.max(2, y(band.min) - y(band.max))} rx="5" fill="rgba(21, 94, 86,0.05)" />
+            <rect x={padX} y={y(band.max)} width={innerW} height={Math.max(2, y(band.min) - y(band.max))} rx="5" fill="rgba(21, 94, 86, 0.13)" />
             <line x1={padX} y1={y(band.max)} x2={padX + innerW} y2={y(band.max)} stroke="rgba(21, 94, 86,0.35)" strokeWidth="1" strokeDasharray="4 4" />
             {band.label && (
               <text x={padX + innerW} y={y(band.max) - 5} fontSize="9" fill="#a09a8e" textAnchor="end">{band.label}</text>

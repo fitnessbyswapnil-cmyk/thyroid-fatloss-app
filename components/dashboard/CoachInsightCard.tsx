@@ -66,7 +66,7 @@ export function CoachInsightCard({
         border: '1px solid rgba(21, 94, 86, 0.15)',
         borderRadius: 28,
         padding: '26px 22px',
-        boxShadow: 'inset 0 1px 0 #cfc7b6, 0 28px 70px rgba(0, 0, 0, 0.35), 0 4px 20px rgba(21, 94, 86, 0.08)',
+        boxShadow: 'inset 0 1px 0 #cfc7b6, 0 28px 70px rgba(0, 0, 0, 0.35), 0 4px 20px rgba(21, 94, 86, 0.13)',
       }}
     >
       {/* Specular highlight */}
@@ -81,7 +81,7 @@ export function CoachInsightCard({
       <div 
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, rgba(21, 94, 86, 0.05) 0%, transparent 55%)',
+          background: 'linear-gradient(135deg, rgba(21, 94, 86, 0.13) 0%, transparent 55%)',
         }}
       />
       

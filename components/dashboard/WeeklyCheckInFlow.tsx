@@ -969,7 +969,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
       <motion.div
         className="w-full max-w-sm p-4 rounded-xl border"
         style={{
-          background: 'rgba(21, 94, 86, 0.08)',
+          background: 'rgba(21, 94, 86, 0.13)',
           border: '1px solid rgba(21, 94, 86, 0.25)',
           boxShadow: '0 0 32px rgba(21, 94, 86, 0.1)',
         }}

@@ -68,7 +68,7 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
             border: '1px solid #e2dbcd',
           }}
           whileHover={{
-            background: 'rgba(21, 94, 86, 0.08)',
+            background: 'rgba(21, 94, 86, 0.13)',
             borderColor: 'rgba(21, 94, 86, 0.3)',
           }}
           initial={{ opacity: 0, y: 10 }}

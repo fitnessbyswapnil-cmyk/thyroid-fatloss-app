@@ -109,7 +109,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
             <Link
               href="/dashboard/plans"
               className="flex items-center gap-3 p-5 rounded-3xl"
-              style={{ background: 'rgba(21, 94, 86,0.09)', border: '1px solid rgba(21, 94, 86,0.25)' }}
+              style={{ background: 'rgba(21, 94, 86, 0.13)', border: '1px solid rgba(21, 94, 86,0.25)' }}
             >
               <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(21, 94, 86,0.15)' }}>
                 <Sparkles size={19} style={{ color: '#155e56' }} />
@@ -156,7 +156,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
                 href={step.href}
                 className="flex items-center gap-3 p-4 rounded-2xl"
                 style={{
-                  background: step.done ? 'rgba(21, 94, 86,0.06)' : '#ffffff',
+                  background: step.done ? 'rgba(21, 94, 86, 0.13)' : '#ffffff',
                   border: `1px solid ${step.done ? 'rgba(21, 94, 86,0.18)' : '#e2dbcd'}`,
                 }}
               >

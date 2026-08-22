@@ -96,7 +96,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
         <motion.div
           className="rounded-xl p-4 border"
           style={{
-            background: 'rgba(21, 94, 86, 0.08)',
+            background: 'rgba(21, 94, 86, 0.13)',
             border: '1px solid rgba(21, 94, 86, 0.25)',
           }}
           initial={{ opacity: 0, y: 20 }}

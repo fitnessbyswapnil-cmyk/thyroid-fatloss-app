@@ -72,7 +72,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
           <Link
             href={`/dashboard/learn/${data.nextLesson.slug}`}
             className="max-w-2xl mx-auto flex items-start gap-3 p-5 rounded-3xl"
-            style={{ background: "rgba(184, 134, 63,0.07)", border: "1px solid rgba(184, 134, 63,0.2)" }}
+            style={{ background: "rgba(184, 134, 63, 0.14)", border: "1px solid rgba(184, 134, 63,0.2)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(184, 134, 63,0.15)" }}>
               <BookOpen size={19} style={{ color: "#b8863f" }} />

@@ -196,7 +196,7 @@ export function CoachDashboardClient({
         {recentErrorCount > 0 && (
           <div
             className="mb-4 flex items-center gap-3 px-4 py-3 rounded-2xl"
-            style={{ background: "rgba(154, 59, 46,0.05)", border: "1px solid rgba(154, 59, 46,0.18)" }}
+            style={{ background: "rgba(154, 59, 46, 0.12)", border: "1px solid rgba(154, 59, 46,0.18)" }}
           >
             <AlertCircle size={15} className="shrink-0" style={{ color: "#9a3b2e" }} />
             <p className="text-[12px] flex-1" style={{ color: "#5a564e" }}>
@@ -224,10 +224,10 @@ export function CoachDashboardClient({
               {alerts.map((a, i) => {
                 const tone =
                   a.severity === "urgent"
-                    ? { color: "#9a3b2e", bg: "rgba(154, 59, 46,0.05)", border: "rgba(154, 59, 46,0.2)", label: "Urgent" }
+                    ? { color: "#9a3b2e", bg: "rgba(154, 59, 46, 0.12)", border: "rgba(154, 59, 46,0.2)", label: "Urgent" }
                     : a.severity === "attention"
-                    ? { color: "#97671b", bg: "rgba(151, 103, 27,0.05)", border: "rgba(151, 103, 27,0.18)", label: "Review" }
-                    : { color: "#155e56", bg: "rgba(21, 94, 86,0.05)", border: "rgba(21, 94, 86,0.18)", label: "Send a win" }
+                    ? { color: "#97671b", bg: "rgba(151, 103, 27, 0.13)", border: "rgba(151, 103, 27,0.18)", label: "Review" }
+                    : { color: "#155e56", bg: "rgba(21, 94, 86, 0.13)", border: "rgba(21, 94, 86,0.18)", label: "Send a win" }
                 return (
                   <Link
                     key={`${a.clientId}-${a.kind}-${i}`}
@@ -259,7 +259,7 @@ export function CoachDashboardClient({
         {waitingClients.length > 0 && (
           <motion.div
             className="mb-6 p-5 rounded-2xl"
-            style={{ background: "rgba(21, 94, 86, 0.06)", border: "1px solid rgba(21, 94, 86, 0.2)" }}
+            style={{ background: "rgba(21, 94, 86, 0.13)", border: "1px solid rgba(21, 94, 86, 0.2)" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -290,7 +290,7 @@ export function CoachDashboardClient({
         {quietClients.length > 0 && (
           <motion.div
             className="mb-8 p-5 rounded-2xl"
-            style={{ background: "rgba(151, 103, 27, 0.06)", border: "1px solid rgba(151, 103, 27, 0.2)" }}
+            style={{ background: "rgba(151, 103, 27, 0.13)", border: "1px solid rgba(151, 103, 27, 0.2)" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >

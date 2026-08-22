@@ -146,7 +146,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
 
         {/* Live totals */}
         {parts.length > 0 && (
-          <div className="p-3.5 rounded-2xl mb-3" style={{ background: "rgba(21, 94, 86,0.07)", border: "1px solid rgba(21, 94, 86,0.2)" }}>
+          <div className="p-3.5 rounded-2xl mb-3" style={{ background: "rgba(21, 94, 86, 0.13)", border: "1px solid rgba(21, 94, 86,0.2)" }}>
             <div className="flex items-center gap-2 mb-1">
               <FlaskConical size={13} style={{ color: "#155e56" }} />
               <span className="text-[10.5px] uppercase font-semibold" style={{ color: "#155e56", letterSpacing: "0.14em" }}>Computed</span>

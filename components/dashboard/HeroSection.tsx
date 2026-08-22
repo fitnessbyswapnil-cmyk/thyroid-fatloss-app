@@ -135,7 +135,7 @@ export function HeroSection({
         style={{
           width: 380,
           height: 380,
-          background: "radial-gradient(circle at center, rgba(21, 94, 86,0.22) 0%, rgba(21, 94, 86,0.06) 45%, transparent 70%)",
+          background: "radial-gradient(circle at center, rgba(21, 94, 86,0.22) 0%, rgba(21, 94, 86, 0.13) 45%, transparent 70%)",
           zIndex: 0
         }}
         animate={{ 
@@ -159,7 +159,7 @@ export function HeroSection({
         <div 
           className="px-3.5 py-1.5 rounded-full text-[11px] font-medium uppercase"
           style={{
-            background: "linear-gradient(135deg, rgba(21, 94, 86,0.15), rgba(21, 94, 86,0.06))",
+            background: "linear-gradient(135deg, rgba(21, 94, 86,0.15), rgba(21, 94, 86, 0.13))",
             border: "1px solid rgba(21, 94, 86,0.20)",
             color: "#155e56",
             letterSpacing: "0.05em"

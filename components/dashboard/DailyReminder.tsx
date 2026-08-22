@@ -24,7 +24,7 @@ export function DailyReminder({
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, rgba(21, 94, 86, 0.06) 0%, transparent 60%)"
+          background: "radial-gradient(circle at center, rgba(21, 94, 86, 0.13) 0%, transparent 60%)"
         }}
       />
 

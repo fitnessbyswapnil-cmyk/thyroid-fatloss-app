@@ -216,7 +216,7 @@ export default function LandingPage() {
         <div
           className="p-10 rounded-3xl"
           style={{
-            background: "linear-gradient(135deg, rgba(21, 94, 86, 0.1) 0%, rgba(21, 94, 86, 0.05) 100%)",
+            background: "linear-gradient(135deg, rgba(21, 94, 86, 0.1) 0%, rgba(21, 94, 86, 0.13) 100%)",
             border: "1px solid rgba(21, 94, 86, 0.2)",
           }}
         >

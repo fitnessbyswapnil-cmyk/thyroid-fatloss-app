@@ -17,7 +17,7 @@ export function CheckInCTA({ programWeek }: { programWeek: number }) {
         href="/dashboard/check-in"
         className="flex items-center gap-4 p-5 rounded-[22px] transition-transform active:scale-[0.99]"
         style={{
-          background: "linear-gradient(135deg, rgba(21, 94, 86,0.14) 0%, rgba(21, 94, 86,0.08) 100%)",
+          background: "linear-gradient(135deg, rgba(21, 94, 86,0.14) 0%, rgba(21, 94, 86, 0.13) 100%)",
           border: "1px solid rgba(21, 94, 86,0.28)",
           boxShadow: "0 0 32px rgba(21, 94, 86,0.10)",
         }}

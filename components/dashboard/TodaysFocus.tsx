@@ -33,7 +33,7 @@ export function TodaysFocus({
       <div
         className="p-5 rounded-[22px]"
         style={{
-          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.10) 0%, rgba(21, 94, 86, 0.04) 100%)",
+          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.10) 0%, rgba(21, 94, 86, 0.13) 100%)",
           border: "1px solid rgba(21, 94, 86, 0.20)"
         }}
       >

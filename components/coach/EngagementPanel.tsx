@@ -89,7 +89,7 @@ export function EngagementPanel({
           {neverStarted && (
             <div
               className="mb-3 px-3.5 py-3 rounded-xl"
-              style={{ background: "rgba(151, 103, 27,0.07)", border: "1px solid rgba(151, 103, 27,0.2)" }}
+              style={{ background: "rgba(151, 103, 27, 0.13)", border: "1px solid rgba(151, 103, 27,0.2)" }}
             >
               <p className="text-[12.5px]" style={{ color: "#1c1d20", lineHeight: 1.55 }}>
                 {firstName} has an account but hasn&rsquo;t used anything in it yet.

@@ -326,7 +326,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             target. Replaces the tedious part of plan-writing, not the judgement:
             it fills the editor and the coach edits before assigning. */}
         {type === "meal" && genOpen && (
-          <div className="p-3.5 rounded-xl mb-3" style={{ background: "rgba(184, 134, 63,0.06)", border: "1px solid rgba(184, 134, 63,0.22)" }}>
+          <div className="p-3.5 rounded-xl mb-3" style={{ background: "rgba(184, 134, 63, 0.14)", border: "1px solid rgba(184, 134, 63,0.22)" }}>
             {/* Why these numbers. Shown so the coach can judge the estimate
                 rather than trust it, and override it knowing what she is
                 overriding. */}
@@ -347,7 +347,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             {/* Height changes the estimate by up to 11%, so ask for it once
                 rather than quietly guessing on every plan. */}
             {targets?.missing?.includes("height") && (
-              <div className="mb-3 px-3 py-3 rounded-xl" style={{ background: "rgba(151, 103, 27,0.06)", border: "1px solid rgba(151, 103, 27,0.22)" }}>
+              <div className="mb-3 px-3 py-3 rounded-xl" style={{ background: "rgba(151, 103, 27, 0.13)", border: "1px solid rgba(151, 103, 27,0.22)" }}>
                 <p className="text-[12px] mb-2" style={{ color: "#1c1d20", lineHeight: 1.5 }}>
                   Her height isn&rsquo;t on file, so this is estimated from weight alone — it can be out by around 10%.
                 </p>

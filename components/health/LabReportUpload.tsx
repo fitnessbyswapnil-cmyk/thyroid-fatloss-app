@@ -93,9 +93,9 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
       <button
         onClick={() => { reset(); setOpen(true) }}
         className="w-full flex items-center gap-3 p-4 rounded-2xl text-left"
-        style={{ background: "rgba(21, 94, 86,0.08)", border: "1px solid rgba(21, 94, 86,0.2)" }}
+        style={{ background: "#dfe7dd", border: "1px solid rgba(21, 94, 86, 0.28)" }}
       >
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(21, 94, 86,0.14)" }}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(21, 94, 86, 0.16)" }}>
           <Upload size={19} style={{ color: "#155e56" }} />
         </div>
         <div className="flex-1">
@@ -126,7 +126,7 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
                 <button
                   onClick={() => fileRef.current?.click()}
                   className="w-full mt-5 rounded-2xl py-10 flex flex-col items-center gap-3"
-                  style={{ border: "1.5px dashed rgba(21, 94, 86,0.35)", background: "rgba(21, 94, 86,0.04)" }}
+                  style={{ border: "1.5px dashed rgba(21, 94, 86,0.35)", background: "rgba(21, 94, 86, 0.13)" }}
                 >
                   <Upload size={26} style={{ color: "#155e56" }} />
                   <span className="text-sm font-semibold" style={{ color: "#155e56" }}>Choose file</span>
@@ -157,7 +157,7 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
                   </p>
                 )}
                 {usedOcr && rows.length > 0 && (
-                  <div className="flex items-start gap-2 mb-3 px-3 py-2.5 rounded-xl" style={{ background: "rgba(151, 103, 27,0.07)", border: "1px solid rgba(151, 103, 27,0.2)" }}>
+                  <div className="flex items-start gap-2 mb-3 px-3 py-2.5 rounded-xl" style={{ background: "rgba(151, 103, 27, 0.13)", border: "1px solid rgba(151, 103, 27,0.2)" }}>
                     <ScanLine size={13} style={{ color: "#97671b", marginTop: 2 }} />
                     <p className="text-[11.5px]" style={{ color: "#5a564e", lineHeight: 1.5 }}>
                       This was a scan, so the numbers were read from the image. Worth checking each one against the paper — a misread decimal point is easy to miss.

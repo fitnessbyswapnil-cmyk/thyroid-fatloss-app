@@ -69,7 +69,7 @@ export function WeeklyVictory({
       <motion.div
         className="relative overflow-hidden p-6 rounded-[24px]"
         style={{
-          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.12) 0%, rgba(21, 94, 86, 0.08) 50%, rgba(151, 103, 27, 0.06) 100%)",
+          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.12) 0%, rgba(21, 94, 86, 0.13) 50%, rgba(151, 103, 27, 0.13) 100%)",
           border: "1px solid rgba(21, 94, 86, 0.25)",
           boxShadow: "0 0 40px rgba(21, 94, 86, 0.1), inset 0 1px 0 #cfc7b6"
         }}

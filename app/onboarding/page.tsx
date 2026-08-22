@@ -97,7 +97,7 @@ export default function OnboardingPage() {
       <div 
         className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(21, 94, 86, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(21, 94, 86, 0.13) 0%, transparent 70%)",
           filter: "blur(60px)",
         }}
       />
