@@ -3,6 +3,8 @@ import { redirect } from "next/navigation"
 import { DashboardClient } from "./dashboard-client"
 import { EmptyCheckInState } from "./empty-checkin-state"
 import { nextLesson } from "@/app/actions/lessons"
+import { getPlansForClient } from "@/app/actions/plans"
+import { scheduledDays, sessionFor, todayDayOfWeek } from "@/lib/plans/schedule"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -188,6 +190,21 @@ export default async function DashboardPage() {
   // Next unread, unlocked lesson — drives the home "Learn" card.
   const upNextLesson = await nextLesson()
 
+  // Today's session, so home answers "what do I do today" rather than just
+  // linking to the plan and making her work it out.
+  const { workout: workoutPlan } = await getPlansForClient(user.id)
+  const workoutItems = workoutPlan?.content?.workoutItems || []
+  const todayDow = todayDayOfWeek()
+  const hasSchedule = scheduledDays(workoutItems).size > 0
+  const todaysSession = sessionFor(workoutItems, todayDow)
+  const todayFocus = {
+    hasPlan: workoutItems.length > 0,
+    hasSchedule,
+    count: todaysSession.length,
+    // Only call it a rest day when the coach actually scheduled a week.
+    isRestDay: hasSchedule && todaysSession.length === 0,
+  }
+
   const dashboardData = {
     name: client.full_name?.split(" ")[0] || "Friend",
     programWeek,
@@ -195,6 +212,7 @@ export default async function DashboardPage() {
     nextLesson: upNextLesson
       ? { slug: upNextLesson.slug, title: upNextLesson.title, summary: upNextLesson.summary, minutes: upNextLesson.read_minutes, category: upNextLesson.category }
       : null,
+    todayFocus,
     medication: healthProfile
       ? { name: healthProfile.medication, dose: healthProfile.medication_dose, timing: healthProfile.medication_timing }
       : null,

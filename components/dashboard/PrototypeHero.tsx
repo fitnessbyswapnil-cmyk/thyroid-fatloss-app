@@ -14,12 +14,14 @@ export function PrototypeHero({
   programWeek,
   streak,
   medication,
+  todayFocus,
 }: {
   name: string
   dayOfReset: number | null
   programWeek: number
   streak: number
   medication: { name: string | null; dose: string | null; timing: string | null } | null
+  todayFocus?: { hasPlan: boolean; hasSchedule: boolean; count: number; isRestDay: boolean }
 }) {
   const now = new Date()
   const hr = now.getHours()
@@ -72,10 +74,28 @@ export function PrototypeHero({
           <div className="tw-glow" style={{ position: "absolute", top: -70, right: -50, width: 220, height: 200, zIndex: 0, animationDuration: "6s" }} />
           <div className="relative" style={{ zIndex: 1 }}>
             <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#2dd4bf", letterSpacing: "0.16em" }}>Today&rsquo;s focus</p>
-            <p className="mt-1.5" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 24, color: "#e8eaf0" }}>Your training plan</p>
-            <p className="text-[12.5px] mt-1" style={{ color: "#a9b2c1" }}>Open this week&rsquo;s workout &amp; meals</p>
+            {/* Answers "what do I do today" on the home screen itself, rather
+                than making her open the plan and work it out. */}
+            <p className="mt-1.5" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 24, color: "#e8eaf0" }}>
+              {!todayFocus?.hasPlan
+                ? "Your training plan"
+                : todayFocus.isRestDay
+                ? "Rest day"
+                : todayFocus.count > 0
+                ? `${todayFocus.count} exercise${todayFocus.count === 1 ? "" : "s"}`
+                : "Your training plan"}
+            </p>
+            <p className="text-[12.5px] mt-1" style={{ color: "#a9b2c1" }}>
+              {!todayFocus?.hasPlan
+                ? "Open this week's workout & meals"
+                : todayFocus.isRestDay
+                ? "Recovery is part of the plan — nothing scheduled today"
+                : todayFocus.count > 0
+                ? "Scheduled for today — tap to start"
+                : "Open this week's workout & meals"}
+            </p>
             <span className="inline-block mt-4 rounded-full font-bold text-[13.5px] px-5 py-2.5" style={{ background: "#2dd4bf", color: "#06231f", boxShadow: "0 8px 24px rgba(45,212,191,0.25)" }}>
-              Open plan
+              {todayFocus?.isRestDay ? "View the week" : "Open plan"}
             </span>
           </div>
         </Link>

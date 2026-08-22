@@ -11,6 +11,7 @@ import { savePlan, type Plan, type PlanType, type PlanSection, type WorkoutItem,
 import { listExercises, listFoods, type Exercise, type Food } from "@/app/actions/library"
 import { listTemplates, saveTemplate, deleteTemplate, type PlanTemplate } from "@/app/actions/templates"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
+import { DAYS, dayLabel, inferDayOfWeek } from "@/lib/plans/schedule"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
@@ -328,7 +329,22 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         {type === "workout" && workoutItems.map((it, i) => (
           <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
             <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={36} rounded={9} />
-            <input value={it.day || ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, day: e.target.value } : x))} placeholder="Day" className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
+            {/* Real weekday slot. Defaults to whatever the legacy freeform
+                "day" text implied, so opening an old plan doesn't silently
+                reset every exercise to unscheduled. */}
+            <select
+              value={inferDayOfWeek(it) ?? 0}
+              onChange={(e) => {
+                const v = Number(e.target.value)
+                setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, dayOfWeek: v === 0 ? null : v, day: v === 0 ? null : dayLabel(v) } : x))
+              }}
+              className="w-[74px] px-1.5 py-1.5 rounded-lg text-xs focus:outline-none shrink-0"
+              style={inputStyle}
+              aria-label="Day of week"
+            >
+              <option value={0}>Any day</option>
+              {DAYS.map((d) => <option key={d.n} value={d.n}>{d.label}</option>)}
+            </select>
             <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>
               {it.name}
               {it.videoUrl && <Video size={11} className="inline ml-1.5" style={{ color: "#2dd4bf" }} />}

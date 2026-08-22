@@ -21,6 +21,7 @@ interface DashboardData {
   dayOfReset: number | null
   medication: { name: string | null; dose: string | null; timing: string | null } | null
   nextLesson: { slug: string; title: string; summary: string | null; minutes: number; category: string | null } | null
+  todayFocus: { hasPlan: boolean; hasSchedule: boolean; count: number; isRestDay: boolean }
   recoveryPercent: number
   wellnessScore: { current: number; previous: number; delta: number }
   subscores: {
@@ -61,6 +62,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         programWeek={data.programWeek}
         streak={data.streak.current}
         medication={data.medication}
+        todayFocus={data.todayFocus}
       />
       
       {/* SECTION 1b — This week's lesson. Education is the cheapest retention

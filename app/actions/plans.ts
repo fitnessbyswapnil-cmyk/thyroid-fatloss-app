@@ -17,7 +17,14 @@ export interface WorkoutItem {
   name: string
   sets?: number | null
   reps?: string | null      // "12", "8-10", "45 sec" — freeform
-  day?: string | null       // "Mon", "Day 1" — freeform grouping
+  day?: string | null       // legacy freeform label ("Mon", "Day 1") — kept so
+                            // plans saved before scheduling still render
+  /**
+   * Real schedule slot: 1 = Monday … 7 = Sunday. null = unscheduled, shown
+   * under "Any day". This is what turns a flat plan into a weekly programme
+   * the client can actually follow day by day.
+   */
+  dayOfWeek?: number | null
   videoUrl?: string | null
   demoUrl?: string | null     // animated GIF/MP4 demo (embedded from library at save time)
   imageStart?: string | null  // demo frame 1 — fallback when no demoUrl
