@@ -44,6 +44,7 @@ export default async function DashboardPage() {
       { data: w0Labs },
       { data: w0Msgs },
       { data: w0Reads },
+      { data: w0Photos },
       { data: w0FirstLesson },
     ] = await Promise.all([
       supabase.from("plans").select("id").eq("client_id", user.id).limit(1),
@@ -51,6 +52,7 @@ export default async function DashboardPage() {
       supabase.from("lab_results").select("id").eq("client_id", user.id).limit(1),
       supabase.from("messages").select("id").eq("client_id", user.id).eq("from_coach", false).limit(1),
       supabase.from("lesson_reads").select("id").eq("client_id", user.id).limit(1),
+      supabase.from("progress_photos").select("id").eq("client_id", user.id).limit(1),
       supabase.from("lessons").select("slug").eq("published", true).order("week_number").limit(1).maybeSingle(),
     ])
 
@@ -63,6 +65,7 @@ export default async function DashboardPage() {
           hasLabs: (w0Labs?.length ?? 0) > 0,
           hasMessaged: (w0Msgs?.length ?? 0) > 0,
           hasReadLesson: (w0Reads?.length ?? 0) > 0,
+          hasBaselinePhotos: (w0Photos?.length ?? 0) > 0,
           firstLessonSlug: w0FirstLesson?.slug ?? null,
         }}
       />

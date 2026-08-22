@@ -11,6 +11,7 @@ export interface Week0Status {
   hasMedication: boolean
   hasMessaged: boolean
   hasReadLesson: boolean
+  hasBaselinePhotos: boolean
   firstLessonSlug: string | null
 }
 
@@ -26,7 +27,7 @@ export interface Week0Status {
 export function EmptyCheckInState({ name, status }: { name: string; status?: Week0Status }) {
   const s: Week0Status = status ?? {
     hasPlan: false, hasLabs: false, hasMedication: false,
-    hasMessaged: false, hasReadLesson: false, firstLessonSlug: null,
+    hasMessaged: false, hasReadLesson: false, hasBaselinePhotos: false, firstLessonSlug: null,
   }
 
   const steps = [
@@ -37,6 +38,17 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
       detail: 'So your reminders and plan respect your timing',
       href: '/dashboard/health',
       tint: '#34d399',
+    },
+    {
+      // Deliberately high in the list: week-1 photos are the only ones that
+      // can never be taken later, and without them there is no 3-month
+      // before-and-after to show her.
+      done: s.hasBaselinePhotos,
+      icon: Camera,
+      title: 'Take your week-1 photos',
+      detail: "Today's the only day you can capture your starting point",
+      href: '/dashboard/progress-photos',
+      tint: '#f59e0b',
     },
     {
       done: s.hasLabs,

@@ -17,6 +17,8 @@ export interface CheckInSubmissionData {
   medsTaken: number
   medsTarget: number
   weight?: number
+  /** Average daily steps for the week; optional. */
+  steps?: number
   /** Body sites in cm; any subset (the measurements step is skippable). */
   measurements?: Record<string, number | null>
   /** Thyroid symptom cluster scored 0 (none) – 3 (severe). */
@@ -127,6 +129,7 @@ export async function submitWeeklyCheckIn(
       meds_taken: formData.medsTaken,
       meds_target: formData.medsTarget,
       weight: formData.weight || null,
+      steps: typeof formData.steps === 'number' && Number.isFinite(formData.steps) ? formData.steps : null,
       // Body sites: persisted to their own columns so they chart like weight.
       // Only finite numbers are written — an untouched field stays null rather
       // than becoming 0, which would read as a real (and alarming) measurement.

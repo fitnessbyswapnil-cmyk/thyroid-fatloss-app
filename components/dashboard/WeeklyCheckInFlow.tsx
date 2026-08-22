@@ -34,6 +34,8 @@ interface CheckInData {
   medsTaken: number
   medsTarget: number
   weight?: number
+  /** Average daily steps for the week; optional. */
+  steps?: number
   /** Body sites in cm; any subset — the step is skippable. */
   measurements: Measurements
   symptoms: SymptomScores
@@ -436,6 +438,25 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
         target={data.medsTarget}
         onChange={(val) => setData({ ...data, medsTaken: val })}
       />
+
+      {/* Daily step average. The column existed and was charted on Progress,
+          but nothing ever collected it — every row was null. */}
+      <div className="space-y-3">
+        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+          Average daily steps
+        </label>
+        <input
+          value={data.steps ?? ''}
+          onChange={(e) => {
+            const v = e.target.value
+            setData({ ...data, steps: v === '' ? undefined : Math.max(0, Math.round(Number(v) || 0)) })
+          }}
+          inputMode="numeric"
+          placeholder="e.g. 6000 — leave blank if you don't track"
+          className="w-full px-4 py-3 rounded-xl text-base tabular-nums focus:outline-none"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e8eaf0' }}
+        />
+      </div>
 
       <motion.button
         onClick={onNext}
