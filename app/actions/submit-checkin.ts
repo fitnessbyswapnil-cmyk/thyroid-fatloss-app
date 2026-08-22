@@ -17,6 +17,8 @@ export interface CheckInSubmissionData {
   medsTaken: number
   medsTarget: number
   weight?: number
+  /** Body sites in cm; any subset (the measurements step is skippable). */
+  measurements?: Record<string, number | null>
   /** Thyroid symptom cluster scored 0 (none) – 3 (severe). */
   symptoms: Record<string, number>
   reflectionText: string
@@ -125,6 +127,18 @@ export async function submitWeeklyCheckIn(
       meds_taken: formData.medsTaken,
       meds_target: formData.medsTarget,
       weight: formData.weight || null,
+      // Body sites: persisted to their own columns so they chart like weight.
+      // Only finite numbers are written — an untouched field stays null rather
+      // than becoming 0, which would read as a real (and alarming) measurement.
+      ...(() => {
+        const m = formData.measurements || {}
+        const out: Record<string, number | null> = {}
+        for (const site of ['neck', 'chest', 'waist', 'hips', 'arm', 'thigh', 'calf']) {
+          const v = m[site]
+          out[site] = typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null
+        }
+        return out
+      })(),
       symptoms: Object.keys(formData.symptoms || {}).length > 0 ? formData.symptoms : null,
       reflection_text: formData.reflectionText || null,
       status: 'submitted',

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { submitWeeklyCheckIn } from '@/app/actions/submit-checkin'
 import { SYMPTOMS, SEVERITY_LABELS, type SymptomScores } from '@/lib/health/symptoms'
+import { SITES, type Measurements } from '@/lib/health/measurements'
 
 // Types for check-in data
 interface CheckInData {
@@ -33,6 +34,8 @@ interface CheckInData {
   medsTaken: number
   medsTarget: number
   weight?: number
+  /** Body sites in cm; any subset — the step is skippable. */
+  measurements: Measurements
   symptoms: SymptomScores
   reflectionText: string
 }
@@ -513,6 +516,69 @@ function WeightStep({ data, setData, onNext }: StepProps) {
   )
 }
 
+// Measurements — the proof that works when the scale refuses to move.
+// Skippable: measuring every single week is unrealistic, and a client who
+// feels nagged by it will abandon the whole check-in.
+function MeasurementsStep({ data, setData, onNext }: StepProps) {
+  const set = (key: string, raw: string) => {
+    const v = raw === '' ? null : Number(raw)
+    setData({ ...data, measurements: { ...data.measurements, [key]: v === null || Number.isNaN(v) ? null : v } })
+  }
+  const filled = SITES.filter((s) => typeof data.measurements[s.key] === 'number').length
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="space-y-5 px-6 py-8"
+    >
+      <div className="space-y-1">
+        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
+          Measurements (cm)
+        </label>
+        <p className="text-xs" style={{ color: '#5a6578' }}>
+          Inches move when the scale won&rsquo;t. Fill in what you can — even one site tracked
+          consistently tells the story.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2.5">
+        {SITES.map((s) => (
+          <div key={s.key} className="p-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <label className="block text-[12px] font-semibold" style={{ color: '#e8eaf0' }}>{s.label}</label>
+            <p className="text-[9.5px] mb-1.5" style={{ color: '#5a6578', lineHeight: 1.3 }}>{s.hint}</p>
+            <input
+              value={data.measurements[s.key] ?? ''}
+              onChange={(e) => set(s.key, e.target.value)}
+              inputMode="decimal"
+              placeholder="—"
+              className="w-full px-2.5 py-2 rounded-lg text-sm tabular-nums focus:outline-none"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e8eaf0' }}
+            />
+          </div>
+        ))}
+      </div>
+
+      <motion.button
+        onClick={onNext}
+        className="w-full py-4 rounded-full font-semibold text-base text-white mt-6"
+        style={{
+          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
+          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
+        }}
+        whileHover={{ transform: 'translateY(-2px)' }}
+        whileTap={{ scale: 0.98 }}
+      >
+        {filled > 0 ? `Continue with ${filled} recorded` : 'Continue'}
+      </motion.button>
+      {filled === 0 && (
+        <button onClick={onNext} className="w-full text-center text-sm" style={{ color: '#5a6578' }}>
+          Skip measurements this week
+        </button>
+      )}
+    </motion.div>
+  )
+}
+
 // Step 5: Thyroid symptoms — severity, not just presence. Scoring each symptom
 // 0–3 every week is what lets Progress show "4 of 6 symptoms improved", the
 // win that keeps a client engaged through a plateau on the scale.
@@ -954,6 +1020,17 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
 }
 
 // Main component
+/**
+ * Ordered step keys — the single source of truth for how long the flow is and
+ * where the end sits. Everything (progress dots, back button, submit) derives
+ * from this, so adding a step here is the only change required.
+ */
+const STEP_KEYS = [
+  'prime', 'feelings', 'body', 'actions', 'weight',
+  'measurements', 'symptoms', 'reflection', 'completion',
+] as const
+const COMPLETION_STEP = STEP_KEYS.length - 1
+
 export function WeeklyCheckInFlow() {
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -972,6 +1049,7 @@ export function WeeklyCheckInFlow() {
     workoutsTarget: 3,
     medsTaken: 0,
     medsTarget: 7,
+    measurements: {},
     symptoms: {},
     reflectionText: '',
   })
@@ -989,7 +1067,7 @@ export function WeeklyCheckInFlow() {
       }
       
       setSubmissionData(result)
-      setCurrentStep(7)
+      setCurrentStep(COMPLETION_STEP)
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred')
     } finally {
@@ -997,18 +1075,24 @@ export function WeeklyCheckInFlow() {
     }
   }
 
+  // Every step advances to "the next one" rather than a hardcoded number.
+  // A hardcoded index derived from this list is exactly how a previous bug in
+  // this project silently dropped the last answer when a question was added.
+  const next = () => setCurrentStep((s) => Math.min(s + 1, COMPLETION_STEP))
+
   const steps = [
-    <PrimeStep key="prime" onNext={() => setCurrentStep(1)} />,
-    <FeelingsStep key="feelings" data={data} setData={setData} onNext={() => setCurrentStep(2)} />,
-    <BodyStep key="body" data={data} setData={setData} onNext={() => setCurrentStep(3)} />,
-    <ActionsStep key="actions" data={data} setData={setData} onNext={() => setCurrentStep(4)} />,
-    <WeightStep key="weight" data={data} setData={setData} onNext={() => setCurrentStep(5)} />,
-    <SymptomsStep key="symptoms" data={data} setData={setData} onNext={() => setCurrentStep(6)} />,
-    <ReflectionStep 
-      key="reflection" 
-      data={data} 
-      setData={setData} 
-      onNext={() => setCurrentStep(7)}
+    <PrimeStep key="prime" onNext={next} />,
+    <FeelingsStep key="feelings" data={data} setData={setData} onNext={next} />,
+    <BodyStep key="body" data={data} setData={setData} onNext={next} />,
+    <ActionsStep key="actions" data={data} setData={setData} onNext={next} />,
+    <WeightStep key="weight" data={data} setData={setData} onNext={next} />,
+    <MeasurementsStep key="measurements" data={data} setData={setData} onNext={next} />,
+    <SymptomsStep key="symptoms" data={data} setData={setData} onNext={next} />,
+    <ReflectionStep
+      key="reflection"
+      data={data}
+      setData={setData}
+      onNext={next}
       onSubmit={handleSubmitCheckIn}
       isLoading={isSubmitting}
     />,
@@ -1019,7 +1103,7 @@ export function WeeklyCheckInFlow() {
     <div className="min-h-screen w-full" style={{ background: '#090c14' }}>
       {/* Progress dots at top */}
       <div className="flex justify-center gap-1.5 px-6 py-6 sticky top-0 z-40">
-        {[...Array(7)].map((_, idx) => (
+        {[...Array(COMPLETION_STEP)].map((_, idx) => (
           <motion.div
             key={idx}
             className="h-1 rounded-full"
@@ -1035,7 +1119,7 @@ export function WeeklyCheckInFlow() {
       </div>
 
       {/* Back button */}
-      {currentStep > 0 && currentStep < 7 && (
+      {currentStep > 0 && currentStep < COMPLETION_STEP && (
         <motion.button
           onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
           className="absolute top-8 left-6 p-2 rounded-lg"

@@ -9,7 +9,7 @@ export default async function ProgressPage() {
 
   const { data } = await supabase
     .from("weekly_checkins")
-    .select("week_number, weight, waist, hips, energy_level, sleep_score, mood, digestion_score, adherence_score, steps, symptoms")
+    .select("week_number, weight, waist, hips, neck, chest, arm, thigh, calf, energy_level, sleep_score, mood, digestion_score, adherence_score, steps, symptoms")
     .eq("client_id", user.id)
     .order("week_number", { ascending: true })
 

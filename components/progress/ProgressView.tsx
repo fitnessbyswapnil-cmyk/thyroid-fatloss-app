@@ -5,12 +5,18 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
 import { parseSymptoms, symptomBurden, symptomChanges } from "@/lib/health/symptoms"
+import { siteChanges, totalCmLost, type Measurements } from "@/lib/health/measurements"
 
 export interface CheckinPoint {
   week_number: number
   weight: number | null
   waist: number | null
   hips: number | null
+  neck: number | null
+  chest: number | null
+  arm: number | null
+  thigh: number | null
+  calf: number | null
   energy_level: number | null
   sleep_score: number | null
   mood: number | null
@@ -24,6 +30,11 @@ const METRICS: { key: keyof CheckinPoint; label: string; unit: string; goal?: "d
   { key: "weight", label: "Weight", unit: "kg", goal: "down" },
   { key: "waist", label: "Waist", unit: "cm", goal: "down" },
   { key: "hips", label: "Hips", unit: "cm", goal: "down" },
+  { key: "chest", label: "Chest", unit: "cm", goal: "down" },
+  { key: "thigh", label: "Thigh", unit: "cm", goal: "down" },
+  { key: "arm", label: "Arm", unit: "cm", goal: "down" },
+  { key: "neck", label: "Neck", unit: "cm", goal: "down" },
+  { key: "calf", label: "Calf", unit: "cm", goal: "down" },
   { key: "energy_level", label: "Energy", unit: "/10", goal: "up" },
   { key: "sleep_score", label: "Sleep", unit: "/10", goal: "up" },
   { key: "mood", label: "Mood", unit: "/10", goal: "up" },
@@ -90,6 +101,52 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             </p>
           )}
         </div>
+
+        {/* Measurements — the other half of the plateau story. Weight can sit
+            still for a month while centimetres keep coming off. */}
+        {(() => {
+          const rows = sorted as unknown as Measurements[]
+          const changes = siteChanges(rows)
+          if (changes.length === 0) return null
+          const lost = totalCmLost(rows)
+          const down = changes.filter((c) => c.delta < 0)
+
+          return (
+            <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <h3 className="font-semibold mb-1" style={{ color: "#e8eaf0" }}>Measurements</h3>
+              {lost > 0 ? (
+                <p className="text-[12.5px] mb-4" style={{ color: "#34d399" }}>
+                  {lost} cm off across {down.length} {down.length === 1 ? "site" : "sites"} — this is progress the scale can hide.
+                </p>
+              ) : (
+                <p className="text-[12.5px] mb-4" style={{ color: "#7e8a9e" }}>
+                  Keep measuring weekly — the trend needs a few entries before it means anything.
+                </p>
+              )}
+
+              <div className="space-y-2">
+                {changes.map((c) => {
+                  const better = c.delta < 0
+                  const same = c.delta === 0
+                  const color = better ? "#34d399" : same ? "#7e8a9e" : "#f59e0b"
+                  return (
+                    <div key={c.key} className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl"
+                      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                      <span className="flex-1 text-sm" style={{ color: "#e8eaf0" }}>{c.label}</span>
+                      <span className="text-[11.5px] tabular-nums" style={{ color: "#5a6578" }}>
+                        {c.first} → {c.latest} cm
+                      </span>
+                      <span className="text-[11.5px] font-bold tabular-nums rounded-full px-2.5 py-1"
+                        style={{ color, background: `${color}1f`, minWidth: 58, textAlign: "center" }}>
+                        {better ? `−${Math.abs(c.delta)}` : same ? "—" : `+${c.delta}`}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* Thyroid symptoms — these usually shift before the scale does, so
             showing them is what carries a client through a weight plateau. */}
