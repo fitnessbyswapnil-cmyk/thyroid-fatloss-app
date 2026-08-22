@@ -15,24 +15,32 @@ export default async function DashboardPage() {
     redirect("/auth/login")
   }
 
-  // Fetch client profile
-  const { data: client } = await supabase
-    .from("clients")
-    .select("*")
-    .eq("id", user.id)
-    .single()
+  // Everything that only needs user.id goes out at once. These used to run one
+  // after another, and the database is in Singapore while this function runs in
+  // Mumbai — so each sequential query cost a fresh round trip and the page spent
+  // most of its time waiting rather than working.
+  const [
+    { data: client },
+    { data: allCheckins },
+    { data: latestInsight },
+    { data: logs },
+    { data: healthProfile },
+    upNextLesson,
+    plansForClient,
+  ] = await Promise.all([
+    supabase.from("clients").select("*").eq("id", user.id).single(),
+    supabase.from("weekly_checkins").select("*").eq("client_id", user.id).order("week_number", { ascending: false }),
+    supabase.from("coach_insights").select("*").eq("client_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    supabase.from("daily_logs").select("date, workout_done, meals_followed").eq("client_id", user.id).order("date", { ascending: false }).limit(180),
+    supabase.from("health_profiles").select("medication, medication_dose, medication_timing").eq("client_id", user.id).maybeSingle(),
+    nextLesson(),
+    getPlansForClient(user.id),
+  ])
 
   // If no profile or not onboarded, redirect to onboarding
   if (!client || !client.onboarding_completed) {
     redirect("/onboarding")
   }
-
-  // Fetch all weekly checkins ordered by week_number DESC
-  const { data: allCheckins } = await supabase
-    .from("weekly_checkins")
-    .select("*")
-    .eq("client_id", user.id)
-    .order("week_number", { ascending: false })
 
   // If no check-ins exist, show empty state
   if (!allCheckins || allCheckins.length === 0) {
@@ -74,15 +82,6 @@ export default async function DashboardPage() {
 
   const latestCheckin = allCheckins[0]
 
-  // Fetch latest coach insight
-  const { data: latestInsight } = await supabase
-    .from("coach_insights")
-    .select("*")
-    .eq("client_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single()
-
   // Fetch the coach's feedback on this client's check-ins. RLS policy
   // feedback_select_own_client (migration 006) lets a client read feedback on
   // their own check-ins, so this authed read is safe + scoped. Read-only.
@@ -101,15 +100,7 @@ export default async function DashboardPage() {
   }))
 
   // Daily adherence logs → REAL streaks (last 180 days). Degrades to zeros if
-  // the daily_logs table isn't provisioned yet (migration 008) — the query
-  // errors softly and `logs` is null.
-  const { data: logs } = await supabase
-    .from("daily_logs")
-    .select("date, workout_done, meals_followed")
-    .eq("client_id", user.id)
-    .order("date", { ascending: false })
-    .limit(180)
-
+  // the daily_logs table isn't provisioned yet (migration 008).
   const dayStr = (d: Date) => d.toLocaleDateString("en-CA")
   const activeDays = new Set(
     (logs || [])
@@ -149,13 +140,6 @@ export default async function DashboardPage() {
     ? Math.max(1, Math.floor((Date.now() - startDate.getTime()) / (24 * 60 * 60 * 1000)) + 1)
     : null
 
-  // Thyroid medication for the home reminder card (from the health profile).
-  const { data: healthProfile } = await supabase
-    .from("health_profiles")
-    .select("medication, medication_dose, medication_timing")
-    .eq("client_id", user.id)
-    .maybeSingle()
-
   // Calculate weight lost
   const weightLost = client.start_weight && client.current_weight 
     ? (client.start_weight - client.current_weight).toFixed(1)
@@ -190,12 +174,9 @@ export default async function DashboardPage() {
   const wellnessScoreDelta = wellnessScoreCurrent - wellnessScorePrevious
 
   // Prepare dashboard data
-  // Next unread, unlocked lesson — drives the home "Learn" card.
-  const upNextLesson = await nextLesson()
-
   // Today's session, so home answers "what do I do today" rather than just
   // linking to the plan and making her work it out.
-  const { workout: workoutPlan } = await getPlansForClient(user.id)
+  const { workout: workoutPlan } = plansForClient
   const workoutItems = workoutPlan?.content?.workoutItems || []
   const todayDow = todayDayOfWeek()
   const hasSchedule = scheduledDays(workoutItems).size > 0

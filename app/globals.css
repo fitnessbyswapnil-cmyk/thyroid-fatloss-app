@@ -515,3 +515,23 @@
 }
 .tw-breathe { animation: twBreathe 7s ease-in-out infinite; }
 .tw-fade-up { animation: twFadeUp .35s ease-out; }
+
+/* Skeleton shimmer for instant loading states. Reduced-motion users get a
+   static placeholder rather than a pulsing one. */
+@keyframes tw-shimmer-sweep {
+  0%   { background-position: -180% 0; }
+  100% { background-position: 180% 0; }
+}
+.tw-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 180% 100%;
+  animation: tw-shimmer-sweep 1.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tw-shimmer { animation: none; }
+}

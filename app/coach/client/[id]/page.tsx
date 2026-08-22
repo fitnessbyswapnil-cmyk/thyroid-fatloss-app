@@ -18,53 +18,42 @@ export default async function ClientDetailPage({
     redirect("/auth/login")
   }
 
-  // Fetch client profile
-  const { data: client, error } = await supabase
-    .from("clients")
-    .select("*")
-    .eq("id", id)
-    .single()
+  // One batch: all of these need only the client id, and the database sits in
+  // a different region from this function, so each extra sequential query was a
+  // full round trip of pure waiting.
+  const [
+    { data: client, error },
+    { data: checkins },
+    { data: photos },
+    { data: insights },
+    plans,
+    mealLogs,
+    exerciseLogs,
+    lessonReads,
+    labs,
+    profile,
+    pushSubs,
+    lessonCount,
+  ] = await Promise.all([
+    supabase.from("clients").select("*").eq("id", id).single(),
+    supabase.from("weekly_checkins").select("*").eq("client_id", id).order("week_number", { ascending: false }),
+    supabase.from("progress_photos").select("*").eq("client_id", id).order("created_at", { ascending: false }),
+    supabase.from("coach_insights").select("*").eq("client_id", id).order("created_at", { ascending: false }),
+    getPlansForClient(id),
+    supabase.from("meal_logs").select("created_at").eq("client_id", id),
+    supabase.from("exercise_logs").select("created_at").eq("client_id", id),
+    supabase.from("lesson_reads").select("read_at, lesson_id").eq("client_id", id),
+    supabase.from("lab_results").select("taken_on").eq("client_id", id),
+    supabase.from("health_profiles").select("client_id").eq("client_id", id).maybeSingle(),
+    supabase.from("push_subscriptions").select("*", { count: "exact", head: true }).eq("client_id", id),
+    supabase.from("lessons").select("*", { count: "exact", head: true }).eq("published", true),
+  ])
 
   if (error || !client) {
     notFound()
   }
 
-  // Fetch all checkins
-  const { data: checkins } = await supabase
-    .from("weekly_checkins")
-    .select("*")
-    .eq("client_id", id)
-    .order("week_number", { ascending: false })
-
-  // Fetch progress photos
-  const { data: photos } = await supabase
-    .from("progress_photos")
-    .select("*")
-    .eq("client_id", id)
-    .order("created_at", { ascending: false })
-
-  // Fetch all coach insights
-  const { data: insights } = await supabase
-    .from("coach_insights")
-    .select("*")
-    .eq("client_id", id)
-    .order("created_at", { ascending: false })
-
-  const { meal: mealPlan, workout: workoutPlan } = await getPlansForClient(id)
-
-  // Engagement signals — is she actually using the app? Fetched in parallel
-  // because none of these depend on each other, and this page already waits on
-  // enough round trips.
-  const [mealLogs, exerciseLogs, lessonReads, labs, profile, pushSubs, lessonCount] =
-    await Promise.all([
-      supabase.from("meal_logs").select("created_at").eq("client_id", id),
-      supabase.from("exercise_logs").select("created_at").eq("client_id", id),
-      supabase.from("lesson_reads").select("read_at, lesson_id").eq("client_id", id),
-      supabase.from("lab_results").select("taken_on").eq("client_id", id),
-      supabase.from("health_profiles").select("client_id").eq("client_id", id).maybeSingle(),
-      supabase.from("push_subscriptions").select("*", { count: "exact", head: true }).eq("client_id", id),
-      supabase.from("lessons").select("*", { count: "exact", head: true }).eq("published", true),
-    ])
+  const { meal: mealPlan, workout: workoutPlan } = plans
 
   const engagement = buildEngagement({
     mealLogDates: (mealLogs.data || []).map((r) => r.created_at),

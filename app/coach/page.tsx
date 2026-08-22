@@ -14,49 +14,44 @@ export default async function CoachDashboardPage() {
   }
 
   // Verify user is a coach
-  const { data: coach } = await supabase
-    .from("clients")
-    .select("role")
-    .eq("id", user.id)
-    .single()
+  // Week boundary first — the batch below needs it.
+  const weekStart = new Date()
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
+  // One batch. None of these depend on each other, and with the database in a
+  // different region from this function every sequential query was a full round
+  // trip spent waiting rather than working.
+  const [
+    { data: coach },
+    { data: clients },
+    { reviews: pendingReviews },
+    { data: recentCheckins },
+    { data: allClientCheckins },
+    { data: unreadMsgs },
+    { count: recentErrorCount },
+  ] = await Promise.all([
+    supabase.from("clients").select("role").eq("id", user.id).single(),
+    supabase.from("clients").select("*").eq("role", "client").order("created_at", { ascending: false }),
+    getPendingReviews(),
+    supabase.from("weekly_checkins").select("client_id").gte("submitted_at", weekStart.toISOString()),
+    supabase.from("weekly_checkins").select("client_id, submitted_at").order("submitted_at", { ascending: false }),
+    supabase.from("messages").select("client_id").eq("from_coach", false).eq("read_by_coach", false),
+    supabase.from("error_logs").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
+  ])
 
   if (!coach || coach.role !== "coach") {
     redirect("/dashboard")
   }
 
-  // Fetch all clients
-  const { data: clients } = await supabase
-    .from("clients")
-    .select("*")
-    .eq("role", "client")
-    .order("created_at", { ascending: false })
-
-  // Get pending reviews
-  const { reviews: pendingReviews } = await getPendingReviews()
-
-  // Get stats
   const activeClients = clients?.filter(c => c.subscription_status === "active").length || 0
   const totalClients = clients?.length || 0
-
-  // Get pending checkins (clients who haven't submitted this week)
-  const weekStart = new Date()
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-  
-  const { data: recentCheckins } = await supabase
-    .from("weekly_checkins")
-    .select("client_id")
-    .gte("submitted_at", weekStart.toISOString())
 
   const clientsWithCheckins = new Set(recentCheckins?.map(c => c.client_id) || [])
   const pendingCheckins = clients?.filter(c => !clientsWithCheckins.has(c.id)).length || 0
 
-  // Last check-in per client (coach reads all check-ins via RLS). Used for the
-  // roster "last check-in" column and the quiet-clients triage list.
-  const { data: allClientCheckins } = await supabase
-    .from("weekly_checkins")
-    .select("client_id, submitted_at")
-    .order("submitted_at", { ascending: false })
-
+  // Last check-in per client comes from the batch above (coach reads all
+  // check-ins via RLS). Drives the roster column and the quiet-clients list.
   const lastCheckIns: Record<string, string> = {}
   for (const row of allClientCheckins || []) {
     if (row.client_id && !lastCheckIns[row.client_id]) {
@@ -78,12 +73,6 @@ export default async function CoachDashboardPage() {
     .sort((a, b) => (b.daysSince ?? Number.MAX_SAFE_INTEGER) - (a.daysSince ?? Number.MAX_SAFE_INTEGER))
 
   // Clients waiting for a reply — unread messages from clients (coach side).
-  const { data: unreadMsgs } = await supabase
-    .from("messages")
-    .select("client_id")
-    .eq("from_coach", false)
-    .eq("read_by_coach", false)
-
   const unreadByClient: Record<string, number> = {}
   for (const m of unreadMsgs || []) {
     if (m.client_id) unreadByClient[m.client_id] = (unreadByClient[m.client_id] || 0) + 1
@@ -131,15 +120,9 @@ export default async function CoachDashboardPage() {
     )
   }
 
-  // App errors in the last 7 days — logging them is only useful if the coach
-  // can see that something is failing without a client having to report it.
-  // RLS on error_logs is coach-read-only, so this returns 0 for anyone else.
-  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { count: recentErrorCount } = await supabase
-    .from("error_logs")
-    .select("id", { count: "exact", head: true })
-    .gte("created_at", weekAgo)
-
+  // App errors in the last 7 days come from the batch above — logging them is
+  // only useful if the coach sees a failure without a client reporting it.
+  // RLS on error_logs is coach-read-only, so this is 0 for anyone else.
   // Calculate average stats
   const avgWeight = clients?.reduce((sum, c) => sum + (c.current_weight || 0), 0) / (totalClients || 1)
 
