@@ -15,6 +15,8 @@ import { PlanEditor } from "@/components/coach/PlanEditor"
 import { PhotoComparison } from "@/components/coach/PhotoComparison"
 import { TrendChart } from "@/components/coach/TrendChart"
 import type { Plan } from "@/app/actions/plans"
+import { EngagementPanel } from "@/components/coach/EngagementPanel"
+import type { buildEngagement } from "@/lib/coach/engagement"
 
 interface Client {
   id: string
@@ -80,6 +82,7 @@ export function ClientDetailView({
   mealPlan,
   workoutPlan,
   coachId,
+  engagement,
 }: {
   client: Client
   checkins: Checkin[]
@@ -88,6 +91,7 @@ export function ClientDetailView({
   mealPlan: Plan | null
   workoutPlan: Plan | null
   coachId: string
+  engagement: ReturnType<typeof buildEngagement>
 }) {
   const router = useRouter()
   const [newInsight, setNewInsight] = useState("")
@@ -266,6 +270,17 @@ export function ClientDetailView({
                 </div>
               ))}
             </div>
+
+            {/* Is she actually using the app? The alert rules only see a
+                client who is still checking in — this catches the one who
+                went quiet before that shows up anywhere else. */}
+            <EngagementPanel
+              signals={engagement.signals}
+              active={engagement.active}
+              total={engagement.total}
+              neverStarted={engagement.neverStarted}
+              clientName={client.full_name}
+            />
 
             {/* Client Info */}
             <div
