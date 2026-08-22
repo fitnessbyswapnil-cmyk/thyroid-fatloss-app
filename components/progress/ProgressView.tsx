@@ -19,6 +19,8 @@ export interface CheckinPoint {
   thigh: number | null
   calf: number | null
   energy_level: number | null
+  /** The check-in writes sleep_quality; sleep_score is a dead column kept for legacy rows. */
+  sleep_quality: number | null
   sleep_score: number | null
   mood: number | null
   digestion_score: number | null
@@ -47,7 +49,7 @@ const VIEWS: { key: ViewKey; label: string }[] = [
 /** Scored out of their own maximum, so a bar length means the same thing across rows. */
 const WELLBEING: { key: keyof CheckinPoint; label: string; max: number; suffix: string }[] = [
   { key: "energy_level", label: "Energy", max: 10, suffix: "/10" },
-  { key: "sleep_score", label: "Sleep", max: 10, suffix: "/10" },
+  { key: "sleep_quality", label: "Sleep", max: 10, suffix: "/10" },
   { key: "mood", label: "Mood", max: 10, suffix: "/10" },
   { key: "digestion_score", label: "Digestion", max: 10, suffix: "/10" },
   { key: "adherence_score", label: "Nutrition", max: 100, suffix: "%" },
@@ -56,7 +58,11 @@ const WELLBEING: { key: keyof CheckinPoint; label: string; max: number; suffix: 
 export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: CheckinPoint[]; backHref?: string }) {
   const [view, setView] = useState<ViewKey>("weight")
 
-  const sorted = [...checkins].sort((a, b) => a.week_number - b.week_number)
+  // sleep_quality is what the check-in writes; sleep_score was never populated.
+  // Coalesce so any legacy row still charts instead of silently vanishing.
+  const sorted = [...checkins]
+    .map((c) => ({ ...c, sleep_quality: c.sleep_quality ?? c.sleep_score }))
+    .sort((a, b) => a.week_number - b.week_number)
   const points: TrendPoint[] = sorted
     .filter((c) => c.weight != null)
     .map((c) => ({ label: `W${c.week_number}`, value: Number(c.weight) }))

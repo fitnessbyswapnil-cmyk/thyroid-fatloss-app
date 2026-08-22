@@ -48,6 +48,7 @@ interface Checkin {
   week_number: number
   weight: number | null
   energy_level: number | null
+  sleep_quality: number | null
   sleep_score: number | null
   stress_level: number | null
   mood: number | null
@@ -102,7 +103,9 @@ export function ClientDetailView({
   const asc = checkins.slice().reverse()
   const weightSeries = asc.filter((c) => c.weight != null).map((c) => ({ label: `W${c.week_number}`, value: Number(c.weight) }))
   const energySeries = asc.filter((c) => c.energy_level != null).map((c) => ({ label: `W${c.week_number}`, value: Number(c.energy_level) }))
-  const sleepSeries = asc.filter((c) => c.sleep_score != null).map((c) => ({ label: `W${c.week_number}`, value: Number(c.sleep_score) }))
+  // sleep_quality is the written column; sleep_score never populated.
+  const sleepOf = (c: Checkin) => c.sleep_quality ?? c.sleep_score
+  const sleepSeries = asc.filter((c) => sleepOf(c) != null).map((c) => ({ label: `W${c.week_number}`, value: Number(sleepOf(c)) }))
 
   const weightLost = client.start_weight && client.current_weight
     ? (client.start_weight - client.current_weight).toFixed(1)
@@ -424,7 +427,7 @@ export function ClientDetailView({
                     {[
                       { label: "Weight", value: checkin.weight ? `${checkin.weight} kg` : "-", icon: Scale },
                       { label: "Energy", value: checkin.energy_level ? `${checkin.energy_level}/10` : "-", icon: Zap },
-                      { label: "Sleep", value: checkin.sleep_score ? `${checkin.sleep_score}/10` : "-", icon: Moon },
+                      { label: "Sleep", value: sleepOf(checkin) ? `${sleepOf(checkin)}/10` : "-", icon: Moon },
                       { label: "Stress", value: checkin.stress_level ? `${checkin.stress_level}/10` : "-", icon: TrendingDown },
                       { label: "Mood", value: checkin.mood ? `${checkin.mood}/10` : "-", icon: Brain },
                     ].map((item) => (
