@@ -244,9 +244,14 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           )
         })()}
 
-        <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" }}>
-          View progress photos
-        </Link>
+        <div className="grid grid-cols-2 gap-2.5">
+          <Link href="/dashboard/progress-photos/compare" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-semibold" style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.25)", color: "#2dd4bf" }}>
+            Before &amp; after
+          </Link>
+          <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" }}>
+            Add photos
+          </Link>
+        </div>
 
         <p className="text-xs px-1" style={{ color: "#5a6578" }}>
           The scale moves slowly with thyroid — energy, sleep and mood often improve first. Watch all of them, not just weight.
