@@ -7,6 +7,7 @@ import type { Plan, PlanType, WorkoutItem } from "@/app/actions/plans"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 import { ExerciseViewer } from "@/components/dashboard/ExerciseViewer"
 import { DAYS, dayLabel, scheduledDays, sessionFor, todayDayOfWeek } from "@/lib/plans/schedule"
+import { MealLogger } from "@/components/dashboard/MealLogger"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
@@ -181,6 +182,14 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                     </p>
                   ) : null
                 })()}
+
+                {/* Tick off the meal slots the coach actually planned. Uses the
+                    plan's own grouping, so it always matches what she was given. */}
+                <MealLogger
+                  meals={[...new Set(
+                    plan.content.mealItems!.map((m) => (m.meal || "").trim()).filter(Boolean)
+                  )]}
+                />
               </div>
             )}
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { X, Dumbbell, Video } from "lucide-react"
 import type { WorkoutItem } from "@/app/actions/plans"
+import { SetLogger } from "@/components/dashboard/SetLogger"
 
 /**
  * Full-screen exercise viewer. Opened when a client taps an exercise in their
@@ -149,6 +150,15 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
               </div>
             </div>
           )}
+
+          {/* Set logging lives here, where she's already looking to do the
+              movement — not on a separate screen she'd have to remember. */}
+          <SetLogger
+            exerciseName={item.name}
+            exerciseId={item.exerciseId ?? null}
+            plannedSets={item.sets}
+            plannedReps={item.reps}
+          />
 
           {item.videoUrl && (
             <a
