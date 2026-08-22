@@ -8,18 +8,58 @@ import { saveHealthProfile, addLab, deleteLab, type HealthProfile, type LabResul
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
 import { LabReportUpload } from "@/components/health/LabReportUpload"
 import { LabGauges } from "@/components/health/LabGauges"
+import { LabDeltas } from "@/components/health/LabDeltas"
 
 const card = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" } as const
 const inputStyle = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" } as const
 
-const METRICS: { key: keyof LabResult; label: string; unit: string }[] = [
-  { key: "tsh", label: "TSH", unit: "" },
-  { key: "t3", label: "T3", unit: "" },
-  { key: "t4", label: "T4", unit: "" },
-  { key: "vitamin_d", label: "Vit D", unit: "" },
-  { key: "b12", label: "B12", unit: "" },
-  { key: "ferritin", label: "Ferritin", unit: "" },
-  { key: "weight_kg", label: "Weight", unit: "kg" },
+interface MetricDef {
+  key: string
+  label: string
+  unit: string
+  get: (l: LabResult) => number | null
+}
+
+/** Markers that already have a dedicated column, so they aren't duplicated from extras. */
+function isCoreCovered(name: string) {
+  const s = name.toLowerCase()
+  return /tsh|free ?t3|free ?t4|^t3\b|^t4\b|total t3|total t4|vitamin d|25[- ]oh|b-?12|cobalamin|ferritin/.test(s)
+}
+
+/**
+ * Chartable markers = the core columns + any marker that appears in at least
+ * two uploaded reports. The two-report floor matters: a single data point is a
+ * dot, not a trend, and offering it as a "chart" is misleading.
+ */
+function buildMetrics(labs: LabResult[]): MetricDef[] {
+  const seen = new Map<string, { unit: string | null; n: number }>()
+  for (const l of labs) {
+    for (const e of l.extras || []) {
+      if (isCoreCovered(e.name)) continue
+      const cur = seen.get(e.name) || { unit: e.unit, n: 0 }
+      cur.n += 1
+      seen.set(e.name, cur)
+    }
+  }
+  const extras: MetricDef[] = [...seen.entries()]
+    .filter(([, v]) => v.n >= 2)
+    .map(([name, v]) => ({
+      key: `x:${name}`,
+      label: name.length > 14 ? name.slice(0, 13) + "…" : name,
+      unit: v.unit || "",
+      get: (l: LabResult) => l.extras?.find((e) => e.name === name)?.value ?? null,
+    }))
+  return [...CORE_METRICS, ...extras]
+}
+
+const CORE_METRICS: MetricDef[] = [
+  { key: "tsh", label: "TSH", unit: "", get: (l) => l.tsh },
+  { key: "t3", label: "T3", unit: "", get: (l) => l.t3 },
+  { key: "t4", label: "T4", unit: "", get: (l) => l.t4 },
+  { key: "vitamin_d", label: "Vit D", unit: "", get: (l) => l.vitamin_d },
+  { key: "b12", label: "B12", unit: "", get: (l) => l.b12 },
+  { key: "ferritin", label: "Ferritin", unit: "", get: (l) => l.ferritin },
+  { key: "weight_kg", label: "Weight", unit: "kg", get: (l) => l.weight_kg },
 ]
 
 export function HealthView({
@@ -39,7 +79,7 @@ export function HealthView({
   const [p, setP] = useState<Partial<HealthProfile>>(profile || {})
   const [savingP, setSavingP] = useState(false)
   const [savedP, setSavedP] = useState(false)
-  const [metric, setMetric] = useState<keyof LabResult>("tsh")
+  const [metric, setMetric] = useState<string>("tsh")
   const [adding, setAdding] = useState(false)
   const [lab, setLab] = useState<Record<string, string>>({ taken_on: new Date().toISOString().slice(0, 10) })
   const [err, setErr] = useState<string | null>(null)
@@ -69,10 +109,17 @@ export function HealthView({
     router.refresh()
   }
 
-  const meta = METRICS.find((m) => m.key === metric)!
+  const METRICS = buildMetrics(labs)
+  const meta = METRICS.find((m) => m.key === metric) ?? METRICS[0]
+  // Accessor-based so a marker can come from a dedicated column OR the
+  // extracted extras panel, without the chart needing to know which.
   const points: TrendPoint[] = labs
-    .filter((l) => l[metric] != null)
-    .map((l) => ({ label: new Date(l.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short" }), value: Number(l[metric]) }))
+    .map((l) => ({ l, v: meta?.get(l) ?? null }))
+    .filter((x): x is { l: LabResult; v: number } => typeof x.v === "number")
+    .map(({ l, v }) => ({
+      label: new Date(l.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
+      value: v,
+    }))
 
   return (
     <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
@@ -91,6 +138,10 @@ export function HealthView({
         <LabReportUpload clientId={clientId} />
 
         {/* Latest report as range gauges */}
+        {/* "What changed" sits above the gauges: on a repeat report, the first
+            question is what moved, not what the absolute numbers are. */}
+        <LabDeltas labs={labs} />
+
         {labs.length > 0 && <LabGauges lab={labs[labs.length - 1]} />}
 
         {/* Thyroid intake */}
@@ -155,7 +206,7 @@ export function HealthView({
             <Field label="Date"><input type="date" value={lab.taken_on || ""} onChange={(e) => setLab({ ...lab, taken_on: e.target.value })} className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} /></Field>
             <Field label="Weight (kg)"><input value={lab.weight_kg || ""} onChange={(e) => setLab({ ...lab, weight_kg: e.target.value })} inputMode="decimal" className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} /></Field>
             {["tsh", "t3", "t4", "vitamin_d", "b12", "ferritin"].map((k) => (
-              <Field key={k} label={METRICS.find((m) => m.key === k)!.label}>
+              <Field key={k} label={CORE_METRICS.find((m) => m.key === k)?.label ?? k}>
                 <input value={lab[k] || ""} onChange={(e) => setLab({ ...lab, [k]: e.target.value })} inputMode="decimal" className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} />
               </Field>
             ))}

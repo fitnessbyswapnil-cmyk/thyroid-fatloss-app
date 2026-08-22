@@ -1,7 +1,7 @@
 "use client"
 
 import type { LabResult, LabExtra } from "@/app/actions/health"
-import { CORE_RANGES } from "@/lib/labs/parse"
+import { CORE_RANGES, panelFor, PANEL_ORDER } from "@/lib/labs/parse"
 
 /**
  * Range-gauge cards for the latest lab report: each test shows its value as a
@@ -81,20 +81,35 @@ export function LabGauges({ lab }: { lab: LabResult }) {
           : "All tracked values in range"}
       </p>
 
-      <div className="space-y-3">
-        {gauges.map((g, i) => {
-          const s = status(g)
+      {/* Grouped by panel — a flat list of 15 markers is unreadable, and a
+          client scanning for her thyroid numbers shouldn't have to hunt. */}
+      <div className="space-y-5">
+        {PANEL_ORDER.map((panel) => {
+          const inPanel = gauges.filter((g) => panelFor(g.name) === panel)
+          if (!inPanel.length) return null
           return (
-            <div key={i} className="p-3.5 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <div className="flex items-center gap-2">
-                <span className="flex-1 text-sm font-medium truncate" style={{ color: "#e8eaf0" }}>{g.name}</span>
-                <span className="tabular-nums" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 20, color: "#e8eaf0" }}>
-                  {g.value}
-                </span>
-                {g.unit && <span className="text-[10.5px]" style={{ color: "#7e8a9e" }}>{g.unit}</span>}
-                <span className="text-[10px] font-bold rounded-full px-2 py-1 shrink-0" style={{ color: s.color, background: s.bg }}>{s.label}</span>
+            <div key={panel}>
+              <p className="text-[10px] uppercase font-semibold mb-2 ml-0.5" style={{ color: "#7e8a9e", letterSpacing: "0.14em" }}>
+                {panel}
+              </p>
+              <div className="space-y-2.5">
+                {inPanel.map((g, i) => {
+                  const s = status(g)
+                  return (
+                    <div key={i} className="p-3.5 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                      <div className="flex items-center gap-2">
+                        <span className="flex-1 text-sm font-medium truncate" style={{ color: "#e8eaf0" }}>{g.name}</span>
+                        <span className="tabular-nums" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 20, color: "#e8eaf0" }}>
+                          {g.value}
+                        </span>
+                        {g.unit && <span className="text-[10.5px]" style={{ color: "#7e8a9e" }}>{g.unit}</span>}
+                        <span className="text-[10px] font-bold rounded-full px-2 py-1 shrink-0" style={{ color: s.color, background: s.bg }}>{s.label}</span>
+                      </div>
+                      <GaugeBar g={g} />
+                    </div>
+                  )
+                })}
               </div>
-              <GaugeBar g={g} />
             </div>
           )
         })}

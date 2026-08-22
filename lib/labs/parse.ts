@@ -117,6 +117,25 @@ export function parseLabText(text: string): ParsedLab[] {
   return [...found.values()]
 }
 
+/**
+ * Group a test into a panel for display. Extras are stored with only
+ * {name, value, unit, low, high} — no panel — so this classifies by name at
+ * render time, which also works for older rows saved before panels existed.
+ */
+export type Panel = "Thyroid" | "Vitamins & minerals" | "Metabolic" | "Blood" | "Other"
+
+export function panelFor(name: string): Panel {
+  const s = name.toLowerCase()
+  if (/tsh|t3|t4|thyro|tpo/.test(s)) return "Thyroid"
+  if (/vitamin|b12|b-12|cobalamin|ferritin|iron|folate/.test(s)) return "Vitamins & minerals"
+  if (/hba1c|a1c|glucose|cholesterol|ldl|hdl|triglyceride|lipid|insulin/.test(s)) return "Metabolic"
+  if (/h(a)?emoglobin|hb\b|rbc|wbc|platelet|creatinine|esr/.test(s)) return "Blood"
+  return "Other"
+}
+
+/** Display order — thyroid first, since that's what the client is here for. */
+export const PANEL_ORDER: Panel[] = ["Thyroid", "Vitamins & minerals", "Metabolic", "Blood", "Other"]
+
 /** Standard fallback ranges for gauges on manually-entered core tests. */
 export const CORE_RANGES: Record<string, { name: string; unit: string; low: number; high: number }> = {
   tsh: { name: "TSH", unit: "mIU/L", low: 0.4, high: 4.0 },
