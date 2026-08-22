@@ -23,21 +23,63 @@ function itemsToLines(items: Array<{ str: string; transform: number[] }>): strin
     .join("\n")
 }
 
-async function pdfToText(file: File, onStatus: (s: string) => void): Promise<string> {
+/**
+ * Render a page to a bitmap so OCR has something to read. Scale 2 is the
+ * cheapest setting at which lab-report body text stays legible to Tesseract;
+ * below that, decimal points in values start disappearing, which is the worst
+ * possible failure — a wrong number rather than no number.
+ */
+async function pageToBlob(page: { getViewport: (o: { scale: number }) => { width: number; height: number }; render: (o: unknown) => { promise: Promise<void> } }): Promise<Blob | null> {
+  const viewport = page.getViewport({ scale: 2 })
+  const canvas = document.createElement("canvas")
+  canvas.width = Math.floor(viewport.width)
+  canvas.height = Math.floor(viewport.height)
+  const canvasContext = canvas.getContext("2d")
+  if (!canvasContext) return null
+  await page.render({ canvasContext, canvas, viewport }).promise
+  return new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"))
+}
+
+async function pdfToText(
+  file: File,
+  onStatus: (s: string) => void
+): Promise<{ text: string; usedOcr: boolean }> {
   onStatus("Reading PDF…")
   const pdfjs = await import("pdfjs-dist")
   // Bundle the worker locally (no CDN dependency).
   pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString()
   const doc = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise
-  let text = ""
   const pages = Math.min(doc.numPages, 12)
+
+  let text = ""
   for (let p = 1; p <= pages; p++) {
     onStatus(`Reading PDF… page ${p}/${pages}`)
     const page = await doc.getPage(p)
     const content = await page.getTextContent()
     text += itemsToLines(content.items as never) + "\n"
   }
-  return text
+  if (text.replace(/\s/g, "").length > 60) return { text, usedOcr: false }
+
+  // No text layer: the PDF is a scan. This used to give up and ask the client
+  // to type every value in by hand, which for a scanned report meant the
+  // feature did not work at all. Render the pages and read them instead.
+  const ocrPages = Math.min(doc.numPages, 4)
+  onStatus(`This report is a scan — reading it page by page (about ${ocrPages * 15}s)`)
+  const Tesseract = await import("tesseract.js")
+  const worker = await Tesseract.createWorker("eng")
+  try {
+    let ocr = ""
+    for (let p = 1; p <= ocrPages; p++) {
+      onStatus(`Reading scanned page ${p}/${ocrPages}…`)
+      const blob = await pageToBlob(await doc.getPage(p) as never)
+      if (!blob) continue
+      const { data } = await worker.recognize(blob)
+      ocr += (data.text || "") + "\n"
+    }
+    return { text: ocr, usedOcr: true }
+  } finally {
+    await worker.terminate()
+  }
 }
 
 async function imageToText(file: File, onStatus: (s: string) => void): Promise<string> {
@@ -53,13 +95,15 @@ async function imageToText(file: File, onStatus: (s: string) => void): Promise<s
   return result.data.text || ""
 }
 
-export async function extractReportText(file: File, onStatus: (s: string) => void): Promise<string> {
+export interface ExtractResult {
+  text: string
+  /** True when the text came from OCR, which is likelier to misread a digit. */
+  usedOcr: boolean
+}
+
+export async function extractReportText(file: File, onStatus: (s: string) => void): Promise<ExtractResult> {
   if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
-    const text = await pdfToText(file, onStatus)
-    // Scanned-image PDFs have no text layer — tell the caller honestly.
-    if (text.replace(/\s/g, "").length > 60) return text
-    onStatus("This PDF looks scanned — no text layer found")
-    return ""
+    return pdfToText(file, onStatus)
   }
-  return imageToText(file, onStatus)
+  return { text: await imageToText(file, onStatus), usedOcr: true }
 }

@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Upload, X, Loader2, Check, Plus, Trash2, ShieldCheck } from "lucide-react"
+import { Upload, X, Loader2, Check, Plus, Trash2, ShieldCheck, ScanLine, CalendarCheck } from "lucide-react"
 import { addLab } from "@/app/actions/health"
 import { parseLabText, type ParsedLab } from "@/lib/labs/parse"
+import { extractReportDates, type DetectedDate } from "@/lib/labs/dates"
 
 const inputStyle = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" } as const
 
@@ -23,25 +24,38 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
   const [status, setStatus] = useState("")
   const [rows, setRows] = useState<Row[]>([])
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  const [dates, setDates] = useState<DetectedDate[]>([])
+  const [usedOcr, setUsedOcr] = useState(false)
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState<string | null>(null)
   const nextId = useRef(1)
 
-  const reset = () => { setPhase("pick"); setRows([]); setErr(null); setStatus("") }
+  const reset = () => {
+    setPhase("pick"); setRows([]); setErr(null); setStatus("")
+    setDates([]); setUsedOcr(false)
+    setDate(new Date().toISOString().slice(0, 10))
+  }
 
   const onFile = async (f: File | null) => {
     if (!f) return
     setPhase("reading"); setErr(null)
     try {
       const { extractReportText } = await import("@/lib/labs/extract")
-      const text = await extractReportText(f, setStatus)
+      const { text, usedOcr: ocr } = await extractReportText(f, setStatus)
+      setUsedOcr(ocr)
       const parsed = text ? parseLabText(text) : []
       setRows(parsed.map((p) => ({ ...p, id: nextId.current++ })))
+
+      // Read the date off the report instead of making her correct today's.
+      const found = text ? extractReportDates(text) : []
+      setDates(found)
+      if (found[0]) setDate(found[0].iso)
+
       setPhase("review")
       if (!parsed.length) {
         setErr(text
           ? "We couldn't recognize test values automatically — add them below from your report."
-          : "This file couldn't be read (scanned PDFs need a photo instead). Add the values below from your report.")
+          : "This file couldn't be read at all. Add the values below from your report.")
       }
     } catch {
       setRows([]); setPhase("review")
@@ -142,8 +156,57 @@ export function LabReportUpload({ clientId }: { clientId?: string }) {
                     We read {rows.length} value{rows.length === 1 ? "" : "s"} from your report — check them against the paper before saving.
                   </p>
                 )}
+                {usedOcr && rows.length > 0 && (
+                  <div className="flex items-start gap-2 mb-3 px-3 py-2.5 rounded-xl" style={{ background: "rgba(245,158,11,0.07)", border: "1px solid rgba(245,158,11,0.2)" }}>
+                    <ScanLine size={13} style={{ color: "#f59e0b", marginTop: 2 }} />
+                    <p className="text-[11.5px]" style={{ color: "#a9b2c1", lineHeight: 1.5 }}>
+                      This was a scan, so the numbers were read from the image. Worth checking each one against the paper — a misread decimal point is easy to miss.
+                    </p>
+                  </div>
+                )}
+
                 <label className="block text-[11px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.06em" }}>Report date</label>
-                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm mb-4" style={inputStyle} />
+                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} />
+
+                {/* Dates found on the report itself. One is filled in already;
+                    several usually means the PDF holds more than one report, and
+                    tapping is faster and safer than typing a date from memory. */}
+                {dates.length > 0 && (
+                  <div className="mt-2 mb-4">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {dates.slice(0, 4).map((d) => {
+                        const on = d.iso === date
+                        return (
+                          <button
+                            key={d.iso}
+                            onClick={() => setDate(d.iso)}
+                            className="text-[11.5px] font-medium px-2.5 py-1.5 rounded-lg"
+                            style={on
+                              ? { background: "#2dd4bf", color: "#04121a" }
+                              : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}
+                          >
+                            {new Date(d.iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <div className="flex items-start gap-1.5 mt-2">
+                      <CalendarCheck size={12} style={{ color: "#34d399", marginTop: 2 }} />
+                      <p className="text-[11px]" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>
+                        {dates.length > 1
+                          ? `Found ${dates.length} dates — this PDF may hold more than one report. Pick the one these values belong to.`
+                          : `Read "${dates[0].label}" from the report.`}
+                        {dates.some((d) => d.ambiguous) && " Day and month order was assumed — check it if the day is 12 or less."}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {dates.length === 0 && (
+                  <p className="text-[11px] mt-1.5 mb-4" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>
+                    No date found on the report — set it to the day your blood was drawn, not today.
+                  </p>
+                )}
 
                 <div className="space-y-2.5">
                   {rows.map((r) => (
