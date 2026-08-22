@@ -31,15 +31,24 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
+  // Do not run code between createServerClient and the auth call below. A
+  // simple mistake could make it very hard to debug issues with users being
+  // randomly logged out.
 
-  // IMPORTANT: If you remove getUser() and you use server-side rendering
-  // with the Supabase client, your users may be randomly logged out.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // getClaims(), not getUser(). getUser() sends a request to the Auth server on
+  // every single request that matches this proxy — including public pages with
+  // no data of their own — and this project's auth server is in a different
+  // region, so that round trip was landing on every navigation before any page
+  // work started. It measured at roughly two seconds on /auth/login, a page
+  // that touches no database at all.
+  //
+  // This project signs JWTs with asymmetric ES256 keys and publishes a JWKS
+  // endpoint, so getClaims() verifies the token locally with WebCrypto instead.
+  // It is equally trustworthy — the signature is checked, not merely decoded —
+  // and it still refreshes an expiring session first, which is the part that
+  // keeps people logged in.
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const user = claimsData?.claims ?? null
 
   // Protected routes that require authentication
   const protectedRoutes = ['/dashboard', '/coach', '/onboarding']
