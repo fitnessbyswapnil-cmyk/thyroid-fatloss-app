@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { guard, failed } from '@/lib/errors'
 import { searchIngredients as ifctSearch, computeRecipe, type Ingredient, type RecipePart } from '@/lib/nutrition/ifct'
 import type { Food } from '@/app/actions/library'
+import { generatePlan } from '@/lib/plans/generate'
 
 /** Ingredient search for the recipe composer (coach only). */
 export async function lookupIngredients(query: string): Promise<Ingredient[]> {
@@ -75,6 +76,75 @@ export async function saveComposedFood(input: {
       : await supabase.from('foods').insert({ ...row, created_by: user.id })
     if (error) return { success: false, error: error.message }
     return { success: true, totals }
+  })
+}
+
+/**
+ * Draft a day's meals for a client from the coach's own library.
+ *
+ * Pulls her restrictions from her health profile automatically, so an allergy
+ * recorded at onboarding can't be forgotten at plan time. Returns a draft the
+ * coach edits and assigns — nothing reaches the client unreviewed.
+ */
+export async function generateMealPlan(input: {
+  clientId: string
+  targetCalories: number
+  targetProtein: number
+  /** The coach sets this per client — there is no stored diet preference to infer it from. */
+  isVeg: boolean
+  variety?: number
+}) {
+  return guard('nutrition.generateMealPlan', null, async () => {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+    const { data: me } = await supabase.from('clients').select('role').eq('id', user.id).single()
+    if (me?.role !== 'coach' && me?.role !== 'admin') return null
+
+    const [{ data: foods }, { data: profile }] = await Promise.all([
+      supabase.from('foods').select('*'),
+      supabase
+        .from('health_profiles')
+        .select('allergies, conditions')
+        .eq('client_id', input.clientId)
+        .maybeSingle(),
+    ])
+    if (!foods?.length) return null
+
+    // Allergies and conditions become exclusion keywords. Split generously —
+    // missing an allergen matters far more than over-excluding a food.
+    const avoid = [profile?.allergies, profile?.conditions]
+      .filter(Boolean)
+      .join(',')
+      .split(/[,;/]+|\band\b/i)
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => s.length >= 3 && !/^(none|nil|no|na|n\/a)$/i.test(s))
+
+    const plan = generatePlan({
+      foods: foods as Food[],
+      targetCalories: Math.max(600, Math.min(5000, input.targetCalories)),
+      targetProtein: Math.max(20, Math.min(400, input.targetProtein)),
+      isVeg: input.isVeg,
+      avoid,
+      variety: input.variety ?? 0,
+    })
+
+    return {
+      items: plan.items.map((i) => ({
+        foodId: i.food.id,
+        name: i.food.name,
+        portion: i.food.portion,
+        qty: i.qty,
+        meal: i.meal,
+        calories: i.food.calories,
+        protein: i.food.protein,
+        carbs: i.food.carbs,
+        fats: i.food.fats,
+      })),
+      totals: plan.totals,
+      warnings: plan.warnings,
+      excluded: avoid,
+    }
   })
 }
 

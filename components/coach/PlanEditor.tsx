@@ -5,13 +5,14 @@ import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import {
   Apple, Dumbbell, Plus, Trash2, FileText, Loader2, Check, Upload, X,
-  Search, BookmarkPlus, FolderOpen, Video,
+  Search, BookmarkPlus, FolderOpen, Video, Wand2,
 } from "lucide-react"
 import { savePlan, type Plan, type PlanType, type PlanSection, type WorkoutItem, type MealItem } from "@/app/actions/plans"
 import { listExercises, listFoods, type Exercise, type Food } from "@/app/actions/library"
 import { listTemplates, saveTemplate, deleteTemplate, type PlanTemplate } from "@/app/actions/templates"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 import { DAYS, dayLabel, inferDayOfWeek } from "@/lib/plans/schedule"
+import { generateMealPlan } from "@/app/actions/nutrition"
 
 const META: Record<PlanType, { label: string; icon: typeof Apple; tint: string }> = {
   meal: { label: "Meal Plan", icon: Apple, tint: "#2dd4bf" },
@@ -74,6 +75,36 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const [templates, setTemplates] = useState<PlanTemplate[] | null>(null)
   const [tplOpen, setTplOpen] = useState(false)
   const [tplSaving, setTplSaving] = useState(false)
+
+  // --- Auto-draft state ---
+  const [genOpen, setGenOpen] = useState(false)
+  const [genKcal, setGenKcal] = useState("1400")
+  const [genProtein, setGenProtein] = useState("90")
+  const [genVeg, setGenVeg] = useState(true)
+  const [genVariety, setGenVariety] = useState(0)
+  const [generating, setGenerating] = useState(false)
+  const [genResult, setGenResult] = useState<Awaited<ReturnType<typeof generateMealPlan>>>(null)
+
+  const runGenerate = async (variety: number) => {
+    setGenerating(true)
+    setGenVariety(variety)
+    const res = await generateMealPlan({
+      clientId,
+      targetCalories: Number(genKcal) || 1400,
+      targetProtein: Number(genProtein) || 90,
+      isVeg: genVeg,
+      variety,
+    })
+    setGenerating(false)
+    if (!res) return
+    setGenResult(res)
+    // Replace rather than append: "Another" should give a fresh day, not stack
+    // a second one on top of the first.
+    setMealItems(res.items.map((i) => ({
+      foodId: i.foodId, name: i.name, portion: i.portion, qty: i.qty, meal: i.meal,
+      calories: i.calories, protein: i.protein, carbs: i.carbs, fats: i.fats,
+    })))
+  }
 
   const openPicker = async () => {
     setPickerOpen(true)
@@ -245,10 +276,71 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
           <label className="text-xs uppercase" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
             {type === "workout" ? "Exercises" : "Foods"} (from library)
           </label>
-          <button onClick={openPicker} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#2dd4bf" }}>
-            <Plus size={14} /> Add from library
-          </button>
+          <div className="flex items-center gap-3">
+            {type === "meal" && (
+              <button onClick={() => setGenOpen((v) => !v)} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#a78bfa" }}>
+                <Wand2 size={14} /> Draft a day
+              </button>
+            )}
+            <button onClick={openPicker} className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: "#2dd4bf" }}>
+              <Plus size={14} /> Add from library
+            </button>
+          </div>
         </div>
+
+        {/* Auto-draft a day's meals from the library to hit a calorie/protein
+            target. Replaces the tedious part of plan-writing, not the judgement:
+            it fills the editor and the coach edits before assigning. */}
+        {type === "meal" && genOpen && (
+          <div className="p-3.5 rounded-xl mb-3" style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.22)" }}>
+            <div className="grid grid-cols-2 gap-2 mb-2.5">
+              <div>
+                <label className="block text-[10px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>Calories</label>
+                <input value={genKcal} onChange={(e) => setGenKcal(e.target.value)} inputMode="numeric" placeholder="1400" className="w-full px-2.5 py-2 rounded-lg text-sm tabular-nums" style={inputStyle} />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>Protein (g)</label>
+                <input value={genProtein} onChange={(e) => setGenProtein(e.target.value)} inputMode="numeric" placeholder="90" className="w-full px-2.5 py-2 rounded-lg text-sm tabular-nums" style={inputStyle} />
+              </div>
+            </div>
+            <label className="flex items-center gap-2 text-[12px] mb-2.5" style={{ color: "#a9b2c1" }}>
+              <input type="checkbox" checked={genVeg} onChange={(e) => setGenVeg(e.target.checked)} style={{ accentColor: "#a78bfa" }} />
+              Vegetarian
+            </label>
+            <div className="flex items-center gap-2">
+              <button onClick={() => runGenerate(0)} disabled={generating}
+                className="flex-1 h-10 rounded-lg text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
+                style={{ background: "#a78bfa", color: "#1a1033" }}>
+                {generating ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />} Generate
+              </button>
+              {genResult && (
+                <button onClick={() => runGenerate(genVariety + 1)} disabled={generating}
+                  className="h-10 px-3 rounded-lg text-[12px] font-semibold"
+                  style={{ background: "rgba(167,139,250,0.14)", color: "#a78bfa" }}>
+                  Another
+                </button>
+              )}
+            </div>
+            {genResult && (
+              <div className="mt-2.5">
+                <p className="text-[12px] tabular-nums" style={{ color: "#e8eaf0" }}>
+                  {genResult.totals.calories} kcal · P {genResult.totals.protein}g · C {genResult.totals.carbs}g · F {genResult.totals.fats}g
+                </p>
+                {genResult.excluded?.length > 0 && (
+                  <p className="text-[11px] mt-1" style={{ color: "#7e8a9e" }}>
+                    Avoided from her profile: {genResult.excluded.join(", ")}
+                  </p>
+                )}
+                {genResult.warnings.map((w: string, i: number) => (
+                  <p key={i} className="text-[11px] mt-1" style={{ color: "#f59e0b" }}>{w}</p>
+                ))}
+                <p className="text-[10.5px] mt-2" style={{ color: "#5a6578" }}>
+                  Drafted into the list below — edit anything before saving.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {pickerOpen && (
           <div className="p-3 rounded-xl mb-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(45,212,191,0.2)" }}>
