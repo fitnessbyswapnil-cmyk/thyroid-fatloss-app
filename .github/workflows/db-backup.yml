@@ -60,12 +60,17 @@ jobs:
           sudo apt-get install -y -qq postgresql-common
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
           sudo apt-get install -y -qq postgresql-client-17
-          pg_dump --version
+          # Ubuntu keeps an older client and routes /usr/bin/pg_dump through
+          # pg_wrapper, which resolves to that older version regardless of what
+          # we just installed. Put the versioned binaries first instead.
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+          /usr/lib/postgresql/17/bin/pg_dump --version
 
       - name: Verify client is new enough for the server
         env:
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
+          echo "pg_dump resolves to: $(command -v pg_dump)"
           server_major=$(psql "$DB_URL" -tAc "SHOW server_version_num;" | cut -c1-2)
           client_major=$(pg_dump --version | grep -oE '[0-9]+' | head -1)
           echo "server major: $server_major | pg_dump major: $client_major"
