@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { listLessons } from "@/app/actions/lessons"
 import { LessonsView } from "@/components/learn/LessonsView"
@@ -10,7 +11,7 @@ export const metadata = {
 
 export default async function LearnPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   const lessons = await listLessons()

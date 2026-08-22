@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { listExercises, listFoods } from "@/app/actions/library"
 import { LibraryManager } from "@/components/coach/LibraryManager"
@@ -6,7 +7,7 @@ import { LibraryManager } from "@/components/coach/LibraryManager"
 // Coach-only library (role gate mirrors coach/layout.tsx; RLS enforces too).
 export default async function LibraryPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   const { data: me } = await supabase.from("clients").select("role").eq("id", user.id).single()

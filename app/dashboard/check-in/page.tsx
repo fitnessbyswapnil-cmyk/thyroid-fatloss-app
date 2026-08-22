@@ -1,5 +1,6 @@
 import { WeeklyCheckInFlow } from '@/components/dashboard/WeeklyCheckInFlow'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from "@/lib/supabase/auth"
 import { getWeekNumber } from '@/lib/utils'
 
 export const metadata = {
@@ -15,7 +16,7 @@ export const metadata = {
  */
 export default async function CheckInPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
 
   let existing = null
   if (user) {

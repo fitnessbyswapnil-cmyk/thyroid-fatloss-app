@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect, notFound } from "next/navigation"
 import { ClientDetailView } from "./client-detail-view"
 import { getPlansForClient } from "@/app/actions/plans"
@@ -12,7 +13,7 @@ export default async function ClientDetailPage({
   const { id } = await params
   const supabase = await createClient()
   
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   
   if (!user) {
     redirect("/auth/login")

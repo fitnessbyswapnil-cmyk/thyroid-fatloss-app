@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { SettingsView } from "@/components/dashboard/SettingsView"
 
@@ -6,7 +7,7 @@ import { SettingsView } from "@/components/dashboard/SettingsView"
 // export and delete their data — a right that must not depend on subscription.
 export default async function AccountPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   const { data: client } = await supabase

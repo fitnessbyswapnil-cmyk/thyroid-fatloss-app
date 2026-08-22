@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { CoachDashboardClient } from "./coach-dashboard-client"
 import { getPendingReviews } from "@/app/actions/coach-reviews"
@@ -7,7 +8,7 @@ import { buildAlerts, sortAlerts, type CoachAlert } from "@/lib/coach/alerts"
 export default async function CoachDashboardPage() {
   const supabase = await createClient()
   
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   
   if (!user) {
     redirect("/auth/login")

@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { ProgressView, type CheckinPoint } from "@/components/progress/ProgressView"
 
 export default async function ProgressPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   const { data } = await supabase

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
@@ -8,7 +9,7 @@ import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
 
 export default async function PlansPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   const { meal, workout } = await getPlansForClient(user.id)

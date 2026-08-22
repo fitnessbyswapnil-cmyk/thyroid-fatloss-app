@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { DashboardClient } from "./dashboard-client"
 import { EmptyCheckInState } from "./empty-checkin-state"
@@ -9,7 +10,7 @@ import { scheduledDays, sessionFor, todayDayOfWeek } from "@/lib/plans/schedule"
 export default async function DashboardPage() {
   const supabase = await createClient()
   
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser(supabase)
   
   if (!user) {
     redirect("/auth/login")
