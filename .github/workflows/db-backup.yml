@@ -1,0 +1,146 @@
+name: Nightly encrypted DB backup
+
+# Supabase's free tier pauses a project after ~7 days with no activity, and
+# free tiers carry no backup guarantee at all. This does two jobs at once:
+# it takes a real backup, and the connection itself counts as activity, so the
+# project never goes idle long enough to pause.
+#
+# It runs at 18:00 UTC (23:30 IST) — deliberately far from the Vercel reminder
+# cron at 03:30 UTC, so the database is touched twice a day by two independent
+# systems. If one breaks, the other still keeps the project awake.
+
+on:
+  schedule:
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+# Never let two dumps overlap.
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required secrets are present
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          BLOB: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: |
+          missing=""
+          [ -z "$DB_URL" ]     && missing="$missing SUPABASE_DB_URL"
+          [ -z "$PASSPHRASE" ] && missing="$missing BACKUP_PASSPHRASE"
+          [ -z "$BLOB" ]       && missing="$missing BLOB_READ_WRITE_TOKEN"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secret(s):$missing"
+            exit 1
+          fi
+          # A weak passphrase is the only thing standing between this dump and
+          # readable client health data. Refuse obviously bad ones.
+          if [ ${#PASSPHRASE} -lt 20 ]; then
+            echo "::error::BACKUP_PASSPHRASE must be at least 20 characters."
+            exit 1
+          fi
+          echo "All secrets present."
+
+      # ubuntu-latest ships an older client than Supabase runs. A major-version
+      # mismatch makes pg_dump abort, so install a matching one from PGDG.
+      - name: Install PostgreSQL 17 client
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+            | sudo gpg --dearmor -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17
+          pg_dump --version
+
+      - name: Verify client is new enough for the server
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          server_major=$(psql "$DB_URL" -tAc "SHOW server_version_num;" | cut -c1-2)
+          client_major=$(pg_dump --version | grep -oE '[0-9]+' | head -1)
+          echo "server major: $server_major | pg_dump major: $client_major"
+          if [ "$client_major" -lt "$server_major" ]; then
+            echo "::error::pg_dump $client_major is older than server $server_major — install postgresql-client-$server_major in the step above."
+            exit 1
+          fi
+
+      - name: Dump, compress, encrypt
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -o pipefail
+          STAMP=$(date -u +%Y-%m-%d)
+          OUT="thyrowell-${STAMP}.sql"
+
+          # public: everything the app owns, schema and data.
+          pg_dump "$DB_URL" --no-owner --no-acl --schema=public > "$OUT"
+
+          # auth: data only. The full auth schema is Supabase-managed and its
+          # DDL would fight a restore, but without these rows a restored
+          # database has all the data and nobody able to log in.
+          echo "" >> "$OUT"
+          echo "-- ---- auth data (data only; auth schema is Supabase-managed) ----" >> "$OUT"
+          pg_dump "$DB_URL" --no-owner --no-acl --data-only \
+            --table=auth.users --table=auth.identities >> "$OUT" || \
+            echo "-- auth dump skipped (insufficient privileges)" >> "$OUT"
+
+          echo "plain dump: $(du -h "$OUT" | cut -f1)"
+          gzip -9 "$OUT"
+
+          gpg --batch --yes --symmetric --cipher-algo AES256 \
+              --pinentry-mode loopback --passphrase-fd 0 --output "${OUT}.gz.gpg" "${OUT}.gz" <<< "$PASSPHRASE"
+          rm -f "${OUT}.gz"
+
+          echo "encrypted: $(du -h "${OUT}.gz.gpg" | cut -f1)"
+          echo "ARTIFACT=${OUT}.gz.gpg" >> "$GITHUB_ENV"
+
+      # Verify the encryption actually round-trips. An unopenable backup is not
+      # a backup, and we would rather find that out here than during a restore.
+      - name: Verify the encrypted file decrypts
+        env:
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -o pipefail
+          gpg --batch --yes --decrypt --pinentry-mode loopback --passphrase-fd 0 \
+              --output /tmp/verify.sql.gz "$ARTIFACT" <<< "$PASSPHRASE"
+          gunzip -c /tmp/verify.sql.gz > /tmp/verify.sql
+          if ! grep -q "PostgreSQL database dump" /tmp/verify.sql; then
+            echo "::error::Decrypted file is not a PostgreSQL dump."
+            rm -f /tmp/verify.sql*; exit 1
+          fi
+          tables=$(grep -c "^CREATE TABLE" /tmp/verify.sql || true)
+          copies=$(grep -c "^COPY " /tmp/verify.sql || true)
+          echo "decrypts cleanly · $tables CREATE TABLE · $copies COPY blocks"
+          if [ "$tables" -lt 20 ]; then
+            echo "::error::Only $tables tables in the dump — expected ~26. Treating as a failed dump."
+            rm -f /tmp/verify.sql*; exit 1
+          fi
+          rm -f /tmp/verify.sql*
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Upload to private Blob storage and rotate
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          BACKUP_RETENTION_DAYS: 30
+        run: |
+          npm install @vercel/blob --no-save --silent
+          node scripts/backup-db.mjs "$ARTIFACT"
+
+      # The dump never becomes a workflow artifact: this repo is public, and
+      # public-repo artifacts are downloadable by anyone.
+      - name: Shred local copies
+        if: always()
+        run: rm -f thyrowell-*.sql thyrowell-*.sql.gz thyrowell-*.sql.gz.gpg
