@@ -16,8 +16,9 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { submitWeeklyCheckIn } from '@/app/actions/submit-checkin'
-import { SYMPTOMS, SEVERITY_LABELS, type SymptomScores } from '@/lib/health/symptoms'
+import { SYMPTOMS, SEVERITY_LABELS, parseSymptoms, type SymptomScores } from '@/lib/health/symptoms'
 import { SITES, type Measurements } from '@/lib/health/measurements'
+import { toLabel, DIGESTION, BLOATING, CRAVINGS, ADHERENCE } from '@/lib/health/checkin-scales'
 
 // Types for check-in data
 interface CheckInData {
@@ -1052,27 +1053,70 @@ const STEP_KEYS = [
 ] as const
 const COMPLETION_STEP = STEP_KEYS.length - 1
 
-export function WeeklyCheckInFlow() {
+/** A saved check-in for the current week, as stored. */
+export interface ExistingCheckIn {
+  energy_level?: number | null
+  mood?: number | null
+  sleep_quality?: number | null
+  stress_level?: number | null
+  digestion_score?: number | null
+  bloating?: number | null
+  cravings?: number | null
+  adherence_score?: number | null
+  workouts_completed?: number | null
+  workouts_target?: number | null
+  meds_taken?: number | null
+  meds_target?: number | null
+  weight?: number | null
+  steps?: number | null
+  neck?: number | null
+  chest?: number | null
+  waist?: number | null
+  hips?: number | null
+  arm?: number | null
+  thigh?: number | null
+  calf?: number | null
+  symptoms?: unknown
+  reflection_text?: string | null
+}
+
+/** Only real numbers survive; nulls stay absent so an untouched site is not zero. */
+function seedMeasurements(e: ExistingCheckIn | null): Measurements {
+  if (!e) return {}
+  const out: Measurements = {}
+  for (const s of SITES) {
+    const v = e[s.key as keyof ExistingCheckIn]
+    if (typeof v === 'number' && Number.isFinite(v) && v > 0) out[s.key] = v
+  }
+  return out
+}
+
+const num = (v: unknown, fallback: number): number =>
+  typeof v === 'number' && Number.isFinite(v) ? v : fallback
+
+export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingCheckIn | null }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submissionData, setSubmissionData] = useState<any>(null)
   const [data, setData] = useState<CheckInData>({
-    energy: 5,
-    mood: 3,
-    sleepQuality: 6,
-    stress: 5,
-    digestion: 'Okay',
-    bloating: 'Mild',
-    cravings: 'Manageable',
-    nutritionAdherence: 'Mostly',
-    workoutsCompleted: 0,
-    workoutsTarget: 3,
-    medsTaken: 0,
-    medsTarget: 7,
-    measurements: {},
-    symptoms: {},
-    reflectionText: '',
+    energy: num(existing?.energy_level, 5),
+    mood: num(existing?.mood, 3),
+    sleepQuality: num(existing?.sleep_quality, 6),
+    stress: num(existing?.stress_level, 5),
+    digestion: toLabel(DIGESTION, existing?.digestion_score, 'Okay'),
+    bloating: toLabel(BLOATING, existing?.bloating, 'Mild'),
+    cravings: toLabel(CRAVINGS, existing?.cravings, 'Manageable'),
+    nutritionAdherence: toLabel(ADHERENCE, existing?.adherence_score, 'Mostly'),
+    workoutsCompleted: num(existing?.workouts_completed, 0),
+    workoutsTarget: num(existing?.workouts_target, 3),
+    medsTaken: num(existing?.meds_taken, 0),
+    medsTarget: num(existing?.meds_target, 7),
+    weight: typeof existing?.weight === 'number' ? existing.weight : undefined,
+    steps: typeof existing?.steps === 'number' ? existing.steps : undefined,
+    measurements: seedMeasurements(existing),
+    symptoms: parseSymptoms(existing?.symptoms) ?? {},
+    reflectionText: existing?.reflection_text || '',
   })
 
   const handleSubmitCheckIn = async (checkInData: CheckInData) => {

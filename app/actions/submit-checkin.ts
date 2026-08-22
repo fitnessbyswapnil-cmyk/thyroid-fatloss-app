@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getWeekNumber } from '@/lib/utils'
+import { toScore, DIGESTION, BLOATING, CRAVINGS, ADHERENCE } from '@/lib/health/checkin-scales'
 
 export interface CheckInSubmissionData {
   energy: number
@@ -41,44 +42,12 @@ interface SubmissionResult {
 }
 
 // Convert text values to numeric scales for database
-function convertDigestion(value: string): number {
-  const map: Record<string, number> = {
-    'Great': 9,
-    'Okay': 6,
-    'Sluggish': 3,
-    'Off': 1,
-  }
-  return map[value] || 5
-}
-
-function convertBloating(value: string): number {
-  const map: Record<string, number> = {
-    'None': 1,
-    'Mild': 4,
-    'Moderate': 7,
-    'Severe': 10,
-  }
-  return map[value] || 5
-}
-
-function convertCravings(value: string): number {
-  const map: Record<string, number> = {
-    'Low': 2,
-    'Manageable': 5,
-    'Intense': 9,
-  }
-  return map[value] || 5
-}
-
-function convertNutritionAdherence(value: string): number {
-  const map: Record<string, number> = {
-    'Spot-on': 100,
-    'Mostly': 75,
-    'Partly': 50,
-    'Off-track': 25,
-  }
-  return map[value] || 50
-}
+// Scales live in lib/health/checkin-scales.ts so the reopen path reads the
+// same maps this writes. Thin wrappers keep the call sites below unchanged.
+const convertDigestion = (v: string) => toScore(DIGESTION, v, 5)
+const convertBloating = (v: string) => toScore(BLOATING, v, 5)
+const convertCravings = (v: string) => toScore(CRAVINGS, v, 5)
+const convertNutritionAdherence = (v: string) => toScore(ADHERENCE, v, 50)
 
 export async function submitWeeklyCheckIn(
   formData: CheckInSubmissionData
