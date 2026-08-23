@@ -4,7 +4,8 @@ import { PhotoCompare, type PhotoSet } from "@/components/progress/PhotoCompare"
 
 export const metadata = {
   title: "Before & After | ThyroWell",
-  description: "Compare your progress photos side by side over time." }
+  description: "Compare your progress photos side by side over time.",
+}
 
 export default async function ComparePhotosPage() {
   const supabase = await createClient()
@@ -32,7 +33,8 @@ export default async function ComparePhotosPage() {
 
   const sets: PhotoSet[] = (photos || []).map((p) => ({
     ...p,
-    weight: p.week_number != null ? weightByWeek.get(p.week_number) ?? null : null }))
+    weight: p.week_number != null ? weightByWeek.get(p.week_number) ?? null : null,
+  }))
 
   return <PhotoCompare sets={sets} />
 }

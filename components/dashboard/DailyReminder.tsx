@@ -24,7 +24,7 @@ export function DailyReminder({
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, rgba(21, 94, 86, 0.13) 0%, transparent 60%)"
+          background: "radial-gradient(circle at center, rgba(45, 212, 191, 0.06) 0%, transparent 60%)"
         }}
       />
 
@@ -34,23 +34,24 @@ export function DailyReminder({
         animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       >
-        <Heart style={{ width: 20, height: 20, color: "#155e56", fill: "rgba(21, 94, 86, 0.3)" }} />
+        <Heart style={{ width: 20, height: 20, color: "#2dd4bf", fill: "rgba(45, 212, 191, 0.3)" }} />
       </motion.div>
 
       {/* Divider */}
       <div 
         className="w-10 h-px mx-auto mb-6"
-        style={{ background: "linear-gradient(90deg, transparent, #155e56, transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, #2dd4bf, transparent)" }}
       />
 
       {/* Quote with better typography */}
       <p 
         className="max-w-sm mx-auto mb-4"
         style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
+          fontFamily: "'Instrument Serif', Georgia, serif",
+          fontStyle: "italic",
           fontSize: 20,
           lineHeight: 1.7,
-          color: "#1c1d20"
+          color: "#eaecf4"
         }}
       >
         &ldquo;{quote}&rdquo;
@@ -59,7 +60,7 @@ export function DailyReminder({
       {/* Attribution */}
       <span 
         className="text-[13px]"
-        style={{ color: "#155e56" }}
+        style={{ color: "#2dd4bf" }}
       >
         — {attribution}
       </span>
@@ -67,7 +68,7 @@ export function DailyReminder({
       {/* Subtle closing line */}
       <p 
         className="text-[12px] mt-6"
-        style={{ color: "#cfc7b6" }}
+        style={{ color: "#404858" }}
       >
         Rest well tonight. Tomorrow we keep building healthy habits.
       </p>

@@ -35,36 +35,37 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="text-[11px] font-medium uppercase block mb-4" style={{ color: "#8b867c", letterSpacing: "0.10em" }}>
+      <span className="text-[11px] font-medium uppercase block mb-4" style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}>
         Today&apos;s Log
       </span>
 
-      <div className="p-5 rounded-[22px] space-y-4" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
+      <div className="p-5 rounded-[22px] space-y-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
         {/* Workout toggle */}
         <button
           onClick={() => { const v = !workoutDone; setWorkoutDone(v); save(v, meals) }}
           disabled={saving}
           className="w-full flex items-center justify-between p-4 rounded-xl transition-all"
           style={{
-            background: workoutDone ? "rgba(21, 94, 86,0.12)" : "#FDFBF7",
-            border: `1px solid ${workoutDone ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}` }}
+            background: workoutDone ? "rgba(45,212,191,0.12)" : "rgba(255,255,255,0.03)",
+            border: `1px solid ${workoutDone ? "rgba(45,212,191,0.3)" : "rgba(255,255,255,0.06)"}`,
+          }}
         >
-          <span className="inline-flex items-center gap-3 text-sm font-medium" style={{ color: "#1c1d20" }}>
-            <Dumbbell size={18} style={{ color: workoutDone ? "#155e56" : "#8b867c" }} />
+          <span className="inline-flex items-center gap-3 text-sm font-medium" style={{ color: "#e8eaf0" }}>
+            <Dumbbell size={18} style={{ color: workoutDone ? "#2dd4bf" : "#7e8a9e" }} />
             Workout done today
           </span>
           <span
             className="w-6 h-6 rounded-full flex items-center justify-center"
-            style={{ background: workoutDone ? "#155e56" : "#e2dbcd" }}
+            style={{ background: workoutDone ? "#2dd4bf" : "rgba(255,255,255,0.08)" }}
           >
-            {workoutDone && <Check size={14} style={{ color: "#F6F3ED" }} />}
+            {workoutDone && <Check size={14} style={{ color: "#090c14" }} />}
           </span>
         </button>
 
         {/* Meals-on-plan stepper */}
-        <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-          <span className="inline-flex items-center gap-3 text-sm font-medium" style={{ color: "#1c1d20" }}>
-            <UtensilsCrossed size={18} style={{ color: meals > 0 ? "#155e56" : "#8b867c" }} />
+        <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <span className="inline-flex items-center gap-3 text-sm font-medium" style={{ color: "#e8eaf0" }}>
+            <UtensilsCrossed size={18} style={{ color: meals > 0 ? "#2dd4bf" : "#7e8a9e" }} />
             Meals on plan
           </span>
           <div className="flex items-center gap-3">
@@ -72,17 +73,17 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
               onClick={() => { const v = Math.max(0, meals - 1); setMeals(v); save(workoutDone, v) }}
               disabled={saving || meals <= 0}
               className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ background: "#e2dbcd", color: "#1c1d20" }}
+              style={{ background: "rgba(255,255,255,0.06)", color: "#e8eaf0" }}
               aria-label="Decrease meals"
             >
               <Minus size={14} />
             </button>
-            <span className="text-lg font-semibold tabular-nums w-6 text-center" style={{ color: "#1c1d20" }}>{meals}</span>
+            <span className="text-lg font-semibold tabular-nums w-6 text-center" style={{ color: "#e8eaf0" }}>{meals}</span>
             <button
               onClick={() => { const v = Math.min(10, meals + 1); setMeals(v); save(workoutDone, v) }}
               disabled={saving || meals >= 10}
               className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(21, 94, 86,0.15)", color: "#155e56" }}
+              style={{ background: "rgba(45,212,191,0.15)", color: "#2dd4bf" }}
               aria-label="Increase meals"
             >
               <Plus size={14} />
@@ -92,14 +93,14 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
 
         <div className="flex items-center justify-between min-h-[16px]">
           {error ? (
-            <p className="text-xs" style={{ color: "#A32B23" }}>{error}</p>
+            <p className="text-xs" style={{ color: "#fb7185" }}>{error}</p>
           ) : (
-            <span className="text-[11px]" style={{ color: "#a09a8e" }}>Logging daily keeps your streak alive.</span>
+            <span className="text-[11px]" style={{ color: "#5a6578" }}>Logging daily keeps your streak alive.</span>
           )}
           {saving ? (
-            <Loader2 size={13} className="animate-spin" style={{ color: "#8b867c" }} />
+            <Loader2 size={13} className="animate-spin" style={{ color: "#7e8a9e" }} />
           ) : saved ? (
-            <span className="text-[11px] inline-flex items-center gap-1" style={{ color: "#155e56" }}><Check size={12} /> Saved</span>
+            <span className="text-[11px] inline-flex items-center gap-1" style={{ color: "#2dd4bf" }}><Check size={12} /> Saved</span>
           ) : null}
         </div>
       </div>

@@ -13,7 +13,7 @@ export function PageSkeleton({ rows = 3, header = true }: { rows?: number; heade
   return (
     <div
       className="min-h-screen"
-      style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}
+      style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}
       aria-busy="true"
       aria-live="polite"
     >
@@ -22,7 +22,7 @@ export function PageSkeleton({ rows = 3, header = true }: { rows?: number; heade
       {header && (
         <header
           className="sticky top-0 z-40 px-6 py-4"
-          style={{ background: "rgba(253, 251, 247, 0.85)", borderBottom: "1px solid #e2dbcd" }}
+          style={{ background: "rgba(9,12,20,0.8)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
         >
           <div className="max-w-2xl mx-auto flex items-center gap-4">
             <Bone w={20} h={20} r={6} />
@@ -37,11 +37,12 @@ export function PageSkeleton({ rows = 3, header = true }: { rows?: number; heade
             key={i}
             className="p-6 rounded-2xl flex flex-col gap-3.5"
             style={{
-              background: "#FDFBF7",
-              border: "1px solid #e2dbcd",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
               // Stagger so the page resolves downward rather than pulsing as one
               // block, which reads as content arriving instead of a spinner.
-              animationDelay: `${i * 90}ms` }}
+              animationDelay: `${i * 90}ms`,
+            }}
           >
             <Bone w="42%" h={15} r={5} />
             <Bone w="72%" h={11} r={4} />
@@ -57,7 +58,8 @@ export function PageSkeleton({ rows = 3, header = true }: { rows?: number; heade
 function Bone({
   w,
   h,
-  r = 6 }: {
+  r = 6,
+}: {
   w: number | string
   h: number
   r?: number
@@ -69,7 +71,8 @@ function Bone({
         width: typeof w === "number" ? `${w}px` : w,
         height: h,
         borderRadius: r,
-        background: "#F1EDE1" }}
+        background: "rgba(255,255,255,0.05)",
+      }}
     />
   )
 }

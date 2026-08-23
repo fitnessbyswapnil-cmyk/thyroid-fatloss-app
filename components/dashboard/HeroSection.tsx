@@ -37,8 +37,8 @@ function RecoveryRing({ progress }: { progress: number }) {
       <svg viewBox="0 0 220 220" className="w-full h-full -rotate-90">
         <defs>
           <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#155e56" />
-            <stop offset="100%" stopColor="#7FA196" />
+            <stop offset="0%" stopColor="#2dd4bf" />
+            <stop offset="100%" stopColor="#6ee7b7" />
           </linearGradient>
           <filter id="ringGlow">
             <feGaussianBlur stdDeviation="3" result="blur" />
@@ -54,7 +54,7 @@ function RecoveryRing({ progress }: { progress: number }) {
           cy="110"
           r={RADIUS}
           fill="none"
-          stroke="#f4f0e8"
+          stroke="#1c2438"
           strokeWidth="14"
         />
         {/* Progress arc */}
@@ -78,7 +78,8 @@ function RecoveryRing({ progress }: { progress: number }) {
         <span 
           className="text-white tabular-nums"
           style={{ 
-            fontFamily: "'Newsreader', Georgia, serif", 
+            fontFamily: "'Instrument Serif', Georgia, serif", 
+            fontStyle: "italic",
             fontSize: 52
           }}
         >
@@ -86,7 +87,7 @@ function RecoveryRing({ progress }: { progress: number }) {
         </span>
         <span
           className="text-xs font-medium uppercase"
-          style={{ color: "#155e56", letterSpacing: "0.08em" }}
+          style={{ color: "#2dd4bf", letterSpacing: "0.08em" }}
         >
           Wellness
         </span>
@@ -124,7 +125,7 @@ export function HeroSection({
       className="relative flex flex-col justify-center items-center overflow-hidden"
       style={{ 
         minHeight: "88vh",
-        background: "#F4F0E8",
+        background: "#090c14",
         padding: "72px 24px 48px"
       }}
     >
@@ -134,7 +135,7 @@ export function HeroSection({
         style={{
           width: 380,
           height: 380,
-          background: "radial-gradient(circle at center, rgba(21, 94, 86,0.22) 0%, rgba(21, 94, 86, 0.13) 45%, transparent 70%)",
+          background: "radial-gradient(circle at center, rgba(45,212,191,0.22) 0%, rgba(45,212,191,0.06) 45%, transparent 70%)",
           zIndex: 0
         }}
         animate={{ 
@@ -158,9 +159,9 @@ export function HeroSection({
         <div 
           className="px-3.5 py-1.5 rounded-full text-[11px] font-medium uppercase"
           style={{
-            background: "linear-gradient(135deg, rgba(21, 94, 86,0.15), rgba(21, 94, 86, 0.13))",
-            border: "1px solid rgba(21, 94, 86,0.20)",
-            color: "#155e56",
+            background: "linear-gradient(135deg, rgba(45,212,191,0.15), rgba(45,212,191,0.06))",
+            border: "1px solid rgba(45,212,191,0.20)",
+            color: "#2dd4bf",
             letterSpacing: "0.05em"
           }}
         >
@@ -171,7 +172,7 @@ export function HeroSection({
       {/* Greeting */}
       <motion.span
         className="text-[13px] font-medium uppercase mb-3"
-        style={{ color: "#155e56", letterSpacing: "0.08em" }}
+        style={{ color: "#2dd4bf", letterSpacing: "0.08em" }}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
@@ -184,7 +185,7 @@ export function HeroSection({
         className="text-center font-bold mb-1"
         style={{ 
           fontSize: "clamp(28px, 8vw, 38px)",
-          color: "#1c1d20",
+          color: "#eaecf4",
           letterSpacing: "-0.03em"
         }}
         initial={{ opacity: 0, y: 12 }}
@@ -196,7 +197,7 @@ export function HeroSection({
 
       <motion.p
         className="text-base mb-10 text-center"
-        style={{ color: "#8b867c", lineHeight: 1.5 }}
+        style={{ color: "#7e8a9e", lineHeight: 1.5 }}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -219,17 +220,17 @@ export function HeroSection({
           1–10 quality score (not hours). */}
       <div className="flex gap-2">
         {[
-          tshCurrent > 0 ? { label: `TSH ${tshCurrent}`, color: "#155e56" } : null,
-          energyCurrent > 0 ? { label: `Energy ${energyCurrent}/10`, color: "#155e56" } : null,
-          sleepHours > 0 ? { label: `Sleep ${sleepHours}/10`, color: "#155e56" } : null,
+          tshCurrent > 0 ? { label: `TSH ${tshCurrent}`, color: "#2dd4bf" } : null,
+          energyCurrent > 0 ? { label: `Energy ${energyCurrent}/10`, color: "#2dd4bf" } : null,
+          sleepHours > 0 ? { label: `Sleep ${sleepHours}/10`, color: "#2dd4bf" } : null,
         ].filter(Boolean).map((stat, index) => (
           <motion.div
             key={stat?.label || index}
             className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-medium"
             style={{
-              background: "#FDFBF7",
-              border: "1px solid #e2dbcd",
-              color: "#1c1d20"
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              color: "#eaecf4"
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}

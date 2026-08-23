@@ -7,7 +7,6 @@ import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
 import { parseSymptoms, symptomBurden, symptomChanges } from "@/lib/health/symptoms"
 import { type Measurements } from "@/lib/health/measurements"
 import { BodyCompositionChart, MetricBar } from "@/components/charts/BodyCompositionChart"
-import { findPlateau, plateauNote, droppedBefore } from "@/lib/health/plateau"
 
 export interface CheckinPoint {
   week_number: number
@@ -74,12 +73,12 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
   const lost = startW != null && nowW != null ? +(startW - nowW).toFixed(1) : null
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#F4F0E8", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
       <div className="tw-glow" style={{ position: "fixed", top: -140, left: 30, width: 340, height: 300, zIndex: 0 }} />
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(253, 251, 247, 0.85)",  borderBottom: "1px solid #e2dbcd" }}>
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#8b867c" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>My Progress</h1>
+          <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
+          <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>My Progress</h1>
         </div>
       </header>
 
@@ -87,13 +86,13 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
         {/* Glowing headline moment (prototype style) */}
         {lost != null && (
           <div className="text-center py-4">
-            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>
+            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
               Over {weightPts.length} check-ins
             </p>
-            <p className="mt-2" style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 48, lineHeight: 1.05, color: "#1c1d20", textShadow: "0 0 44px rgba(21, 94, 86,0.35)" }}>
+            <p className="mt-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 48, lineHeight: 1.05, color: "#e8eaf0", textShadow: "0 0 44px rgba(45,212,191,0.35)" }}>
               {lost > 0 ? `${lost} kg down` : lost < 0 ? `${Math.abs(lost)} kg up` : "Holding steady"}
             </p>
-            <p className="text-sm mt-2 mx-auto" style={{ color: "#5a564e", maxWidth: 300, lineHeight: 1.5 }}>
+            <p className="text-sm mt-2 mx-auto" style={{ color: "#a9b2c1", maxWidth: 300, lineHeight: 1.5 }}>
               {lost > 0
                 ? "Slow is exactly right on thyroid — this pace protects your energy."
                 : "Weight isn't the whole story on thyroid — watch your energy, sleep and mood too."}
@@ -101,83 +100,30 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           </div>
         )}
 
-        <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
+        <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="flex items-center gap-1.5 mb-5">
             {VIEWS.map((v) => (
               <button key={v.key} onClick={() => setView(v.key)}
                 className="flex-1 text-[12.5px] font-medium px-3 py-2 rounded-xl whitespace-nowrap transition-colors"
                 aria-pressed={view === v.key}
                 style={view === v.key
-                  ? { background: "#155e56", color: "#F6F3ED" }
-                  : { background: "#F1EDE1", color: "#3c3a34" }}>
+                  ? { background: "#2dd4bf", color: "#04121a" }
+                  : { background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
                 {v.label}
               </button>
             ))}
           </div>
 
-          {view === "weight" && (() => {
-            const series = sorted.map((c) => (c.weight != null ? Number(c.weight) : null))
-            const span = findPlateau(series)
-            const note = span ? plateauNote(span, droppedBefore(series, span)) : null
-            // The chart drops nulls, so the shaded span has to be expressed in
-            // the indices the chart actually plots, not the raw week indices.
-            const plotted = series
-              .map((v, i) => ({ v, i }))
-              .filter((r) => r.v !== null)
-              .map((r) => r.i)
-            const toPlotIndex = (i: number) => plotted.indexOf(i)
-
-            return (
-              <>
-                <TrendChart
-                  points={points}
-                  height={200}
-                  unit="kg"
-                  goalDirection="down"
-                  plateau={
-                    span
-                      ? { startIndex: toPlotIndex(span.startIndex), endIndex: toPlotIndex(span.endIndex), label: `${span.weeks} FLAT WEEKS` }
-                      : undefined
-                  }
-                />
-                {note && (
-                  <p className="mt-3" style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5A564E" }}>
-                    {note}
-                  </p>
-                )}
-                {points.length < 2 && (
-                  <p className="text-xs mt-3 text-center" style={{ color: "#8B867C" }}>
-                    Submit weekly check-ins to build your weight trend.
-                  </p>
-                )}
-
-                {/* Slide 8: waist is the answer to a flat scale — it kept
-                    moving through the same weeks, so it sits directly below
-                    rather than a tab away. */}
-                {span && (() => {
-                  const waist = sorted
-                    .map((c) => (c as unknown as { waist?: number | null }).waist)
-                    .filter((v): v is number => typeof v === "number")
-                  if (waist.length < 2) return null
-                  const moved = +(waist[0] - waist[waist.length - 1]).toFixed(1)
-                  if (moved <= 0) return null
-                  return (
-                    <div className="mt-4 pt-4" style={{ borderTop: "1px solid #ECE5D6" }}>
-                      <p className="uppercase" style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.14em", color: "#8B867C" }}>
-                        Waist · the same weeks
-                      </p>
-                      <p className="mt-1.5 tabular-nums" style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.02em", color: "#1C1D20" }}>
-                        −{moved} cm
-                      </p>
-                      <p className="mt-1" style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5A564E" }}>
-                        It kept moving while the scale did not. This is the measurement to trust through a flat stretch.
-                      </p>
-                    </div>
-                  )
-                })()}
-              </>
-            )
-          })()}
+          {view === "weight" && (
+            <>
+              <TrendChart points={points} height={200} unit="kg" goalDirection="down" />
+              {points.length < 2 && (
+                <p className="text-xs mt-3 text-center" style={{ color: "#7e8a9e" }}>
+                  Submit weekly check-ins to build your weight trend.
+                </p>
+              )}
+            </>
+          )}
 
           {view === "body" && <BodyCompositionChart rows={sorted as unknown as Measurements[]} />}
 
@@ -195,7 +141,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
 
             if (scored.length === 0) {
               return (
-                <p className="text-[12.5px] py-6 text-center" style={{ color: "#8b867c", lineHeight: 1.55 }}>
+                <p className="text-[12.5px] py-6 text-center" style={{ color: "#7e8a9e", lineHeight: 1.55 }}>
                   Your first check-in will fill this in.
                 </p>
               )
@@ -204,7 +150,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             const improved = scored.filter((m) => m.delta > 0).length
             return (
               <div>
-                <p className="text-[12.5px] mb-4" style={{ color: improved > 0 ? "#155e56" : "#5a564e", lineHeight: 1.55 }}>
+                <p className="text-[12.5px] mb-4" style={{ color: improved > 0 ? "#34d399" : "#a9b2c1", lineHeight: 1.55 }}>
                   {scored.every((m) => m.delta === 0)
                     ? "How you're feeling right now. These often shift before the scale does."
                     : improved > 0
@@ -214,10 +160,10 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
                 <div className="flex flex-col gap-2.5">
                   {scored.map((m) => {
                     // Up is better for every metric in this group.
-                    const color = m.delta > 0 ? "#155e56" : m.delta < 0 ? "#97671b" : "#8b867c"
+                    const color = m.delta > 0 ? "#2dd4bf" : m.delta < 0 ? "#e0a53a" : "#7e8a9e"
                     return (
                       <MetricBar key={m.label} label={m.label} pct={(m.latest / m.max) * 100} color={color} tone={`${color}22`}>
-                        <span className="tabular-nums text-[12.5px]" style={{ color: "#1c1d20" }}>
+                        <span className="tabular-nums text-[12.5px]" style={{ color: "#e8eaf0" }}>
                           {m.latest}{m.suffix}
                         </span>
                         <span className="tabular-nums text-[11.5px] font-semibold" style={{ color, minWidth: 42, textAlign: "right" }}>
@@ -227,7 +173,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
                     )
                   })}
                 </div>
-                <p className="text-[11px] mt-4" style={{ color: "#a09a8e", lineHeight: 1.5 }}>
+                <p className="text-[11px] mt-4" style={{ color: "#5a6578", lineHeight: 1.5 }}>
                   Bar length is where you are now. The arrow is the change since your first check-in.
                 </p>
               </div>
@@ -252,14 +198,14 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             .filter((p) => Number.isFinite(p.value))
 
           return (
-            <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-              <h3 className="font-semibold mb-1" style={{ color: "#1c1d20" }}>Symptoms</h3>
+            <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <h3 className="font-semibold mb-1" style={{ color: "#e8eaf0" }}>Symptoms</h3>
               {scored.length < 2 ? (
-                <p className="text-[12.5px] mb-3" style={{ color: "#8b867c" }}>
+                <p className="text-[12.5px] mb-3" style={{ color: "#7e8a9e" }}>
                   Your first symptom check is logged — next week you&apos;ll start seeing what&apos;s changing.
                 </p>
               ) : (
-                <p className="text-[12.5px] mb-3" style={{ color: improved > 0 ? "#155e56" : "#8b867c" }}>
+                <p className="text-[12.5px] mb-3" style={{ color: improved > 0 ? "#34d399" : "#7e8a9e" }}>
                   {improved > 0
                     ? `${improved} of ${changes.length} symptoms improved since week ${first.week}`
                     : "Holding steady — symptoms often shift before the scale does."}
@@ -270,11 +216,11 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
                 {changes.map((c) => {
                   const better = c.delta < 0
                   const worse = c.delta > 0
-                  const color = better ? "#155e56" : worse ? "#97671b" : "#8b867c"
-                  const bg = better ? "rgba(21, 94, 86,0.1)" : worse ? "rgba(151, 103, 27,0.1)" : "#f4f0e8"
+                  const color = better ? "#34d399" : worse ? "#f59e0b" : "#7e8a9e"
+                  const bg = better ? "rgba(52,211,153,0.1)" : worse ? "rgba(245,158,11,0.1)" : "rgba(255,255,255,0.05)"
                   return (
                     <span key={c.key} className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-3 py-1.5"
-                      style={{ color, background: bg, border: `1px solid ${better ? "rgba(21, 94, 86,0.2)" : worse ? "rgba(151, 103, 27,0.2)" : "#e2dbcd"}` }}>
+                      style={{ color, background: bg, border: `1px solid ${better ? "rgba(52,211,153,0.2)" : worse ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.08)"}` }}>
                       {c.short}
                       <span style={{ opacity: 0.85 }}>
                         {better ? `↓${Math.abs(c.delta)}` : worse ? `↑${c.delta}` : "—"}
@@ -286,11 +232,11 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
 
               {burdenPts.length >= 2 && (
                 <>
-                  <p className="text-[10.5px] uppercase font-semibold mb-1.5" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>
+                  <p className="text-[10.5px] uppercase font-semibold mb-1.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
                     Total symptom load
                   </p>
-                  <TrendChart points={burdenPts} height={130} goalDirection="down" color="#155e56" />
-                  <p className="text-[11px] mt-2" style={{ color: "#a09a8e" }}>Lower is better — 0 means symptom-free.</p>
+                  <TrendChart points={burdenPts} height={130} goalDirection="down" color="#34d399" />
+                  <p className="text-[11px] mt-2" style={{ color: "#5a6578" }}>Lower is better — 0 means symptom-free.</p>
                 </>
               )}
             </div>
@@ -310,18 +256,18 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           if (milestones.length === 0) return null
           return (
             <div>
-              <p className="text-[10.5px] uppercase font-semibold mb-2.5 ml-0.5" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>Milestones</p>
+              <p className="text-[10.5px] uppercase font-semibold mb-2.5 ml-0.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>Milestones</p>
               <div className="flex flex-wrap gap-2">
                 {milestones.map((m) => (
                   <span
                     key={m.label}
                     className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-3 py-1.5"
                     style={m.done
-                      ? { color: "#155e56", background: "rgba(21, 94, 86,0.1)", border: "1px solid rgba(21, 94, 86,0.2)" }
-                      : { color: "#a09a8e", border: "1px dashed #cfc7b6" }}
+                      ? { color: "#34d399", background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.2)" }
+                      : { color: "#5a6578", border: "1px dashed rgba(255,255,255,0.12)" }}
                   >
                     {m.done && (
-                      <svg width="11" height="11" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#155e56", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
+                      <svg width="11" height="11" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#34d399", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
                     )}
                     {m.label}
                   </span>
@@ -332,15 +278,15 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
         })()}
 
         <div className="grid grid-cols-2 gap-2.5">
-          <Link href="/dashboard/progress-photos/compare" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-semibold" style={{ background: "rgba(21, 94, 86,0.1)", border: "1px solid rgba(21, 94, 86,0.25)", color: "#155e56" }}>
+          <Link href="/dashboard/progress-photos/compare" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-semibold" style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.25)", color: "#2dd4bf" }}>
             Before &amp; after
           </Link>
-          <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "#F1EDE1", border: "1px solid #e2dbcd", color: "#1c1d20" }}>
+          <Link href="/dashboard/progress-photos" className="flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-medium" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" }}>
             Add photos
           </Link>
         </div>
 
-        <p className="text-xs px-1" style={{ color: "#a09a8e" }}>
+        <p className="text-xs px-1" style={{ color: "#5a6578" }}>
           The scale moves slowly with thyroid — energy, sleep and mood often improve first. Watch all of them, not just weight.
         </p>
       </main>

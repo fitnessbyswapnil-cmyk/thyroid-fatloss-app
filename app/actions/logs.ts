@@ -51,7 +51,8 @@ export async function logExerciseSet(input: {
         exercise_id: input.exerciseId ?? null,
         set_number: input.setNumber,
         weight_kg: num(input.weightKg, 999),
-        reps: num(input.reps, 200) },
+        reps: num(input.reps, 200),
+      },
       { onConflict: 'client_id,date,exercise_name,set_number' }
     )
     if (error) return { success: false, error: error.message }

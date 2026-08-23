@@ -79,7 +79,8 @@ export async function saveHealthProfile(input: Partial<HealthProfile> & { client
       conditions: input.conditions?.trim() || null,
       allergies: input.allergies?.trim() || null,
       notes: input.notes?.trim() || null,
-      updated_at: new Date().toISOString() }
+      updated_at: new Date().toISOString(),
+    }
     const { error } = await supabase.from('health_profiles').upsert(row, { onConflict: 'client_id' })
     if (error) return { success: false, error: error.message }
     revalidatePath('/dashboard/health')
@@ -117,7 +118,8 @@ export async function addLab(input: Partial<LabResult> & { clientId?: string; ta
             value: num(e.value)!,
             unit: e.unit?.toString().trim().slice(0, 20) || null,
             low: num(e.low),
-            high: num(e.high) }))
+            high: num(e.high),
+          }))
       : null
 
     const row = {
@@ -129,7 +131,8 @@ export async function addLab(input: Partial<LabResult> & { clientId?: string; ta
       notes: input.notes?.trim() || null,
       extras: extras && extras.length ? extras : null,
       source: input.source === "upload" ? "upload" : "manual",
-      created_by: user?.id ?? null }
+      created_by: user?.id ?? null,
+    }
     const { error } = await supabase.from('lab_results').insert(row)
     if (error) return { success: false, error: error.message }
     revalidatePath('/dashboard/health')

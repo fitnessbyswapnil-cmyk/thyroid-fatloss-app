@@ -253,4 +253,5 @@ export {
   DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
-  DropdownMenuSubContent }
+  DropdownMenuSubContent,
+}

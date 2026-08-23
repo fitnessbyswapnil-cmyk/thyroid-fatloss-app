@@ -6,7 +6,8 @@ import { LessonsView } from "@/components/learn/LessonsView"
 
 export const metadata = {
   title: "Learn | ThyroWell",
-  description: "Short, thyroid-specific lessons that unlock as you move through your programme." }
+  description: "Short, thyroid-specific lessons that unlock as you move through your programme.",
+}
 
 export default async function LearnPage() {
   const supabase = await createClient()

@@ -59,7 +59,8 @@ export async function sendMessage(body: string, clientId?: string) {
       from_coach: isCoach,
       body: text.slice(0, 4000),
       read_by_coach: isCoach,
-      read_by_client: !isCoach })
+      read_by_client: !isCoach,
+    })
     if (error) return { success: false, error: error.message }
     revalidatePath('/dashboard/messages')
     revalidatePath(`/coach/client/${threadId}/messages`)

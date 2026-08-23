@@ -61,7 +61,8 @@ export async function upsertExercise(input: Partial<Exercise> & { name: string }
       demo_url: input.demo_url?.trim() || null,
       image_start: input.image_start?.trim() || null,
       image_end: input.image_end?.trim() || null,
-      updated_at: new Date().toISOString() }
+      updated_at: new Date().toISOString(),
+    }
     const { error } = input.id
       ? await supabase.from('exercises').update(row).eq('id', input.id)
       : await supabase.from('exercises').insert({ ...row, created_by: user.id })
@@ -105,7 +106,8 @@ export async function upsertFood(input: Partial<Food> & { name: string; portion:
       fats: num(input.fats),
       is_veg: input.is_veg ?? true,
       tags: input.tags?.trim() || null,
-      updated_at: new Date().toISOString() }
+      updated_at: new Date().toISOString(),
+    }
     const { error } = input.id
       ? await supabase.from('foods').update(row).eq('id', input.id)
       : await supabase.from('foods').insert({ ...row, created_by: user.id })
@@ -144,7 +146,8 @@ export async function importExercises(rows: Array<Partial<Exercise> & { name: st
         demo_url: r.demo_url?.trim() || null,
         image_start: r.image_start?.trim() || null,
         image_end: r.image_end?.trim() || null,
-        created_by: user.id }))
+        created_by: user.id,
+      }))
     if (!clean.length) return { success: false, error: 'No valid rows found' }
     const { error } = await supabase.from('exercises').insert(clean)
     if (error) return { success: false, error: error.message }
@@ -173,7 +176,8 @@ export async function importFoods(rows: Array<Partial<Food> & { name: string }>)
         fats: num(r.fats),
         is_veg: String(r.is_veg).toLowerCase() !== 'false' && String(r.is_veg).toLowerCase() !== 'no',
         tags: r.tags?.toString().trim() || null,
-        created_by: user.id }))
+        created_by: user.id,
+      }))
     if (!clean.length) return { success: false, error: 'No valid rows found' }
     const { error } = await supabase.from('foods').insert(clean)
     if (error) return { success: false, error: error.message }

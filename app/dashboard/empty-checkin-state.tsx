@@ -27,7 +27,8 @@ export interface Week0Status {
 export function EmptyCheckInState({ name, status }: { name: string; status?: Week0Status }) {
   const s: Week0Status = status ?? {
     hasPlan: false, hasLabs: false, hasMedication: false,
-    hasMessaged: false, hasReadLesson: false, hasBaselinePhotos: false, firstLessonSlug: null }
+    hasMessaged: false, hasReadLesson: false, hasBaselinePhotos: false, firstLessonSlug: null,
+  }
 
   const steps = [
     {
@@ -36,7 +37,8 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
       title: 'Add your thyroid medication',
       detail: 'So your reminders and plan respect your timing',
       href: '/dashboard/health',
-      tint: '#155e56' },
+      tint: '#34d399',
+    },
     {
       // Deliberately high in the list: week-1 photos are the only ones that
       // can never be taken later, and without them there is no 3-month
@@ -46,57 +48,57 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
       title: 'Take your week-1 photos',
       detail: "Today's the only day you can capture your starting point",
       href: '/dashboard/progress-photos',
-      tint: '#97671b' },
+      tint: '#f59e0b',
+    },
     {
       done: s.hasLabs,
       icon: FlaskConical,
       title: 'Add your latest blood report',
       detail: 'Optional — but it makes week one far more personal',
       href: '/dashboard/health',
-      tint: '#7FA196' },
+      tint: '#60a5fa',
+    },
     {
       done: s.hasReadLesson,
       icon: BookOpen,
       title: 'Read your first lesson',
       detail: 'Two minutes on how to take your tablet for best effect',
       href: s.firstLessonSlug ? `/dashboard/learn/${s.firstLessonSlug}` : '/dashboard/learn',
-      tint: '#155E56' },
+      tint: '#a78bfa',
+    },
     {
       done: s.hasMessaged,
       icon: MessageSquare,
       title: 'Say hello to your coach',
       detail: 'Tell them what you want out of these three months',
       href: '/dashboard/messages',
-      tint: '#155e56' },
+      tint: '#2dd4bf',
+    },
   ]
   const doneCount = steps.filter((x) => x.done).length
 
   return (
     <div
       className="min-h-screen relative"
-      style={{ background: '#F4F0E8', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 24px))' }}
+      style={{ background: '#090c14', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 24px))' }}
     >
       <div className="tw-glow" style={{ position: 'fixed', top: -150, left: 20, width: 350, height: 300, zIndex: 0 }} />
 
-      {/* Ink — the second and last place it is allowed. */}
-      <div style={{ background: '#17181C', paddingTop: 'calc(46px + env(safe-area-inset-top, 0px))', paddingBottom: 30, paddingLeft: 20, paddingRight: 20 }}>
-        <div className="max-w-2xl mx-auto">
-          <p className="uppercase" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', color: '#8E8A84' }}>
-            Week 0 · starts Monday
+      <main className="max-w-2xl mx-auto px-6 relative" style={{ zIndex: 1, paddingTop: 'calc(56px + env(safe-area-inset-top, 0px))' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
+            Week one
           </p>
-          <h1 className="mt-2" style={{ fontFamily: 'var(--face-serif)', fontWeight: 400, fontSize: 30, lineHeight: 1.24, letterSpacing: '-0.01em', color: '#F6F3ED' }}>
-            Welcome, {name}. Nothing to show yet — that&rsquo;s exactly right.
+          <h1
+            className="mt-1.5"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 31, lineHeight: 1.15, color: '#e8eaf0' }}
+          >
+            Welcome, {name}
           </h1>
-          <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.6, color: '#B8B3AB' }}>
-            We start Monday. Between now and then there are a few small things, and none of them involve dieting.
+          <p className="text-sm mt-2" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
+            Everything starts small. Here&rsquo;s what to do while your plan is being built for you.
           </p>
-        </div>
-      </div>
-
-      <main
-        className="max-w-2xl mx-auto px-6 relative"
-        style={{ zIndex: 1, background: '#F4F0E8', marginTop: -14, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingTop: 22 }}
-      >
+        </motion.div>
 
         {/* Plan status */}
         <motion.div
@@ -107,28 +109,28 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
             <Link
               href="/dashboard/plans"
               className="flex items-center gap-3 p-5 rounded-3xl"
-              style={{ background: 'rgba(21, 94, 86, 0.13)', border: '1px solid rgba(21, 94, 86,0.25)' }}
+              style={{ background: 'rgba(45,212,191,0.09)', border: '1px solid rgba(45,212,191,0.25)' }}
             >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(21, 94, 86,0.15)' }}>
-                <Sparkles size={19} style={{ color: '#155e56' }} />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(45,212,191,0.15)' }}>
+                <Sparkles size={19} style={{ color: '#2dd4bf' }} />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-sm" style={{ color: '#1c1d20' }}>Your plan is ready</p>
-                <p className="text-[11.5px] mt-0.5" style={{ color: '#8b867c' }}>Open it and start when you feel ready</p>
+                <p className="font-semibold text-sm" style={{ color: '#e8eaf0' }}>Your plan is ready</p>
+                <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>Open it and start when you feel ready</p>
               </div>
-              <ChevronRight size={18} style={{ color: '#155e56' }} />
+              <ChevronRight size={18} style={{ color: '#2dd4bf' }} />
             </Link>
           ) : (
             <div
               className="flex items-center gap-3 p-5 rounded-3xl"
-              style={{ background: '#FDFBF7', border: '1px dashed #cfc7b6' }}
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.12)' }}
             >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(21, 94, 86,0.1)' }}>
-                <Sparkles size={19} style={{ color: '#155e56' }} />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(45,212,191,0.1)' }}>
+                <Sparkles size={19} style={{ color: '#2dd4bf' }} />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-sm" style={{ color: '#1c1d20' }}>Your coach is building your plan</p>
-                <p className="text-[11.5px] mt-0.5" style={{ color: '#8b867c' }}>
+                <p className="font-semibold text-sm" style={{ color: '#e8eaf0' }}>Your coach is building your plan</p>
+                <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>
                   It&rsquo;ll appear here — the steps below matter more in week one anyway
                 </p>
               </div>
@@ -136,27 +138,13 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
           )}
         </motion.div>
 
-        {/* Slide 7: the flat weeks are promised up front, in the coach's own
-            voice, before they happen — so when week five arrives she has
-            already been told what it is. Ink, because this is his voice, which
-            is the only other thing ink is allowed to carry. */}
-        <div className="mt-6 rounded-2xl" style={{ background: '#17181C', padding: '18px 19px' }}>
-          <p className="uppercase" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', color: '#8E8A84' }}>
-            From your coach · before we begin
-          </p>
-          <p className="mt-2.5" style={{ fontFamily: 'var(--face-serif)', fontWeight: 400, fontSize: 16, lineHeight: 1.5, color: '#F6F3ED' }}>
-            Twelve weeks. Some of them will be flat, and that is not failure — with a thyroid it is
-            just how the graph looks.
-          </p>
-        </div>
-
         {/* Starter checklist */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mt-7 mb-2.5 px-0.5">
-            <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#8b867c', letterSpacing: '0.16em' }}>
+            <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
               Start here
             </p>
-            <span className="text-[11px] tabular-nums" style={{ color: doneCount === steps.length ? '#155e56' : '#a09a8e' }}>
+            <span className="text-[11px] tabular-nums" style={{ color: doneCount === steps.length ? '#34d399' : '#5a6578' }}>
               {doneCount}/{steps.length} done
             </span>
           </div>
@@ -168,24 +156,25 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
                 href={step.href}
                 className="flex items-center gap-3 p-4 rounded-2xl"
                 style={{
-                  background: step.done ? 'rgba(21, 94, 86, 0.13)' : '#FDFBF7',
-                  border: `1px solid ${step.done ? 'rgba(21, 94, 86,0.18)' : '#e2dbcd'}` }}
+                  background: step.done ? 'rgba(52,211,153,0.06)' : 'rgba(255,255,255,0.03)',
+                  border: `1px solid ${step.done ? 'rgba(52,211,153,0.18)' : 'rgba(255,255,255,0.06)'}`,
+                }}
               >
                 <span
                   className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: step.done ? 'rgba(21, 94, 86,0.14)' : `${step.tint}1f` }}
+                  style={{ background: step.done ? 'rgba(52,211,153,0.14)' : `${step.tint}1f` }}
                 >
                   {step.done
-                    ? <Check size={17} style={{ color: '#155e56' }} strokeWidth={3} />
+                    ? <Check size={17} style={{ color: '#34d399' }} strokeWidth={3} />
                     : <step.icon size={17} style={{ color: step.tint }} />}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium" style={{ color: step.done ? '#5a564e' : '#1c1d20' }}>
+                  <p className="text-sm font-medium" style={{ color: step.done ? '#a9b2c1' : '#e8eaf0' }}>
                     {step.title}
                   </p>
-                  <p className="text-[11.5px] mt-0.5" style={{ color: '#8b867c' }}>{step.detail}</p>
+                  <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>{step.detail}</p>
                 </div>
-                {!step.done && <ChevronRight size={16} className="shrink-0" style={{ color: '#cfc7b6' }} />}
+                {!step.done && <ChevronRight size={16} className="shrink-0" style={{ color: '#404858' }} />}
               </Link>
             ))}
           </div>
@@ -193,7 +182,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
 
         {/* First check-in */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-8">
-          <p className="text-sm text-center mb-3" style={{ color: '#5a564e', lineHeight: 1.55 }}>
+          <p className="text-sm text-center mb-3" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
             At the end of your first week, your check-in unlocks your trends —
             weight, energy, sleep and symptoms, all in one place.
           </p>
@@ -201,14 +190,15 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
             <button
               className="w-full h-13 py-4 rounded-full font-bold text-sm text-white flex items-center justify-center gap-2"
               style={{
-                background: 'linear-gradient(135deg, #155e56 0%, #155e56 100%)',
-                boxShadow: '0 8px 28px rgba(21, 94, 86, 0.28)' }}
+                background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
+                boxShadow: '0 8px 28px rgba(45, 212, 191, 0.28)',
+              }}
             >
               Start your first check-in
               <ArrowRight size={17} />
             </button>
           </Link>
-          <p className="text-[11px] text-center mt-3" style={{ color: '#a09a8e' }}>
+          <p className="text-[11px] text-center mt-3" style={{ color: '#5a6578' }}>
             About 5 minutes · your data stays private to you and your coach
           </p>
         </motion.div>

@@ -65,7 +65,8 @@ export function PhotoUpload({
 
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData })
+        body: formData,
+      })
 
       clearInterval(progressInterval)
 
@@ -111,8 +112,9 @@ export function PhotoUpload({
         disabled={isUploading}
         className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden"
         style={{
-          background: displayImage ? 'transparent' : '#FDFBF7',
-          border: '1px dashed #cfc7b6' }}
+          background: displayImage ? 'transparent' : 'rgba(255,255,255,0.04)',
+          border: '1px dashed rgba(255,255,255,0.15)',
+        }}
         whileHover={{ scale: isUploading ? 1 : 1.02 }}
         whileTap={{ scale: isUploading ? 1 : 0.98 }}
       >
@@ -126,11 +128,11 @@ export function PhotoUpload({
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
             <div 
               className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(21, 94, 86, 0.15)' }}
+              style={{ background: 'rgba(45, 212, 191, 0.15)' }}
             >
-              <Camera className="w-6 h-6" style={{ color: '#155e56' }} />
+              <Camera className="w-6 h-6" style={{ color: '#2dd4bf' }} />
             </div>
-            <span className="text-sm" style={{ color: '#8b867c' }}>
+            <span className="text-sm" style={{ color: '#7e8a9e' }}>
               {label || 'Add Photo'}
             </span>
           </div>
@@ -144,19 +146,19 @@ export function PhotoUpload({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-3"
-              style={{ background: 'rgba(28, 29, 32, 0.62)' }}
+              style={{ background: 'rgba(10, 13, 20, 0.9)' }}
             >
-              <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#F6F3ED' }} />
-              <div className="w-32 h-1.5 rounded-full overflow-hidden" style={{ background: '#cfc7b6' }}>
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#2dd4bf' }} />
+              <div className="w-32 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                 <motion.div
                   className="h-full rounded-full"
-                  style={{ background: '#155e56' }}
+                  style={{ background: '#2dd4bf' }}
                   initial={{ width: 0 }}
                   animate={{ width: `${uploadProgress}%` }}
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <span className="text-xs" style={{ color: '#8b867c' }}>
+              <span className="text-xs" style={{ color: '#7e8a9e' }}>
                 {uploadProgress < 100 ? 'Uploading...' : 'Complete!'}
               </span>
             </motion.div>
@@ -167,7 +169,7 @@ export function PhotoUpload({
         {displayImage && !isUploading && (
           <div 
             className="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(21, 94, 86, 0.9)' }}
+            style={{ background: 'rgba(45, 212, 191, 0.9)' }}
           >
             <Check className="w-4 h-4 text-white" />
           </div>
@@ -182,7 +184,7 @@ export function PhotoUpload({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="absolute -bottom-8 left-0 right-0 text-center text-xs"
-            style={{ color: '#A32B23' }}
+            style={{ color: '#ef4444' }}
           >
             {error}
           </motion.div>

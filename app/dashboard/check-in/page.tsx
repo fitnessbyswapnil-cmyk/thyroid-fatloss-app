@@ -5,7 +5,8 @@ import { getWeekNumber } from '@/lib/utils'
 
 export const metadata = {
   title: 'Weekly Check-In | ThyroWell',
-  description: 'Complete your weekly health check-in to track your progress.' }
+  description: 'Complete your weekly health check-in to track your progress.',
+}
 
 /**
  * Submitting twice in one week updates that week's row rather than adding a

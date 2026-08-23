@@ -51,7 +51,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
     <div 
       className="min-h-screen"
       style={{ 
-        background: "#F4F0E8",
+        background: "#090c14",
         paddingBottom: "calc(100px + env(safe-area-inset-bottom, 24px))"
       }}
     >
@@ -72,21 +72,21 @@ export function DashboardClient({ data }: { data: DashboardData }) {
           <Link
             href={`/dashboard/learn/${data.nextLesson.slug}`}
             className="max-w-2xl mx-auto flex items-start gap-3 p-5 rounded-3xl"
-            style={{ background: "rgba(184, 134, 63, 0.14)", border: "1px solid rgba(184, 134, 63,0.2)" }}
+            style={{ background: "rgba(167,139,250,0.07)", border: "1px solid rgba(167,139,250,0.2)" }}
           >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(184, 134, 63,0.15)" }}>
-              <BookOpen size={19} style={{ color: "#155E56" }} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(167,139,250,0.15)" }}>
+              <BookOpen size={19} style={{ color: "#a78bfa" }} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#155E56", letterSpacing: "0.16em" }}>
+              <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#a78bfa", letterSpacing: "0.16em" }}>
                 Learn · {data.nextLesson.minutes} min
               </p>
-              <p className="font-semibold text-sm mt-1" style={{ color: "#1c1d20" }}>{data.nextLesson.title}</p>
+              <p className="font-semibold text-sm mt-1" style={{ color: "#e8eaf0" }}>{data.nextLesson.title}</p>
               {data.nextLesson.summary && (
-                <p className="text-[11.5px] mt-1" style={{ color: "#8b867c", lineHeight: 1.5 }}>{data.nextLesson.summary}</p>
+                <p className="text-[11.5px] mt-1" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>{data.nextLesson.summary}</p>
               )}
             </div>
-            <ChevronRight size={18} className="shrink-0 mt-1" style={{ color: "#155E56" }} />
+            <ChevronRight size={18} className="shrink-0 mt-1" style={{ color: "#a78bfa" }} />
           </Link>
         </div>
       )}
@@ -128,10 +128,10 @@ export function DashboardClient({ data }: { data: DashboardData }) {
           score={data.wellnessScore.current}
           delta={data.wellnessScore.delta}
           subscores={[
-            { label: "Mood", value: data.subscores.mood, color: "#155e56" },
-            { label: "Energy", value: data.subscores.energyLevels, color: "#97671b" },
-            { label: "Sleep", value: data.subscores.sleepQuality, color: "#155e56" },
-            { label: "Mental Clarity", value: data.subscores.mentalClarity, color: "#A32B23" }
+            { label: "Mood", value: data.subscores.mood, color: "#2dd4bf" },
+            { label: "Energy", value: data.subscores.energyLevels, color: "#f59e0b" },
+            { label: "Sleep", value: data.subscores.sleepQuality, color: "#34d399" },
+            { label: "Mental Clarity", value: data.subscores.mentalClarity, color: "#fb7185" }
           ]}
           insight="Your wellness score is based on your latest check-in."
         />

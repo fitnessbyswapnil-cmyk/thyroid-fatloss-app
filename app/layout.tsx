@@ -1,25 +1,17 @@
 import type { Metadata, Viewport } from 'next'
-import { Instrument_Sans, Newsreader } from 'next/font/google'
+import { Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { RegisterSW } from '@/components/pwa/RegisterSW'
 import './globals.css'
 
-// Self-hosted through next/font rather than a stylesheet link: one less
-// render-blocking request, which matters on the mid-range Android phones this
-// is actually used on.
-const instrumentSans = Instrument_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-sans-loaded',
-  display: 'swap' })
-
-// Newsreader carries the display moments — the greeting, "11 kg down".
-const newsreader = Newsreader({
-  subsets: ['latin'],
-  weight: ['300', '400', '500'],
-  style: ['normal', 'italic'],
-  variable: '--font-serif-loaded',
-  display: 'swap' })
+// Instrument Serif for score numbers and key metrics
+const instrumentSerif = Instrument_Serif({ 
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: '--font-serif',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'ThyroWell | Premium Wellness Coaching',
@@ -32,33 +24,50 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: 'ThyroWell',
-    statusBarStyle: 'black-translucent' },
-  // One mark in both schemes — it is drawn on its own ink ground, so it does
-  // not need a light variant to stay legible.
+    statusBarStyle: 'black-translucent',
+  },
   icons: {
     icon: [
-      { url: '/icons/mark.svg', type: 'image/svg+xml' },
-      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      {
+        url: '/icon-light-32x32.png',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/icon-dark-32x32.png',
+        media: '(prefers-color-scheme: dark)',
+      },
+      {
+        url: '/icon.svg',
+        type: 'image/svg+xml',
+      },
     ],
-    apple: '/icons/apple-touch-icon.png' } }
+    apple: '/apple-icon.png',
+  },
+}
 
 export const viewport: Viewport = {
-  // Ink: the app opens on the greeting block, so the status bar matches it.
-  themeColor: '#17181C',
+  themeColor: '#0a0d14',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false }
+  userScalable: false,
+}
 
 export default function RootLayout({
-  children }: Readonly<{
+  children,
+}: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-[#fdfbf7]">
+    <html lang="en" className="bg-[#0a0d14]">
       <head>
+        {/* Satoshi font from Fontshare */}
+        <link 
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" 
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${instrumentSans.variable} ${newsreader.variable} font-sans antialiased`}>
+      <body className={`${instrumentSerif.variable} font-sans antialiased`}>
         {children}
         <RegisterSW />
         {process.env.NODE_ENV === 'production' && <Analytics />}

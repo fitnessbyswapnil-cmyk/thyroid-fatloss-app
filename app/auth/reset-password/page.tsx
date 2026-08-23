@@ -45,10 +45,10 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#F4F0E8" }}>
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#090c14" }}>
       <div
         className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(21, 94, 86, 0.13) 0%, transparent 70%)", filter: "blur(60px)" }}
+        style={{ background: "radial-gradient(circle, rgba(45,212,191,0.08) 0%, transparent 70%)", filter: "blur(60px)" }}
       />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -57,24 +57,24 @@ export default function ResetPasswordPage() {
         className="w-full max-w-md relative"
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
+          <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
             Set a new password
           </h1>
-          <p style={{ color: "#8b867c", fontSize: 14 }}>Choose a new password for your account.</p>
+          <p style={{ color: "#7e8a9e", fontSize: 14 }}>Choose a new password for your account.</p>
         </div>
 
-        <div className="p-8 rounded-3xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
+        <div className="p-8 rounded-3xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", backdropFilter: "blur(24px)" }}>
           {done ? (
             <div className="text-center py-6">
-              <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: "rgba(21, 94, 86,0.15)" }}>
-                <Check size={28} style={{ color: "#155e56" }} />
+              <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: "rgba(45,212,191,0.15)" }}>
+                <Check size={28} style={{ color: "#2dd4bf" }} />
               </div>
-              <p className="text-sm" style={{ color: "#3c3a34" }}>Password updated. Taking you in…</p>
+              <p className="text-sm" style={{ color: "#c9cdd5" }}>Password updated. Taking you in…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="password" className="block text-xs font-medium uppercase mb-2" style={{ color: "#8b867c", letterSpacing: "0.08em" }}>
+                <label htmlFor="password" className="block text-xs font-medium uppercase mb-2" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
                   New password
                 </label>
                 <div className="relative">
@@ -85,14 +85,14 @@ export default function ResetPasswordPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="w-full px-4 py-3.5 rounded-xl text-sm focus:outline-none pr-12"
-                    style={{ background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" }}
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" }}
                     placeholder="At least 8 characters"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2"
-                    style={{ color: "#8b867c" }}
+                    style={{ color: "#7e8a9e" }}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
               </div>
 
               {error && (
-                <div className="p-3 rounded-lg text-sm" style={{ background: "rgba(154, 59, 46,0.1)", border: "1px solid rgba(154, 59, 46,0.2)", color: "#A32B23" }}>
+                <div className="p-3 rounded-lg text-sm" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#fca5a5" }}>
                   {error}
                 </div>
               )}
@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, #155e56 0%, #155e56 100%)", color: "#F6F3ED", boxShadow: "0 8px 32px rgba(21, 94, 86,0.25)" }}
+                style={{ background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)", color: "#0a0d14", boxShadow: "0 8px 32px rgba(45,212,191,0.25)" }}
               >
                 {isLoading ? <Loader2 className="animate-spin" size={18} /> : <>Update password <ArrowRight size={16} /></>}
               </motion.button>
@@ -119,8 +119,8 @@ export default function ResetPasswordPage() {
           )}
         </div>
 
-        <p className="text-center text-sm mt-6" style={{ color: "#8b867c" }}>
-          <Link href="/auth/login" style={{ color: "#155e56" }}>Back to sign in</Link>
+        <p className="text-center text-sm mt-6" style={{ color: "#7e8a9e" }}>
+          <Link href="/auth/login" style={{ color: "#2dd4bf" }}>Back to sign in</Link>
         </p>
       </motion.div>
     </div>

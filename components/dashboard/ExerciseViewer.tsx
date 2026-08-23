@@ -46,7 +46,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
   return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(28, 29, 32, 0.45)" }}
+      style={{ background: "rgba(4, 8, 14, 0.82)", backdropFilter: "blur(6px)" }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -54,14 +54,14 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
     >
       <div
         className="relative w-full max-w-md rounded-3xl overflow-hidden"
-        style={{ background: "#FDFBF7", border: "1px solid #cfc7b6", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}
+        style={{ background: "#0d111b", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           aria-label="Close"
           className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center"
-          style={{ background: "rgba(0,0,0,0.45)", color: "#fff" }}
+          style={{ background: "rgba(0,0,0,0.45)", color: "#fff", backdropFilter: "blur(4px)" }}
         >
           <X size={18} />
         </button>
@@ -77,8 +77,8 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
               onError={() => setDemoBroken(true)}
             />
           ) : frames.length === 0 ? (
-            <div className="w-full h-full flex items-center justify-center" style={{ background: "#F1EDE1" }}>
-              <Dumbbell size={64} style={{ color: "#cfc7b6" }} />
+            <div className="w-full h-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)" }}>
+              <Dumbbell size={64} style={{ color: "#404858" }} />
             </div>
           ) : (
             frames.map((src, idx) => (
@@ -95,7 +95,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
           {(showDemo || frames.length >= 2) && (
             <span
               className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-medium"
-              style={{ background: "rgba(28, 29, 32, 0.62)", color: "#F6F3ED" }}
+              style={{ background: "rgba(4,8,14,0.6)", color: "#2dd4bf", backdropFilter: "blur(4px)" }}
             >
               ● Looping demo
             </span>
@@ -105,11 +105,11 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
         {/* Details */}
         <div className="p-5">
           <div className="flex items-center gap-2.5 mb-3">
-            <h3 className="text-[26px] leading-tight" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
+            <h3 className="text-[26px] leading-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
               {item.name}
             </h3>
             {item.day && (
-              <span className="text-[10px] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ background: "#F1EDE1", color: "#5a564e" }}>
+              <span className="text-[10px] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ background: "rgba(255,255,255,0.05)", color: "#a9b2c1" }}>
                 {item.day}
               </span>
             )}
@@ -118,13 +118,13 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
           {/* Prototype stat tiles */}
           {(item.sets || item.reps) && (
             <div className="grid grid-cols-2 gap-2.5 mb-4">
-              <div className="rounded-2xl p-3 text-center" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-                <p style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 22, color: "#1c1d20" }}>{item.sets ?? "—"}</p>
-                <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#8b867c" }}>sets</p>
+              <div className="rounded-2xl p-3 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#e8eaf0" }}>{item.sets ?? "—"}</p>
+                <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#7e8a9e" }}>sets</p>
               </div>
-              <div className="rounded-2xl p-3 text-center" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-                <p style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 22, color: "#1c1d20" }}>{item.reps ?? "—"}</p>
-                <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#8b867c" }}>reps</p>
+              <div className="rounded-2xl p-3 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 22, color: "#e8eaf0" }}>{item.reps ?? "—"}</p>
+                <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#7e8a9e" }}>reps</p>
               </div>
             </div>
           )}
@@ -132,7 +132,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
           {/* Form cues as a checklist (prototype style) */}
           {item.notes && (
             <div className="mb-4">
-              <p className="text-[10.5px] uppercase font-semibold mb-2.5" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>Form cues</p>
+              <p className="text-[10.5px] uppercase font-semibold mb-2.5" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>Form cues</p>
               <div className="flex flex-col gap-2">
                 {item.notes
                   .split(/(?<=[.!?])\s+/)
@@ -140,11 +140,11 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
                   .filter(Boolean)
                   .slice(0, 6)
                   .map((cue, i) => (
-                    <div key={i} className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-                      <span className="w-[19px] h-[19px] rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(21, 94, 86,0.12)" }}>
-                        <svg width="9" height="9" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#155e56", strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
+                    <div key={i} className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                      <span className="w-[19px] h-[19px] rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(45,212,191,0.12)" }}>
+                        <svg width="9" height="9" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" style={{ fill: "none", stroke: "#2dd4bf", strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round" }} /></svg>
                       </span>
-                      <p className="text-[12.5px]" style={{ color: "#5a564e", lineHeight: 1.45 }}>{cue}</p>
+                      <p className="text-[12.5px]" style={{ color: "#a9b2c1", lineHeight: 1.45 }}>{cue}</p>
                     </div>
                   ))}
               </div>
@@ -166,7 +166,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: "rgba(21, 94, 86,0.12)", color: "#155e56" }}
+              style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}
             >
               <Video size={16} /> Watch full video
             </a>

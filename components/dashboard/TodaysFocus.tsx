@@ -24,7 +24,7 @@ export function TodaysFocus({
     >
       <span
         className="text-[11px] font-medium uppercase block mb-4"
-        style={{ color: "#8b867c", letterSpacing: "0.10em" }}
+        style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}
       >
         Today&apos;s Care Rituals
       </span>
@@ -33,25 +33,25 @@ export function TodaysFocus({
       <div
         className="p-5 rounded-[22px]"
         style={{
-          background: "linear-gradient(135deg, rgba(21, 94, 86, 0.10) 0%, rgba(21, 94, 86, 0.13) 100%)",
-          border: "1px solid rgba(21, 94, 86, 0.20)"
+          background: "linear-gradient(135deg, rgba(45, 212, 191, 0.10) 0%, rgba(45, 212, 191, 0.04) 100%)",
+          border: "1px solid rgba(45, 212, 191, 0.20)"
         }}
       >
-        <Quote className="mb-3" style={{ width: 20, height: 20, color: "#155e56" }} />
+        <Quote className="mb-3" style={{ width: 20, height: 20, color: "#2dd4bf" }} />
 
         <p
           className="text-[15px] font-medium mb-4"
-          style={{ color: "#1c1d20", lineHeight: 1.7 }}
+          style={{ color: "#eaecf4", lineHeight: 1.7, fontStyle: "italic" }}
         >
           {intention}
         </p>
 
-        <p className="text-[13px] mb-3" style={{ color: "#155e56" }}>
+        <p className="text-[13px] mb-3" style={{ color: "#2dd4bf" }}>
           — {attribution}
         </p>
 
         {streakDays > 0 && (
-          <span className="text-[12px]" style={{ color: "#97671b" }}>
+          <span className="text-[12px]" style={{ color: "#f59e0b" }}>
             {streakDays} {streakDays === 1 ? "day" : "days"} of daily intentions
           </span>
         )}

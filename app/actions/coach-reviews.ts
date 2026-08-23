@@ -127,7 +127,8 @@ export async function getPendingReviews() {
           weeks_ago: weeksAgo,
           energy_delta: energyDelta,
           sleep_delta: sleepDelta,
-          weight_delta: weightDelta }
+          weight_delta: weightDelta,
+        }
       })
     )
 
@@ -174,7 +175,8 @@ export async function submitCheckInFeedback(
       .insert({
         checkin_id: checkinId,
         coach_id: user.id,
-        body: feedbackBody })
+        body: feedbackBody,
+      })
 
     if (feedbackError) throw feedbackError
 
@@ -190,7 +192,8 @@ export async function submitCheckInFeedback(
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to submit feedback' }
+      error: error instanceof Error ? error.message : 'Failed to submit feedback',
+    }
   }
 }
 
@@ -233,12 +236,14 @@ export async function getCheckInDetail(checkinId: string) {
       checkin,
       photos: photos || [],
       prevWeek,
-      error: null }
+      error: null,
+    }
   } catch (error) {
     return {
       checkin: null,
       photos: [],
       prevWeek: null,
-      error: error instanceof Error ? error.message : 'Failed to fetch check-in detail' }
+      error: error instanceof Error ? error.message : 'Failed to fetch check-in detail',
+    }
   }
 }

@@ -37,13 +37,18 @@ const itemVariants = cva(
       variant: {
         default: 'bg-transparent',
         outline: 'border-border',
-        muted: 'bg-muted/50' },
+        muted: 'bg-muted/50',
+      },
       size: {
         default: 'p-4 gap-4 ',
-        sm: 'py-3 px-4 gap-2.5' } },
+        sm: 'py-3 px-4 gap-2.5',
+      },
+    },
     defaultVariants: {
       variant: 'default',
-      size: 'default' } },
+      size: 'default',
+    },
+  },
 )
 
 function Item({
@@ -74,9 +79,13 @@ const itemMediaVariants = cva(
         default: 'bg-transparent',
         icon: "size-8 border rounded-sm bg-muted [&_svg:not([class*='size-'])]:size-4",
         image:
-          'size-10 rounded-sm overflow-hidden [&_img]:size-full [&_img]:object-cover' } },
+          'size-10 rounded-sm overflow-hidden [&_img]:size-full [&_img]:object-cover',
+      },
+    },
     defaultVariants: {
-      variant: 'default' } },
+      variant: 'default',
+    },
+  },
 )
 
 function ItemMedia({
@@ -180,4 +189,5 @@ export {
   ItemTitle,
   ItemDescription,
   ItemHeader,
-  ItemFooter }
+  ItemFooter,
+}

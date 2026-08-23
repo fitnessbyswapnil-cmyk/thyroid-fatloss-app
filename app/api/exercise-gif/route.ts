@@ -36,7 +36,8 @@ export async function GET(request: NextRequest) {
     const cached = await get(pathname, { access: 'private' })
     if (cached && cached.stream) {
       return new NextResponse(cached.stream, {
-        headers: { 'Content-Type': cached.blob?.contentType || 'image/gif', 'Cache-Control': CACHE } })
+        headers: { 'Content-Type': cached.blob?.contentType || 'image/gif', 'Cache-Control': CACHE },
+      })
     }
   } catch { /* not cached yet — fall through to fetch */ }
 

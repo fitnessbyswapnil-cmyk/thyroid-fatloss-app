@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ThyroWell">
-  <!-- Maskable: the mark is pulled into the 70% safe circle so Android can
-       crop it to any shape without clipping the marker. -->
-  <rect width="512" height="512" fill="#17181C"/>
-  <rect x="146" y="240" width="220" height="32" rx="16" fill="#B8863F" opacity="0.34"/>
-  <rect x="196" y="240" width="120" height="32" rx="16" fill="#B8863F"/>
-  <circle cx="256" cy="256" r="38" fill="#17181C"/>
-  <circle cx="256" cy="256" r="38" fill="none" stroke="#E8C894" stroke-width="17"/>
-</svg>

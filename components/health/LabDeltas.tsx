@@ -75,16 +75,18 @@ function classify(prev: Marker, latest: Marker): Change {
 }
 
 const TONE: Record<Verdict, { color: string; label: string }> = {
-  "now-in-range": { color: "#155e56", label: "Now in range" },
-  improved: { color: "#155e56", label: "Improved" },
-  stable: { color: "#8b867c", label: "Stable" },
-  worsened: { color: "#97671b", label: "Worse" },
-  "now-out-of-range": { color: "#A32B23", label: "Now out of range" },
-  "no-range": { color: "#8b867c", label: "Changed" } }
+  "now-in-range": { color: "#34d399", label: "Now in range" },
+  improved: { color: "#34d399", label: "Improved" },
+  stable: { color: "#7e8a9e", label: "Stable" },
+  worsened: { color: "#f59e0b", label: "Worse" },
+  "now-out-of-range": { color: "#fb7185", label: "Now out of range" },
+  "no-range": { color: "#7e8a9e", label: "Changed" },
+}
 
 // Most meaningful first: range crossings, then movement, then the rest.
 const RANK: Record<Verdict, number> = {
-  "now-in-range": 0, "now-out-of-range": 1, improved: 2, worsened: 3, stable: 4, "no-range": 5 }
+  "now-in-range": 0, "now-out-of-range": 1, improved: 2, worsened: 3, stable: 4, "no-range": 5,
+}
 
 export function LabDeltas({ labs }: { labs: LabResult[] }) {
   if (labs.length < 2) return null
@@ -110,12 +112,12 @@ export function LabDeltas({ labs }: { labs: LabResult[] }) {
   const d = (s: string) => new Date(s).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" })
 
   return (
-    <div className="p-6 rounded-2xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-      <h3 className="font-semibold" style={{ color: "#1c1d20" }}>What changed</h3>
-      <p className="text-[11.5px] mt-0.5 mb-1" style={{ color: "#a09a8e" }}>
+    <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>What changed</h3>
+      <p className="text-[11.5px] mt-0.5 mb-1" style={{ color: "#5a6578" }}>
         {d(previous.taken_on)} → {d(latest.taken_on)} · {gap} days apart
       </p>
-      <p className="text-[12.5px] mb-4" style={{ color: wins > 0 ? "#155e56" : "#8b867c" }}>
+      <p className="text-[12.5px] mb-4" style={{ color: wins > 0 ? "#34d399" : "#7e8a9e" }}>
         {wins > 0
           ? `${wins} of ${changes.length} markers moved in the right direction`
           : "No clear movement yet — worth discussing with your doctor"}
@@ -127,10 +129,10 @@ export function LabDeltas({ labs }: { labs: LabResult[] }) {
           const Icon = c.delta < 0 ? ArrowDown : c.delta > 0 ? ArrowUp : Minus
           return (
             <div key={i} className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl"
-              style={{ background: "#FDFBF7", border: "1px solid #f4f0e8" }}>
-              <span className="flex-1 min-w-0 text-sm truncate" style={{ color: "#1c1d20" }}>{c.name}</span>
-              <span className="text-[11.5px] tabular-nums shrink-0" style={{ color: "#a09a8e" }}>
-                {c.prev} → <span style={{ color: "#5a564e" }}>{c.latest}</span>{c.unit ? ` ${c.unit}` : ""}
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
+              <span className="flex-1 min-w-0 text-sm truncate" style={{ color: "#e8eaf0" }}>{c.name}</span>
+              <span className="text-[11.5px] tabular-nums shrink-0" style={{ color: "#5a6578" }}>
+                {c.prev} → <span style={{ color: "#a9b2c1" }}>{c.latest}</span>{c.unit ? ` ${c.unit}` : ""}
               </span>
               <span className="inline-flex items-center gap-1 text-[10px] font-bold rounded-full px-2 py-1 shrink-0"
                 style={{ color: tone.color, background: `${tone.color}1f` }}>
@@ -141,7 +143,7 @@ export function LabDeltas({ labs }: { labs: LabResult[] }) {
         })}
       </div>
 
-      <p className="text-[10.5px] mt-4" style={{ color: "#a09a8e" }}>
+      <p className="text-[10.5px] mt-4" style={{ color: "#5a6578" }}>
         Compared against the range printed on each report. Your doctor interprets these — this is tracking.
       </p>
     </div>

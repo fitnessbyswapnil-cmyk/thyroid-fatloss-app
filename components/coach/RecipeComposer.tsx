@@ -6,7 +6,7 @@ import { Search, Plus, Trash2, Loader2, Check, X, FlaskConical } from "lucide-re
 import { lookupIngredients, saveComposedFood } from "@/app/actions/nutrition"
 import type { Ingredient, RecipePart } from "@/lib/nutrition/ifct"
 
-const inputStyle = { background: "#FDFBF7", border: "1px solid #e2dbcd", color: "#1c1d20" } as const
+const inputStyle = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" } as const
 
 /**
  * Compose a library food from measured ingredients.
@@ -39,7 +39,8 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
     setParts((p) => [...p, {
       name: ing.name, grams: 100,
       kcal: ing.kcal, protein: ing.protein, carbs: ing.carbs, fats: ing.fats,
-      source: ing.energyBasis === "derived" ? "IFCT 2017 (energy derived)" : "IFCT 2017" }])
+      source: ing.energyBasis === "derived" ? "IFCT 2017 (energy derived)" : "IFCT 2017",
+    }])
     setResults([])
     setQuery("")
   }
@@ -53,7 +54,8 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
         protein: acc.protein + p.protein * f,
         carbs: acc.carbs + p.carbs * f,
         fats: acc.fats + p.fats * f,
-        grams: acc.grams + (Number(p.grams) || 0) }
+        grams: acc.grams + (Number(p.grams) || 0),
+      }
     },
     { calories: 0, protein: 0, carbs: 0, fats: 0, grams: 0 }
   )
@@ -61,7 +63,8 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
   const save = async () => {
     setSaving(true); setErr(null)
     const res = await saveComposedFood({
-      name, portion, parts, recipe: method, tags, isVeg })
+      name, portion, parts, recipe: method, tags, isVeg,
+    })
     setSaving(false)
     if (!res.success) { setErr(res.error || "Could not save"); return }
     router.refresh()
@@ -69,16 +72,16 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center" style={{ background: "rgba(28, 29, 32, 0.45)" }} onClick={() => !saving && onClose()}>
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center" style={{ background: "rgba(4,8,14,0.82)", backdropFilter: "blur(6px)" }} onClick={() => !saving && onClose()}>
       <div className="w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-3xl p-6 tw-fade-up"
-        style={{ background: "#FDFBF7", border: "1px solid #cfc7b6" }} onClick={(e) => e.stopPropagation()}>
+        style={{ background: "#0d111b", border: "1px solid rgba(255,255,255,0.1)" }} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-xl" style={{ fontFamily: "'Newsreader', Georgia, serif",  color: "#1c1d20" }}>
+          <h3 className="text-xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
             Build from ingredients
           </h3>
-          <button onClick={onClose} style={{ color: "#8b867c" }} aria-label="Close"><X size={18} /></button>
+          <button onClick={onClose} style={{ color: "#7e8a9e" }} aria-label="Close"><X size={18} /></button>
         </div>
-        <p className="text-[12px] mb-4" style={{ color: "#8b867c" }}>
+        <p className="text-[12px] mb-4" style={{ color: "#7e8a9e" }}>
           Macros are computed from measured values — no guessing.
         </p>
 
@@ -87,8 +90,8 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
           <input value={portion} onChange={(e) => setPortion(e.target.value)} placeholder="Portion (e.g. 1 katori)" className="px-3 py-2.5 rounded-lg text-sm" style={inputStyle} />
           <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (lunch, high-protein)" className="px-3 py-2.5 rounded-lg text-sm" style={inputStyle} />
         </div>
-        <label className="flex items-center gap-2 text-[12.5px] mb-4" style={{ color: "#5a564e" }}>
-          <input type="checkbox" checked={isVeg} onChange={(e) => setIsVeg(e.target.checked)} style={{ accentColor: "#155e56" }} /> Vegetarian
+        <label className="flex items-center gap-2 text-[12.5px] mb-4" style={{ color: "#a9b2c1" }}>
+          <input type="checkbox" checked={isVeg} onChange={(e) => setIsVeg(e.target.checked)} style={{ accentColor: "#2dd4bf" }} /> Vegetarian
         </label>
 
         {/* Ingredient search */}
@@ -101,7 +104,7 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
             className="flex-1 px-3 py-2.5 rounded-lg text-sm"
             style={inputStyle}
           />
-          <button onClick={search} className="px-3 rounded-lg" style={{ background: "rgba(21, 94, 86,0.12)", color: "#155e56" }} aria-label="Search">
+          <button onClick={search} className="px-3 rounded-lg" style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }} aria-label="Search">
             {searching ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
           </button>
         </div>
@@ -110,11 +113,11 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
           <div className="space-y-1 mb-3 max-h-44 overflow-y-auto">
             {results.map((r) => (
               <button key={r.code + r.name} onClick={() => add(r)} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left hover:bg-white/5">
-                <span className="flex-1 text-[13px] truncate" style={{ color: "#1c1d20" }}>{r.name}</span>
-                <span className="text-[11px] tabular-nums shrink-0" style={{ color: "#8b867c" }}>
+                <span className="flex-1 text-[13px] truncate" style={{ color: "#e8eaf0" }}>{r.name}</span>
+                <span className="text-[11px] tabular-nums shrink-0" style={{ color: "#7e8a9e" }}>
                   {r.kcal} kcal · P{r.protein} /100g
                 </span>
-                <Plus size={13} style={{ color: "#155e56" }} />
+                <Plus size={13} style={{ color: "#2dd4bf" }} />
               </button>
             ))}
           </div>
@@ -124,8 +127,8 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
         {parts.length > 0 && (
           <div className="space-y-1.5 mb-3">
             {parts.map((p, i) => (
-              <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl" style={{ background: "#FDFBF7", border: "1px solid #e2dbcd" }}>
-                <span className="flex-1 min-w-0 text-[13px] truncate" style={{ color: "#1c1d20" }}>{p.name}</span>
+              <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <span className="flex-1 min-w-0 text-[13px] truncate" style={{ color: "#e8eaf0" }}>{p.name}</span>
                 <input
                   value={p.grams}
                   onChange={(e) => setParts((prev) => prev.map((x, idx) => idx === i ? { ...x, grams: Number(e.target.value) || 0 } : x))}
@@ -134,8 +137,8 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
                   style={inputStyle}
                   aria-label={`${p.name} grams`}
                 />
-                <span className="text-[11px]" style={{ color: "#a09a8e" }}>g</span>
-                <button onClick={() => setParts((prev) => prev.filter((_, idx) => idx !== i))} style={{ color: "#a09a8e" }} aria-label="Remove"><Trash2 size={13} /></button>
+                <span className="text-[11px]" style={{ color: "#5a6578" }}>g</span>
+                <button onClick={() => setParts((prev) => prev.filter((_, idx) => idx !== i))} style={{ color: "#5a6578" }} aria-label="Remove"><Trash2 size={13} /></button>
               </div>
             ))}
           </div>
@@ -143,15 +146,15 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
 
         {/* Live totals */}
         {parts.length > 0 && (
-          <div className="p-3.5 rounded-2xl mb-3" style={{ background: "rgba(21, 94, 86, 0.13)", border: "1px solid rgba(21, 94, 86,0.2)" }}>
+          <div className="p-3.5 rounded-2xl mb-3" style={{ background: "rgba(45,212,191,0.07)", border: "1px solid rgba(45,212,191,0.2)" }}>
             <div className="flex items-center gap-2 mb-1">
-              <FlaskConical size={13} style={{ color: "#155e56" }} />
-              <span className="text-[10.5px] uppercase font-semibold" style={{ color: "#155e56", letterSpacing: "0.14em" }}>Computed</span>
+              <FlaskConical size={13} style={{ color: "#2dd4bf" }} />
+              <span className="text-[10.5px] uppercase font-semibold" style={{ color: "#2dd4bf", letterSpacing: "0.14em" }}>Computed</span>
             </div>
-            <p style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 24, color: "#1c1d20" }}>
+            <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 24, color: "#e8eaf0" }}>
               {Math.round(totals.calories)} kcal
             </p>
-            <p className="text-[12px] tabular-nums" style={{ color: "#5a564e" }}>
+            <p className="text-[12px] tabular-nums" style={{ color: "#a9b2c1" }}>
               P {totals.protein.toFixed(1)}g · C {totals.carbs.toFixed(1)}g · F {totals.fats.toFixed(1)}g · {Math.round(totals.grams)}g total
             </p>
           </div>
@@ -166,14 +169,14 @@ export function RecipeComposer({ onClose }: { onClose: () => void }) {
           style={inputStyle}
         />
 
-        {err && <p className="text-xs mb-2" style={{ color: "#A32B23" }}>{err}</p>}
+        {err && <p className="text-xs mb-2" style={{ color: "#fb7185" }}>{err}</p>}
 
         <button onClick={save} disabled={saving || !name.trim() || parts.length === 0}
           className="w-full h-12 rounded-full font-bold text-sm inline-flex items-center justify-center gap-2"
-          style={{ background: "#155e56", color: "#dfe7dd", opacity: !name.trim() || parts.length === 0 ? 0.5 : 1 }}>
+          style={{ background: "#2dd4bf", color: "#06231f", opacity: !name.trim() || parts.length === 0 ? 0.5 : 1 }}>
           {saving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} strokeWidth={3} />} Save to library
         </button>
-        <p className="text-[10.5px] text-center mt-3" style={{ color: "#a09a8e" }}>
+        <p className="text-[10.5px] text-center mt-3" style={{ color: "#5a6578" }}>
           Ingredient values from IFCT 2017 (ICMR-NIN). Raw-weight arithmetic — cooking losses aren&rsquo;t modelled.
         </p>
       </div>

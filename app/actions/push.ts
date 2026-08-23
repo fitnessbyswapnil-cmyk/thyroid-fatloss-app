@@ -27,7 +27,8 @@ export async function savePushSubscription(sub: PushSubscriptionInput) {
         client_id: user.id,
         endpoint: sub.endpoint,
         p256dh: sub.keys.p256dh,
-        auth: sub.keys.auth },
+        auth: sub.keys.auth,
+      },
       { onConflict: 'endpoint' }
     )
     if (error) return { success: false, error: error.message }
