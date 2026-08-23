@@ -26,7 +26,16 @@ export default function ForgotPasswordPage() {
         redirectTo: `${getSiteUrl()}/auth/callback?next=/auth/reset-password`,
       })
       if (error) {
-        setError(error.message)
+        // Supabase answers "Error sending recovery email" with a 500 when its
+        // email service cannot deliver — which is a configuration problem on
+        // the project, not something she did wrong or can fix by retrying.
+        // Saying "try again" there would send her round a loop that cannot end.
+        const cannotSend = /sending|smtp|email/i.test(error.message) && !/invalid|not found/i.test(error.message)
+        setError(
+          cannotSend
+            ? "We can't send emails right now — this is a problem on our side, not yours. Please message your coach directly and he'll get you back in."
+            : error.message
+        )
         return
       }
       setIsSuccess(true)
