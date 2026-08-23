@@ -10,7 +10,7 @@ interface DailyReminderProps {
 
 export function DailyReminder({
   quote = "Every small step you take today is building a healthier, stronger you.",
-  attribution = "Your ThyroWell Coach"
+  attribution = ""  // never signed unless the coach actually wrote it
 }: DailyReminderProps) {
   return (
     <motion.section

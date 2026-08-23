@@ -30,7 +30,7 @@ export default async function DashboardPage() {
     plansForClient,
   ] = await Promise.all([
     supabase.from("clients").select("*").eq("id", user.id).single(),
-    supabase.from("weekly_checkins").select("*").eq("client_id", user.id).order("week_number", { ascending: false }),
+    supabase.from("weekly_checkins").select("*").eq("client_id", user.id).order("submitted_at", { ascending: false }),
     supabase.from("coach_insights").select("*").eq("client_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     supabase.from("daily_logs").select("date, workout_done, meals_followed").eq("client_id", user.id).order("date", { ascending: false }).limit(180),
     supabase.from("health_profiles").select("medication, medication_dose, medication_timing").eq("client_id", user.id).maybeSingle(),
@@ -239,7 +239,11 @@ export default async function DashboardPage() {
     tshImprovement,
     energy: latestCheckin.energy_level || 7,
     sleep: latestCheckin.sleep_quality || latestCheckin.sleep_score || 7,
-    coachInsight: latestInsight?.insight || "Welcome to your dashboard! Your coach will add personalized insights here soon.",
+    // No fallback text. The card is hidden when there is no insight rather than
+    // filled with something the coach never said — a placeholder under a header
+    // claiming he is reviewing her progress, timestamped Today, is the fastest
+    // way to make the genuine parts of this screen read as theatre.
+    coachInsight: latestInsight?.insight ?? null,
     insightTimestamp: latestInsight?.created_at 
       ? new Date(latestInsight.created_at).toLocaleDateString("en-IN", { 
           weekday: "long", 

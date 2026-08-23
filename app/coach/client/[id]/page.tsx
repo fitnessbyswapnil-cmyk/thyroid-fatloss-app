@@ -37,7 +37,7 @@ export default async function ClientDetailPage({
     lessonCount,
   ] = await Promise.all([
     supabase.from("clients").select("*").eq("id", id).single(),
-    supabase.from("weekly_checkins").select("*").eq("client_id", id).order("week_number", { ascending: false }),
+    supabase.from("weekly_checkins").select("*").eq("client_id", id).order("submitted_at", { ascending: false }),
     supabase.from("progress_photos").select("*").eq("client_id", id).order("created_at", { ascending: false }),
     supabase.from("coach_insights").select("*").eq("client_id", id).order("created_at", { ascending: false }),
     getPlansForClient(id),

@@ -11,7 +11,7 @@ interface TodaysFocusProps {
 
 export function TodaysFocus({
   intention = "Take one small, kind step for yourself today.",
-  attribution = "Your Coach",
+  attribution = "",  // never signed unless the coach actually wrote it
   streakDays = 0
 }: TodaysFocusProps) {
   return (

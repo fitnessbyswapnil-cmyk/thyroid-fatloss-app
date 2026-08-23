@@ -37,7 +37,7 @@ interface DashboardData {
   tshImprovement: number
   energy: number
   sleep: number
-  coachInsight: string
+  coachInsight: string | null
   insightTimestamp: string
   isNewInsight: boolean
   dailyIntention: string
@@ -104,16 +104,20 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         </div>
       )}
 
-      {/* SECTION 3 — Coach Insight Card */}
-      <div className="py-8">
-        <CoachInsightCard
-          coachName="Your Coach"
-          coachRole="Wellness coach · Reviewing your progress"
-          insight={data.coachInsight}
-          timestamp={data.insightTimestamp}
-          isNew={data.isNewInsight}
-        />
-      </div>
+      {/* SECTION 3 — Coach Insight Card.
+          Rendered only when the coach has genuinely written something. It used
+          to fall back to placeholder text under a header saying he was reviewing
+          her progress, timestamped Today. */}
+      {data.coachInsight && (
+        <div className="py-8">
+          <CoachInsightCard
+            coachRole="Wellness coach · Reviewing your progress"
+            insight={data.coachInsight}
+            timestamp={data.insightTimestamp}
+            isNew={data.isNewInsight}
+          />
+        </div>
+      )}
       
       {/* SECTION 3b — Coach feedback on the client's reviewed check-ins */}
       {data.coachFeedback.length > 0 && (
@@ -141,7 +145,6 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       <div className="py-8">
         <TodaysFocus
           intention={data.dailyIntention}
-          attribution="Your Coach"
           streakDays={data.streak.current}
         />
       </div>
@@ -180,7 +183,6 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       {/* SECTION 8 — Daily Reminder (Closing Affirmation) */}
       <DailyReminder
         quote="Every small step you take today is building a healthier, stronger you."
-        attribution="Your ThyroWell Coach"
       />
       
       {/* Floating Bottom Navigation */}

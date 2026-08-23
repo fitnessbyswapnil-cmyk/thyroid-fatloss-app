@@ -1,13 +1,15 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { getWeekNumber } from '@/lib/utils'
+import { programmeWeek } from '@/lib/health/programme'
 
 export interface PendingReview {
   id: string
   client_id: string
   client_name: string
   week_number: number
+  /** Week of HER programme — what both sides should be shown. */
+  programme_week: number | null
   submitted_at: string
   status: string
   energy: number
@@ -57,7 +59,8 @@ export async function getPendingReviews() {
         reflection_text,
         clients:client_id (
           id,
-          full_name
+          full_name,
+          start_date
         )
       `)
       .eq('status', 'submitted')
@@ -69,20 +72,38 @@ export async function getPendingReviews() {
       return { reviews: [], error: null }
     }
 
-    // Fetch previous week data for each check-in to calculate flags and deltas
+    // Every earlier check-in for the clients in this queue, in one query.
+    //
+    // This used to fire a query per pending review to find "week_number - 1",
+    // which was wrong twice over: it missed the previous check-in whenever a
+    // client skipped a week, and it cost one round trip per row on a queue that
+    // grows with the roster.
+    const clientIds = [...new Set(unreviewed.map((r: any) => r.client_id))]
+    const { data: history } = await supabase
+      .from('weekly_checkins')
+      .select('client_id, submitted_at, energy_level, sleep_quality, weight, stress_level')
+      .in('client_id', clientIds)
+      .order('submitted_at', { ascending: false })
+
+    const byClient = new Map<string, any[]>()
+    for (const row of history || []) {
+      const arr = byClient.get(row.client_id) || []
+      arr.push(row)
+      byClient.set(row.client_id, arr)
+    }
+
     const enrichedReviews: PendingReview[] = await Promise.all(
       unreviewed.map(async (review: any) => {
-        const prevWeekNum = review.week_number - 1
-        const currentWeek = getWeekNumber(new Date())
-        const weeksAgo = currentWeek - review.week_number
+        // The genuinely previous check-in, by date — not an assumed week number.
+        const prevWeek =
+          (byClient.get(review.client_id) || []).find(
+            (r) => new Date(r.submitted_at).getTime() < new Date(review.submitted_at).getTime()
+          ) || null
 
-        // Fetch previous week's check-in for delta calculation
-        const { data: prevWeek } = await supabase
-          .from('weekly_checkins')
-          .select('energy_level, sleep_quality, weight, stress_level')
-          .eq('client_id', review.client_id)
-          .eq('week_number', prevWeekNum)
-          .single()
+        const daysAgo = Math.floor(
+          (Date.now() - new Date(review.submitted_at).getTime()) / 86400000
+        )
+        const weeksAgo = Math.floor(daysAgo / 7)
 
         const energyDelta = prevWeek ? review.energy_level - prevWeek.energy_level : 0
         const sleepDelta = prevWeek ? review.sleep_quality - prevWeek.sleep_quality : 0
@@ -115,6 +136,10 @@ export async function getPendingReviews() {
           client_id: review.client_id,
           client_name: review.clients?.full_name || 'Unknown',
           week_number: review.week_number,
+          // The number the client sees on her own screen. The stored week is the
+          // ISO week of the year, which made the queue label yesterday's
+          // check-in "Week 34" for a client whose detail page said week 10.
+          programme_week: programmeWeek(review.clients?.start_date, review.submitted_at),
           submitted_at: review.submitted_at,
           status: review.status,
           energy: review.energy_level || 0,

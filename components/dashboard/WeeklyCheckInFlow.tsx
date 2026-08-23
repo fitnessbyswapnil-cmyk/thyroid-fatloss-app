@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ChevronDown,
   ChevronLeft,
@@ -1119,6 +1119,50 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
     reflectionText: existing?.reflection_text || '',
   })
 
+  // Hold the draft locally between renders.
+  //
+  // This is nine screens on a phone, and on Android a hardware back tap, a call,
+  // or the browser reclaiming memory took every answer with it. She then has to
+  // decide whether to start again — which, on the week she is least motivated,
+  // she often will not.
+  //
+  // Keyed by programme-week storage key so last week's draft cannot resurface.
+  const DRAFT_KEY = "thyrowell.checkin.draft"
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    try {
+      const raw = window.localStorage.getItem(DRAFT_KEY)
+      if (!raw) return
+      const saved = JSON.parse(raw) as { savedAt: number; step: number; data: CheckInData }
+      // A draft older than a week belongs to a check-in she has since submitted.
+      if (!saved?.data || Date.now() - saved.savedAt > 7 * 86400000) {
+        window.localStorage.removeItem(DRAFT_KEY)
+        return
+      }
+      setData(saved.data)
+      if (typeof saved.step === "number" && saved.step > 0 && saved.step < COMPLETION_STEP) {
+        setCurrentStep(saved.step)
+      }
+    } catch {
+      // A corrupt draft must never block the check-in itself.
+      try { window.localStorage.removeItem(DRAFT_KEY) } catch {}
+    }
+    // Intentionally once, on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (currentStep === 0 || currentStep >= COMPLETION_STEP) return
+    try {
+      window.localStorage.setItem(DRAFT_KEY, JSON.stringify({ savedAt: Date.now(), step: currentStep, data }))
+    } catch {
+      // Private mode or a full quota — losing the draft is bad, but failing the
+      // check-in over it would be worse.
+    }
+  }, [data, currentStep])
+
   const handleSubmitCheckIn = async (checkInData: CheckInData) => {
     setIsSubmitting(true)
     setSubmitError(null)
@@ -1138,6 +1182,8 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
       }
       
       setSubmissionData(result)
+      // Saved for real — the draft has done its job.
+      try { window.localStorage.removeItem(DRAFT_KEY) } catch {}
       setCurrentStep(COMPLETION_STEP)
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred')

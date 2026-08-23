@@ -85,7 +85,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             {review.client_name}
           </h2>
           <p className="text-xs" style={{ color: '#8892a4' }}>
-            Week {review.week_number}
+            {review.programme_week ? `Week ${review.programme_week}` : new Date(review.submitted_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
           </p>
         </div>
         <div className="w-10" />

@@ -17,6 +17,7 @@ import { TrendChart } from "@/components/coach/TrendChart"
 import type { Plan } from "@/app/actions/plans"
 import { EngagementPanel } from "@/components/coach/EngagementPanel"
 import type { buildEngagement } from "@/lib/coach/engagement"
+import { weekLabel } from "@/lib/health/programme"
 
 interface Client {
   id: string
@@ -411,7 +412,7 @@ export function ClientDetailView({
                         className="px-3 py-1 rounded-lg text-sm font-medium"
                         style={{ background: "rgba(45, 212, 191, 0.15)", color: "#2dd4bf" }}
                       >
-                        Week {checkin.week_number}
+                        {weekLabel(client.start_date, checkin.submitted_at)}
                       </span>
                       <span className="text-xs" style={{ color: "#7e8a9e" }}>
                         {new Date(checkin.submitted_at).toLocaleDateString()}

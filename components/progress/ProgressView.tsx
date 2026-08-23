@@ -8,8 +8,10 @@ import { parseSymptoms, symptomBurden, symptomChanges } from "@/lib/health/sympt
 import { type Measurements } from "@/lib/health/measurements"
 import { BodyCompositionChart, MetricBar } from "@/components/charts/BodyCompositionChart"
 import { findPlateau, plateauNote, droppedBefore } from "@/lib/health/plateau"
+import { weekTick } from "@/lib/health/programme"
 
 export interface CheckinPoint {
+  submitted_at?: string | null
   week_number: number
   weight: number | null
   waist: number | null
@@ -56,7 +58,7 @@ const WELLBEING: { key: keyof CheckinPoint; label: string; max: number; suffix: 
   { key: "adherence_score", label: "Nutrition", max: 100, suffix: "%" },
 ]
 
-export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: CheckinPoint[]; backHref?: string }) {
+export function ProgressView({ checkins, startDate = null, backHref = "/dashboard" }: { checkins: CheckinPoint[]; startDate?: string | null; backHref?: string }) {
   const [view, setView] = useState<ViewKey>("weight")
 
   // sleep_quality is what the check-in writes; sleep_score was never populated.
@@ -66,7 +68,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
     .sort((a, b) => a.week_number - b.week_number)
   const points: TrendPoint[] = sorted
     .filter((c) => c.weight != null)
-    .map((c) => ({ label: `W${c.week_number}`, value: Number(c.weight) }))
+    .map((c) => ({ label: weekTick(startDate, c.submitted_at) || `W${c.week_number}`, value: Number(c.weight) }))
 
   const weightPts = sorted.filter((c) => c.weight != null)
   const startW = weightPts[0]?.weight ?? null
@@ -237,8 +239,8 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             showing them is what carries a client through a weight plateau. */}
         {(() => {
           const scored = sorted
-            .map((c) => ({ week: c.week_number, s: parseSymptoms(c.symptoms) }))
-            .filter((x) => x.s !== null) as { week: number; s: NonNullable<ReturnType<typeof parseSymptoms>> }[]
+            .map((c) => ({ week: c.week_number, tick: weekTick(startDate, c.submitted_at) || `W${c.week_number}`, s: parseSymptoms(c.symptoms) }))
+            .filter((x) => x.s !== null) as { week: number; tick: string; s: NonNullable<ReturnType<typeof parseSymptoms>> }[]
           if (scored.length === 0) return null
 
           const first = scored[0]
@@ -246,7 +248,7 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
           const changes = symptomChanges(first.s, latest.s)
           const improved = changes.filter((c) => c.delta < 0).length
           const burdenPts: TrendPoint[] = scored
-            .map((x) => ({ label: `W${x.week}`, value: symptomBurden(x.s) ?? NaN }))
+            .map((x) => ({ label: x.tick, value: symptomBurden(x.s) ?? NaN }))
             .filter((p) => Number.isFinite(p.value))
 
           return (

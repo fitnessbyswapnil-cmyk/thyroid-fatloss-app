@@ -83,7 +83,7 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
                   {review.client_name}
                 </p>
                 <span className="text-sm px-2 py-1 rounded-md" style={{ background: 'rgba(45, 212, 191, 0.1)', color: '#2dd4bf' }}>
-                  Week {review.week_number}
+                  {review.programme_week ? `Week ${review.programme_week}` : new Date(review.submitted_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                 </span>
               </div>
 

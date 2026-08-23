@@ -37,7 +37,7 @@ export default async function CoachDashboardPage() {
     getPendingReviews(),
     supabase.from("weekly_checkins").select("client_id").gte("submitted_at", weekStart.toISOString()),
     supabase.from("weekly_checkins").select("client_id, submitted_at").order("submitted_at", { ascending: false }),
-    supabase.from("messages").select("client_id").eq("from_coach", false).eq("read_by_coach", false),
+    supabase.from("messages").select("client_id, from_coach, created_at").order("created_at", { ascending: false }),
     supabase.from("error_logs").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
   ])
 
@@ -74,12 +74,32 @@ export default async function CoachDashboardPage() {
     .sort((a, b) => (b.daysSince ?? Number.MAX_SAFE_INTEGER) - (a.daysSince ?? Number.MAX_SAFE_INTEGER))
 
   // Clients waiting for a reply — unread messages from clients (coach side).
-  const unreadByClient: Record<string, number> = {}
+  // Who is waiting = whose most recent message is hers, not who has an unread
+  // flag. Opening a thread marks it read as a side effect of merely FETCHING it,
+  // so read-and-defer — glancing at your phone between clients — used to delete
+  // a paying client from the only list tracking her, unrecoverably.
+  const newestByClient = new Map<string, { from_coach: boolean; created_at: string }>()
+  const clientMsgSince = new Map<string, number>()
   for (const m of unreadMsgs || []) {
-    if (m.client_id) unreadByClient[m.client_id] = (unreadByClient[m.client_id] || 0) + 1
+    if (!m.client_id) continue
+    if (!newestByClient.has(m.client_id)) {
+      newestByClient.set(m.client_id, { from_coach: m.from_coach, created_at: m.created_at })
+    }
+    // Count her messages since the coach last replied, so the badge means
+    // "how much is she waiting on" rather than "how many are unread".
+    const newest = newestByClient.get(m.client_id)!
+    if (!newest.from_coach && !m.from_coach) {
+      clientMsgSince.set(m.client_id, (clientMsgSince.get(m.client_id) || 0) + 1)
+    }
   }
-  const waitingClients = Object.entries(unreadByClient)
-    .map(([id, count]) => ({ id, full_name: (clients || []).find(c => c.id === id)?.full_name || "Client", count }))
+  const waitingClients = [...newestByClient.entries()]
+    .filter(([, m]) => !m.from_coach)
+    .map(([id, m]) => ({
+      id,
+      full_name: (clients || []).find(c => c.id === id)?.full_name || "Client",
+      count: clientMsgSince.get(id) || 1,
+      waitingSince: m.created_at,
+    }))
     .sort((a, b) => b.count - a.count)
 
   // ── Data → action alerts ────────────────────────────────────────────────
