@@ -9,9 +9,14 @@ import {
   ArrowLeft, Send, Scale, Activity, Moon, Brain,
   TrendingDown, Calendar, Clock, Zap, Heart,
   MessageSquare, Image, Loader2, Check, Minus,
-  LayoutDashboard, LineChart, ClipboardList, Camera, Apple, Lightbulb
+  LayoutDashboard, LineChart, ClipboardList, Camera, Apple, Lightbulb,
+  Utensils, Coffee, Pill
 } from "lucide-react"
 import { clientSetup } from "@/lib/coach/assignment"
+import {
+  PREF_SCREENS, PREF_QUESTIONS, QUESTIONS_BY_SCREEN, labelFor,
+  type FoodPreferences, type PrefKey, type PrefQuestion,
+} from "@/lib/plans/preferences"
 import { PlanEditor } from "@/components/coach/PlanEditor"
 import { PhotoComparison } from "@/components/coach/PhotoComparison"
 import { TrendChart } from "@/components/coach/TrendChart"
@@ -77,6 +82,186 @@ interface Insight {
   created_at: string
 }
 
+/** One row of `food_preferences`, plus the stamp of when she last answered. */
+type FoodPrefsRow = FoodPreferences & { updated_at?: string | null }
+
+/**
+ * The two answers that change what a thyroid coach says next, lifted out of
+ * their screen group to the top of the panel.
+ *
+ * Keyed rather than picked by screen number: moving a question to another
+ * screen must not silently duplicate it here, and a hardcoded index derived
+ * from a list has already cost this codebase a dropped answer once.
+ *
+ * They are shown as her answer and nothing more. No traffic light, no "too
+ * soon" — the panel does not know her dose, her report, or what her doctor
+ * told her, and the coach reading it does.
+ */
+const HIGHLIGHT_KEYS: PrefKey[] = ["caffeine_per_day", "tablet_timing"]
+
+const HIGHLIGHT_ICON: Partial<Record<PrefKey, typeof Coffee>> = {
+  caffeine_per_day: Coffee,
+  tablet_timing: Pill,
+}
+
+/**
+ * Her answer to one question, or null if we never got one.
+ *
+ * `meals_per_day` is a smallint in the database while its options are strings,
+ * so everything single-valued is stringified before the lookup. labelFor()
+ * falls back to the raw value, which is what should happen if the column ever
+ * holds something outside the option list (the CHECK allows 2–8; the options
+ * only cover 3–6).
+ */
+function answerFor(q: PrefQuestion, prefs: FoodPrefsRow): string | null {
+  const raw = prefs[q.key]
+
+  if (q.kind === "multi") {
+    const values = Array.isArray(raw) ? raw : []
+    // An empty array is genuinely ambiguous: skipping the question and tapping
+    // nothing both store '{}'. So it reads as "we don't know", never as
+    // "nothing to avoid" — guessing the friendlier one is how a coach ends up
+    // certain about something she never said.
+    return values.length ? values.map((v) => labelFor(q.key, String(v))).join(" · ") : null
+  }
+
+  if (raw === null || raw === undefined || raw === "") return null
+  return labelFor(q.key, String(raw))
+}
+
+/**
+ * Everything she said about her food, at a glance.
+ *
+ * Rendered from PREF_QUESTIONS rather than a hand-written field list, so a
+ * question added to onboarding appears here on the same deploy — including, on
+ * purpose, as an unanswered row for everyone who came through before it
+ * existed. What the coach has not been told is as load-bearing as what he has.
+ */
+function FoodPreferencesPanel({ prefs, clientName }: { prefs: FoodPrefsRow | null; clientName?: string | null }) {
+  const firstName = (clientName || "").trim().split(" ")[0] || "She"
+
+  const card = {
+    background: "rgba(255, 255, 255, 0.03)",
+    border: "1px solid rgba(255, 255, 255, 0.06)",
+  }
+
+  const header = (sub: string) => (
+    <div className="flex items-center gap-3">
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+        style={{ background: "rgba(129,140,248,0.12)" }}
+      >
+        <Utensils size={18} style={{ color: "#818cf8" }} />
+      </div>
+      <div className="min-w-0">
+        <h3 className="font-semibold leading-tight" style={{ color: "#e8eaf0" }}>How she eats</h3>
+        <p className="text-xs mt-0.5" style={{ color: "#7e8a9e" }}>{sub}</p>
+      </div>
+    </div>
+  )
+
+  // Nothing to apologise for and nothing to fix, so it gets the same card as
+  // any other panel — no amber, no red, no empty-state illustration.
+  if (!prefs) {
+    return (
+      <div className="p-6 rounded-2xl" style={card}>
+        {header("Nothing on file")}
+        <p className="text-sm mt-4 leading-relaxed" style={{ color: "#a9b2c1" }}>
+          {firstName} joined before these questions were part of onboarding, so there are no answers to show.
+          Her plan can still be built from her profile.
+        </p>
+      </div>
+    )
+  }
+
+  const answered = PREF_QUESTIONS.filter((q) => answerFor(q, prefs) !== null).length
+  const askedOn = prefs.updated_at
+    ? new Date(prefs.updated_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+    : null
+
+  // The free-text box lives at the end of the same screen as `avoid`, so it is
+  // rendered under whichever screen that question is on rather than a number.
+  const noteScreen = PREF_QUESTIONS.find((q) => q.key === "avoid")?.screen
+
+  const highlights = HIGHLIGHT_KEYS
+    .map((key) => PREF_QUESTIONS.find((q) => q.key === key))
+    .filter((q): q is PrefQuestion => !!q)
+
+  return (
+    <div className="p-6 rounded-2xl" style={card}>
+      {header(`${answered} of ${PREF_QUESTIONS.length} answered${askedOn ? ` · ${askedOn}` : ""}`)}
+
+      {highlights.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+          {highlights.map((q) => {
+            const value = answerFor(q, prefs)
+            const Icon = HIGHLIGHT_ICON[q.key] ?? Clock
+            return (
+              <div
+                key={q.key}
+                className="p-4 rounded-xl"
+                style={{ background: "rgba(129,140,248,0.07)", border: "1px solid rgba(129,140,248,0.22)" }}
+              >
+                <div className="flex items-start gap-2.5">
+                  <Icon size={15} className="shrink-0 mt-0.5" style={{ color: "#818cf8" }} />
+                  <p className="text-[12px] leading-snug" style={{ color: "#a9b2c1" }}>{q.question}</p>
+                </div>
+                <p
+                  className="text-[17px] font-medium mt-2 pl-[25px]"
+                  style={{ color: value ? "#e8eaf0" : "#5a6578" }}
+                >
+                  {value ?? "Not answered"}
+                </p>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <div className="mt-6 space-y-5">
+        {PREF_SCREENS.map((screen) => {
+          const questions = QUESTIONS_BY_SCREEN(screen.screen).filter((q) => !HIGHLIGHT_KEYS.includes(q.key))
+          const note = screen.screen === noteScreen ? prefs.avoid_note?.trim() : null
+          if (!questions.length && !note) return null
+
+          return (
+            <div key={screen.screen}>
+              <p
+                className="text-[11px] uppercase font-semibold"
+                style={{ color: "#7e8a9e", letterSpacing: "0.12em" }}
+              >
+                {screen.title}
+              </p>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3.5">
+                {questions.map((q) => {
+                  const value = answerFor(q, prefs)
+                  return (
+                    <div key={q.key}>
+                      <p className="text-[12px] leading-snug" style={{ color: "#7e8a9e" }}>{q.question}</p>
+                      <p className="text-[14px] mt-1" style={{ color: value ? "#e8eaf0" : "#5a6578" }}>
+                        {value ?? "Not answered"}
+                      </p>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {note && (
+                <div className="mt-3 p-3 rounded-lg" style={{ background: "rgba(255, 255, 255, 0.02)" }}>
+                  <div className="text-[10px] uppercase mb-1" style={{ color: "#7e8a9e", letterSpacing: "0.1em" }}>
+                    In her words
+                  </div>
+                  <p className="text-sm leading-relaxed" style={{ color: "#c9cdd5" }}>{note}</p>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 
 export function ClientDetailView({
   client,
@@ -87,6 +272,7 @@ export function ClientDetailView({
   workoutPlan,
   coachId,
   engagement,
+  foodPrefs,
 }: {
   client: Client
   checkins: Checkin[]
@@ -96,6 +282,7 @@ export function ClientDetailView({
   workoutPlan: Plan | null
   coachId: string
   engagement: ReturnType<typeof buildEngagement>
+  foodPrefs: FoodPrefsRow | null
 }) {
   const router = useRouter()
   // Derived from props already on the page — no extra query for this panel.
@@ -324,6 +511,11 @@ export function ClientDetailView({
                 })}
               </div>
             </div>
+
+            {/* Directly under the assignments, because it is what you need
+                before writing either of them — and the first thing you would
+                otherwise message her to ask. */}
+            <FoodPreferencesPanel prefs={foodPrefs} clientName={client.full_name} />
 
             {/* Key Metrics */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

@@ -47,3 +47,18 @@ export const getSiteUrl = () =>
 
 /** External checkout/enrollment URL the /enroll and /request-access CTAs point to. */
 export const getPaymentUrl = () => requireInProd('NEXT_PUBLIC_PAYMENT_URL', '#payment-not-configured')
+
+/**
+ * Key for the Claude-assisted plan draft (app/actions/draft-plan.ts). Server
+ * only — it is never referenced from a client component and must never be
+ * prefixed NEXT_PUBLIC_, which would inline a billable secret into the bundle.
+ *
+ * Deliberately NOT requireInProd. The pattern above is for values the app is
+ * broken without — a wrong site origin sends invite links into the void, so
+ * failing loudly is the kinder outcome. This one gates a single optional button
+ * next to a free deterministic generator that does the same job. Throwing here
+ * would take down the whole coach page over a feature the coach can live
+ * without, so it returns null and the action says, in words, that the key is
+ * missing and "Draft a day" still works.
+ */
+export const getAnthropicApiKey = (): string | null => process.env.ANTHROPIC_API_KEY?.trim() || null

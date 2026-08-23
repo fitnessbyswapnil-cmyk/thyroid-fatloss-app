@@ -5,6 +5,19 @@ import { ClientDetailView } from "./client-detail-view"
 import { getPlansForClient } from "@/app/actions/plans"
 import { buildEngagement } from "@/lib/coach/engagement"
 
+/**
+ * Drafting a meal plan with Claude runs from this page, and a model call over a
+ * 200-food library is not a sub-second request. Without this the invocation is
+ * killed at the platform default mid-draft, the action never returns its
+ * { ok: false }, and the coach is left on a button that says "Drafting…"
+ * forever.
+ *
+ * 60 rather than 300 because 60 is the ceiling on Vercel's Hobby plan — a
+ * larger number silently fails to apply there. The client-side timeout in
+ * lib/plans/claude-draft.ts is set to fit inside this with a retry to spare.
+ */
+export const maxDuration = 60
+
 export default async function ClientDetailPage({
   params,
 }: {
@@ -33,6 +46,7 @@ export default async function ClientDetailPage({
     lessonReads,
     labs,
     profile,
+    foodPrefs,
     pushSubs,
     lessonCount,
   ] = await Promise.all([
@@ -46,6 +60,12 @@ export default async function ClientDetailPage({
     supabase.from("lesson_reads").select("read_at, lesson_id").eq("client_id", id),
     supabase.from("lab_results").select("taken_on").eq("client_id", id),
     supabase.from("health_profiles").select("client_id").eq("client_id", id).maybeSingle(),
+    // maybeSingle, not single: a client who onboarded before these questions
+    // shipped has no row, and that is a normal state the panel renders for, not
+    // an error. select * so a column added for a new onboarding question
+    // reaches the coach without a second edit here — the panel already renders
+    // from PREF_QUESTIONS, so the only thing it needs is the value.
+    supabase.from("food_preferences").select("*").eq("client_id", id).maybeSingle(),
     supabase.from("push_subscriptions").select("*", { count: "exact", head: true }).eq("client_id", id),
     supabase.from("lessons").select("*", { count: "exact", head: true }).eq("published", true),
   ])
@@ -79,6 +99,7 @@ export default async function ClientDetailPage({
       workoutPlan={workoutPlan}
       coachId={user.id}
       engagement={engagement}
+      foodPrefs={foodPrefs.data}
     />
   )
 }
