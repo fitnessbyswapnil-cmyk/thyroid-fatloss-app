@@ -5,9 +5,29 @@ import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
+import { ACTIVITY } from "@/lib/plans/targets"
 import { ArrowRight, ArrowLeft, Loader2, Check, Heart, Scale, Pill, ShieldCheck , AlertCircle} from "lucide-react"
 
 type Step = "welcome" | "consent" | "health" | "goals" | "complete"
+
+// Mirrors the clients_height_cm_sane constraint (migration 021). Checked here so
+// a slipped digit is a sentence under the field, not a Postgres error at the end
+// of four screens.
+const HEIGHT_MIN_CM = 100
+const HEIGHT_MAX_CM = 250
+
+// health_profiles.diagnosis uses the vocabulary of the health screen's select
+// (components/health/HealthView.tsx). A value outside that list renders there as
+// an empty dropdown, so the onboarding slugs are translated rather than copied.
+const DIAGNOSIS_LABEL: Record<string, string> = {
+  hypothyroidism: "Hypothyroid",
+  hashimotos: "Hashimoto's",
+  hyperthyroidism: "Hyperthyroid",
+  other: "Other",
+}
+
+const SAVE_FAILED_MESSAGE =
+  "That didn't save — you're still connected, but the details didn't reach us. Nothing you typed has been lost; tap to try again."
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -21,6 +41,8 @@ export default function OnboardingPage() {
     age: "",
     gender: "female",
     currentWeight: "",
+    heightCm: "",
+    activityLevel: "",
     targetWeight: "",
     thyroidCondition: "",
     medications: "",
@@ -32,6 +54,10 @@ export default function OnboardingPage() {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
+  const heightCm = formData.heightCm.trim() === "" ? null : Number(formData.heightCm)
+  const heightOutOfRange =
+    heightCm !== null && (!Number.isFinite(heightCm) || heightCm < HEIGHT_MIN_CM || heightCm > HEIGHT_MAX_CM)
+
   const handleComplete = async () => {
     setIsLoading(true)
     const supabase = createClient()
@@ -42,6 +68,37 @@ export default function OnboardingPage() {
       return
     }
 
+    // The health screens, the meal-plan allergy filter and the Week 0 checklist
+    // all read health_profiles, never the clients columns — so writing only
+    // clients left her medication card blank and then asked her for the
+    // medication she had just typed. Written before the clients update because
+    // that update carries onboarding_completed: if this one fails she is not yet
+    // marked done, and "try again" replays both cleanly.
+    // Empty answers are left out of the payload rather than sent as null, so a
+    // second pass through onboarding cannot erase something she has since filled
+    // in on /dashboard/health.
+    const answered: Record<string, unknown> = {}
+    const diagnosis = DIAGNOSIS_LABEL[formData.thyroidCondition]
+    if (diagnosis) answered.diagnosis = diagnosis
+    if (formData.medications.trim()) answered.medication = formData.medications.trim()
+    if (formData.allergies.trim()) answered.allergies = formData.allergies.trim()
+
+    if (Object.keys(answered).length > 0) {
+      const { error: profileError } = await supabase
+        .from("health_profiles")
+        .upsert(
+          { client_id: user.id, updated_at: new Date().toISOString(), ...answered },
+          { onConflict: "client_id" },
+        )
+
+      if (profileError) {
+        console.error("Error saving health profile:", profileError)
+        setSubmitError(SAVE_FAILED_MESSAGE)
+        setIsLoading(false)
+        return
+      }
+    }
+
     const { error } = await supabase
       .from("clients")
       .update({
@@ -49,6 +106,8 @@ export default function OnboardingPage() {
         gender: formData.gender,
         current_weight: formData.currentWeight ? parseFloat(formData.currentWeight) : null,
         start_weight: formData.currentWeight ? parseFloat(formData.currentWeight) : null,
+        height_cm: heightCm,
+        activity_level: formData.activityLevel || null,
         target_weight: formData.targetWeight ? parseFloat(formData.targetWeight) : null,
         thyroid_condition: formData.thyroidCondition,
         medications: formData.medications,
@@ -71,9 +130,7 @@ export default function OnboardingPage() {
       // This is also the one write that travels over HER connection, so it is
       // the place patchy mobile data actually bites.
       console.error("Error updating profile:", error)
-      setSubmitError(
-        "That didn't save — you're still connected, but the details didn't reach us. Nothing you typed has been lost; tap to try again."
-      )
+      setSubmitError(SAVE_FAILED_MESSAGE)
       setIsLoading(false)
       return
     }
@@ -88,7 +145,9 @@ export default function OnboardingPage() {
   const nextStep = () => {
     if (step === "welcome") setStep("consent")
     else if (step === "consent") setStep("health")
-    else if (step === "health") setStep("goals")
+    // Catching an impossible height here keeps the note beside the field she
+    // typed it in, instead of surfacing three screens later as a failed save.
+    else if (step === "health") { if (!heightOutOfRange) setStep("goals") }
     else if (step === "goals") handleComplete()
   }
 
@@ -320,6 +379,32 @@ export default function OnboardingPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-medium uppercase mb-2" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
+                      Height (cm)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min={HEIGHT_MIN_CM}
+                      max={HEIGHT_MAX_CM}
+                      value={formData.heightCm}
+                      onChange={(e) => updateField("heightCm", e.target.value)}
+                      aria-invalid={heightOutOfRange}
+                      aria-describedby={heightOutOfRange ? "height-note" : undefined}
+                      className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
+                      style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.08)", color: "#e8eaf0" }}
+                      placeholder="158"
+                    />
+                    {heightOutOfRange && (
+                      <p id="height-note" className="text-[11.5px] mt-2" style={{ color: "#f59e0b", lineHeight: 1.5 }}>
+                        Height in centimetres, please — somewhere between {HEIGHT_MIN_CM} and {HEIGHT_MAX_CM}.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium uppercase mb-2" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
                       Latest TSH Level
                     </label>
                     <input
@@ -331,6 +416,24 @@ export default function OnboardingPage() {
                       style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.08)", color: "#e8eaf0" }}
                       placeholder="5.2"
                     />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium uppercase mb-2" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
+                      Daily Activity
+                    </label>
+                    {/* Options come from ACTIVITY so the stored value always
+                        matches what the calorie estimate multiplies by. */}
+                    <select
+                      value={formData.activityLevel}
+                      onChange={(e) => updateField("activityLevel", e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none"
+                      style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.08)", color: "#e8eaf0" }}
+                    >
+                      <option value="">Select activity</option>
+                      {ACTIVITY.map((a) => (
+                        <option key={a.key} value={a.key}>{a.label}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
@@ -362,14 +465,21 @@ export default function OnboardingPage() {
                   <ArrowLeft size={16} />
                   Back
                 </button>
+                {/* Muted while the height is impossible, matching the consent
+                    step. nextStep already refuses to advance, and a full-colour
+                    button that silently does nothing when tapped reads as the
+                    app being broken rather than as something to correct. */}
                 <motion.button
                   onClick={nextStep}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm"
+                  disabled={heightOutOfRange}
+                  whileHover={heightOutOfRange ? {} : { scale: 1.02 }}
+                  whileTap={heightOutOfRange ? {} : { scale: 0.98 }}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm disabled:opacity-50"
                   style={{
-                    background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
-                    color: "#0a0d14",
+                    background: heightOutOfRange
+                      ? "rgba(255,255,255,0.1)"
+                      : "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
+                    color: heightOutOfRange ? "#7e8a9e" : "#0a0d14",
                   }}
                 >
                   Continue

@@ -1,17 +1,17 @@
 "use client"
 
 import { useRef, useState, type ReactNode } from "react"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import {
   Apple, Dumbbell, Plus, Trash2, FileText, Loader2, Check, Upload, X,
-  Search, BookmarkPlus, FolderOpen, Video, Wand2,
+  Search, BookmarkPlus, FolderOpen, Video, Wand2, AlertTriangle,
 } from "lucide-react"
 import { savePlan, type Plan, type PlanType, type PlanSection, type WorkoutItem, type MealItem } from "@/app/actions/plans"
 import { listExercises, listFoods, type Exercise, type Food } from "@/app/actions/library"
 import { listTemplates, saveTemplate, deleteTemplate, type PlanTemplate } from "@/app/actions/templates"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
-import { DAYS, dayLabel, inferDayOfWeek } from "@/lib/plans/schedule"
+import { DAYS, dayLabel, inferDayOfWeek, groupByDay } from "@/lib/plans/schedule"
 import { generateMealPlan, getClientTargets, saveClientMetrics } from "@/app/actions/nutrition"
 import { ACTIVITY, type ActivityLevel } from "@/lib/plans/targets"
 
@@ -25,6 +25,15 @@ const inputStyle = {
   border: "1px solid rgba(255, 255, 255, 0.08)",
   color: "#e8eaf0",
 } as const
+
+/**
+ * The meal slots her dashboard checklist is built from. Free text let a
+ * hand-added food be saved with no slot at all, and a plan where every slot is
+ * blank drops "Today's meals" off her dashboard entirely.
+ */
+const MEAL_SLOTS = ["Breakfast", "Lunch", "Snack", "Dinner"] as const
+
+type ConfirmPrompt = { title: string; body: string; label: string; action: () => void }
 
 /** A single equipment/muscle filter pill in the library picker. */
 function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
@@ -41,6 +50,45 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
     >
       {children}
     </button>
+  )
+}
+
+/** Asks before any step that throws away work the coach hasn't saved yet. */
+function ConfirmDialog({ prompt, onClose }: { prompt: ConfirmPrompt | null; onClose: () => void }) {
+  return (
+    <AnimatePresence>
+      {prompt && (
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center px-4"
+          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm rounded-2xl p-5"
+            style={{ background: "#0d111b", border: "1px solid rgba(245,158,11,0.2)" }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle size={17} style={{ color: "#f59e0b" }} />
+              <h3 className="font-semibold text-sm" style={{ color: "#e8eaf0" }}>{prompt.title}</h3>
+            </div>
+            <p className="text-[13px] mb-4" style={{ color: "#a9b2c1", lineHeight: 1.55 }}>{prompt.body}</p>
+            <div className="flex items-center gap-2">
+              <button onClick={onClose} className="flex-1 h-10 rounded-xl text-[13px] font-medium"
+                style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
+                Keep what I have
+              </button>
+              <button onClick={() => { prompt.action(); onClose() }} className="flex-1 h-10 rounded-xl text-[13px] font-semibold"
+                style={{ background: "#f59e0b", color: "#1a1206" }}>
+                {prompt.label}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
@@ -62,8 +110,15 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Steps that discard unsaved work route through here first.
+  const [confirmPrompt, setConfirmPrompt] = useState<ConfirmPrompt | null>(null)
+  // True once the meal list holds anything the coach chose herself — a saved
+  // plan on open, or any edit since the last Generate. Guards the regenerate.
+  const [mealsTouched, setMealsTouched] = useState((plan?.content?.mealItems?.length ?? 0) > 0)
+
   // Library picker (lazy-loaded once per editor)
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [pickedCount, setPickedCount] = useState(0) // added since the picker opened
   const [libLoaded, setLibLoaded] = useState(false)
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [foods, setFoods] = useState<Food[]>([])
@@ -119,6 +174,17 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
     setSavingMetrics(false)
   }
 
+  /** Generating replaces the list, so anything hand-tuned has to be asked about. */
+  const requestGenerate = (variety: number) => {
+    if (!mealItems.length || !mealsTouched) { runGenerate(variety); return }
+    setConfirmPrompt({
+      title: "Replace these meals?",
+      body: `Generating writes a fresh day over the ${mealItems.length} food${mealItems.length === 1 ? "" : "s"} listed below, including anything you've adjusted by hand.`,
+      label: "Generate anyway",
+      action: () => runGenerate(variety),
+    })
+  }
+
   const runGenerate = async (variety: number) => {
     setGenerating(true)
     setGenVariety(variety)
@@ -138,10 +204,12 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
       foodId: i.foodId, name: i.name, portion: i.portion, qty: i.qty, meal: i.meal,
       calories: i.calories, protein: i.protein, carbs: i.carbs, fats: i.fats,
     })))
+    setMealsTouched(false)
   }
 
   const openPicker = async () => {
     setPickerOpen(true)
+    setPickedCount(0)
     if (!libLoaded) {
       if (type === "workout") setExercises(await listExercises())
       else setFoods(await listFoods())
@@ -159,19 +227,48 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const addSection = () => setSections((prev) => [...prev, { heading: "", body: "" }])
   const removeSection = (i: number) => setSections((prev) => prev.filter((_, idx) => idx !== i))
 
+  const closePicker = () => { setPickerOpen(false); setLibSearch("") }
+
+  // The picker stays open across picks: a day is six or seven exercises, and
+  // reopening it between each was most of the time spent building one. The
+  // search text stays too, so several matches from one search are one tap each.
   const addExercise = (e: Exercise) => {
     setWorkoutItems((prev) => [...prev, {
       exerciseId: e.id, name: e.name, sets: 3, reps: "10", day: "",
       videoUrl: e.video_url, demoUrl: e.demo_url, imageStart: e.image_start, imageEnd: e.image_end, notes: e.cues || null,
     }])
-    setPickerOpen(false); setLibSearch("")
+    setPickedCount((n) => n + 1)
   }
   const addFood = (f: Food) => {
     setMealItems((prev) => [...prev, {
-      foodId: f.id, name: f.name, portion: f.portion, qty: 1, meal: "",
+      // Carry the last row's slot forward — a coach fills one meal at a time,
+      // and a blank slot would drop the food out of her checklist.
+      foodId: f.id, name: f.name, portion: f.portion, qty: 1,
+      meal: prev[prev.length - 1]?.meal || MEAL_SLOTS[0],
       calories: f.calories, protein: f.protein, carbs: f.carbs, fats: f.fats,
     }])
-    setPickerOpen(false); setLibSearch("")
+    setPickedCount((n) => n + 1)
+    setMealsTouched(true)
+  }
+
+  /** Edit one meal row in place; every edit counts as hand-tuning. */
+  const updateMeal = (i: number, patch: Partial<MealItem>) => {
+    setMealItems((p) => p.map((x, idx) => (idx === i ? { ...x, ...patch } : x)))
+    setMealsTouched(true)
+  }
+  const removeMeal = (i: number) => {
+    setMealItems((p) => p.filter((_, idx) => idx !== i))
+    setMealsTouched(true)
+  }
+
+  /**
+   * Duplicate a weekday's exercises onto another day. A three-day split is
+   * usually one session repeated with tweaks, not three built from scratch.
+   */
+  const copyDay = (from: number, to: number) => {
+    const source = groupByDay(workoutItems).get(from) || []
+    if (!source.length) return
+    setWorkoutItems((prev) => [...prev, ...source.map((it) => ({ ...it, dayOfWeek: to, day: dayLabel(to) }))])
   }
 
   const totals = mealItems.reduce(
@@ -237,8 +334,26 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
     setTitle(t.title)
     setSections(t.content.sections?.length ? t.content.sections : [{ heading: "", body: "" }])
     if (type === "workout") setWorkoutItems(t.content.workoutItems || [])
-    else setMealItems(t.content.mealItems || [])
+    else { setMealItems(t.content.mealItems || []); setMealsTouched(true) }
     setTplOpen(false)
+  }
+
+  /** Anything in the editor a template would overwrite. */
+  const hasWork = () =>
+    workoutItems.length > 0 || mealItems.length > 0 || sections.some((s) => s.heading.trim() || s.body.trim())
+
+  // A template loads over everything, so tapping one to see what's in it used
+  // to cost the coach the plan she was halfway through.
+  const requestTemplate = (t: PlanTemplate) => {
+    if (!hasWork()) { applyTemplate(t); return }
+    setConfirmPrompt({
+      title: "Replace this plan?",
+      // Not "none of this is saved yet" — she may be editing a plan the client
+      // already has, and telling her otherwise is the wrong thing to be sure of.
+      body: `Loading “${t.title}” overwrites the title, the sections and every item currently in this editor. Anything you haven't saved goes with it.`,
+      label: "Load template",
+      action: () => applyTemplate(t),
+    })
   }
 
   const removeTemplate = async (id: string) => {
@@ -246,7 +361,26 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
     setTemplates(await listTemplates(type))
   }
 
+  const requestRemoveTemplate = (t: PlanTemplate) =>
+    setConfirmPrompt({
+      title: "Delete this template?",
+      body: `“${t.title}” goes for good. Plans you already saved from it aren't affected.`,
+      label: "Delete template",
+      action: () => { void removeTemplate(t.id) },
+    })
+
   const lib = type === "workout" ? exercises : foods
+
+  // Display grouping only — each row keeps its real index into workoutItems, so
+  // grouping can never reorder or drop what gets saved. Mon…Sun first, then
+  // whatever is still unscheduled.
+  const byDay = groupByDay(workoutItems)
+  const workoutGroups = [...DAYS.map((d) => d.n), 0]
+    .map((day) => ({
+      day,
+      rows: (byDay.get(day) || []).map((it) => ({ it, i: workoutItems.indexOf(it) })),
+    }))
+    .filter((g) => g.rows.length > 0)
 
   // Expert picker facets — derived live from the loaded library so chips only
   // ever show values the coach actually has exercises for (Fittr-style).
@@ -292,8 +426,8 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
               {(templates || []).length === 0 && <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>No templates yet.</p>}
               {(templates || []).map((t) => (
                 <div key={t.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                  <button onClick={() => applyTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#e8eaf0" }}>{t.title}</button>
-                  <button onClick={() => removeTemplate(t.id)} aria-label="Delete template" style={{ color: "#fb7185" }}><Trash2 size={12} /></button>
+                  <button onClick={() => requestTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#e8eaf0" }}>{t.title}</button>
+                  <button onClick={() => requestRemoveTemplate(t)} aria-label="Delete template" style={{ color: "#fb7185" }}><Trash2 size={12} /></button>
                 </div>
               ))}
             </div>
@@ -383,13 +517,13 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
               Vegetarian
             </label>
             <div className="flex items-center gap-2">
-              <button onClick={() => runGenerate(0)} disabled={generating}
+              <button onClick={() => requestGenerate(0)} disabled={generating}
                 className="flex-1 h-10 rounded-lg text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
                 style={{ background: "#a78bfa", color: "#1a1033" }}>
                 {generating ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />} Generate
               </button>
               {genResult && (
-                <button onClick={() => runGenerate(genVariety + 1)} disabled={generating}
+                <button onClick={() => requestGenerate(genVariety + 1)} disabled={generating}
                   className="h-10 px-3 rounded-lg text-[12px] font-semibold"
                   style={{ background: "rgba(167,139,250,0.14)", color: "#a78bfa" }}>
                   Another
@@ -422,7 +556,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
             <div className="flex items-center gap-2 mb-2">
               <Search size={14} style={{ color: "#7e8a9e" }} />
               <input autoFocus value={libSearch} onChange={(e) => setLibSearch(e.target.value)} placeholder="Search library…" className="flex-1 px-2 py-1.5 rounded-lg text-sm focus:outline-none" style={inputStyle} />
-              <button onClick={() => setPickerOpen(false)} style={{ color: "#7e8a9e" }} aria-label="Close picker"><X size={14} /></button>
+              <button onClick={closePicker} style={{ color: "#7e8a9e" }} aria-label="Close picker"><X size={14} /></button>
             </div>
 
             {/* Expert filter chips — pick by equipment & target muscle (Fittr-style) */}
@@ -460,6 +594,11 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
 
             <div className="flex items-center justify-between px-1 mb-1">
               <span className="text-[11px]" style={{ color: "#5c6672" }}>{libFiltered.length} shown</span>
+              {pickedCount > 0 && (
+                <span className="text-[11px] tabular-nums" style={{ color: "#2dd4bf" }}>
+                  {pickedCount} added
+                </span>
+              )}
             </div>
 
             <div className="max-h-60 overflow-y-auto space-y-1">
@@ -489,49 +628,101 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
                 </button>
               ))}
             </div>
+
+            <button onClick={closePicker} className="w-full mt-2 h-9 rounded-lg text-[12px] font-semibold"
+              style={{ background: "rgba(45,212,191,0.14)", color: "#2dd4bf" }}>
+              Done{pickedCount > 0 ? ` · ${pickedCount} added` : ""}
+            </button>
           </div>
         )}
 
-        {/* Workout item rows */}
-        {type === "workout" && workoutItems.map((it, i) => (
-          <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
-            <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={36} rounded={9} />
-            {/* Real weekday slot. Defaults to whatever the legacy freeform
-                "day" text implied, so opening an old plan doesn't silently
-                reset every exercise to unscheduled. */}
-            <select
-              value={inferDayOfWeek(it) ?? 0}
-              onChange={(e) => {
-                const v = Number(e.target.value)
-                setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, dayOfWeek: v === 0 ? null : v, day: v === 0 ? null : dayLabel(v) } : x))
-              }}
-              className="w-[74px] px-1.5 py-1.5 rounded-lg text-xs focus:outline-none shrink-0"
-              style={inputStyle}
-              aria-label="Day of week"
-            >
-              <option value={0}>Any day</option>
-              {DAYS.map((d) => <option key={d.n} value={d.n}>{d.label}</option>)}
-            </select>
-            <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>
-              {it.name}
-              {it.videoUrl && <Video size={11} className="inline ml-1.5" style={{ color: "#2dd4bf" }} />}
-            </span>
-            <input type="number" value={it.sets ?? ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, sets: e.target.value === "" ? null : Number(e.target.value) } : x))} placeholder="Sets" className="w-14 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
-            <input value={it.reps ?? ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, reps: e.target.value } : x))} placeholder="Reps" className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
-            <button onClick={() => setWorkoutItems((p) => p.filter((_, idx) => idx !== i))} style={{ color: "#fb7185" }} aria-label="Remove"><Trash2 size={14} /></button>
+        {/* Workout item rows, grouped by the day they're scheduled on. A flat
+            insertion-order list made a three-day split impossible to read back,
+            which is what made every revision a re-read of the whole plan. */}
+        {type === "workout" && workoutGroups.map(({ day, rows }) => (
+          <div key={day} className="mb-3">
+            <div className="flex items-center justify-between gap-2 px-1 mb-1.5">
+              <span className="text-[11px] uppercase" style={{ color: day === 0 ? "#7e8a9e" : "#2dd4bf", letterSpacing: "0.08em" }}>
+                {day === 0 ? "Any day" : dayLabel(day)} · {rows.length}
+              </span>
+              {day !== 0 && (
+                // Copies onto the target day, never over it: nothing already
+                // scheduled there is lost.
+                <select
+                  value=""
+                  onChange={(e) => { const to = Number(e.target.value); if (to) copyDay(day, to) }}
+                  className="px-1.5 py-1 rounded-lg text-[11px] focus:outline-none"
+                  style={inputStyle}
+                  aria-label={`Copy ${dayLabel(day)} to another day`}
+                >
+                  <option value="">Copy to…</option>
+                  {DAYS.filter((d) => d.n !== day).map((d) => <option key={d.n} value={d.n}>{d.label}</option>)}
+                </select>
+              )}
+            </div>
+            {rows.map(({ it, i }) => (
+              <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+                <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={36} rounded={9} />
+                {/* Real weekday slot. Defaults to whatever the legacy freeform
+                    "day" text implied, so opening an old plan doesn't silently
+                    reset every exercise to unscheduled. */}
+                <select
+                  value={inferDayOfWeek(it) ?? 0}
+                  onChange={(e) => {
+                    const v = Number(e.target.value)
+                    setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, dayOfWeek: v === 0 ? null : v, day: v === 0 ? null : dayLabel(v) } : x))
+                  }}
+                  className="w-[74px] px-1.5 py-1.5 rounded-lg text-xs focus:outline-none shrink-0"
+                  style={inputStyle}
+                  aria-label="Day of week"
+                >
+                  <option value={0}>Any day</option>
+                  {DAYS.map((d) => <option key={d.n} value={d.n}>{d.label}</option>)}
+                </select>
+                <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>
+                  {it.name}
+                  {it.videoUrl && <Video size={11} className="inline ml-1.5" style={{ color: "#2dd4bf" }} />}
+                </span>
+                <input type="number" value={it.sets ?? ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, sets: e.target.value === "" ? null : Number(e.target.value) } : x))} placeholder="Sets" className="w-14 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
+                <input value={it.reps ?? ""} onChange={(e) => setWorkoutItems((p) => p.map((x, idx) => idx === i ? { ...x, reps: e.target.value } : x))} placeholder="Reps" className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
+                <button onClick={() => setWorkoutItems((p) => p.filter((_, idx) => idx !== i))} style={{ color: "#fb7185" }} aria-label="Remove"><Trash2 size={14} /></button>
+              </div>
+            ))}
           </div>
         ))}
 
         {/* Meal item rows */}
         {type === "meal" && mealItems.map((it, i) => (
           <div key={i} className="flex items-center gap-2 mb-2 p-2 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
-            <input value={it.meal || ""} onChange={(e) => setMealItems((p) => p.map((x, idx) => idx === i ? { ...x, meal: e.target.value } : x))} placeholder="Meal" className="w-24 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} />
+            <select
+              value={it.meal || ""}
+              onChange={(e) => updateMeal(i, { meal: e.target.value })}
+              className="w-24 px-1.5 py-1.5 rounded-lg text-xs focus:outline-none shrink-0"
+              style={inputStyle}
+              aria-label="Meal"
+            >
+              {/* A blank slot can be shown but not chosen — an older plan's
+                  empty value has to be resolved rather than saved back. A slot
+                  she typed by hand before this was a list stays selectable. */}
+              {!MEAL_SLOTS.includes((it.meal || "") as (typeof MEAL_SLOTS)[number]) && (
+                <option value={it.meal || ""} disabled={!it.meal}>{it.meal || "Meal…"}</option>
+              )}
+              {MEAL_SLOTS.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
             <span className="flex-1 text-sm truncate" style={{ color: "#e8eaf0" }}>{it.name} <span className="text-[11px]" style={{ color: "#7e8a9e" }}>({it.portion})</span></span>
-            <input type="number" step="0.5" min="0.5" value={it.qty ?? 1} onChange={(e) => setMealItems((p) => p.map((x, idx) => idx === i ? { ...x, qty: e.target.value === "" ? 1 : Number(e.target.value) } : x))} className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} aria-label="Quantity" />
+            <input type="number" step="0.5" min="0.5" value={it.qty ?? 1} onChange={(e) => updateMeal(i, { qty: e.target.value === "" ? 1 : Number(e.target.value) })} className="w-16 px-2 py-1.5 rounded-lg text-xs focus:outline-none" style={inputStyle} aria-label="Quantity" />
             <span className="text-[11px] tabular-nums w-16 text-right" style={{ color: "#7e8a9e" }}>{Math.round((it.calories || 0) * (it.qty || 1))} kcal</span>
-            <button onClick={() => setMealItems((p) => p.filter((_, idx) => idx !== i))} style={{ color: "#fb7185" }} aria-label="Remove"><Trash2 size={14} /></button>
+            <button onClick={() => removeMeal(i)} style={{ color: "#fb7185" }} aria-label="Remove"><Trash2 size={14} /></button>
           </div>
         ))}
+
+        {/* Her dashboard builds the day's checklist from these slots, so a food
+            with none simply isn't on it. */}
+        {type === "meal" && mealItems.some((m) => !(m.meal || "").trim()) && (
+          <p className="text-[11px] px-2 mb-1" style={{ color: "#f59e0b" }}>
+            Give every food a meal — her daily checklist is built from these.
+          </p>
+        )}
 
         {/* Meal totals */}
         {type === "meal" && mealItems.length > 0 && (
@@ -620,6 +811,8 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
       >
         {saving ? <Loader2 size={18} className="animate-spin" /> : saved ? <><Check size={18} /> Saved</> : "Save Plan"}
       </motion.button>
+
+      <ConfirmDialog prompt={confirmPrompt} onClose={() => setConfirmPrompt(null)} />
     </div>
   )
 }

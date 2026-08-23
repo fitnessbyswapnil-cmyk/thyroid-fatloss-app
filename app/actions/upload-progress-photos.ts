@@ -1,52 +1,50 @@
 'use server'
 
-import { put } from '@vercel/blob'
 import { createClient } from '@/lib/supabase/server'
 
-export interface PhotoUploadInput {
-  frontPhotoBlob?: Blob
-  sidePhotoBlob?: Blob
-  backPhotoBlob?: Blob
+export interface PhotoPathsInput {
+  frontPath?: string | null
+  sidePath?: string | null
+  backPath?: string | null
   weekNumber: number
   notes?: string
 }
 
-export async function uploadProgressPhotos(input: PhotoUploadInput) {
+/**
+ * Record a set of progress photos that are ALREADY in blob storage.
+ *
+ * The blobs themselves no longer travel through this server action. Next.js caps
+ * a server action body at 1 MB unless configured otherwise, and this took three
+ * photographs at once — so on a real phone, where each is 2-5 MB, the guided
+ * flow could never complete an upload. They now go one at a time through
+ * /api/upload, which is a route handler and accepts a far larger body, and a
+ * failure costs her one retake instead of all three.
+ *
+ * The `${user.id}/...` path prefix is preserved because /api/file's ownership
+ * check depends on it.
+ */
+export async function saveProgressPhotoPaths(input: PhotoPathsInput) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'Not authenticated' }
 
-    if (!user) {
-      return { success: false, error: 'Not authenticated' }
+    const owns = (p?: string | null) => !p || p.startsWith(`${user.id}/`)
+    if (!owns(input.frontPath) || !owns(input.sidePath) || !owns(input.backPath)) {
+      return { success: false, error: 'Those photos do not belong to this account' }
     }
 
-    // Upload a blob straight to Vercel Blob (private store). We keep the same
-    // `${user.id}/...` path prefix that /api/file's ownership check relies on
-    // (pathname.startsWith(user.id)), and return the pathname — not a URL —
-    // since the store is private and files are served via /api/file.
-    const uploadPhotoToBlob = async (blob: Blob | undefined, angle: string) => {
-      if (!blob) return null
-
-      const pathname = `${user.id}/progress-${angle}/${Date.now()}.jpg`
-      const result = await put(pathname, blob, { access: 'private' })
-      return result.pathname
+    if (!input.frontPath && !input.sidePath && !input.backPath) {
+      return { success: false, error: 'No photos to save' }
     }
 
-    // Upload all photos in parallel
-    const [frontPath, sidePath, backPath] = await Promise.all([
-      uploadPhotoToBlob(input.frontPhotoBlob, 'front'),
-      uploadPhotoToBlob(input.sidePhotoBlob, 'side'),
-      uploadPhotoToBlob(input.backPhotoBlob, 'back'),
-    ])
-
-    // Save metadata to progress_photos table
     const { data, error } = await supabase
       .from('progress_photos')
       .insert({
         client_id: user.id,
-        front_photo: frontPath,
-        side_photo: sidePath,
-        back_photo: backPath,
+        front_photo: input.frontPath || null,
+        side_photo: input.sidePath || null,
+        back_photo: input.backPath || null,
         week_number: input.weekNumber,
         notes: input.notes || null,
       })
@@ -54,16 +52,13 @@ export async function uploadProgressPhotos(input: PhotoUploadInput) {
       .single()
 
     if (error) {
-      console.error('[v0] Progress photo insert error:', error)
-      return { success: false, error: 'Failed to save photo metadata' }
+      console.error('[progress-photos] insert failed:', error)
+      return { success: false, error: 'Your photos uploaded but we could not record them. Please try again.' }
     }
 
     return { success: true, data }
   } catch (error) {
-    console.error('[v0] Photo upload error:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Upload failed',
-    }
+    console.error('[progress-photos] save failed:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Could not save your photos' }
   }
 }

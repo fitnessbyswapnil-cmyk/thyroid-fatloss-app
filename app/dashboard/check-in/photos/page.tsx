@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { getWeekNumber } from '@/lib/utils'
+import { programmeWeek } from '@/lib/health/programme'
 import { ProgressPhotoFlow } from '@/components/dashboard/ProgressPhotoFlow'
 
 export default async function ProgressPhotoPage() {
@@ -12,8 +12,16 @@ export default async function ProgressPhotoPage() {
     redirect('/auth/login')
   }
 
-  // Get current week number for progress photo metadata
-  const currentWeek = getWeekNumber(new Date())
+  // Programme week, not the ISO week of the year. The other photo flow already
+  // stores weeks-since-start, so using the calendar week here meant the two
+  // never lined up and a photo could sit under "Week 34" on a client in her
+  // tenth week.
+  const { data: client } = await supabase
+    .from('clients')
+    .select('start_date')
+    .eq('id', user.id)
+    .maybeSingle()
+  const currentWeek = programmeWeek(client?.start_date, new Date()) ?? 1
 
   return (
     <div className="h-screen bg-[#090c14]">

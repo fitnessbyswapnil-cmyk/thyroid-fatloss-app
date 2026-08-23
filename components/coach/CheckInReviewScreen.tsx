@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ChevronLeft, AlertCircle, Send } from 'lucide-react'
 import { PendingReview, getCheckInDetail, submitCheckInFeedback } from '@/app/actions/coach-reviews'
 import { useState, useEffect } from 'react'
+import { deltaTone, levelTone } from "@/lib/coach/delta-tone"
 
 interface CheckInReviewScreenProps {
   review: PendingReview
@@ -16,6 +17,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isEditing, setIsEditing] = useState(false)
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -24,6 +26,28 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
         setSubmitError(result.error)
       } else {
         setDetail(result)
+
+        // Submitting rewrites the existing review rather than adding a second
+        // one, so anything already written has to be on screen — otherwise the
+        // coach replaces a note he cannot see. Photo reviews live in the same
+        // table (app/actions/photo-review.ts) and are a separate note, so they
+        // are not what this box edits.
+        //
+        // Sorted oldest-first to match how submitCheckInFeedback picks the row
+        // it overwrites. The embed comes back in no guaranteed order, so on a
+        // check-in that already carries two review rows the box could otherwise
+        // show one row's text and the save could destroy the other's.
+        const prior = (result.checkin?.checkin_feedback || [])
+          .slice()
+          .sort(
+            (a: any, b: any) =>
+              new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          )
+          .find((f: any) => !(f.body || '').startsWith('📸 Photo review —'))
+        if (prior?.body) {
+          setFeedback(prior.body)
+          setIsEditing(true)
+        }
       }
       setIsLoading(false)
     }
@@ -116,7 +140,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             {review.energy_delta !== undefined && (
               <div className="flex items-center justify-between text-sm">
                 <span style={{ color: '#e8eaf0' }}>Energy</span>
-                <span style={{ color: review.energy_delta > 0 ? '#34d399' : '#ef4444', fontWeight: 600 }}>
+                <span style={{ color: deltaTone(review.energy_delta, 'up').color, fontWeight: 600 }}>
                   {review.energy} {review.energy_delta > 0 ? '+' : ''}{review.energy_delta}
                 </span>
               </div>
@@ -124,7 +148,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             {review.sleep_delta !== undefined && (
               <div className="flex items-center justify-between text-sm">
                 <span style={{ color: '#e8eaf0' }}>Sleep</span>
-                <span style={{ color: review.sleep_delta > 0 ? '#34d399' : '#ef4444', fontWeight: 600 }}>
+                <span style={{ color: deltaTone(review.sleep_delta, 'up').color, fontWeight: 600 }}>
                   {review.sleep_quality} {review.sleep_delta > 0 ? '+' : ''}{review.sleep_delta}
                 </span>
               </div>
@@ -132,7 +156,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
             {review.weight_delta !== undefined && review.weight !== undefined && (
               <div className="flex items-center justify-between text-sm">
                 <span style={{ color: '#e8eaf0' }}>Weight</span>
-                <span style={{ color: review.weight_delta < 0 ? '#34d399' : '#ef4444', fontWeight: 600 }}>
+                <span style={{ color: deltaTone(review.weight_delta, 'down').color, fontWeight: 600 }}>
                   {review.weight.toFixed(1)}kg {review.weight_delta < 0 ? '' : '+'}{review.weight_delta.toFixed(1)}
                 </span>
               </div>
@@ -213,7 +237,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
               {review.stress !== undefined && (
                 <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
                   <span style={{ color: '#e8eaf0' }}>Stress Level</span>
-                  <span style={{ color: review.stress > 7 ? '#ef4444' : '#34d399', fontWeight: 600 }}>
+                  <span style={{ color: levelTone(review.stress, 7), fontWeight: 600 }}>
                     {review.stress}/10
                   </span>
                 </div>
@@ -247,7 +271,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
         }}
       >
         <label className="text-xs uppercase font-medium mb-2 block" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Your Feedback
+          {isEditing ? 'Your Feedback — already sent, editing replaces it' : 'Your Feedback'}
         </label>
         <div className="flex gap-3">
           <textarea

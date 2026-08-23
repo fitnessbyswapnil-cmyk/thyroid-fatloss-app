@@ -1,7 +1,15 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
 import { programmeWeek } from '@/lib/health/programme'
+
+// Photo reviews are written into checkin_feedback too (submitPhotoReview in
+// app/actions/photo-review.ts), threaded to the nearest check-in. They are a
+// different note from the weekly review, so the weekly review must never take
+// one of them for its own earlier draft and overwrite it — that would delete a
+// note the client may not have read yet.
+const PHOTO_REVIEW_PREFIX = '📸 Photo review —'
 
 export interface PendingReview {
   id: string
@@ -194,24 +202,64 @@ export async function submitCheckInFeedback(
       throw new Error('Only coaches can submit feedback')
     }
 
-    // Insert feedback
-    const { error: feedbackError } = await supabase
-      .from('checkin_feedback')
-      .insert({
-        checkin_id: checkinId,
-        coach_id: user.id,
-        body: feedbackBody,
-      })
+    const body = feedbackBody.trim()
+    if (!body) throw new Error('Feedback cannot be empty')
 
-    if (feedbackError) throw feedbackError
+    // A check-in gets one weekly review, rewritten rather than repeated. The
+    // queue could be re-opened on the same check-in — from a stale tab, a back
+    // button, a double submit — and every extra row showed up on the client's
+    // dashboard as the coach having said the same thing twice.
+    const { data: existing, error: existingError } = await supabase
+      .from('checkin_feedback')
+      .select('id, body')
+      .eq('checkin_id', checkinId)
+      .order('created_at', { ascending: true })
+
+    if (existingError) throw existingError
+
+    const priorReview = (existing || []).find(
+      (row) => !(row.body || '').startsWith(PHOTO_REVIEW_PREFIX)
+    )
+
+    if (priorReview) {
+      // coach_id moves to whoever wrote this text: the client reads the body as
+      // her coach's own words, so the row must name the person who wrote them.
+      const { error: rewriteError } = await supabase
+        .from('checkin_feedback')
+        .update({
+          body,
+          coach_id: user.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', priorReview.id)
+
+      if (rewriteError) throw rewriteError
+    } else {
+      const { error: feedbackError } = await supabase
+        .from('checkin_feedback')
+        .insert({
+          checkin_id: checkinId,
+          coach_id: user.id,
+          body,
+        })
+
+      if (feedbackError) throw feedbackError
+    }
 
     // Update check-in status to reviewed
-    const { error: updateError } = await supabase
+    const { data: reviewed, error: updateError } = await supabase
       .from('weekly_checkins')
       .update({ status: 'reviewed' })
       .eq('id', checkinId)
+      .select('client_id')
+      .single()
 
     if (updateError) throw updateError
+
+    // Without this the coach's queue kept serving the check-in he just wrote up,
+    // so the obvious next click was the one that duplicated the review.
+    revalidatePath('/coach')
+    if (reviewed?.client_id) revalidatePath(`/coach/client/${reviewed.client_id}`)
 
     return { success: true, error: null }
   } catch (error) {

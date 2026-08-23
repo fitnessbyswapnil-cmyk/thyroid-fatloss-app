@@ -31,10 +31,21 @@ export function ChatView({
   useEffect(() => { scrollDown() }, [messages.length])
 
   // Poll for new messages every 12s while the screen is open.
+  //
+  // listMessages is guarded and hands back [] for a failed read just as readily
+  // as for an empty thread, so one poll landing in a tunnel used to wipe weeks
+  // of history off the screen and leave "No messages yet" in its place. An empty
+  // result now only ever keeps what is already there — a thread cannot shrink to
+  // nothing mid-session, and a genuinely empty one is already right because it
+  // started empty.
   useEffect(() => {
     const t = setInterval(async () => {
-      const fresh = await listMessages(clientId)
-      setMessages(fresh)
+      try {
+        const fresh = await listMessages(clientId)
+        if (fresh.length) setMessages(fresh)
+      } catch {
+        // Offline or a dropped request: keep the conversation on screen.
+      }
     }, 12000)
     return () => clearInterval(t)
   }, [clientId])
@@ -45,8 +56,16 @@ export function ChatView({
     setSending(true)
     setText("")
     const res = await sendMessage(body, clientId)
-    if (res.success) setMessages(await listMessages(clientId))
-    else setText(body)
+    if (res.success) {
+      // Same rule as the poll — her message is on the server, so an empty or
+      // failed re-read must not blank the thread she just wrote into.
+      try {
+        const fresh = await listMessages(clientId)
+        if (fresh.length) setMessages(fresh)
+      } catch {}
+    } else {
+      setText(body)
+    }
     setSending(false)
   }
 

@@ -5,6 +5,7 @@ import { AlertCircle, ChevronRight, Clock } from 'lucide-react'
 import { PendingReview } from '@/app/actions/coach-reviews'
 import { useState } from 'react'
 import { CheckInReviewScreen } from './CheckInReviewScreen'
+import { deltaTone } from "@/lib/coach/delta-tone"
 
 interface PendingReviewsQueueProps {
   reviews: PendingReview[]
@@ -101,10 +102,10 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
                 {/* Deltas */}
                 {review.energy_delta !== undefined && (
                   <div className="flex items-center gap-4 text-xs">
-                    <span style={{ color: review.energy_delta > 0 ? '#34d399' : '#ef4444' }}>
+                    <span style={{ color: deltaTone(review.energy_delta, 'up').color }}>
                       Energy {review.energy_delta > 0 ? '+' : ''}{review.energy_delta}
                     </span>
-                    <span style={{ color: review.sleep_delta && review.sleep_delta > 0 ? '#34d399' : '#ef4444' }}>
+                    <span style={{ color: deltaTone(review.sleep_delta, 'up').color }}>
                       Sleep {review.sleep_delta && review.sleep_delta > 0 ? '+' : ''}{review.sleep_delta}
                     </span>
                   </div>
@@ -114,8 +115,8 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
               {/* Flag Chip & Time Waiting */}
               <div className="flex items-center gap-2">
                 {review.is_flagged && (
-                  <span className="text-xs px-2 py-1 rounded-md font-semibold" style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' }}>
-                    🚩 {review.flag_reason}
+                  <span className="text-xs px-2 py-1 rounded-md font-semibold" style={{ background: 'rgba(245, 158, 11, 0.14)', color: '#f59e0b' }}>
+                    {review.flag_reason}
                   </span>
                 )}
                 <span className="text-xs flex items-center gap-1" style={{ color: '#8892a4' }}>

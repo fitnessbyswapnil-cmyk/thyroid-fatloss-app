@@ -331,26 +331,66 @@ function BodyStep({ data, setData, onNext }: StepProps) {
   )
 }
 
-// Step 3: Actions
-function ActionsStep({ data, setData, onNext }: StepProps) {
-  const Counter = ({
-    label,
-    value,
-    target,
-    onChange,
-  }: {
-    label: string
-    value: number
-    target: number
-    onChange: (val: number) => void
-  }) => (
+/** A week is seven days, so no target this flow collects can sensibly exceed it. */
+const TARGET_MAX = 7
+
+/**
+ * Lives at module scope, not inside ActionsStep. Redefined per render it is a
+ * new component type each keystroke, which remounts the target field and takes
+ * the caret with it.
+ */
+function Counter({
+  label,
+  value,
+  target,
+  onChange,
+  onTargetChange,
+}: {
+  label: string
+  value: number
+  target: number
+  onChange: (val: number) => void
+  /** Supplied only where the target is the coach's programming rather than a constant. */
+  onTargetChange?: (val: number) => void
+}) {
+  // The field needs to hold "" while she clears it before typing the new number.
+  const [draft, setDraft] = useState(String(target))
+  useEffect(() => { setDraft(String(target)) }, [target])
+
+  const commit = (raw: string) => {
+    const n = parseInt(raw, 10)
+    // A cleared field is her mid-edit, not a plan of one session. Reading it as 1
+    // would clamp the workouts she has already recorded down to 1 with it.
+    const next = Number.isFinite(n) ? Math.min(TARGET_MAX, Math.max(1, n)) : target
+    // The effect above only fires when the target actually moves, so a clamped
+    // entry that lands back on the current one (9 against a target of 7) would
+    // otherwise leave the wrong number sitting in the field.
+    setDraft(String(next))
+    onTargetChange?.(next)
+  }
+
+  return (
     <div className="space-y-2">
       <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
         {label}
       </label>
       <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.04)' }}>
-        <span style={{ color: '#8892a4' }}>
-          {value} of {target}
+        <span className="flex items-center gap-1.5" style={{ color: '#8892a4' }}>
+          <span className="tabular-nums">{value}</span>
+          <span>of</span>
+          {onTargetChange ? (
+            <input
+              value={draft}
+              onChange={(e) => setDraft(e.target.value.replace(/\D/g, '').slice(0, 1))}
+              onBlur={(e) => commit(e.target.value)}
+              inputMode="numeric"
+              aria-label={`${label} planned for the week`}
+              className="w-9 px-2 py-0.5 rounded-lg text-center tabular-nums focus:outline-none"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#e8eaf0' }}
+            />
+          ) : (
+            <span className="tabular-nums">{target}</span>
+          )}
         </span>
         <div className="flex gap-2">
           <button
@@ -377,7 +417,10 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
       </div>
     </div>
   )
+}
 
+// Step 3: Actions
+function ActionsStep({ data, setData, onNext }: StepProps) {
   const ChipGroup = ({
     label,
     options,
@@ -427,11 +470,17 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
         value={data.nutritionAdherence}
         onChange={(val) => setData({ ...data, nutritionAdherence: val })}
       />
+      {/* The workout target is whatever the coach programmed her, so it is hers
+          to set. Fixed at the seeded default, a client on four sessions a week
+          could never record more than three. */}
       <Counter
         label="Workouts"
         value={data.workoutsCompleted}
         target={data.workoutsTarget}
         onChange={(val) => setData({ ...data, workoutsCompleted: val })}
+        onTargetChange={(val) =>
+          setData({ ...data, workoutsTarget: val, workoutsCompleted: Math.min(data.workoutsCompleted, val) })
+        }
       />
       <Counter
         label="Medication"
@@ -719,6 +768,13 @@ function ReflectionStep({ data, setData, onNext, onSubmit, isLoading }: StepProp
 }
 
 // Submission Reveal Screen - Animated metrics and celebration
+
+/** Mean of energy, sleep and inverted stress — three 1-10 scales, so 10 is the ceiling. */
+const WEEK_SCORE_MAX = 10
+/** Must track the <circle> geometry: the ring is drawn at r=72 inside a 160px box. */
+const RING_RADIUS = 72
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS
+
 function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInData; submissionData: any; error: string | null }) {
   if (error) {
     return (
@@ -784,6 +840,9 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
 
   // Use real submission data if available, otherwise fallback to placeholder
   const weekScore = submissionData?.data?.weekScore ?? Math.round((data.energy + data.sleepQuality + (10 - data.stress)) / 3)
+  // weekScore is the mean of three 1-10 scales, so it tops out at 10 — dividing
+  // by 100 left the ring under a tenth full on her best possible week.
+  const ringFraction = Math.min(1, Math.max(0, weekScore / WEEK_SCORE_MAX))
   const prevEnergy = submissionData?.data?.prevEnergy ?? null
   const prevSleep = submissionData?.data?.prevSleep ?? null
   const prevWeight = submissionData?.data?.prevWeight ?? null
@@ -855,10 +914,13 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           className="absolute inset-0 w-full h-full"
           style={{ transform: 'rotate(-90deg)' }}
         >
-          <circle
+          {/* motion.circle, not circle-with-an-`as`-prop: framer only animates its
+              own elements, so the offset never moved off its full value and the
+              ring — the payoff for nine screens — was always empty. */}
+          <motion.circle
             cx="80"
             cy="80"
-            r="72"
+            r={RING_RADIUS}
             stroke="url(#gradient)"
             strokeWidth="4"
             fill="none"
@@ -866,11 +928,9 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
             style={{
               filter: 'drop-shadow(0 0 8px rgba(45, 212, 191, 0.3))',
             }}
-            as={motion.circle}
-            strokeDasharray="565"
-            strokeDashoffset="565"
-            initial={{ strokeDashoffset: 565 }}
-            animate={{ strokeDashoffset: 565 - (weekScore / 100) * 565 }}
+            strokeDasharray={RING_CIRCUMFERENCE}
+            initial={{ strokeDashoffset: RING_CIRCUMFERENCE }}
+            animate={{ strokeDashoffset: RING_CIRCUMFERENCE * (1 - ringFraction) }}
             transition={{ duration: 2, ease: 'easeOut' }}
           />
           <defs>

@@ -16,6 +16,15 @@ export default async function DashboardPage() {
     redirect("/auth/login")
   }
 
+  // meal_logs / exercise_logs hold many rows per day, so they are bounded by date
+  // rather than by row count the way daily_logs is — 180 days matches the streak
+  // window below. They are also read newest-first: exercise_logs is one row per
+  // SET, so six months of it can cross PostgREST's max-rows cap, and an unordered
+  // read would then truncate arbitrarily — possibly dropping THIS week and zeroing
+  // the streak, which is the exact bug the union below exists to fix. Ordered, a
+  // truncation can only ever cost her the oldest days.
+  const streakWindowStart = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toLocaleDateString("en-CA")
+
   // Everything that only needs user.id goes out at once. These used to run one
   // after another, and the database is in Singapore while this function runs in
   // Mumbai — so each sequential query cost a fresh round trip and the page spent
@@ -25,6 +34,8 @@ export default async function DashboardPage() {
     { data: allCheckins },
     { data: latestInsight },
     { data: logs },
+    { data: mealLogDays },
+    { data: exerciseLogDays },
     { data: healthProfile },
     upNextLesson,
     plansForClient,
@@ -33,6 +44,8 @@ export default async function DashboardPage() {
     supabase.from("weekly_checkins").select("*").eq("client_id", user.id).order("submitted_at", { ascending: false }),
     supabase.from("coach_insights").select("*").eq("client_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     supabase.from("daily_logs").select("date, workout_done, meals_followed").eq("client_id", user.id).order("date", { ascending: false }).limit(180),
+    supabase.from("meal_logs").select("date, done").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
+    supabase.from("exercise_logs").select("date").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
     supabase.from("health_profiles").select("medication, medication_dose, medication_timing").eq("client_id", user.id).maybeSingle(),
     nextLesson(),
     getPlansForClient(user.id),
@@ -101,13 +114,19 @@ export default async function DashboardPage() {
   }))
 
   // Daily adherence logs → REAL streaks (last 180 days). Degrades to zeros if
-  // the daily_logs table isn't provisioned yet (migration 008).
+  // the tables aren't provisioned yet (migrations 008 and 019).
   const dayStr = (d: Date) => d.toLocaleDateString("en-CA")
-  const activeDays = new Set(
-    (logs || [])
+  // A day counts if she showed up on ANY surface. Ticking a meal or logging a
+  // set writes to meal_logs / exercise_logs, never to daily_logs — so a client
+  // who did all her logging on the plan screen used to be told her streak was
+  // zero. The app asked for the work and then denied it happened.
+  const activeDays = new Set<string>([
+    ...(logs || [])
       .filter((l) => l.workout_done || (l.meals_followed || 0) > 0)
-      .map((l) => l.date as string)
-  )
+      .map((l) => l.date as string),
+    ...(mealLogDays || []).filter((m) => m.done).map((m) => m.date as string),
+    ...(exerciseLogDays || []).map((e) => e.date as string),
+  ])
 
   // Current streak: walk back from today (grace for a not-yet-logged today).
   let streakCurrent = 0
@@ -216,7 +235,8 @@ export default async function DashboardPage() {
       sleepQuality: sleepScore,
       mentalClarity: stressScore,
     },
-    // Real streaks computed from daily_logs (not the never-written clients columns)
+    // Real streaks computed from what she actually logged (not the never-written
+    // clients columns)
     streak: {
       current: streakCurrent,
       best: Math.max(streakBest, streakCurrent),

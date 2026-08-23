@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Lock, CheckCircle2, ChevronLeft } from 'lucide-react'
 import { PhotoCapture } from './PhotoCapture'
-import { uploadProgressPhotos } from '@/app/actions/upload-progress-photos'
+import { saveProgressPhotoPaths } from '@/app/actions/upload-progress-photos'
+import { uploadPhoto } from '@/lib/photos/prepare'
 
 interface PhotoFlowProps {
   checkInWeek: number
@@ -42,10 +43,19 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
     setUploadError(null)
 
     try {
-      const result = await uploadProgressPhotos({
-        frontPhotoBlob: photos.front,
-        sidePhotoBlob: photos.side,
-        backPhotoBlob: lastBlob,
+      // One request per photo, through the route handler. Each is shrunk in the
+      // browser first — a 4000px photograph costs her mobile data and tells the
+      // coach nothing a 1440px one doesn't.
+      const [frontPath, sidePath, backPath] = await Promise.all([
+        photos.front ? uploadPhoto(photos.front, 'front') : Promise.resolve(null),
+        photos.side ? uploadPhoto(photos.side, 'side') : Promise.resolve(null),
+        lastBlob ? uploadPhoto(lastBlob, 'back') : Promise.resolve(null),
+      ])
+
+      const result = await saveProgressPhotoPaths({
+        frontPath,
+        sidePath,
+        backPath,
         weekNumber: checkInWeek,
         notes: 'First-time progress photos',
       })

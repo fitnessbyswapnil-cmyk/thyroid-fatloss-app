@@ -133,6 +133,17 @@ export async function addLab(input: Partial<LabResult> & { clientId?: string; ta
       source: input.source === "upload" ? "upload" : "manual",
       created_by: user?.id ?? null,
     }
+
+    // lab_results_has_a_value (migration 023) rejects a row carrying only a
+    // date. Without this the client would read the raw constraint violation,
+    // so say the same thing the upload sheet already says. notes is excluded
+    // on purpose, matching the constraint: a note plots nothing.
+    const hasAValue =
+      row.tsh !== null || row.t3 !== null || row.t4 !== null ||
+      row.vitamin_d !== null || row.b12 !== null || row.ferritin !== null ||
+      row.weight_kg !== null || row.extras !== null
+    if (!hasAValue) return { success: false, error: 'Add at least one value before saving.' }
+
     const { error } = await supabase.from('lab_results').insert(row)
     if (error) return { success: false, error: error.message }
     revalidatePath('/dashboard/health')

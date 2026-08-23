@@ -41,12 +41,19 @@ export function StreakAchievements({
 }: StreakAchievementsProps) {
   const containerRef = useRef(null)
   const isInView = useInView(containerRef, { once: true, margin: "-60px" })
-  const animatedStreak = useAnimatedCounter(currentStreak, 1400, isInView)
+  // The headline is her BEST run, not the live one. A live streak resets to zero
+  // after a single missed day, so the old headline handed a tired client a giant
+  // amber 0 beside "Best: 34 days" — the app's loudest number was a scoreboard of
+  // the week she'd just had. The hero already made the same move to a monotonic
+  // "weeks together"; this is that decision finished. Best only ever goes up, and
+  // the live run still gets its line below whenever there is one to report.
+  const animatedStreak = useAnimatedCounter(bestStreak, 1400, isInView)
 
   // Milestones are derived from the real streak — earned when reached, the next
-  // unreached one is the current target. No hardcoded "earned" badges.
+  // unreached one is the current target. No hardcoded "earned" badges. Measured
+  // against the best run so a badge she has already reached is never taken back.
   const milestoneDays = [7, 14, 30, 60]
-  const nextIndex = milestoneDays.findIndex((d) => currentStreak < d)
+  const nextIndex = milestoneDays.findIndex((d) => bestStreak < d)
   const goalPct = monthlyGoal.target > 0
     ? Math.max(0, Math.min(100, Math.round((monthlyGoal.current / monthlyGoal.target) * 100)))
     : 0
@@ -86,11 +93,16 @@ export function StreakAchievements({
             </span>
           </div>
           <span className="text-[12px] font-medium uppercase block" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
-            Day Streak
+            {bestStreak === 1 ? "Day — best run" : "Days — best run"}
           </span>
-          <span className="text-[12px]" style={{ color: "#404858" }}>
-            Best: {bestStreak} {bestStreak === 1 ? "day" : "days"}
-          </span>
+          {/* Nothing at all when the run is broken. There is no honest way to
+              print a zero here that doesn't read as a telling-off, and she can
+              start the next one from today's log without being reminded. */}
+          {currentStreak > 0 && (
+            <span className="text-[12px]" style={{ color: "#404858" }}>
+              {currentStreak} {currentStreak === 1 ? "day" : "days"} going right now
+            </span>
+          )}
         </div>
       </div>
 
@@ -115,7 +127,7 @@ export function StreakAchievements({
       {/* Streak milestones (derived from real streak) */}
       <div className="grid grid-cols-4 gap-2">
         {milestoneDays.map((days, index) => {
-          const earned = currentStreak >= days
+          const earned = bestStreak >= days
           const current = index === nextIndex
           return (
             <motion.div
