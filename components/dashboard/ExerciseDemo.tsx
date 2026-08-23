@@ -27,12 +27,24 @@ export function ExerciseDemo({
   interval?: number
 }) {
   const frames = [start, end].filter(Boolean) as string[]
+  // Two free frames beat one metered GIF.
+  //
+  // image_start/image_end come from the Free Exercise DB on jsDelivr: a public
+  // CDN, no API key, no quota, and it loads from an edge rather than through a
+  // cross-region proxy. demo_url goes through /api/exercise-gif to a metered
+  // API whose monthly allowance is currently exhausted, so today it renders
+  // nothing at all.
+  //
+  // 334 of the 353 exercises that have a GIF also have both stills, so
+  // preferring the stills costs almost no coverage and removes the dependency
+  // for 95% of the library. The GIF is still used for the 19 that have no
+  // still pair.
+  const preferFrames = frames.length >= 2
   const [i, setI] = useState(0)
   const [inView, setInView] = useState(true)
   const [demoBroken, setDemoBroken] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
-  const showDemo = Boolean(demo) && !demoBroken
 
   // Both effects must run on every render. They used to sit BELOW an early
   // return for the GIF branch, so the first time a demo image 404'd — the
@@ -49,14 +61,14 @@ export function ExerciseDemo({
   }, [])
 
   useEffect(() => {
-    if (showDemo || frames.length < 2 || !inView) return
+    if (frames.length < 2 || !inView) return
     const reduce = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches
     if (reduce) return
     const t = setInterval(() => setI((v) => (v + 1) % frames.length), interval)
     return () => clearInterval(t)
-  }, [showDemo, frames.length, inView, interval])
+  }, [frames.length, inView, interval])
 
-  if (demo && !demoBroken) {
+  if (demo && !demoBroken && !preferFrames) {
     return (
       <div
         className="relative shrink-0 overflow-hidden"
