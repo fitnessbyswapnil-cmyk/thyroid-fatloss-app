@@ -7,6 +7,7 @@ import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
 import { parseSymptoms, symptomBurden, symptomChanges } from "@/lib/health/symptoms"
 import { type Measurements } from "@/lib/health/measurements"
 import { BodyCompositionChart, MetricBar } from "@/components/charts/BodyCompositionChart"
+import { findPlateau, plateauNote, droppedBefore } from "@/lib/health/plateau"
 
 export interface CheckinPoint {
   week_number: number
@@ -114,16 +115,69 @@ export function ProgressView({ checkins, backHref = "/dashboard" }: { checkins: 
             ))}
           </div>
 
-          {view === "weight" && (
-            <>
-              <TrendChart points={points} height={200} unit="kg" goalDirection="down" />
-              {points.length < 2 && (
-                <p className="text-xs mt-3 text-center" style={{ color: "#8b867c" }}>
-                  Submit weekly check-ins to build your weight trend.
-                </p>
-              )}
-            </>
-          )}
+          {view === "weight" && (() => {
+            const series = sorted.map((c) => (c.weight != null ? Number(c.weight) : null))
+            const span = findPlateau(series)
+            const note = span ? plateauNote(span, droppedBefore(series, span)) : null
+            // The chart drops nulls, so the shaded span has to be expressed in
+            // the indices the chart actually plots, not the raw week indices.
+            const plotted = series
+              .map((v, i) => ({ v, i }))
+              .filter((r) => r.v !== null)
+              .map((r) => r.i)
+            const toPlotIndex = (i: number) => plotted.indexOf(i)
+
+            return (
+              <>
+                <TrendChart
+                  points={points}
+                  height={200}
+                  unit="kg"
+                  goalDirection="down"
+                  plateau={
+                    span
+                      ? { startIndex: toPlotIndex(span.startIndex), endIndex: toPlotIndex(span.endIndex), label: `${span.weeks} FLAT WEEKS` }
+                      : undefined
+                  }
+                />
+                {note && (
+                  <p className="mt-3" style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5A564E" }}>
+                    {note}
+                  </p>
+                )}
+                {points.length < 2 && (
+                  <p className="text-xs mt-3 text-center" style={{ color: "#8B867C" }}>
+                    Submit weekly check-ins to build your weight trend.
+                  </p>
+                )}
+
+                {/* Slide 8: waist is the answer to a flat scale — it kept
+                    moving through the same weeks, so it sits directly below
+                    rather than a tab away. */}
+                {span && (() => {
+                  const waist = sorted
+                    .map((c) => (c as unknown as { waist?: number | null }).waist)
+                    .filter((v): v is number => typeof v === "number")
+                  if (waist.length < 2) return null
+                  const moved = +(waist[0] - waist[waist.length - 1]).toFixed(1)
+                  if (moved <= 0) return null
+                  return (
+                    <div className="mt-4 pt-4" style={{ borderTop: "1px solid #ECE5D6" }}>
+                      <p className="uppercase" style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.14em", color: "#8B867C" }}>
+                        Waist · the same weeks
+                      </p>
+                      <p className="mt-1.5 tabular-nums" style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.02em", color: "#1C1D20" }}>
+                        −{moved} cm
+                      </p>
+                      <p className="mt-1" style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5A564E" }}>
+                        It kept moving while the scale did not. This is the measurement to trust through a flat stretch.
+                      </p>
+                    </div>
+                  )
+                })()}
+              </>
+            )
+          })()}
 
           {view === "body" && <BodyCompositionChart rows={sorted as unknown as Measurements[]} />}
 

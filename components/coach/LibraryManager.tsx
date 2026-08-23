@@ -85,7 +85,7 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
                 <button key={t} onClick={() => setTab(t)}
                   className="px-4 py-2 rounded-full text-sm font-medium capitalize inline-flex items-center gap-2"
                   style={{
-                    background: tab === t ? "rgba(21, 94, 86,0.15)" : "#ffffff",
+                    background: tab === t ? "rgba(21, 94, 86,0.15)" : "#FDFBF7",
                     border: `1px solid ${tab === t ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}`,
                     color: tab === t ? "#155e56" : "#8b867c" }}>
                   {t === "workouts" ? <Dumbbell size={15} /> : <Apple size={15} />} {t}

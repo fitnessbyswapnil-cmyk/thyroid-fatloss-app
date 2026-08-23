@@ -151,7 +151,7 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
             key={p}
             onClick={() => setPose(p)}
             className="px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all"
-            style={{ background: pose === p ? "rgba(21, 94, 86,0.15)" : "#ffffff", color: pose === p ? "#155e56" : "#8b867c" }}
+            style={{ background: pose === p ? "rgba(21, 94, 86,0.15)" : "#FDFBF7", color: pose === p ? "#155e56" : "#8b867c" }}
           >
             {p}
           </button>

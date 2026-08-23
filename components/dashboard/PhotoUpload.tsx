@@ -111,7 +111,7 @@ export function PhotoUpload({
         disabled={isUploading}
         className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden"
         style={{
-          background: displayImage ? 'transparent' : '#ffffff',
+          background: displayImage ? 'transparent' : '#FDFBF7',
           border: '1px dashed #cfc7b6' }}
         whileHover={{ scale: isUploading ? 1 : 1.02 }}
         whileTap={{ scale: isUploading ? 1 : 0.98 }}

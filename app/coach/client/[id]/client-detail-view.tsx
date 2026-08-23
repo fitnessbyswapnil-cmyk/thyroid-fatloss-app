@@ -221,7 +221,7 @@ export function ClientDetailView({
               onClick={() => setActiveTab(tab.id)}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium whitespace-nowrap shrink-0 transition-all"
               style={{
-                background: activeTab === tab.id ? "rgba(21, 94, 86, 0.15)" : "#ffffff",
+                background: activeTab === tab.id ? "rgba(21, 94, 86, 0.15)" : "#FDFBF7",
                 border: `1px solid ${activeTab === tab.id ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}`,
                 color: activeTab === tab.id ? "#155e56" : "#8b867c" }}
             >

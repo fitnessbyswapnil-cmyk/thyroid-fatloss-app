@@ -33,22 +33,18 @@ export const metadata: Metadata = {
     capable: true,
     title: 'ThyroWell',
     statusBarStyle: 'black-translucent' },
+  // One mark in both schemes — it is drawn on its own ink ground, so it does
+  // not need a light variant to stay legible.
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)' },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)' },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml' },
+      { url: '/icons/mark.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
     ],
-    apple: '/apple-icon.png' } }
+    apple: '/icons/apple-touch-icon.png' } }
 
 export const viewport: Viewport = {
-  themeColor: '#F6F3ED',
+  // Ink: the app opens on the greeting block, so the status bar matches it.
+  themeColor: '#17181C',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,

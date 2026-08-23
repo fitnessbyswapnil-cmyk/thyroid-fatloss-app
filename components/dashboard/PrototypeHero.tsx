@@ -30,16 +30,49 @@ export function PrototypeHero({
   const hasMed = medication && (medication.name || medication.dose)
 
   return (
-    <div className="relative overflow-hidden px-6" style={{ paddingTop: "calc(52px + env(safe-area-inset-top, 0px))", paddingBottom: 8 }}>
-      <div className="tw-glow" style={{ position: "absolute", top: -140, left: 10, width: 360, height: 300, zIndex: 0 }} />
-      <div className="relative max-w-2xl mx-auto" style={{ zIndex: 1 }}>
-        <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#8b867c", letterSpacing: "0.16em" }}>{dateLabel}</p>
-        <h1 className="mt-1.5" style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 31, lineHeight: 1.15, color: "#1c1d20" }}>
-          {greeting}, {name}
-        </h1>
-        <p className="text-sm mt-1.5" style={{ color: "#5a564e" }}>
-          {dayOfReset ? `Day ${dayOfReset} of your reset` : `Week ${programWeek} of your reset`} — steady wins.
-        </p>
+    <div className="relative">
+      {/* ── Ink. Allowed on exactly two things in this system: the greeting at
+          the top of Home and Week 0, and the coach's own voice. Nothing that
+          can be counted lives up here. ── */}
+      <div
+        style={{
+          background: "#17181C",
+          paddingTop: "calc(46px + env(safe-area-inset-top, 0px))",
+          paddingBottom: 30,
+          paddingLeft: 20,
+          paddingRight: 20 }}
+      >
+        <div className="max-w-2xl mx-auto">
+          <p className="uppercase" style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.14em", color: "#8E8A84" }}>
+            {dateLabel}
+          </p>
+          {/* The one serif moment on this screen. */}
+          <h1
+            className="mt-2"
+            style={{ fontFamily: "var(--face-serif)", fontWeight: 400, fontSize: 30, lineHeight: 1.24, letterSpacing: "-0.01em", color: "#F6F3ED" }}
+          >
+            {greeting}, {name}.
+          </h1>
+          <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.6, color: "#B8B3AB" }}>
+            {dayOfReset ? `Day ${dayOfReset} of your reset` : `Week ${programWeek} of your reset`} — steady wins.
+          </p>
+        </div>
+      </div>
+
+      {/* ── The seam. Paper is drawn OVER ink, pulled up 14px with a 16px
+          radius, so the dark greeting never sits behind a number. ── */}
+      <div
+        className="relative px-6"
+        style={{
+          background: "#F4F0E8",
+          marginTop: -14,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          paddingTop: 22,
+          paddingBottom: 8,
+          zIndex: 1 }}
+      >
+      <div className="relative max-w-2xl mx-auto">
 
         {/* Medication reminder (from thyroid profile) */}
         {hasMed ? (
@@ -138,6 +171,7 @@ export function PrototypeHero({
             </Link>
           ))}
         </div>
+      </div>
       </div>
     </div>
   )

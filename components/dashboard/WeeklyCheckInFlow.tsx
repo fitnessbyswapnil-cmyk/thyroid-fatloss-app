@@ -158,7 +158,7 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
                 onClick={() => setData({ ...data, mood: face.value })}
                 className="flex-1 p-3 rounded-xl transition-all"
                 style={{
-                  background: data.mood === face.value ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
+                  background: data.mood === face.value ? 'rgba(21, 94, 86, 0.15)' : '#FDFBF7',
                   border: `1px solid ${data.mood === face.value ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}` }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -265,7 +265,7 @@ function BodyStep({ data, setData, onNext }: StepProps) {
             onClick={() => onChange(opt)}
             className="px-4 py-2 rounded-full text-sm font-medium transition-all"
             style={{
-              background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
+              background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#FDFBF7',
               border: `1px solid ${value === opt ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
               color: value === opt ? '#155e56' : '#8b867c' }}
             whileHover={{ scale: 1.05 }}
@@ -384,7 +384,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
             onClick={() => onChange(opt)}
             className="px-4 py-2 rounded-full text-sm font-medium transition-all"
             style={{
-              background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#ffffff',
+              background: value === opt ? 'rgba(21, 94, 86, 0.15)' : '#FDFBF7',
               border: `1px solid ${value === opt ? 'rgba(21, 94, 86, 0.3)' : '#e2dbcd'}`,
               color: value === opt ? '#155e56' : '#8b867c' }}
             whileHover={{ scale: 1.05 }}
@@ -623,7 +623,7 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
                       onClick={() => setSeverity(s.key, level)}
                       className="flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all"
                       style={{
-                        background: active ? 'rgba(21, 94, 86,0.16)' : '#ffffff',
+                        background: active ? 'rgba(21, 94, 86,0.16)' : '#FDFBF7',
                         border: `1px solid ${active ? 'rgba(21, 94, 86,0.4)' : '#e2dbcd'}`,
                         color: active ? '#155e56' : '#8b867c' }}
                     >

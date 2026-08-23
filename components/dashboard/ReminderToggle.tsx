@@ -89,7 +89,7 @@ export function ReminderToggle() {
   if (state === "loading" || state === "unsupported") return null
 
   const card = {
-    background: state === "on" ? "rgba(21, 94, 86, 0.13)" : "#ffffff",
+    background: state === "on" ? "rgba(21, 94, 86, 0.13)" : "#FDFBF7",
     border: `1px solid ${state === "on" ? "rgba(21, 94, 86,0.2)" : "#e2dbcd"}` } as const
 
   return (

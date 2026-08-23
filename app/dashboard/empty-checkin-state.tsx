@@ -78,21 +78,25 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
     >
       <div className="tw-glow" style={{ position: 'fixed', top: -150, left: 20, width: 350, height: 300, zIndex: 0 }} />
 
-      <main className="max-w-2xl mx-auto px-6 relative" style={{ zIndex: 1, paddingTop: 'calc(56px + env(safe-area-inset-top, 0px))' }}>
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#8b867c', letterSpacing: '0.16em' }}>
-            Week one
+      {/* Ink — the second and last place it is allowed. */}
+      <div style={{ background: '#17181C', paddingTop: 'calc(46px + env(safe-area-inset-top, 0px))', paddingBottom: 30, paddingLeft: 20, paddingRight: 20 }}>
+        <div className="max-w-2xl mx-auto">
+          <p className="uppercase" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', color: '#8E8A84' }}>
+            Week 0 · starts Monday
           </p>
-          <h1
-            className="mt-1.5"
-            style={{ fontFamily: "'Newsreader', Georgia, serif",  fontSize: 31, lineHeight: 1.15, color: '#1c1d20' }}
-          >
-            Welcome, {name}
+          <h1 className="mt-2" style={{ fontFamily: 'var(--face-serif)', fontWeight: 400, fontSize: 30, lineHeight: 1.24, letterSpacing: '-0.01em', color: '#F6F3ED' }}>
+            Welcome, {name}. Nothing to show yet — that&rsquo;s exactly right.
           </h1>
-          <p className="text-sm mt-2" style={{ color: '#5a564e', lineHeight: 1.55 }}>
-            Everything starts small. Here&rsquo;s what to do while your plan is being built for you.
+          <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.6, color: '#B8B3AB' }}>
+            We start Monday. Between now and then there are a few small things, and none of them involve dieting.
           </p>
-        </motion.div>
+        </div>
+      </div>
+
+      <main
+        className="max-w-2xl mx-auto px-6 relative"
+        style={{ zIndex: 1, background: '#F4F0E8', marginTop: -14, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingTop: 22 }}
+      >
 
         {/* Plan status */}
         <motion.div
@@ -132,6 +136,20 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
           )}
         </motion.div>
 
+        {/* Slide 7: the flat weeks are promised up front, in the coach's own
+            voice, before they happen — so when week five arrives she has
+            already been told what it is. Ink, because this is his voice, which
+            is the only other thing ink is allowed to carry. */}
+        <div className="mt-6 rounded-2xl" style={{ background: '#17181C', padding: '18px 19px' }}>
+          <p className="uppercase" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', color: '#8E8A84' }}>
+            From your coach · before we begin
+          </p>
+          <p className="mt-2.5" style={{ fontFamily: 'var(--face-serif)', fontWeight: 400, fontSize: 16, lineHeight: 1.5, color: '#F6F3ED' }}>
+            Twelve weeks. Some of them will be flat, and that is not failure — with a thyroid it is
+            just how the graph looks.
+          </p>
+        </div>
+
         {/* Starter checklist */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mt-7 mb-2.5 px-0.5">
@@ -150,7 +168,7 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
                 href={step.href}
                 className="flex items-center gap-3 p-4 rounded-2xl"
                 style={{
-                  background: step.done ? 'rgba(21, 94, 86, 0.13)' : '#ffffff',
+                  background: step.done ? 'rgba(21, 94, 86, 0.13)' : '#FDFBF7',
                   border: `1px solid ${step.done ? 'rgba(21, 94, 86,0.18)' : '#e2dbcd'}` }}
               >
                 <span

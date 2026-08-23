@@ -94,8 +94,8 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                             className="flex-1 rounded-xl flex flex-col items-center justify-center gap-0.5"
                             style={{
                               height: 54,
-                              background: active ? "rgba(21, 94, 86,0.16)" : has ? "#ffffff" : "transparent",
-                              border: `1px solid ${active ? "rgba(21, 94, 86,0.45)" : has ? "#e2dbcd" : "#ffffff"}` }}
+                              background: active ? "rgba(21, 94, 86,0.16)" : has ? "#FDFBF7" : "transparent",
+                              border: `1px solid ${active ? "rgba(21, 94, 86,0.45)" : has ? "#e2dbcd" : "#FDFBF7"}` }}
                             aria-label={d.label}
                           >
                             <span className="text-[12px] font-semibold" style={{ color: active ? "#155e56" : has ? "#1c1d20" : "#a09a8e" }}>

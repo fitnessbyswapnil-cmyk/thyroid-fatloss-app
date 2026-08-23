@@ -390,7 +390,7 @@ export function CoachDashboardClient({
                 style={{
                   background: selectedFilter === filter 
                     ? "rgba(21, 94, 86, 0.15)" 
-                    : "#ffffff",
+                    : "#FDFBF7",
                   color: selectedFilter === filter ? "#155e56" : "#8b867c",
                   border: `1px solid ${selectedFilter === filter ? "rgba(21, 94, 86, 0.3)" : "#e2dbcd"}` }}
               >

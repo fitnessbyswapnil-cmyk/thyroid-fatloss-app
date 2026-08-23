@@ -122,7 +122,7 @@ export function StreakAchievements({
               key={days}
               className="p-3 rounded-xl text-center"
               style={{
-                background: earned ? "rgba(21, 94, 86, 0.12)" : current ? "rgba(151, 103, 27, 0.12)" : "#ffffff",
+                background: earned ? "rgba(21, 94, 86, 0.12)" : current ? "rgba(151, 103, 27, 0.12)" : "#FDFBF7",
                 border: `1px solid ${earned ? "rgba(21, 94, 86, 0.3)" : current ? "rgba(151, 103, 27, 0.3)" : "#e2dbcd"}`,
                 boxShadow: earned ? "0 0 20px rgba(21, 94, 86, 0.2)" : "none"
               }}

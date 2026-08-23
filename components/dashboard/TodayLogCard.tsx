@@ -46,7 +46,7 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
           disabled={saving}
           className="w-full flex items-center justify-between p-4 rounded-xl transition-all"
           style={{
-            background: workoutDone ? "rgba(21, 94, 86,0.12)" : "#ffffff",
+            background: workoutDone ? "rgba(21, 94, 86,0.12)" : "#FDFBF7",
             border: `1px solid ${workoutDone ? "rgba(21, 94, 86,0.3)" : "#e2dbcd"}` }}
         >
           <span className="inline-flex items-center gap-3 text-sm font-medium" style={{ color: "#1c1d20" }}>
