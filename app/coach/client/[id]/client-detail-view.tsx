@@ -8,9 +8,10 @@ import { createClient } from "@/lib/supabase/client"
 import {
   ArrowLeft, Send, Scale, Activity, Moon, Brain,
   TrendingDown, Calendar, Clock, Zap, Heart,
-  MessageSquare, Image, Loader2, Check,
+  MessageSquare, Image, Loader2, Check, Minus,
   LayoutDashboard, LineChart, ClipboardList, Camera, Apple, Lightbulb
 } from "lucide-react"
+import { clientSetup } from "@/lib/coach/assignment"
 import { PlanEditor } from "@/components/coach/PlanEditor"
 import { PhotoComparison } from "@/components/coach/PhotoComparison"
 import { TrendChart } from "@/components/coach/TrendChart"
@@ -42,6 +43,7 @@ interface Client {
   tsh_current: number | null
   coach_notes: string | null
   subscription_status: string
+  onboarding_completed: boolean | null
 }
 
 interface Checkin {
@@ -96,6 +98,11 @@ export function ClientDetailView({
   engagement: ReturnType<typeof buildEngagement>
 }) {
   const router = useRouter()
+  // Derived from props already on the page — no extra query for this panel.
+  const setup = clientSetup(!!client.onboarding_completed, [
+    ...(mealPlan ? [{ client_id: client.id, type: "meal", assigned_at: mealPlan.assigned_at ?? null }] : []),
+    ...(workoutPlan ? [{ client_id: client.id, type: "workout", assigned_at: workoutPlan.assigned_at ?? null }] : []),
+  ])
   const [newInsight, setNewInsight] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [activeTab, setActiveTab] = useState<"overview" | "trends" | "checkins" | "photos" | "plans" | "insights">("overview")
@@ -141,7 +148,7 @@ export function ClientDetailView({
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#090c14" }}>
+    <div className="min-h-screen" style={{ background: "#0e131c" }}>
       {/* Header */}
       <header
         className="sticky top-0 z-50 px-6 py-4"
@@ -243,6 +250,81 @@ export function ClientDetailView({
       <main className="max-w-5xl mx-auto px-6 py-8">
         {activeTab === "overview" && (
           <div className="space-y-6">
+            {/* What she has been given, and what is still outstanding. First
+                thing on the page deliberately: the metrics below tell you how
+                she is doing, and this tells you whether that is your fault. */}
+            <div
+              className="p-5 rounded-2xl"
+              style={{
+                background: setup.complete ? "rgba(52,211,153,0.06)" : "rgba(245,158,11,0.06)",
+                border: `1px solid ${setup.complete ? "rgba(52,211,153,0.2)" : "rgba(245,158,11,0.22)"}`,
+              }}
+            >
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <p className="text-[11px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.12em" }}>
+                  Assignments
+                </p>
+                <p className="text-[12px] font-medium" style={{ color: setup.complete ? "#34d399" : "#f59e0b" }}>
+                  {setup.complete
+                    ? "Fully set up"
+                    : setup.waitingOnClient
+                      ? "Waiting on her profile"
+                      : `${setup.coachTodo} still to assign`}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {setup.items.map((item) => {
+                  const tone =
+                    item.state === "done"
+                      ? { bg: "rgba(52,211,153,0.1)", bd: "rgba(52,211,153,0.22)", fg: "#34d399" }
+                      : item.state === "todo"
+                        ? { bg: "rgba(245,158,11,0.1)", bd: "rgba(245,158,11,0.26)", fg: "#f59e0b" }
+                        : { bg: "rgba(255,255,255,0.03)", bd: "rgba(255,255,255,0.07)", fg: "#5a6578" }
+                  const note =
+                    item.state === "done"
+                      ? item.at
+                        ? `Assigned ${new Date(item.at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}`
+                        : "Done"
+                      : item.state === "blocked"
+                        ? "Needs her profile first"
+                        : item.owner === "coach"
+                          ? "Not assigned yet"
+                          : "She hasn't finished it"
+
+                  const body = (
+                    <div
+                      className="p-3.5 rounded-xl h-full"
+                      style={{ background: tone.bg, border: `1px solid ${tone.bd}` }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                          style={{ background: item.state === "done" ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.05)" }}
+                        >
+                          {item.state === "done"
+                            ? <Check size={11} strokeWidth={3} style={{ color: "#34d399" }} />
+                            : <Minus size={11} strokeWidth={3} style={{ color: tone.fg }} />}
+                        </span>
+                        <p className="text-[13px] font-medium" style={{ color: "#e8eaf0" }}>{item.label}</p>
+                      </div>
+                      <p className="text-[11px] mt-1.5 pl-7" style={{ color: tone.fg }}>{note}</p>
+                    </div>
+                  )
+
+                  // Only the coach's own outstanding work is clickable — there
+                  // is nowhere useful to send them for her unfinished profile.
+                  return item.owner === "coach" && item.state === "todo" ? (
+                    <button key={item.key} onClick={() => setActiveTab("plans")} className="text-left">
+                      {body}
+                    </button>
+                  ) : (
+                    <div key={item.key}>{body}</div>
+                  )
+                })}
+              </div>
+            </div>
+
             {/* Key Metrics */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[

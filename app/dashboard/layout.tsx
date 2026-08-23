@@ -11,6 +11,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/auth/login")
 
+  // A login the coach created carries a password the coach can read. Make her
+  // replace it before she sees anything of her own, so that value is good for
+  // exactly one sign-in.
+  if (user.user_metadata?.must_set_password) redirect("/auth/set-password")
+
   const { data: client, error } = await supabase
     .from("clients")
     .select("role, subscription_status, onboarding_completed")
@@ -33,6 +38,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // Genuinely no profile row yet — onboarding creates the rest of the flow.
   if (!client) redirect("/onboarding")
+
+  // The coach has a row in this table too, and the gate below only ever
+  // checked clients — so signing in as the coach dropped him onto the CLIENT
+  // dashboard, complete with "Weeks together" and a check-in prompt for a
+  // programme he is not on. Send him where he actually works.
+  if (client.role === "coach" || client.role === "admin") {
+    redirect("/coach")
+  }
 
   if (client.role === "client") {
     if (client.subscription_status !== "active") redirect("/enroll")

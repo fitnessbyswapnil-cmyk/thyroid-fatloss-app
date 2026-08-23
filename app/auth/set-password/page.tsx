@@ -48,8 +48,10 @@ function SetPasswordForm() {
     const supabase = createClient()
     const { error: err } = await supabase.auth.updateUser({
       password,
-      // Recorded so the callback can tell an invited user from a returning one.
-      data: { password_set: true },
+      // password_set lets the callback tell an invited user from a returning
+      // one; clearing must_set_password is what releases the dashboard gate for
+      // a login the coach created by hand.
+      data: { password_set: true, must_set_password: false },
     })
     if (err) {
       setSaving(false)
@@ -60,6 +62,10 @@ function SetPasswordForm() {
       )
       return
     }
+    // The dashboard gate reads must_set_password from the server session, so
+    // the cached RSC payload has to be dropped before navigating or she lands
+    // on a render that still thinks she owes a password.
+    router.refresh()
     router.replace(next)
   }
 
@@ -84,8 +90,8 @@ function SetPasswordForm() {
           Choose a password
         </h1>
         <p className="text-sm mt-2.5" style={{ color: "#a9b2c1", lineHeight: 1.6 }}>
-          Your invite signed you in for now. Set a password so you can get back in
-          tomorrow without waiting for another email.
+          Choose a password only you know. This replaces the temporary one you
+          were given, and it&rsquo;s what you&rsquo;ll use from now on.
         </p>
 
         <label htmlFor="new-password" className="block text-[11px] uppercase mt-7 mb-1.5" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>

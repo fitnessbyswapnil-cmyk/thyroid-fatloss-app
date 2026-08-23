@@ -25,7 +25,7 @@ export default function DashboardError({
   return (
     <div
       className="min-h-screen flex items-center justify-center px-6"
-      style={{ background: '#090c14' }}
+      style={{ background: '#0e131c' }}
     >
       <div className="max-w-sm w-full text-center">
         <h1

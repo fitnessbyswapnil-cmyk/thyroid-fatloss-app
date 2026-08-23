@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { CoachDashboardClient } from "./coach-dashboard-client"
+import { buildSetupIndex } from "@/lib/coach/assignment"
 import { getPendingReviews } from "@/app/actions/coach-reviews"
 import { buildAlerts, sortAlerts, type CoachAlert } from "@/lib/coach/alerts"
 import { buildEngagement } from "@/lib/coach/engagement"
@@ -33,6 +34,7 @@ export default async function CoachDashboardPage() {
     { data: allClientCheckins },
     { data: unreadMsgs },
     { count: recentErrorCount },
+    { data: allPlans },
   ] = await Promise.all([
     supabase.from("clients").select("role").eq("id", user.id).single(),
     supabase.from("clients").select("*").eq("role", "client").order("created_at", { ascending: false }),
@@ -41,6 +43,10 @@ export default async function CoachDashboardPage() {
     supabase.from("weekly_checkins").select("client_id, submitted_at").order("submitted_at", { ascending: false }),
     supabase.from("messages").select("client_id, from_coach, created_at").order("created_at", { ascending: false }),
     supabase.from("error_logs").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
+    // Joins the batch rather than running per client: one round trip to
+    // Singapore costs about the same as ten, and there is one per client
+    // otherwise.
+    supabase.from("plans").select("client_id, type, assigned_at, created_at"),
   ])
 
   if (!coach || coach.role !== "coach") {
@@ -284,9 +290,13 @@ export default async function CoachDashboardPage() {
   // Calculate average stats
   const avgWeight = clients?.reduce((sum, c) => sum + (c.current_weight || 0), 0) / (totalClients || 1)
 
+  // What each client has been given and what is still outstanding.
+  const setup = buildSetupIndex(clients || [], allPlans || [])
+
   return (
     <CoachDashboardClient
       clients={clients || []}
+      setup={setup}
       pendingReviews={pendingReviews || []}
       lastCheckIns={lastCheckIns}
       quietClients={quietClients}

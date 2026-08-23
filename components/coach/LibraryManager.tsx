@@ -74,7 +74,7 @@ export function LibraryManager({ initialExercises, initialFoods }: { initialExer
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#090c14" }}>
+    <div className="min-h-screen" style={{ background: "#0e131c" }}>
       <header className="sticky top-0 z-50 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-4xl mx-auto flex items-center gap-4">
           <Link href="/coach" className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>

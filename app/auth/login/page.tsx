@@ -58,7 +58,25 @@ export default function LoginPage() {
       return
     }
 
-    router.push("/dashboard")
+    // Send each side to its own home. /dashboard would bounce a coach to
+    // /coach anyway, but doing it here saves a redirect and a flash of the
+    // wrong app on a slow connection.
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // Signing in on a coach-created temporary password: straight to choosing
+    // her own. /dashboard would send her here anyway; this skips the hop.
+    if (user?.user_metadata?.must_set_password) {
+      router.push("/auth/set-password")
+      router.refresh()
+      return
+    }
+
+    const { data: me } = user
+      ? await supabase.from("clients").select("role").eq("id", user.id).maybeSingle()
+      : { data: null }
+    // If that lookup fails we send her to /dashboard, whose own gate re-checks
+    // the role — a wrong guess here costs a redirect, never access.
+    router.push(me?.role === "coach" || me?.role === "admin" ? "/coach" : "/dashboard")
     router.refresh()
   }
 

@@ -7,11 +7,12 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import {
   Users, Activity, Clock, TrendingUp, Search,
-  ChevronRight, MessageSquare, LogOut, Home,
-  Scale, Heart, Zap, BookOpen, AlertCircle
+  ChevronRight, MessageSquare, LogOut,
+  Scale, Heart, Zap, BookOpen, AlertCircle, Check, Minus
 } from "lucide-react"
 import { PendingReview } from "@/app/actions/coach-reviews"
 import type { CoachAlert } from "@/lib/coach/alerts"
+import type { ClientSetup } from "@/lib/coach/assignment"
 import { PendingReviewsQueue } from "@/components/coach/PendingReviewsQueue"
 import { AddClientButton } from "@/components/coach/AddClientButton"
 
@@ -62,6 +63,7 @@ export function CoachDashboardClient({
   alerts = [],
   engagement = { neverStarted: [], goneQuiet: [] },
   recentErrorCount = 0,
+  setup = {},
   stats
 }: {
   clients: Client[]
@@ -72,6 +74,7 @@ export function CoachDashboardClient({
   alerts?: CoachAlert[]
   engagement?: RosterEngagement
   recentErrorCount?: number
+  setup?: Record<string, ClientSetup>
   stats: Stats
 }) {
   const router = useRouter()
@@ -131,38 +134,34 @@ export function CoachDashboardClient({
   return (
     <div 
       className="min-h-screen"
-      style={{ background: "#090c14" }}
+      style={{ background: "#0e131c" }}
     >
       {/* Header */}
       <header 
         className="sticky top-0 z-50 px-6 py-4"
         style={{
-          background: "rgba(9, 12, 20, 0.8)",
+          background: "rgba(14, 19, 28, 0.85)",
           backdropFilter: "blur(20px)",
           borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
         }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 
-              className="text-xl font-bold"
-              style={{ 
-                fontFamily: "'Instrument Serif', Georgia, serif",
-                fontStyle: "italic",
-                color: "#e8eaf0"
-              }}
+            <h1
+              className="text-[15px] font-bold uppercase"
+              style={{ color: "#e8eaf0", letterSpacing: "0.18em" }}
             >
-              ThyroWell Coach
+              Thyrowell
             </h1>
             <span 
               className="px-2 py-1 rounded text-[10px] font-medium uppercase"
-              style={{ 
-                background: "rgba(45, 212, 191, 0.15)",
-                color: "#2dd4bf",
+              style={{
+                background: "rgba(129, 140, 248, 0.15)",
+                color: "#818cf8",
                 letterSpacing: "0.08em"
               }}
             >
-              Admin
+              Coach workspace
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -174,13 +173,6 @@ export function CoachDashboardClient({
               <BookOpen size={15} /> Library
             </Link>
             <AddClientButton />
-            <Link
-              href="/dashboard"
-              className="p-2 rounded-lg transition-colors"
-              style={{ color: "#7e8a9e" }}
-            >
-              <Home size={20} />
-            </Link>
             <button
               onClick={handleSignOut}
               className="p-2 rounded-lg transition-colors"
@@ -579,6 +571,41 @@ export function CoachDashboardClient({
                           ? `Last check-in: ${new Date(lastCheckIns[client.id]).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}`
                           : "No check-in yet"}
                       </p>
+
+                      {/* What she has, and what she is still waiting for. Shown
+                          on the row itself so an unassigned plan is visible
+                          without opening the client. */}
+                      {setup[client.id] && (
+                        <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                          {setup[client.id].items.map((item) => {
+                            const tone =
+                              item.state === "done"
+                                ? { bg: "rgba(52,211,153,0.12)", fg: "#34d399" }
+                                : item.state === "todo"
+                                  ? { bg: "rgba(245,158,11,0.13)", fg: "#f59e0b" }
+                                  : { bg: "rgba(255,255,255,0.04)", fg: "#5a6578" }
+                            return (
+                              <span
+                                key={item.key}
+                                className="inline-flex items-center gap-1 px-2 py-[3px] rounded-md text-[10px] font-medium"
+                                style={{ background: tone.bg, color: tone.fg }}
+                                title={
+                                  item.state === "blocked"
+                                    ? "Waiting on her profile before you can write this"
+                                    : item.state === "done" && item.at
+                                      ? `Assigned ${new Date(item.at).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}`
+                                      : undefined
+                                }
+                              >
+                                {item.state === "done"
+                                  ? <Check size={10} strokeWidth={3} />
+                                  : <Minus size={10} strokeWidth={3} />}
+                                {item.label}
+                              </span>
+                            )
+                          })}
+                        </div>
+                      )}
                     </div>
 
                     {/* Stats */}
