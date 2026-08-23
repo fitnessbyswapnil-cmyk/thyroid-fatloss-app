@@ -17,6 +17,7 @@ export function TrendChart({
   unit = "",
   goalDirection,
   band,
+  plateau,
 }: {
   points: TrendPoint[]
   color?: string
@@ -24,6 +25,8 @@ export function TrendChart({
   unit?: string
   goalDirection?: "down" | "up" // colour the net change good/bad
   band?: { min: number; max: number; label?: string } // shaded target range (e.g. TSH 0.4–4.0)
+  /** A flat stretch to shade and name, so she doesn't meet it alone. */
+  plateau?: { startIndex: number; endIndex: number; label: string }
 }) {
   const clean = points.filter((p) => typeof p.value === "number" && !Number.isNaN(p.value))
   if (clean.length === 0) {
@@ -50,7 +53,10 @@ export function TrendChart({
   const first = clean[0].value, last = clean[clean.length - 1].value
   const delta = last - first
   const good = goalDirection ? (goalDirection === "down" ? delta < 0 : delta > 0) : undefined
-  const deltaColor = good === undefined ? "#7e8a9e" : good ? "#34d399" : "#fb7185"
+  // A week where weight went the wrong way is amber, not rose. Red-family
+  // colours on a body value read as a failed test; they belong to the app
+  // failing, not to her.
+  const deltaColor = good === undefined ? "#7e8a9e" : good ? "#34d399" : "#f59e0b"
 
   return (
     <div>
@@ -69,6 +75,33 @@ export function TrendChart({
             {band.label && (
               <text x={padX + innerW} y={y(band.max) - 5} fontSize="9" fill="#5a6578" textAnchor="end">{band.label}</text>
             )}
+          </g>
+        )}
+        {/* The flat stretch, shaded and named. Drawn under the line so the
+            series still reads as continuous through it. */}
+        {plateau && plateau.endIndex > plateau.startIndex && (
+          <g>
+            <rect
+              x={x(plateau.startIndex)}
+              y={padY}
+              width={Math.max(4, x(plateau.endIndex) - x(plateau.startIndex))}
+              height={innerH}
+              fill="rgba(255,255,255,0.045)"
+            />
+            <line x1={x(plateau.startIndex)} y1={padY} x2={x(plateau.startIndex)} y2={padY + innerH}
+              stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
+            <line x1={x(plateau.endIndex)} y1={padY} x2={x(plateau.endIndex)} y2={padY + innerH}
+              stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
+            <text
+              x={(x(plateau.startIndex) + x(plateau.endIndex)) / 2}
+              y={padY + 9}
+              fontSize="8.5"
+              fill="#7e8a9e"
+              textAnchor="middle"
+              letterSpacing="0.08em"
+            >
+              {plateau.label}
+            </text>
           </g>
         )}
         <path d={area} fill={`url(#grad-${color.replace("#", "")})`} />

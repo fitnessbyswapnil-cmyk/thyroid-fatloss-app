@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ThyroWell">
+  <!-- Pulled into the 70% safe circle so Android can crop to any shape. -->
+  <rect width="512" height="512" fill="#0a0d14"/>
+  <rect x="146" y="240" width="220" height="32" rx="16" fill="#2dd4bf" opacity="0.22"/>
+  <rect x="196" y="240" width="120" height="32" rx="16" fill="#2dd4bf" opacity="0.55"/>
+  <circle cx="256" cy="256" r="38" fill="#0a0d14"/>
+  <circle cx="256" cy="256" r="38" fill="none" stroke="#2dd4bf" stroke-width="17"/>
+</svg>

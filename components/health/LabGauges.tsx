@@ -25,14 +25,22 @@ function gaugesFrom(lab: LabResult): Gauge[] {
   return out
 }
 
-function status(g: Gauge): { label: string; color: string; bg: string } {
-  if (g.low === null || g.high === null) return { label: "No range", color: "#7e8a9e", bg: "rgba(255,255,255,0.05)" }
-  if (g.value < g.low) return { label: "Low", color: "#fb7185", bg: "rgba(251,113,133,0.1)" }
-  if (g.value > g.high) return { label: "High", color: "#fb7185", bg: "rgba(251,113,133,0.1)" }
-  const span = g.high - g.low
-  const edge = Math.min(g.value - g.low, g.high - g.value)
-  if (span > 0 && edge / span < 0.08) return { label: "Borderline", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" }
-  return { label: "In range", color: "#34d399", bg: "rgba(52,211,153,0.1)" }
+/**
+ * Inside the printed range there is no badge and no word — silence is the pass
+ * state. She has spent years being graded by exactly these numbers; the app
+ * does not get to grade her too.
+ *
+ * Outside it, one amber marker and the plain words "outside the printed range".
+ * Never "High", which is a verdict this app is not entitled to give, and never
+ * a red: red belongs to the app failing — an upload error, being offline — not
+ * to her body.
+ */
+function status(g: Gauge): { inRange: boolean; color: string; note: string | null } {
+  if (g.low === null || g.high === null) return { inRange: true, color: "#2dd4bf", note: null }
+  const outside = g.value < g.low || g.value > g.high
+  return outside
+    ? { inRange: false, color: "#f59e0b", note: "outside the printed range" }
+    : { inRange: true, color: "#2dd4bf", note: null }
 }
 
 function GaugeBar({ g }: { g: Gauge }) {
@@ -50,12 +58,12 @@ function GaugeBar({ g }: { g: Gauge }) {
       <div className="relative h-2.5 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }}>
         <div className="absolute top-0 bottom-0 rounded-full" style={{ left: `${pct(g.low)}%`, width: `${pct(g.high) - pct(g.low)}%`, background: "rgba(52,211,153,0.22)", border: "1px solid rgba(52,211,153,0.25)" }} />
         <div className="absolute top-1/2" style={{ left: `${pct(g.value)}%`, transform: "translate(-50%,-50%)" }}>
-          <div className="w-4 h-4 rounded-full" style={{ background: s.color, border: "2.5px solid #0d111b", boxShadow: `0 0 12px ${s.color}66` }} />
+          <div className="rounded-full" style={{ width: 14, height: 14, background: "#0d111b", border: `2.5px solid ${s.color}` }} />
         </div>
       </div>
       <div className="flex justify-between mt-1.5">
         <span className="text-[10px] tabular-nums" style={{ color: "#5a6578" }}>{g.low}</span>
-        <span className="text-[10px]" style={{ color: "#5a6578" }}>normal range</span>
+        <span className="text-[10px]" style={{ color: "#5a6578" }}>printed range</span>
         <span className="text-[10px] tabular-nums" style={{ color: "#5a6578" }}>{g.high}</span>
       </div>
     </div>
@@ -65,7 +73,7 @@ function GaugeBar({ g }: { g: Gauge }) {
 export function LabGauges({ lab }: { lab: LabResult }) {
   const gauges = gaugesFrom(lab)
   if (!gauges.length) return null
-  const flagged = gauges.filter((g) => { const s = status(g); return s.label === "Low" || s.label === "High" }).length
+  const flagged = gauges.filter((g) => !status(g).inRange).length
 
   return (
     <div className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
@@ -75,11 +83,16 @@ export function LabGauges({ lab }: { lab: LabResult }) {
           {new Date(lab.taken_on).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
         </span>
       </div>
-      <p className="text-[11.5px] mb-4" style={{ color: flagged ? "#f59e0b" : "#34d399" }}>
-        {flagged
-          ? `${flagged} value${flagged === 1 ? "" : "s"} outside range — worth discussing with your doctor`
-          : "All tracked values in range"}
-      </p>
+      {flagged > 0 ? (
+        <p className="text-[11.5px] mb-4" style={{ color: "#f59e0b" }}>
+          {flagged === 1 ? "One value sits" : `${flagged} values sit`} outside the printed range — worth
+          raising with your doctor.
+        </p>
+      ) : (
+        <p className="text-[11.5px] mb-4" style={{ color: "#7e8a9e" }}>
+          Compared against the range printed on this report.
+        </p>
+      )}
 
       {/* Grouped by panel — a flat list of 15 markers is unreadable, and a
           client scanning for her thyroid numbers shouldn't have to hunt. */}
@@ -103,7 +116,12 @@ export function LabGauges({ lab }: { lab: LabResult }) {
                           {g.value}
                         </span>
                         {g.unit && <span className="text-[10.5px]" style={{ color: "#7e8a9e" }}>{g.unit}</span>}
-                        <span className="text-[10px] font-bold rounded-full px-2 py-1 shrink-0" style={{ color: s.color, background: s.bg }}>{s.label}</span>
+                        {s.note && (
+                          <span className="text-[10px] font-semibold rounded-full px-2 py-1 shrink-0"
+                            style={{ color: "#f59e0b", background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.28)" }}>
+                            {s.note}
+                          </span>
+                        )}
                       </div>
                       <GaugeBar g={g} />
                     </div>

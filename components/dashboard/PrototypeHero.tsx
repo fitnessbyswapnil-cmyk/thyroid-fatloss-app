@@ -103,14 +103,14 @@ export function PrototypeHero({
         {/* Streak + next check-in */}
         <div className="grid grid-cols-2 gap-3 mt-3">
           <div className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>Check-in streak</p>
+            <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>Weeks together</p>
             <div className="flex items-baseline gap-1.5 mt-2">
-              <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 36, lineHeight: 1, color: "#e8eaf0" }}>{streak}</span>
-              <span className="text-xs" style={{ color: "#7e8a9e" }}>days</span>
+              <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 36, lineHeight: 1, color: "#e8eaf0" }}>{programWeek}</span>
+              <span className="text-xs" style={{ color: "#7e8a9e" }}>{programWeek === 1 ? "week" : "weeks"}</span>
             </div>
             <div className="flex gap-1.5 mt-3">
               {dots.map((_, i) => (
-                <div key={i} style={{ width: 15, height: 15, borderRadius: "50%", background: i < Math.min(streak, 7) ? "rgba(45,212,191,0.9)" : "rgba(45,212,191,0.2)", border: `1px solid ${i < Math.min(streak, 7) ? "#2dd4bf" : "rgba(45,212,191,0.2)"}` }} />
+                <div key={i} style={{ width: 15, height: 15, borderRadius: "50%", background: i < Math.min(programWeek, 7) ? "rgba(45,212,191,0.9)" : "rgba(45,212,191,0.2)", border: `1px solid ${i < Math.min(programWeek, 7) ? "#2dd4bf" : "rgba(45,212,191,0.2)"}` }} />
               ))}
             </div>
           </div>
