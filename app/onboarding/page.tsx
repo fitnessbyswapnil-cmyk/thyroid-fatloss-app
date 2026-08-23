@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
-import { ArrowRight, ArrowLeft, Loader2, Check, Heart, Scale, Pill, ShieldCheck } from "lucide-react"
+import { ArrowRight, ArrowLeft, Loader2, Check, Heart, Scale, Pill, ShieldCheck , AlertCircle} from "lucide-react"
 
 type Step = "welcome" | "consent" | "health" | "goals" | "complete"
 
@@ -13,6 +13,7 @@ export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState<Step>("welcome")
   const [isLoading, setIsLoading] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [consent, setConsent] = useState(false)
   
   // Form data
@@ -64,10 +65,19 @@ export default function OnboardingPage() {
       .eq("id", user.id)
 
     if (error) {
+      // This used to stop the spinner and do nothing at all. She had typed four
+      // screens, the form lives only in React state, and a refresh loses all of
+      // it — so a silent failure here is the single worst moment in the app.
+      // This is also the one write that travels over HER connection, so it is
+      // the place patchy mobile data actually bites.
       console.error("Error updating profile:", error)
+      setSubmitError(
+        "That didn't save — you're still connected, but the details didn't reach us. Nothing you typed has been lost; tap to try again."
+      )
       setIsLoading(false)
       return
     }
+    setSubmitError(null)
 
     // No auto-redirect: the completion screen offers an optional blood-report
     // upload (or straight to the dashboard).
@@ -469,6 +479,22 @@ export default function OnboardingPage() {
                   )}
                 </motion.button>
               </div>
+
+              {/* A failure here has to be visible and recoverable. Her answers
+                  are still in state, so "try again" genuinely works — but only
+                  if she is told to. */}
+              {submitError && (
+                <div
+                  className="mt-4 px-4 py-3 rounded-xl flex items-start gap-2.5"
+                  style={{ background: "rgba(245,158,11,0.10)", border: "1px solid rgba(245,158,11,0.30)" }}
+                  role="alert"
+                >
+                  <AlertCircle size={15} style={{ color: "#f59e0b", marginTop: 2, flexShrink: 0 }} />
+                  <p className="text-[12.5px]" style={{ color: "#e8eaf0", lineHeight: 1.55 }}>
+                    {submitError}
+                  </p>
+                </div>
+              )}
             </motion.div>
           )}
 

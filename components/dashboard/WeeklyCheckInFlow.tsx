@@ -1127,7 +1127,13 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
       const result = await submitWeeklyCheckIn(checkInData)
       
       if (!result.success) {
+        // Advance anyway. The completion step renders a proper "Submission
+        // Failed" screen with a retry when it has an error, but the step advance
+        // used to live only in the success branch — so after eight screens of
+        // questions a failure just flipped the button back to "Complete
+        // Check-In" and she reasonably assumed it had saved.
         setSubmitError(result.error || 'Failed to submit check-in')
+        setCurrentStep(COMPLETION_STEP)
         return
       }
       
@@ -1135,6 +1141,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
       setCurrentStep(COMPLETION_STEP)
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred')
+      setCurrentStep(COMPLETION_STEP)
     } finally {
       setIsSubmitting(false)
     }

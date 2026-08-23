@@ -33,12 +33,16 @@ function configureWebPush(): boolean {
 export async function GET(request: NextRequest) {
   // Vercel Cron sends a bearer token when CRON_SECRET is set. Reject anything
   // else so this can't be triggered by a stranger hitting the URL.
+  // Fail closed. This used to skip the check entirely when CRON_SECRET was
+  // unset, so a missing env var silently turned a public endpoint into one that
+  // reads the whole client roster.
   const secret = process.env.CRON_SECRET
-  if (secret) {
-    const auth = request.headers.get('authorization')
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  if (!secret) {
+    console.error('[cron.reminders] CRON_SECRET is not set — refusing to run')
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+  if (request.headers.get('authorization') !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   if (!configureWebPush()) {
@@ -63,7 +67,7 @@ export async function GET(request: NextRequest) {
     const clientIds = [...subsByClient.keys()]
 
     const [{ data: clients }, { data: checkins }, { data: unread }, { data: alreadySent }] = await Promise.all([
-      db.from('clients').select('id, full_name, subscription_status, onboarding_completed').in('id', clientIds),
+      db.from('clients').select('id, full_name, subscription_status, onboarding_completed, role').in('id', clientIds),
       db.from('weekly_checkins').select('client_id, submitted_at').in('client_id', clientIds),
       db.from('messages').select('client_id, created_at').in('client_id', clientIds)
         .eq('from_coach', true).eq('read_by_client', false),
@@ -89,6 +93,9 @@ export async function GET(request: NextRequest) {
     const jobs: Job[] = []
 
     for (const c of clients || []) {
+      // The coach holds a row in this table too. Without this he gets nudged
+      // every day to submit a client check-in that does not exist for him.
+      if (c.role && c.role !== 'client') continue
       if (c.subscription_status !== 'active' || !c.onboarding_completed) continue
       if (sentToday.has(c.id)) continue // one nudge per client per day
 
@@ -106,6 +113,10 @@ export async function GET(request: NextRequest) {
 
       const last = lastCheckin.get(c.id)
       const daysSince = last ? Math.floor((now - last) / DAY) : null
+      // Stop after three weeks. Past that she has not lapsed, she has stopped,
+      // and a daily nudge is how an app gets its notifications turned off for
+      // good. Silence here, and the coach's quiet-client list picks her up.
+      if (daysSince !== null && daysSince > 21) continue
       if (daysSince === null || daysSince >= 7) {
         jobs.push({
           clientId: c.id, kind: 'checkin_due',

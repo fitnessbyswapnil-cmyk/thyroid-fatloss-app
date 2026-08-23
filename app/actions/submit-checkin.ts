@@ -135,14 +135,37 @@ export async function submitWeeklyCheckIn(
       return { success: false, error: `Failed to save check-in: ${upsertError.message}` }
     }
 
-    // Fetch previous week's data for deltas
-    const previousWeek = weekNumber - 1
-    const { data: prevCheckin, error: prevError } = await supabase
+    // Carry the new weight onto the client record.
+    //
+    // current_weight was written once at onboarding and never again, while six
+    // places read it: her "kg lost" figure, the coach roster, and — worst — the
+    // calorie target calculator, which was sizing her plan from her day-one body.
+    // A client who had genuinely lost 11kg still showed 0.0 lost, and her macros
+    // were computed for someone 11kg heavier.
+    //
+    // Deliberately not fatal: the check-in itself is already saved, and losing
+    // this sync is far better than telling her the check-in failed.
+    if (typeof formData.weight === 'number' && Number.isFinite(formData.weight) && formData.weight > 0) {
+      const { error: weightError } = await supabase
+        .from('clients')
+        .update({ current_weight: formData.weight })
+        .eq('id', user.id)
+      if (weightError) console.error('[submitWeeklyCheckIn] current_weight sync failed:', weightError)
+    }
+
+    // Deltas compare against her PREVIOUS check-in, not against "this week
+    // minus one". Assuming week-1 meant a client who missed a single week saw
+    // no deltas at all — and the week-over-week panel is the payoff of the whole
+    // flow. It also broke across a new year, where week 1 minus 1 is week 0.
+    const { data: prevCheckin } = await supabase
       .from('weekly_checkins')
-      .select('energy_level, sleep_quality, weight')
+      .select('energy_level, sleep_quality, weight, submitted_at')
       .eq('client_id', user.id)
-      .eq('week_number', previousWeek)
-      .single()
+      .neq('week_number', weekNumber)
+      .not('submitted_at', 'is', null)
+      .order('submitted_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
 
     const prevEnergy = prevCheckin?.energy_level || null
     const prevSleep = prevCheckin?.sleep_quality || null

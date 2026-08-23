@@ -32,9 +32,30 @@ export function ExerciseDemo({
   const [demoBroken, setDemoBroken] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
-  // A real animated GIF loops natively — no crossfade needed, and it reads far
-  // clearer than two stills. Prefer it whenever a demo URL exists, but if it
-  // fails to load (e.g. not cached yet) fall back to the photo frames below.
+  const showDemo = Boolean(demo) && !demoBroken
+
+  // Both effects must run on every render. They used to sit BELOW an early
+  // return for the GIF branch, so the first time a demo image 404'd — the
+  // fallback path this component exists for — the hook count changed between
+  // renders and React threw, taking the whole plan page down with it.
+  // 353 exercises carry a demo URL and one is cached, so that was the common
+  // path, not the rare one. ExerciseViewer.tsx already had the correct shape.
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === "undefined") return
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.15 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (showDemo || frames.length < 2 || !inView) return
+    const reduce = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (reduce) return
+    const t = setInterval(() => setI((v) => (v + 1) % frames.length), interval)
+    return () => clearInterval(t)
+  }, [showDemo, frames.length, inView, interval])
+
   if (demo && !demoBroken) {
     return (
       <div
@@ -52,22 +73,6 @@ export function ExerciseDemo({
       </div>
     )
   }
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el || typeof IntersectionObserver === "undefined") return
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.15 })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (frames.length < 2 || !inView) return
-    const reduce = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduce) return
-    const t = setInterval(() => setI((v) => (v + 1) % frames.length), interval)
-    return () => clearInterval(t)
-  }, [frames.length, inView, interval])
 
   return (
     <div

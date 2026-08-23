@@ -11,13 +11,27 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/auth/login")
 
-  const { data: client } = await supabase
+  const { data: client, error } = await supabase
     .from("clients")
     .select("role, subscription_status, onboarding_completed")
     .eq("id", user.id)
     .single()
 
-  // No profile row yet — let onboarding create the rest of the flow.
+  // A FAILED QUERY IS NOT A MISSING PROFILE.
+  //
+  // This used to redirect on any falsy `client`, so a transient database error
+  // sent an already-onboarded client back through onboarding — which then
+  // rewrote her baseline weight, the denominator of every progress number she
+  // will ever see, with no undo. The database now refuses that write too
+  // (migration 022), but the redirect itself is still wrong: throw and let the
+  // error boundary offer a retry rather than silently restarting her programme.
+  // PGRST116 is "no rows", which genuinely means she has no profile yet.
+  // Anything else is a real failure and must not be mistaken for one.
+  if (error && error.code !== "PGRST116") {
+    throw new Error(`Could not load your profile: ${error.message}`)
+  }
+
+  // Genuinely no profile row yet — onboarding creates the rest of the flow.
   if (!client) redirect("/onboarding")
 
   if (client.role === "client") {
