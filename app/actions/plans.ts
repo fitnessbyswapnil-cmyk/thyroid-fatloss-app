@@ -63,6 +63,22 @@ export interface Plan {
   updated_at: string
 }
 
+/**
+ * A superseded version of a plan, copied out of `plans` just before the change
+ * that replaced it. `created_at` is the moment it stopped being the live plan.
+ */
+export interface PlanRevision {
+  id: string
+  plan_id: string | null
+  client_id: string
+  type: PlanType
+  title: string
+  content: PlanContent
+  file_path: string | null
+  created_by: string | null
+  created_at: string
+}
+
 interface SavePlanInput {
   clientId: string
   type: PlanType
@@ -74,9 +90,32 @@ interface SavePlanInput {
 }
 
 /**
+ * Key-order-independent JSON, for asking "did this actually change?".
+ *
+ * The stored content comes back from Postgres with jsonb's key order, not the
+ * order the editor built the object in. A plain JSON.stringify comparison would
+ * therefore call almost every save a change, and file a revision for plans
+ * nobody edited — history that is mostly noise is history nobody reads.
+ */
+function stableJson(value: unknown): string {
+  if (value === null || typeof value !== 'object') return JSON.stringify(value) ?? 'null'
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`
+  return `{${Object.entries(value as Record<string, unknown>)
+    .filter(([, v]) => v !== undefined) // dropped on the way into jsonb too
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([k, v]) => `${JSON.stringify(k)}:${stableJson(v)}`)
+    .join(',')}}`
+}
+
+/**
  * Coach upserts a client's meal or workout plan. A client has one plan of each
  * type; if one already exists we update it, otherwise we insert. RLS enforces
  * that only a coach (coach_id = auth.uid() AND is_coach()) can write.
+ *
+ * A plan is edited in place, so every change used to erase the version the
+ * client had actually been following. Each changing save now copies the
+ * outgoing version into plan_revisions first (025). The live row is written
+ * exactly as before — this is a record kept alongside, not a new plan model.
  */
 export async function savePlan(input: SavePlanInput) {
   try {
@@ -99,32 +138,66 @@ export async function savePlan(input: SavePlanInput) {
       ...(mealItems.length ? { mealItems } : {}),
     }
 
+    const title = input.title.trim() || (input.type === 'meal' ? 'Meal Plan' : 'Workout Plan')
+    const filePath = input.filePath ?? null
+
     const { data: existing } = await supabase
       .from('plans')
-      .select('id')
+      .select('id, title, content, file_path')
       .eq('client_id', input.clientId)
       .eq('type', input.type)
       .maybeSingle()
 
     if (existing) {
-      const { error } = await supabase
-        .from('plans')
-        .update({
-          title: input.title.trim() || (input.type === 'meal' ? 'Meal Plan' : 'Workout Plan'),
-          content,
-          file_path: input.filePath ?? null,
-          updated_at: new Date().toISOString(),
+      // What she has to follow, versus what the plan is merely called. Only the
+      // first is a re-assignment; fixing a typo in the title does not restart
+      // her plan.
+      const substanceChanged =
+        stableJson(existing.content) !== stableJson(content) ||
+        (existing.file_path ?? null) !== filePath
+      const changed = substanceChanged || existing.title !== title
+
+      // A no-op save writes nothing: no revision, and no updated_at bump that
+      // would make an untouched plan look freshly revised in every listing.
+      if (changed) {
+        // History first. If this fails the save stops — a plan save that
+        // silently drops the outgoing version is the exact failure the table
+        // exists to prevent, and the coach can retry. In practice the only way
+        // this fails is a database that would fail the update below anyway.
+        const { error: revError } = await supabase.from('plan_revisions').insert({
+          plan_id: existing.id,
+          client_id: input.clientId,
+          type: input.type,
+          title: existing.title,
+          content: existing.content,
+          file_path: existing.file_path,
+          created_by: user.id,
         })
-        .eq('id', existing.id)
-      if (error) return { success: false, error: error.message }
+        if (revError) return { success: false, error: revError.message }
+
+        const now = new Date().toISOString()
+        const { error } = await supabase
+          .from('plans')
+          .update({
+            title,
+            content,
+            file_path: filePath,
+            updated_at: now,
+            ...(substanceChanged ? { assigned_at: now } : {}),
+          })
+          .eq('id', existing.id)
+        if (error) return { success: false, error: error.message }
+      }
     } else {
+      // No revision on the first save: there is no previous version to keep.
+      // assigned_at defaults to now() in the database.
       const { error } = await supabase.from('plans').insert({
         client_id: input.clientId,
         coach_id: user.id,
         type: input.type,
-        title: input.title.trim() || (input.type === 'meal' ? 'Meal Plan' : 'Workout Plan'),
+        title,
         content,
-        file_path: input.filePath ?? null,
+        file_path: filePath,
       })
       if (error) return { success: false, error: error.message }
     }
@@ -135,6 +208,32 @@ export async function savePlan(input: SavePlanInput) {
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Failed to save plan' }
   }
+}
+
+/**
+ * The superseded versions of one plan, newest first — 20 is roughly five months
+ * of weekly revisions, well past the window anyone reviews a bad month over.
+ *
+ * Deliberately not run through the library-demo overlay that getPlansForClient
+ * applies: a revision answers "what was she following then", so it shows the
+ * snapshot as saved rather than today's version of it.
+ */
+export async function listPlanRevisions(clientId: string, type: PlanType): Promise<PlanRevision[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('plan_revisions')
+    .select('*')
+    .eq('client_id', clientId)
+    .eq('type', type)
+    .order('created_at', { ascending: false })
+    .limit(20)
+
+  // An empty list is drawn as "no earlier versions yet", which a failed read
+  // would turn into a false reassurance that history is being kept. Nothing to
+  // show the coach mid-edit, but it must not vanish silently.
+  if (error) console.error('[listPlanRevisions] read failed for', clientId, type, '—', error)
+
+  return (data || []) as PlanRevision[]
 }
 
 /**

@@ -24,6 +24,7 @@ export function ChatView({
 }) {
   const [messages, setMessages] = useState<Message[]>(initial)
   const [text, setText] = useState("")
+  const [sendError, setSendError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -55,18 +56,28 @@ export function ChatView({
     if (!body || sending) return
     setSending(true)
     setText("")
-    const res = await sendMessage(body, clientId)
-    if (res.success) {
-      // Same rule as the poll — her message is on the server, so an empty or
-      // failed re-read must not blank the thread she just wrote into.
-      try {
-        const fresh = await listMessages(clientId)
-        if (fresh.length) setMessages(fresh)
-      } catch {}
-    } else {
+    try {
+      const res = await sendMessage(body, clientId)
+      if (res.success) {
+        setSendError(null)
+        // Same rule as the poll — her message is on the server, so an empty or
+        // failed re-read must not blank the thread she just wrote into.
+        try {
+          const fresh = await listMessages(clientId)
+          if (fresh.length) setMessages(fresh)
+        } catch {}
+      } else {
+        setText(body)
+        setSendError("That didn't send. Your message is back in the box — try again.")
+      }
+    } catch {
+      // The box was cleared the moment she pressed send, and the restore only
+      // ran on a RETURNED failure. A thrown one deleted what she wrote.
       setText(body)
+      setSendError("You may have lost signal. Your message is back in the box — try again.")
+    } finally {
+      setSending(false)
     }
-    setSending(false)
   }
 
   // "mine" = messages from the current viewer's side
@@ -123,6 +134,9 @@ export function ChatView({
         </div>
       </main>
 
+      {sendError && (
+        <p className="px-4 pb-1.5 text-[11.5px]" style={{ color: "#f59e0b", lineHeight: 1.5 }} role="alert">{sendError}</p>
+      )}
       <div className="shrink-0 px-4 py-3" style={{ background: "rgba(9,12,20,0.9)", borderTop: "1px solid rgba(255,255,255,0.06)", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))" }}>
         <div className="max-w-2xl mx-auto flex items-end gap-2">
           <textarea

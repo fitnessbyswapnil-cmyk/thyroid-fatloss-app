@@ -1,7 +1,11 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
+import { after } from 'next/server'
+import webpush from 'web-push'
+import { logError } from '@/lib/errors'
 import { programmeWeek } from '@/lib/health/programme'
 
 // Photo reviews are written into checkin_feedback too (submitPhotoReview in
@@ -10,6 +14,80 @@ import { programmeWeek } from '@/lib/health/programme'
 // one of them for its own earlier draft and overwrite it — that would delete a
 // note the client may not have read yet.
 const PHOTO_REVIEW_PREFIX = '📸 Photo review —'
+
+/**
+ * Tell her a review has landed.
+ *
+ * Same channel and the same failure handling as the daily sweep in
+ * app/api/cron/reminders/route.ts — VAPID from env, one send per registered
+ * device, prune the subscription on 404/410 because those mean the device is
+ * gone for good and we would otherwise retry it forever.
+ *
+ * Everything is inside a try/catch and the caller runs it through `after()`,
+ * because a review that saved and then 500'd on a push failure is the worst of
+ * both outcomes: the coach retypes a note the client already has, and the queue
+ * has already moved on. The review is the deliverable. The buzz is not.
+ */
+async function notifyClientOfReview(clientId: string) {
+  try {
+    const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+    const priv = process.env.VAPID_PRIVATE_KEY
+    if (!pub || !priv) return
+    webpush.setVapidDetails(
+      process.env.VAPID_SUBJECT || 'mailto:fitnessbyswapnil@gmail.com',
+      pub,
+      priv
+    )
+
+    // Service role: pruning a dead subscription and stamping the send ledger are
+    // writes on rows the coach's session has no business writing.
+    const db = createAdminClient()
+    const { data: devices } = await db
+      .from('push_subscriptions')
+      .select('endpoint, p256dh, auth')
+      .eq('client_id', clientId)
+    if (!devices?.length) return
+
+    let delivered = false
+    for (const d of devices) {
+      try {
+        await webpush.sendNotification(
+          { endpoint: d.endpoint, keys: { p256dh: d.p256dh, auth: d.auth } },
+          JSON.stringify({
+            title: 'Your coach reviewed your week',
+            body: 'Your weekly review is waiting in ThyroWell.',
+            url: '/dashboard',
+            tag: 'coach_review',
+          })
+        )
+        delivered = true
+      } catch (err: unknown) {
+        const status = (err as { statusCode?: number })?.statusCode
+        if (status === 404 || status === 410) {
+          await db.from('push_subscriptions').delete().eq('endpoint', d.endpoint)
+        } else {
+          await logError('coach-reviews.notify.send', err, clientId)
+        }
+      }
+    }
+
+    if (delivered) {
+      const today = new Date().toISOString().slice(0, 10)
+      await db
+        .from('push_subscriptions')
+        .update({ last_sent_at: new Date().toISOString() })
+        .eq('client_id', clientId)
+      // Spends today's slot in the reminder ledger the cron reads, so she does
+      // not also get the generic check-in nudge hours later. A duplicate here
+      // (two reviews in one day) trips the unique key and is ignored on purpose.
+      await db
+        .from('reminder_sends')
+        .insert({ client_id: clientId, kind: 'coach_review', sent_on: today })
+    }
+  } catch (err) {
+    await logError('coach-reviews.notify', err, clientId)
+  }
+}
 
 export interface PendingReview {
   id: string
@@ -221,6 +299,13 @@ export async function submitCheckInFeedback(
       (row) => !(row.body || '').startsWith(PHOTO_REVIEW_PREFIX)
     )
 
+    // A rewrite must not inherit the old note's read receipt: the coach would be
+    // told she read text that no longer exists. Cleared only when the words
+    // actually changed, so re-saving an unedited draft does not wipe a genuine
+    // receipt.
+    const isRewrite = Boolean(priorReview)
+    const bodyChanged = isRewrite && (priorReview!.body || '') !== body
+
     if (priorReview) {
       // coach_id moves to whoever wrote this text: the client reads the body as
       // her coach's own words, so the row must name the person who wrote them.
@@ -230,6 +315,7 @@ export async function submitCheckInFeedback(
           body,
           coach_id: user.id,
           updated_at: new Date().toISOString(),
+          ...(bodyChanged ? { read_at: null } : {}),
         })
         .eq('id', priorReview.id)
 
@@ -261,11 +347,130 @@ export async function submitCheckInFeedback(
     revalidatePath('/coach')
     if (reviewed?.client_id) revalidatePath(`/coach/client/${reviewed.client_id}`)
 
+    // Only the first time a check-in gets a review. The coach fixing a typo a
+    // minute later must not buzz her a second time — an app that over-notifies
+    // gets its notifications switched off, and then the ones that matter are
+    // gone too. after() so the coach's save returns at DB speed, not at the
+    // speed of a push service; a bare promise would be killed when the
+    // serverless invocation freezes.
+    // The try/catch is around after() itself, not just the send: the review and
+    // the status flip are already committed by this point, so anything thrown
+    // here would report a failure for work that succeeded and send the coach
+    // back to retype a note she already has.
+    if (!isRewrite && reviewed?.client_id) {
+      const clientId = reviewed.client_id
+      try {
+        after(() => notifyClientOfReview(clientId))
+      } catch (err) {
+        await logError('coach-reviews.notify.schedule', err, clientId)
+      }
+    }
+
     return { success: true, error: null }
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to submit feedback',
+    }
+  }
+}
+
+/**
+ * The client stamps her own read receipt, once, from her own session.
+ *
+ * She is only granted the read_at column (migration 024: the blanket UPDATE
+ * grant is revoked and a trigger freezes the rest), and RLS scopes her to
+ * feedback on her own check-ins — so this is safe to call with whatever ids her
+ * dashboard happened to render.
+ */
+export async function markFeedbackRead(feedbackIds: string[]) {
+  try {
+    if (!feedbackIds?.length) return { success: true, error: null }
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Unauthorized')
+
+    // First open wins. The trigger enforces this too, but filtering here keeps
+    // the write to zero rows on every later visit instead of one per note.
+    const { error } = await supabase
+      .from('checkin_feedback')
+      .update({ read_at: new Date().toISOString() })
+      .in('id', feedbackIds)
+      .is('read_at', null)
+
+    if (error) throw error
+
+    // Deliberately no revalidatePath: this fires from her dashboard as the card
+    // scrolls into view, and revalidating the page she is looking at would
+    // re-render it underneath her to change nothing she can see.
+    return { success: true, error: null }
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to mark feedback read',
+    }
+  }
+}
+
+export interface ReviewReadReceipt {
+  feedback_id: string
+  checkin_id: string
+  /** null = written, delivered, never opened. */
+  read_at: string | null
+}
+
+/**
+ * Whether each written review has actually been opened.
+ *
+ * The coach's queue (app/coach/coach-dashboard-client.tsx) and his client page
+ * (app/coach/client/[id]/client-detail-view.tsx) are not touched by this
+ * change, so nothing renders this yet — it is exposed here for whichever of the
+ * two picks it up. getCheckInDetail also carries read_at on each embedded
+ * checkin_feedback row now, which is what the review screen already reads.
+ */
+export async function getReviewReadReceipts(clientId: string) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Unauthorized')
+
+    const { data: coach } = await supabase
+      .from('clients')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (!coach || coach.role !== 'coach') {
+      throw new Error('Only coaches can read delivery state')
+    }
+
+    const { data: checkins, error: checkinError } = await supabase
+      .from('weekly_checkins')
+      .select('id')
+      .eq('client_id', clientId)
+
+    if (checkinError) throw checkinError
+    if (!checkins?.length) return { receipts: [] as ReviewReadReceipt[], error: null }
+
+    const { data, error } = await supabase
+      .from('checkin_feedback')
+      .select('id, checkin_id, read_at')
+      .in('checkin_id', checkins.map((c) => c.id))
+
+    if (error) throw error
+
+    const receipts: ReviewReadReceipt[] = (data || []).map((f) => ({
+      feedback_id: f.id as string,
+      checkin_id: f.checkin_id as string,
+      read_at: (f.read_at as string | null) ?? null,
+    }))
+
+    return { receipts, error: null }
+  } catch (error) {
+    return {
+      receipts: [] as ReviewReadReceipt[],
+      error: error instanceof Error ? error.message : 'Failed to fetch read receipts',
     }
   }
 }
@@ -283,7 +488,7 @@ export async function getCheckInDetail(checkinId: string) {
       .select(`
         *,
         clients:client_id (full_name, email),
-        checkin_feedback (id, body, created_at)
+        checkin_feedback (id, body, created_at, read_at)
       `)
       .eq('id', checkinId)
       .single()

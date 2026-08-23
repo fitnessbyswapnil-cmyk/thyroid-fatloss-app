@@ -119,7 +119,11 @@ export function DashboardClient({ data }: { data: DashboardData }) {
         </div>
       )}
       
-      {/* SECTION 3b — Coach feedback on the client's reviewed check-ins */}
+      {/* SECTION 3b — Coach feedback on the client's reviewed check-ins.
+          The card stamps checkin_feedback.read_at when it scrolls into view, so
+          the coach can tell a client who reads her weekly review from one who
+          stopped opening it. Passing readAt on each item (page.tsx would need to
+          select it) skips the stamp call once everything here is already read. */}
       {data.coachFeedback.length > 0 && (
         <div className="py-8">
           <CoachFeedbackCard feedback={data.coachFeedback} />

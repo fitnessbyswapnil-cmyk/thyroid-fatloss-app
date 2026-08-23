@@ -5,9 +5,12 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import {
   Apple, Dumbbell, Plus, Trash2, FileText, Loader2, Check, Upload, X,
-  Search, BookmarkPlus, FolderOpen, Video, Wand2, AlertTriangle,
+  Search, BookmarkPlus, FolderOpen, Video, Wand2, AlertTriangle, History,
 } from "lucide-react"
-import { savePlan, type Plan, type PlanType, type PlanSection, type WorkoutItem, type MealItem } from "@/app/actions/plans"
+import {
+  savePlan, listPlanRevisions,
+  type Plan, type PlanType, type PlanSection, type WorkoutItem, type MealItem, type PlanRevision,
+} from "@/app/actions/plans"
 import { listExercises, listFoods, type Exercise, type Food } from "@/app/actions/library"
 import { listTemplates, saveTemplate, deleteTemplate, type PlanTemplate } from "@/app/actions/templates"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
@@ -34,6 +37,20 @@ const inputStyle = {
 const MEAL_SLOTS = ["Breakfast", "Lunch", "Snack", "Dinner"] as const
 
 type ConfirmPrompt = { title: string; body: string; label: string; action: () => void }
+
+/** "23 Aug, 4:15 pm" — enough to line a version up against a week's check-in. */
+const revisionLabel = (iso: string) =>
+  new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })
+
+/** What was in a past version, without opening it. */
+function revisionSummary(r: PlanRevision) {
+  const items = (r.content?.workoutItems?.length ?? 0) + (r.content?.mealItems?.length ?? 0)
+  const sections = r.content?.sections?.length ?? 0
+  return [
+    items ? `${items} item${items === 1 ? "" : "s"}` : "",
+    sections ? `${sections} section${sections === 1 ? "" : "s"}` : "",
+  ].filter(Boolean).join(" · ") || "Empty"
+}
 
 /** A single equipment/muscle filter pill in the library picker. */
 function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
@@ -131,6 +148,10 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const [templates, setTemplates] = useState<PlanTemplate[] | null>(null)
   const [tplOpen, setTplOpen] = useState(false)
   const [tplSaving, setTplSaving] = useState(false)
+
+  // Earlier versions of this plan (null = not fetched yet)
+  const [revisions, setRevisions] = useState<PlanRevision[] | null>(null)
+  const [revOpen, setRevOpen] = useState(false)
 
   // --- Auto-draft state ---
   const [genOpen, setGenOpen] = useState(false)
@@ -318,6 +339,10 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
     })
     setSaving(false)
     if (result.success) {
+      // The save may have filed a revision, so the list is stale. Close the
+      // panel as well as dropping it: the fetch only fires on open, so a list
+      // cleared while the panel is up would sit on "Loading…" forever.
+      setRevOpen(false); setRevisions(null)
       setSaved(true); setTimeout(() => setSaved(false), 2000); router.refresh()
     } else setError(result.error || "Failed to save")
   }
@@ -353,6 +378,35 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
       body: `Loading “${t.title}” overwrites the title, the sections and every item currently in this editor. Anything you haven't saved goes with it.`,
       label: "Load template",
       action: () => applyTemplate(t),
+    })
+  }
+
+  const openRevisions = async () => {
+    setRevOpen((v) => !v)
+    if (revisions === null) setRevisions(await listPlanRevisions(clientId, type))
+  }
+
+  /**
+   * Read a past version by loading it back into the editor. Nothing reaches the
+   * client until Save Plan is pressed — so this is how she sees what was being
+   * followed in week four, and can put it back if that is what she wants.
+   */
+  const applyRevision = (r: PlanRevision) => {
+    setTitle(r.title)
+    setSections(r.content?.sections?.length ? r.content.sections : [{ heading: "", body: "" }])
+    if (type === "workout") setWorkoutItems(r.content?.workoutItems || [])
+    else { setMealItems(r.content?.mealItems || []); setMealsTouched(true) }
+    setFilePath(r.file_path ?? null)
+    setRevOpen(false)
+  }
+
+  const requestRevision = (r: PlanRevision) => {
+    if (!hasWork()) { applyRevision(r); return }
+    setConfirmPrompt({
+      title: "Load this version?",
+      body: `The version from ${revisionLabel(r.created_at)} replaces the title, the sections and every item in this editor. Her plan itself doesn't change until you save.`,
+      label: "Load version",
+      action: () => applyRevision(r),
     })
   }
 
@@ -416,22 +470,57 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
           </div>
           <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>{meta.label}</h3>
         </div>
-        {/* Templates */}
-        <div className="relative">
-          <button onClick={openTemplates} className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
-            <FolderOpen size={14} /> Templates
-          </button>
-          {tplOpen && (
-            <div className="absolute right-0 mt-2 w-64 rounded-xl p-2 z-20" style={{ background: "#0d111b", border: "1px solid rgba(255,255,255,0.1)" }}>
-              {(templates || []).length === 0 && <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>No templates yet.</p>}
-              {(templates || []).map((t) => (
-                <div key={t.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                  <button onClick={() => requestTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#e8eaf0" }}>{t.title}</button>
-                  <button onClick={() => requestRemoveTemplate(t)} aria-label="Delete template" style={{ color: "#fb7185" }}><Trash2 size={12} /></button>
-                </div>
-              ))}
-            </div>
-          )}
+        <div className="flex items-center gap-2">
+          {/* Earlier versions of this plan */}
+          <div className="relative">
+            <button onClick={openRevisions} className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
+              <History size={14} /> Versions
+            </button>
+            {revOpen && (
+              <div className="absolute right-0 mt-2 w-72 rounded-xl p-2 z-20" style={{ background: "#0d111b", border: "1px solid rgba(255,255,255,0.1)" }}>
+                {revisions === null && (
+                  <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>
+                    <Loader2 size={12} className="inline animate-spin mr-1" /> Loading…
+                  </p>
+                )}
+                {revisions?.length === 0 && (
+                  <p className="text-xs p-2" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>
+                    No earlier versions yet. From here on, every change you save keeps the version it replaced.
+                  </p>
+                )}
+                {(revisions || []).map((r) => (
+                  <button key={r.id} onClick={() => requestRevision(r)} className="w-full text-left p-2 rounded-lg hover:bg-white/5">
+                    <span className="block text-xs truncate" style={{ color: "#e8eaf0" }}>{r.title}</span>
+                    <span className="block text-[11px]" style={{ color: "#7e8a9e" }}>
+                      Replaced {revisionLabel(r.created_at)} · {revisionSummary(r)}
+                    </span>
+                  </button>
+                ))}
+                {(revisions?.length ?? 0) > 0 && (
+                  <p className="text-[10.5px] px-2 pt-1.5 pb-0.5" style={{ color: "#5a6578", lineHeight: 1.5 }}>
+                    Opening one loads it into the editor. Her plan changes only when you save.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+          {/* Templates */}
+          <div className="relative">
+            <button onClick={openTemplates} className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.05)", color: "#c9cdd5" }}>
+              <FolderOpen size={14} /> Templates
+            </button>
+            {tplOpen && (
+              <div className="absolute right-0 mt-2 w-64 rounded-xl p-2 z-20" style={{ background: "#0d111b", border: "1px solid rgba(255,255,255,0.1)" }}>
+                {(templates || []).length === 0 && <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>No templates yet.</p>}
+                {(templates || []).map((t) => (
+                  <div key={t.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
+                    <button onClick={() => requestTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#e8eaf0" }}>{t.title}</button>
+                    <button onClick={() => requestRemoveTemplate(t)} aria-label="Delete template" style={{ color: "#fb7185" }}><Trash2 size={12} /></button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

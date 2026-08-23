@@ -4,6 +4,8 @@ import { redirect } from "next/navigation"
 import { CoachDashboardClient } from "./coach-dashboard-client"
 import { getPendingReviews } from "@/app/actions/coach-reviews"
 import { buildAlerts, sortAlerts, type CoachAlert } from "@/lib/coach/alerts"
+import { buildEngagement } from "@/lib/coach/engagement"
+import type { RosterEngagement } from "./coach-dashboard-client"
 
 export default async function CoachDashboardPage() {
   const supabase = await createClient()
@@ -54,10 +56,13 @@ export default async function CoachDashboardPage() {
   // Last check-in per client comes from the batch above (coach reads all
   // check-ins via RLS). Drives the roster column and the quiet-clients list.
   const lastCheckIns: Record<string, string> = {}
+  // Every check-in date per client, not just the newest — the engagement pass
+  // below needs the whole history, and it is already in memory here.
+  const checkinDates: Record<string, string[]> = {}
   for (const row of allClientCheckins || []) {
-    if (row.client_id && !lastCheckIns[row.client_id]) {
-      lastCheckIns[row.client_id] = row.submitted_at
-    }
+    if (!row.client_id) continue
+    if (!lastCheckIns[row.client_id]) lastCheckIns[row.client_id] = row.submitted_at
+    ;(checkinDates[row.client_id] ||= []).push(row.submitted_at)
   }
 
   // Quiet clients = active + onboarded but no check-in in the last 7 days (or ever).
@@ -102,13 +107,35 @@ export default async function CoachDashboardPage() {
     }))
     .sort((a, b) => b.count - a.count)
 
-  // ── Data → action alerts ────────────────────────────────────────────────
-  // Pull check-ins and labs for the whole roster in two queries, group by
-  // client, and run the alert rules (lib/coach/alerts.ts).
+  // ── Data → action alerts, and who is actually opening the app ───────────
+  // One batch for the whole roster: the alert inputs (check-ins, labs) plus the
+  // raw rows lib/coach/engagement.ts reads. Everything is fetched for all
+  // clients at once and grouped in memory — a query per client would be a
+  // Mumbai→Singapore round trip each, which is the whole page's latency budget.
   const activeIds = (clients || []).filter((c) => c.subscription_status === "active").map((c) => c.id)
   let alerts: CoachAlert[] = []
+  const engagement: RosterEngagement = { neverStarted: [], goneQuiet: [] }
+  // meal_logs is several rows a day and exercise_logs is one row per SET, and
+  // these read the WHOLE roster at once, so they cross PostgREST's max-rows cap
+  // far sooner than a single client's page does. Bounded by date and read
+  // newest-first for the reason app/dashboard/page.tsx spells out: an unordered
+  // read truncates arbitrarily, which here would drop this week's rows and put
+  // clients who are logging every day into the quiet list.
+  const ENGAGEMENT_WINDOW_DAYS = 120
+  const engagementWindowStart = new Date(now - ENGAGEMENT_WINDOW_DAYS * DAY).toISOString()
+  const LOG_ROW_CAP = 1000
   if (activeIds.length) {
-    const [{ data: alertCheckins }, { data: alertLabs }] = await Promise.all([
+    const [
+      { data: alertCheckins },
+      { data: alertLabs },
+      { data: mealRows },
+      { data: exerciseRows },
+      { data: lessonReadRows },
+      { data: photoRows },
+      { data: profileRows },
+      { data: pushRows },
+      { count: lessonsAvailable },
+    ] = await Promise.all([
       supabase
         .from("weekly_checkins")
         .select("client_id, week_number, weight, energy_level, adherence_score, symptoms")
@@ -117,6 +144,25 @@ export default async function CoachDashboardPage() {
         .from("lab_results")
         .select("client_id, taken_on, tsh, t3, t4, vitamin_d, b12, ferritin, extras")
         .in("client_id", activeIds),
+      supabase
+        .from("meal_logs")
+        .select("client_id, created_at")
+        .in("client_id", activeIds)
+        .gte("created_at", engagementWindowStart)
+        .order("created_at", { ascending: false })
+        .limit(LOG_ROW_CAP),
+      supabase
+        .from("exercise_logs")
+        .select("client_id, created_at")
+        .in("client_id", activeIds)
+        .gte("created_at", engagementWindowStart)
+        .order("created_at", { ascending: false })
+        .limit(LOG_ROW_CAP),
+      supabase.from("lesson_reads").select("client_id, read_at, lesson_id").in("client_id", activeIds),
+      supabase.from("progress_photos").select("client_id, created_at").in("client_id", activeIds),
+      supabase.from("health_profiles").select("client_id").in("client_id", activeIds),
+      supabase.from("push_subscriptions").select("client_id").in("client_id", activeIds),
+      supabase.from("lessons").select("*", { count: "exact", head: true }).eq("published", true),
     ])
 
     const byClient = <T extends { client_id: string }>(rows: T[] | null) => {
@@ -127,18 +173,109 @@ export default async function CoachDashboardPage() {
     const ciMap = byClient(alertCheckins as never)
     const labMap = byClient(alertLabs as never)
 
+    // Engagement only ever reads one column per table, so these group straight
+    // down to the values rather than carrying whole rows around.
+    const valuesBy = (rows: unknown, column: string) => {
+      const m: Record<string, string[]> = {}
+      for (const r of (rows as Record<string, string>[] | null) || []) {
+        if (r.client_id) (m[r.client_id] ||= []).push(r[column])
+      }
+      return m
+    }
+    const mealDatesBy = valuesBy(mealRows, "created_at")
+    const exDatesBy = valuesBy(exerciseRows, "created_at")
+    const readDatesBy = valuesBy(lessonReadRows, "read_at")
+    const lessonIdsBy = valuesBy(lessonReadRows, "lesson_id")
+    const photoDatesBy = valuesBy(photoRows, "created_at")
+    const labDatesBy = valuesBy(alertLabs, "taken_on")
+    const pushBy = valuesBy(pushRows, "client_id")
+    const hasProfile = new Set((profileRows || []).map((r) => r.client_id))
+
+    const activeRoster = (clients || []).filter((c) => c.subscription_status === "active")
+
     alerts = sortAlerts(
-      (clients || [])
-        .filter((c) => c.subscription_status === "active")
-        .flatMap((c) =>
-          buildAlerts({
-            clientId: c.id,
-            clientName: c.full_name || "Client",
-            checkins: (ciMap[c.id] || []) as never,
-            labs: (labMap[c.id] || []) as never,
-          })
-        )
+      activeRoster.flatMap((c) =>
+        buildAlerts({
+          clientId: c.id,
+          clientName: c.full_name || "Client",
+          checkins: (ciMap[c.id] || []) as never,
+          labs: (labMap[c.id] || []) as never,
+        })
+      )
     )
+
+    // The three signals that move day to day. Labs, photos and the health
+    // profile are all legitimately months apart, so they say nothing about
+    // whether she opened the app this week.
+    const LIVE = new Set(["meals", "training", "checkin"])
+    // At the cap the oldest end of the window is missing, so "no rows" stops
+    // meaning "never logged". Recent activity is still trustworthy either way,
+    // so gone-quiet survives it; never-started is an accusation and does not.
+    const logsCapped =
+      (mealRows?.length ?? 0) >= LOG_ROW_CAP || (exerciseRows?.length ?? 0) >= LOG_ROW_CAP
+    const daysSince = (dates: string[]) => {
+      let newest = -Infinity
+      for (const d of dates) {
+        const t = new Date(d).getTime()
+        if (Number.isFinite(t) && t > newest) newest = t
+      }
+      return newest === -Infinity ? null : Math.max(0, Math.floor((now - newest) / DAY))
+    }
+
+    for (const c of activeRoster) {
+      const mealDates = mealDatesBy[c.id] || []
+      const exDates = exDatesBy[c.id] || []
+      const ownCheckins = (checkinDates[c.id] || []).filter(Boolean)
+
+      const e = buildEngagement({
+        mealLogDates: mealDates,
+        exerciseLogDates: exDates,
+        lessonReadDates: readDatesBy[c.id] || [],
+        labResultDates: labDatesBy[c.id] || [],
+        photoDates: photoDatesBy[c.id] || [],
+        checkinDates: ownCheckins,
+        hasHealthProfile: hasProfile.has(c.id),
+        pushSubscriptions: (pushBy[c.id] || []).length,
+        lessonsAvailable: lessonsAvailable ?? 0,
+        lessonsRead: new Set(lessonIdsBy[c.id] || []).size,
+        now,
+      })
+
+      const live = e.signals.filter((s) => LIVE.has(s.key))
+      if (live.some((s) => s.state === "active")) continue
+
+      // Never started and gone quiet are different jobs — one is a walkthrough,
+      // the other a conversation — so they never get merged into one count.
+      // Claiming the first one needs the window to actually reach back to the
+      // day she joined with nothing truncated out of it; short of that, all the
+      // data supports is that nothing has come in lately, which is the other
+      // list. Neither client disappears, so the panel degrades rather than lies.
+      const daysSinceJoined = daysSince([c.created_at])
+      const provablyNever =
+        !logsCapped && daysSinceJoined !== null && daysSinceJoined <= ENGAGEMENT_WINDOW_DAYS
+
+      if (provablyNever && live.every((s) => s.state === "never")) {
+        engagement.neverStarted.push({
+          id: c.id,
+          full_name: c.full_name || "Client",
+          daysSinceJoined,
+          pushOff: e.signals.some((s) => s.key === "push" && s.state === "never"),
+        })
+      } else {
+        engagement.goneQuiet.push({
+          id: c.id,
+          full_name: c.full_name || "Client",
+          daysSinceLog: daysSince([...mealDates, ...exDates, ...ownCheckins]),
+          active: e.active,
+          total: e.total,
+        })
+      }
+    }
+
+    const stalest = (a: number | null, b: number | null) =>
+      (b ?? Number.MAX_SAFE_INTEGER) - (a ?? Number.MAX_SAFE_INTEGER)
+    engagement.neverStarted.sort((a, b) => stalest(a.daysSinceJoined, b.daysSinceJoined))
+    engagement.goneQuiet.sort((a, b) => stalest(a.daysSinceLog, b.daysSinceLog))
   }
 
   // App errors in the last 7 days come from the batch above — logging them is
@@ -155,6 +292,7 @@ export default async function CoachDashboardPage() {
       quietClients={quietClients}
       waitingClients={waitingClients}
       alerts={alerts}
+      engagement={engagement}
       recentErrorCount={recentErrorCount || 0}
       stats={{
         totalClients,

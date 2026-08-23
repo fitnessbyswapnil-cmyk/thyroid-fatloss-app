@@ -88,7 +88,31 @@ export function ReminderToggle() {
     }
   }
 
-  if (state === "loading" || state === "unsupported") return null
+  if (state === "loading") return null
+
+  // Rendering nothing here was the wrong call. In the Android WebView build
+  // there is no Push API, so the setting simply vanished — she sees a gap where
+  // a control should be and no way to know reminders exist at all. Saying so is
+  // better than an absence she has to interpret.
+  if (state === "unsupported") {
+    return (
+      <div
+        className="flex items-start gap-3 p-5 rounded-2xl"
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+      >
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.05)" }}>
+          <BellOff size={18} style={{ color: "#7e8a9e" }} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm" style={{ color: "#e8eaf0" }}>Reminders aren&rsquo;t available here</p>
+          <p className="text-[11.5px] mt-0.5" style={{ color: "#7e8a9e", lineHeight: 1.5 }}>
+            This version of the app can&rsquo;t send notifications. Open ThyroWell in Chrome and
+            turn them on there — it&rsquo;s the same account.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   const card = {
     background: state === "on" ? "rgba(52,211,153,0.06)" : "rgba(255,255,255,0.03)",

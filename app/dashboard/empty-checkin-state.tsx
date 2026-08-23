@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Camera, Check, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { BottomNavPill } from '@/components/dashboard/BottomNavPill'
+import { ReminderToggle } from '@/components/dashboard/ReminderToggle'
 
 export interface Week0Status {
   hasPlan: boolean
@@ -137,6 +138,14 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
             </div>
           )}
         </motion.div>
+
+        {/* Reminders offered here rather than only in Settings. This is the
+            week she is most willing to set the app up, and the reminder is what
+            brings her back in week six — by which point nobody is browsing
+            Settings looking for it. */}
+        <div className="mt-6">
+          <ReminderToggle />
+        </div>
 
         {/* Starter checklist */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>

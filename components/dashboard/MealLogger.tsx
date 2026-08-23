@@ -23,6 +23,7 @@ export function MealLogger({ meals }: { meals: string[] }) {
   const [done, setDone] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -44,16 +45,38 @@ export function MealLogger({ meals }: { meals: string[] }) {
       next ? s.add(meal) : s.delete(meal)
       return s
     })
-    const res = await toggleMealLog(date, meal, next)
-    if (!res.success) {
+    const revert = () =>
       setDone((p) => {
         const s = new Set(p)
         next ? s.delete(meal) : s.add(meal)
         return s
       })
+
+    try {
+      const res = await toggleMealLog(date, meal, next)
+      // A returned failure was already handled. A THROWN one was not: on a
+      // dropped connection the tick stayed on and busy never cleared, so she
+      // saw a meal marked done that no row exists for — and the coach then
+      // reads adherence that is wrong in the direction that costs trust.
+      if (!res.success) {
+        revert()
+        setSaveError("That didn't save. Tap again in a moment.")
+      } else {
+        setSaveError(null)
+      }
+    } catch {
+      revert()
+      setSaveError("You may have lost signal — that didn't save. Tap again when you're back.")
+    } finally {
+      setBusy(null)
     }
-    setBusy(null)
   }
+
+  const errorNote = saveError ? (
+    <p className="text-[11.5px] mt-2.5 px-1" style={{ color: "#f59e0b", lineHeight: 1.5 }} role="alert">
+      {saveError}
+    </p>
+  ) : null
 
   if (!meals.length) return null
   const count = meals.filter((m) => done.has(m)).length
@@ -96,6 +119,7 @@ export function MealLogger({ meals }: { meals: string[] }) {
           )
         })}
       </div>
+      {errorNote}
     </div>
   )
 }

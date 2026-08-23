@@ -14,6 +14,32 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [linkSent, setLinkSent] = useState(false)
+  const [sendingLink, setSendingLink] = useState(false)
+
+  /**
+   * A client who arrived by invite never chose a password, so "Forgot your
+   * password?" does not describe her situation and she will not read it as the
+   * way in. This sends her a fresh sign-in link instead.
+   */
+  const emailSignInLink = async () => {
+    if (!email.trim()) {
+      setError("Enter your email first and we'll send you a link.")
+      return
+    }
+    setSendingLink(true)
+    setError(null)
+    const supabase = createClient()
+    const { error: err } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+    })
+    setSendingLink(false)
+    // Deliberately the same message whether or not the address is registered —
+    // otherwise this page tells a stranger who is a client here.
+    if (err) setError("Could not send the link just now. Please try again in a moment.")
+    else setLinkSent(true)
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -143,14 +169,28 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Forgot Password Link */}
-            <div className="flex justify-end">
-              <Link 
-                href="/auth/forgot-password"
-                className="text-xs transition-colors hover:underline"
-                style={{ color: "#2dd4bf" }}
+            {/* Two ways back in. The emailed link is first because a client who
+                joined by invite has no password to have forgotten. */}
+            <div className="flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={emailSignInLink}
+                disabled={sendingLink || linkSent}
+                className="text-xs transition-colors hover:underline text-left"
+                style={{ color: linkSent ? "#34d399" : "#2dd4bf" }}
               >
-                Forgot your password?
+                {sendingLink
+                  ? "Sending…"
+                  : linkSent
+                    ? "Link sent — check your email"
+                    : "Email me a sign-in link instead"}
+              </button>
+              <Link
+                href="/auth/forgot-password"
+                className="text-xs transition-colors hover:underline shrink-0"
+                style={{ color: "#7e8a9e" }}
+              >
+                Reset password
               </Link>
             </div>
 

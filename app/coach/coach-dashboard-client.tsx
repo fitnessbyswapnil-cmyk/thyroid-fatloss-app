@@ -42,6 +42,17 @@ interface QuietClient {
   daysSince: number | null
 }
 
+/**
+ * Who is opening the app at all, from lib/coach/engagement.ts run across the
+ * roster. Deliberately two lists: a client who never started needs walking
+ * through it, a client who stopped needs asking what changed. One "inactive"
+ * number would hide which of the two you are looking at.
+ */
+export interface RosterEngagement {
+  neverStarted: { id: string; full_name: string; daysSinceJoined: number | null; pushOff: boolean }[]
+  goneQuiet: { id: string; full_name: string; daysSinceLog: number | null; active: number; total: number }[]
+}
+
 export function CoachDashboardClient({
   clients,
   pendingReviews = [],
@@ -49,6 +60,7 @@ export function CoachDashboardClient({
   quietClients = [],
   waitingClients = [],
   alerts = [],
+  engagement = { neverStarted: [], goneQuiet: [] },
   recentErrorCount = 0,
   stats
 }: {
@@ -58,6 +70,7 @@ export function CoachDashboardClient({
   quietClients?: QuietClient[]
   waitingClients?: { id: string; full_name: string; count: number }[]
   alerts?: CoachAlert[]
+  engagement?: RosterEngagement
   recentErrorCount?: number
   stats: Stats
 }) {
@@ -323,6 +336,88 @@ export function CoachDashboardClient({
               ))}
             </div>
           </motion.div>
+        )}
+
+        {/* App engagement — quieter than the lists above on purpose: this is
+            triage context for them, not its own alarm. Amber at most, and only
+            on the label; nothing here is a failure. */}
+        {(engagement.neverStarted.length > 0 || engagement.goneQuiet.length > 0) && (
+          <div
+            className="mb-8 p-5 rounded-2xl"
+            style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <Activity size={14} style={{ color: "#7e8a9e" }} />
+              <h3 className="text-sm font-semibold" style={{ color: "#a9b2c1" }}>Using the app</h3>
+              <span className="text-[11px]" style={{ color: "#5a6578" }}>
+                · meals, workouts and check-ins across active clients
+              </span>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2">
+              {engagement.neverStarted.length > 0 && (
+                <div>
+                  <p
+                    className="text-[10px] font-bold uppercase mb-1"
+                    style={{ color: "#f59e0b", letterSpacing: "0.07em" }}
+                  >
+                    Never started · {engagement.neverStarted.length}
+                  </p>
+                  <p className="text-[11px] mb-2.5" style={{ color: "#5a6578" }}>
+                    Nothing logged since she joined — she likely needs it shown to her once.
+                  </p>
+                  <div className="space-y-1.5">
+                    {engagement.neverStarted.map((c) => (
+                      <Link
+                        key={c.id}
+                        href={`/coach/client/${c.id}`}
+                        className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl"
+                        style={{ background: "rgba(255, 255, 255, 0.02)" }}
+                      >
+                        <span className="text-[13px] truncate" style={{ color: "#e8eaf0" }}>{c.full_name}</span>
+                        <span className="text-[11px] shrink-0 tabular-nums" style={{ color: "#7e8a9e" }}>
+                          {c.daysSinceJoined === null
+                            ? "joined recently"
+                            : `${c.daysSinceJoined}d since joining`}
+                          {c.pushOff ? " · reminders off" : ""}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {engagement.goneQuiet.length > 0 && (
+                <div>
+                  <p
+                    className="text-[10px] font-bold uppercase mb-1"
+                    style={{ color: "#a9b2c1", letterSpacing: "0.07em" }}
+                  >
+                    Gone quiet · {engagement.goneQuiet.length}
+                  </p>
+                  <p className="text-[11px] mb-2.5" style={{ color: "#5a6578" }}>
+                    Nothing logged lately — worth asking what changed.
+                  </p>
+                  <div className="space-y-1.5">
+                    {engagement.goneQuiet.map((c) => (
+                      <Link
+                        key={c.id}
+                        href={`/coach/client/${c.id}`}
+                        className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl"
+                        style={{ background: "rgba(255, 255, 255, 0.02)" }}
+                      >
+                        <span className="text-[13px] truncate" style={{ color: "#e8eaf0" }}>{c.full_name}</span>
+                        <span className="text-[11px] shrink-0 tabular-nums" style={{ color: "#7e8a9e" }}>
+                          {c.daysSinceLog === null
+                            ? `${c.active} of ${c.total} signals`
+                            : `last logged ${c.daysSinceLog}d ago · ${c.active}/${c.total}`}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
         {/* Stats Grid */}

@@ -38,6 +38,7 @@ export function SetLogger({
   const [last, setLast] = useState<ExerciseSet[]>([])
   const [loading, setLoading] = useState(true)
   const [savingSet, setSavingSet] = useState<number | null>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -70,16 +71,29 @@ export function SetLogger({
     // Nothing to record — don't write an empty set.
     if (!row.weight && !row.reps) return
     setSavingSet(i)
-    const res = await logExerciseSet({
-      date,
-      exerciseName,
-      exerciseId: exerciseId ?? null,
-      setNumber: i + 1,
-      weightKg: row.weight === "" ? null : Number(row.weight),
-      reps: row.reps === "" ? null : Number(row.reps),
-    })
-    setSavingSet(null)
-    if (res.success) setRows((p) => p.map((r, idx) => (idx === i ? { ...r, saved: true } : r)))
+    try {
+      const res = await logExerciseSet({
+        date,
+        exerciseName,
+        exerciseId: exerciseId ?? null,
+        setNumber: i + 1,
+        weightKg: row.weight === "" ? null : Number(row.weight),
+        reps: row.reps === "" ? null : Number(row.reps),
+      })
+      if (res.success) {
+        setRows((p) => p.map((r, idx) => (idx === i ? { ...r, saved: true } : r)))
+        setSaveError(null)
+      } else {
+        setSaveError("That set didn't save. Your numbers are still here — tap the tick again.")
+      }
+    } catch {
+      // A thrown call used to leave the spinner running forever with the set
+      // unmarked and nothing said. Mid-workout, on patchy signal, she has no
+      // reason to think anything is wrong until the whole session is missing.
+      setSaveError("You may have lost signal. Your numbers are still here — tap the tick again.")
+    } finally {
+      setSavingSet(null)
+    }
   }
 
   const update = (i: number, patch: Partial<Row>) =>
@@ -151,6 +165,9 @@ export function SetLogger({
       <p className="text-[10.5px] mt-2.5" style={{ color: "#5a6578" }}>
         Saves as you go. Leave a set blank if you skipped it — an honest log is more useful than a full one.
       </p>
+      {saveError && (
+        <p className="text-[11.5px] mt-2 px-1" style={{ color: "#f59e0b", lineHeight: 1.5 }} role="alert">{saveError}</p>
+      )}
     </div>
   )
 }

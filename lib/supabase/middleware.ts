@@ -64,8 +64,17 @@ export async function updateSession(request: NextRequest) {
   }
 
   // If user is logged in and tries to access auth pages, redirect to dashboard
-  if (user && request.nextUrl.pathname.startsWith('/auth/') && 
-      !request.nextUrl.pathname.startsWith('/auth/callback')) {
+  // Two /auth paths are reached WHILE signed in and must not bounce to the
+  // dashboard: the callback that just established the session, and the
+  // set-password screen an invited client is sent to immediately afterwards.
+  // She has a session but no password she knows — redirecting her away leaves
+  // her unable to sign in tomorrow, which is the whole bug this screen exists
+  // to fix.
+  const authPathAllowedWhileSignedIn =
+    request.nextUrl.pathname.startsWith('/auth/callback') ||
+    request.nextUrl.pathname.startsWith('/auth/set-password')
+
+  if (user && request.nextUrl.pathname.startsWith('/auth/') && !authPathAllowedWhileSignedIn) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
