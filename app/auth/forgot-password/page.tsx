@@ -18,22 +18,27 @@ export default function ForgotPasswordPage() {
     setIsLoading(true)
     setError(null)
 
-    const supabase = createClient()
-    // Route through the callback so the recovery code is exchanged for a
-    // session, then land on the reset-password form. URL built from
-    // NEXT_PUBLIC_SITE_URL (throws in prod if unset).
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${getSiteUrl()}/auth/callback?next=/auth/reset-password`,
-    })
-
-    if (error) {
-      setError(error.message)
+    try {
+      const supabase = createClient()
+      // Route through the callback so the recovery link is exchanged for a
+      // session, then land on the reset-password form.
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${getSiteUrl()}/auth/callback?next=/auth/reset-password`,
+      })
+      if (error) {
+        setError(error.message)
+        return
+      }
+      setIsSuccess(true)
+    } catch (err) {
+      // Anything thrown here used to leave the button spinning forever with no
+      // message — on the one screen someone reaches precisely because they are
+      // already locked out.
+      console.error('[forgot-password]', err)
+      setError("We couldn't send that just now. Check your connection and try again.")
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    setIsSuccess(true)
-    setIsLoading(false)
   }
 
   if (isSuccess) {
