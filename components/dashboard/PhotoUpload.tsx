@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef } from 'react'
+import { preparePhoto } from "@/lib/photos/prepare"
 import { motion, AnimatePresence } from 'framer-motion'
 import { Camera, Upload, X, Check, Loader2 } from 'lucide-react'
 
@@ -59,8 +60,14 @@ export function PhotoUpload({
         setUploadProgress(prev => Math.min(prev + 10, 90))
       }, 200)
 
+      // Shrink before sending. Straight off a phone these average ~870KB, and
+      // three per session every few weeks is the single largest thing this app
+      // stores per client. At 1440px they cost a quarter of that and tell the
+      // coach exactly as much — nobody assesses posture at 4000px. It also
+      // saves her mobile data, which is the part she pays for.
+      const prepared = await preparePhoto(file)
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', prepared.blob, file.name.replace(/\.[^.]+$/, '') + '.jpg')
       formData.append('type', type)
 
       const response = await fetch('/api/upload', {
