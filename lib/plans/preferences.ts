@@ -383,6 +383,43 @@ const CHIP_WORDS: Record<string, string[]> = {
   sugar: ["sugar", "jaggery", "gulab jamun", "jalebi", "halwa", "laddu", "barfi", "mithai", "kheer", "payasam"],
 }
 
+/**
+ * English food words and the names those foods actually carry on an Indian menu.
+ *
+ * The exclusion test is a substring match over a food's name, so a client who
+ * says "no cauliflower" is not protected from Aloo Gobi, and "no okra" is not
+ * protected from Bhindi Sabzi. This is the same failure that let tofu through a
+ * soy exclusion — a keyword list written in the wrong vocabulary for the library
+ * it is filtering.
+ *
+ * Applied to typed text as well as to chips, because the free-text box is where
+ * people write the English word.
+ */
+const SYNONYMS: Record<string, string[]> = {
+  cauliflower: ["gobi", "gobhi"],
+  cabbage: ["patta gobi", "patta gobhi"],
+  okra: ["bhindi"], "lady finger": ["bhindi"], ladyfinger: ["bhindi"],
+  brinjal: ["baingan", "bharta"], eggplant: ["baingan", "bharta"], aubergine: ["baingan"],
+  spinach: ["palak"], fenugreek: ["methi"],
+  potato: ["aloo"], peas: ["matar"], onion: ["kanda", "pyaz"],
+  "bottle gourd": ["lauki", "doodhi"], "bitter gourd": ["karela"],
+  chickpea: ["chana", "chole"], chickpeas: ["chana", "chole"],
+  "kidney bean": ["rajma"], "kidney beans": ["rajma"],
+  yogurt: ["dahi", "curd"], "clarified butter": ["ghee"],
+  prawn: ["chingri"], prawns: ["chingri"], fish: ["maach", "macher", "machli"],
+  semolina: ["rava", "suji", "sooji"], vermicelli: ["seviya", "semiya"],
+  "cottage cheese": ["paneer"], lentil: ["dal"], lentils: ["dal"],
+}
+
+/**
+ * A term plus every name the same food goes by. Safe to call on anything —
+ * a term with no entry comes back unchanged.
+ */
+export function expandAvoidTerm(term: string): string[] {
+  const t = term.toLowerCase().trim()
+  return [t, ...(SYNONYMS[t] ?? [])]
+}
+
 export function hardExclusions(prefs: FoodPreferences): Exclusions {
   const avoid: string[] = []
 
@@ -411,7 +448,7 @@ export function hardExclusions(prefs: FoodPreferences): Exclusions {
     diet,
     // The generator's matcher ignores anything under 3 characters, and
     // duplicates cost a pointless pass over every food.
-    avoid: [...new Set(avoid.map((a) => a.toLowerCase().trim()))].filter((a) => a.length >= 3),
+    avoid: [...new Set(avoid.flatMap(expandAvoidTerm))].filter((a) => a.length >= 3),
   }
 }
 

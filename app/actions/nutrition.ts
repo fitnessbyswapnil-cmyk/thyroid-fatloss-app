@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { guard, failed } from '@/lib/errors'
 import { searchIngredients as ifctSearch, computeRecipe, type Ingredient, type RecipePart } from '@/lib/nutrition/ifct'
 import type { Food } from '@/app/actions/library'
-import { EMPTY_PREFERENCES, hardExclusions, type FoodPreferences } from '@/lib/plans/preferences'
+import { EMPTY_PREFERENCES, expandAvoidTerm, hardExclusions, type FoodPreferences } from '@/lib/plans/preferences'
 import { generatePlan } from '@/lib/plans/generate'
 import { computeTargets, type ActivityLevel } from '@/lib/plans/targets'
 import { getAuthUser } from '@/lib/supabase/auth'
@@ -211,6 +211,8 @@ export async function generateMealPlan(input: {
       .map((s) => s.trim().toLowerCase())
       // Trailing "s" trimmed so a label like "Peanuts" still matches "Peanut Butter".
       .flatMap((s) => (s.endsWith('s') && s.length > 4 ? [s, s.slice(0, -1)] : [s]))
+      // "no cauliflower" has to also mean "no Aloo Gobi".
+      .flatMap(expandAvoidTerm)
       .filter((s) => s.length >= 3 && !/^(none|nil|no|na|n\/a|nothing)$/i.test(s))
 
     const avoid = [...new Set([...prefAvoid, ...typed])]
