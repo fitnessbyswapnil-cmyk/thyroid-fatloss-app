@@ -1,5 +1,11 @@
-"use client"
-
+/**
+ * Server component. This file is pure composition — it takes the `data` object
+ * page.tsx assembled and hands slices of it to the section components below,
+ * with no state, effects or handlers of its own. As a "use client" boundary it
+ * was forcing its own markup (and PrototypeHero's, and the lesson card's) into
+ * the browser bundle for no behaviour. Every child that genuinely needs the
+ * browser declares "use client" for itself, so each is now its own boundary.
+ */
 import Link from "next/link"
 import { BookOpen, ChevronRight } from "lucide-react"
 import { PrototypeHero } from "@/components/dashboard/PrototypeHero"

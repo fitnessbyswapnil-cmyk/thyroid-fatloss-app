@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Lock, CheckCircle2, ChevronLeft } from 'lucide-react'
 import { PhotoCapture } from './PhotoCapture'
 import { saveProgressPhotoPaths } from '@/app/actions/upload-progress-photos'
 import { uploadPhoto } from '@/lib/photos/prepare'
+import { useStaggerDelay } from '@/components/ui/stagger'
 
 interface PhotoFlowProps {
   checkInWeek: number
@@ -21,6 +22,13 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
   const [photos, setPhotos] = useState<{ front?: Blob; side?: Blob; back?: Blob }>({})
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+
+  // Both lists are short today, but the delay was derived from the index with
+  // no ceiling — add a fifth privacy promise and the last line arrives 700ms
+  // in. Capped, and skipped entirely under reduced motion.
+  const reduce = useReducedMotion()
+  const privacyDelay = useStaggerDelay(0.08, 0.3)
+  const tipDelay = useStaggerDelay(0.08, 0.3)
 
   const handlePhotoCapture = (blob: Blob) => {
     setPhotos((prev) => ({
@@ -203,9 +211,9 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
                 (text, i) => (
                   <motion.div
                     key={text}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={reduce ? false : { opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + i * 0.1 }}
+                    transition={{ delay: privacyDelay(i) }}
                     className="flex items-start gap-3"
                   >
                     <div className="mt-1" style={{ color: '#2dd4bf' }}>
@@ -332,9 +340,9 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
             ].map(({ icon, tip }, i) => (
               <motion.div
                 key={tip}
-                initial={{ opacity: 0, x: -20 }}
+                initial={reduce ? false : { opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + i * 0.1 }}
+                transition={{ delay: tipDelay(i) }}
                 className="flex items-center gap-4 p-4 rounded-xl"
                 style={{ background: 'rgba(255,255,255,0.03)' }}
               >
@@ -365,6 +373,10 @@ export function ProgressPhotoFlow({ checkInWeek }: PhotoFlowProps) {
       {/* 5. Guided Capture */}
       {step === 'capture' && (
         <PhotoCapture
+          // Keyed so each angle gets a genuinely fresh component. Without it
+          // React reused one instance across front/side/back and its capture
+          // state carried over between them.
+          key={currentAngle}
           angle={currentAngle}
           onCapture={handlePhotoCapture}
           onBack={() => setStep('tips')}

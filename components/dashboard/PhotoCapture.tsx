@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeft, Smartphone, RotateCcw } from 'lucide-react'
 
@@ -38,56 +38,99 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
 
   const config = ANGLE_CONFIG[angle]
 
+  /**
+   * The live stream, held outside React state because the cleanup path must be
+   * able to stop it without waiting for a re-render.
+   *
+   * Nothing stopped it before. retakePhoto() called startCamera() again on top
+   * of the running stream, and on most Android devices the second getUserMedia
+   * then fails with NotReadableError — so "Retake" answered with "Camera access
+   * denied" and the flow was over. The camera also stayed live after she left
+   * the screen, with the indicator lit.
+   */
+  const streamRef = useRef<MediaStream | null>(null)
+
+  const stopCamera = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop())
+    streamRef.current = null
+    if (videoRef.current) videoRef.current.srcObject = null
+  }
+
   const startCamera = async () => {
+    stopCamera()
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } },
       })
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-      }
+      streamRef.current = stream
+      if (videoRef.current) videoRef.current.srcObject = stream
+      else stream.getTracks().forEach((t) => t.stop())
     } catch (err) {
       setError('Camera access denied. Please allow camera access in settings.')
-      console.error('[v0] Camera error:', err)
+      console.error('[PhotoCapture] camera error:', err)
     }
   }
 
   const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current
-      const canvas = canvasRef.current
-      const context = canvas.getContext('2d')
+    const video = videoRef.current
+    const canvas = canvasRef.current
+    if (!video || !canvas) return
 
-      if (context) {
-        canvas.width = video.videoWidth
-        canvas.height = video.videoHeight
-        context.drawImage(video, 0, 0)
-        setCaptured(true)
-      }
+    // A stream that has not delivered a frame yet reports 0x0, which produced a
+    // 0x0 canvas and a null blob — and the null was swallowed, so Confirm did
+    // nothing at all and the screen looked stuck.
+    if (!video.videoWidth || !video.videoHeight) {
+      setError('The camera is still starting. Give it a second and tap again.')
+      return
     }
+
+    const context = canvas.getContext('2d')
+    if (!context) return
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    context.drawImage(video, 0, 0)
+    setError(null)
+    setCaptured(true)
   }
 
   const confirmPhoto = () => {
-    if (canvasRef.current) {
-      canvasRef.current.toBlob((blob) => {
-        if (blob) {
-          onCapture(blob)
-        }
-      }, 'image/jpeg', 0.9)
-    }
+    const canvas = canvasRef.current
+    if (!canvas) return
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        setError("That photo didn't save. Tap Retake and try once more.")
+        return
+      }
+      onCapture(blob)
+      // THE THREE-IDENTICAL-PHOTOS BUG.
+      //
+      // This never reset, and the parent renders one PhotoCapture instance for
+      // all three angles, so `captured` stayed true from front through side to
+      // back. The <video> was unmounted, the canvas still held the FRONT frame,
+      // and each further Confirm ran toBlob over that same unchanged canvas.
+      // She tapped Confirm three times and uploaded the front photo three
+      // times, labelled front, side and back — and neither she nor the coach
+      // could tell, because the preview was hidden. That is the single record
+      // the whole photo-review feature is built on.
+      setCaptured(false)
+      setError(null)
+      void startCamera()
+    }, 'image/jpeg', 0.9)
   }
 
   const retakePhoto = () => {
     setCaptured(false)
     setError(null)
-    startCamera()
+    void startCamera()
   }
 
-  // Start camera on mount
-  useState(() => {
-    startCamera()
-  })
+  // useState(() => startCamera()) stood in for this — a side effect in the
+  // render phase, which double-fires under StrictMode and never cleans up.
+  useEffect(() => {
+    void startCamera()
+    return stopCamera
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [angle])
 
   return (
     <motion.div
@@ -163,7 +206,9 @@ export function PhotoCapture({ angle, onCapture, onBack }: PhotoCaptureProps) {
             )}
           </>
         ) : (
-          <canvas ref={canvasRef} className="hidden" />
+          // Was className="hidden". She was shown a black box and asked to
+          // confirm a photo she had no way of checking.
+          <canvas ref={canvasRef} className="w-full h-full object-cover" />
         )}
       </div>
 

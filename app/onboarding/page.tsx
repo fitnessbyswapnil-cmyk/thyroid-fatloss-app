@@ -259,11 +259,46 @@ export default function OnboardingPage() {
   const heightOutOfRange =
     heightCm !== null && (!Number.isFinite(heightCm) || heightCm < HEIGHT_MIN_CM || heightCm > HEIGHT_MAX_CM)
 
+  /**
+   * Wraps the whole submit so nothing can leave her on a dead button.
+   *
+   * There was no catch on this function at all. Any rejection the individual
+   * guards do not cover — a NavigatorLock timeout from a second tab, for
+   * instance — left "Complete Setup" spinning forever with no route back and
+   * eight screens of answers still only in memory.
+   */
   const handleComplete = async () => {
+    try {
+      await runComplete()
+    } catch (e) {
+      console.error("[onboarding] submit failed", e)
+      setSubmitError(SAVE_FAILED_MESSAGE)
+      setIsLoading(false)
+    }
+  }
+
+  const runComplete = async () => {
     setIsLoading(true)
     const supabase = createClient()
     
-    const { data: { user } } = await supabase.auth.getUser()
+    // A network failure here is NOT a signed-out user.
+    //
+    // auth-js resolves getUser() with { user: null } and an
+    // AuthRetryableFetchError when the request cannot be made at all, so one
+    // tunnel on the train made this conclude she was logged out. She was not —
+    // her session was intact. She got bounced to /auth/login, and everything she
+    // had entered lives only in React state, so all eight screens were gone and
+    // she was sent back through onboarding from the top.
+    //
+    // The rest of this function is careful about exactly this: three ordered
+    // writes, each keeping her state and offering a retry. This line skipped all
+    // of it.
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError) {
+      setSubmitError(SAVE_FAILED_MESSAGE)
+      setIsLoading(false)
+      return
+    }
     if (!user) {
       router.push("/auth/login")
       return

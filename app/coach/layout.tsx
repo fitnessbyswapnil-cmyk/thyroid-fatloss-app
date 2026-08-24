@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 
 export default async function CoachLayout({
@@ -7,9 +8,17 @@ export default async function CoachLayout({
   children: React.ReactNode
 }) {
   const supabase = await createClient()
-  
-  const { data: { user } } = await supabase.auth.getUser()
-  
+
+  // getUser() is an Auth-server round trip to Singapore; getAuthUser verifies
+  // the same token locally with WebCrypto. Nothing here reads user_metadata,
+  // which is the one thing claims can lag on (see app/dashboard/layout.tsx),
+  // so the local check is equally trustworthy here.
+  //
+  // Note this layout is reused across sibling navigations rather than re-run on
+  // each one, so the saving lands on entering the workspace, not on every tap
+  // inside it.
+  const user = await getAuthUser(supabase)
+
   if (!user) {
     redirect("/auth/login")
   }

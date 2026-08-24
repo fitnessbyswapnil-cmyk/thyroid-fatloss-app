@@ -1,5 +1,9 @@
-"use client"
-
+/**
+ * Server component: greeting, medication reminder, focus and quick actions are
+ * all rendered from props, and every "action" is a Link. It was the largest
+ * leaf under the dashboard's client boundary; once dashboard-client.tsx became
+ * a server component there was nothing left tying this to the browser.
+ */
 import Link from "next/link"
 import { Pill, Scale, Apple, Smile, MessageSquare, ChevronRight, Check } from "lucide-react"
 

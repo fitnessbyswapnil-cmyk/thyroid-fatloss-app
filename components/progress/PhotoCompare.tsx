@@ -113,7 +113,11 @@ export function PhotoCompare({ sets }: { sets: PhotoSet[] }) {
                   style={{ aspectRatio: "3 / 4", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={src(s[field] as string)} alt={`${pose} ${i === 0 ? "before" : "after"}`} className="w-full h-full object-cover" />
+                  {/* Deliberately NOT lazy: these two are the whole point of the screen and are
+                      above the fold, so deferring them would only add a round trip. `async`
+                      decoding still keeps the two 1440px JPEG decodes off the main thread,
+                      which is what janks the scroll on a mid-range Android. */}
+                  <img src={src(s[field] as string)} alt={`${pose} ${i === 0 ? "before" : "after"}`} decoding="async" className="w-full h-full object-cover" />
                   <span
                     className="absolute top-2 left-2 text-[9.5px] font-bold uppercase rounded-full px-2 py-1"
                     style={{ background: "rgba(4,8,14,0.6)", color: i === 0 ? "#a9b2c1" : "#2dd4bf", backdropFilter: "blur(4px)", letterSpacing: "0.06em" }}

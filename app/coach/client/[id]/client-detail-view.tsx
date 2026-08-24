@@ -761,7 +761,19 @@ export function ClientDetailView({
                             style={{ background: "rgba(255, 255, 255, 0.04)" }}
                           >
                             {url ? (
-                              <img src={`/api/file?pathname=${encodeURIComponent(url)}`} alt="" className="w-full h-full object-cover rounded-lg" />
+                              // The page query fetches every progress_photos row for the client
+                              // with no limit, and each row renders three photos. A week-20 client
+                              // is 60 images of ~200-400 KB, and each one costs /api/file two
+                              // Supabase round trips to Singapore before a byte of JPEG moves.
+                              // Eager loading fires all of them the moment the tab is clicked;
+                              // lazy keeps it to the two or three rows actually on screen.
+                              <img
+                                src={`/api/file?pathname=${encodeURIComponent(url)}`}
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                                className="w-full h-full object-cover rounded-lg"
+                              />
                             ) : (
                               <Image size={20} style={{ color: "#404858" }} />
                             )}

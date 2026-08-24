@@ -1,32 +1,9 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
-
-function useAnimatedCounter(target: number, duration: number = 1400, shouldAnimate: boolean = true) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<number>(0)
-
-  useEffect(() => {
-    if (!shouldAnimate) {
-      setCount(target)
-      return
-    }
-    
-    const startTime = performance.now()
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
-      setCount(Math.round(eased * target))
-      if (progress < 1) ref.current = requestAnimationFrame(animate)
-    }
-    ref.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(ref.current)
-  }, [target, duration, shouldAnimate])
-
-  return count
-}
+import { useRef } from "react"
+import { useCountUp } from "@/components/ui/count-up"
+import { useStaggerDelay } from "@/components/ui/stagger"
 
 interface SubScore {
   label: string
@@ -54,7 +31,7 @@ export function WellnessScorecard({
 }: WellnessScorecardProps) {
   const containerRef = useRef(null)
   const isInView = useInView(containerRef, { once: true, margin: "-60px" })
-  const animatedScore = useAnimatedCounter(score, 1400, isInView)
+  const animatedScore = useCountUp(score, { start: isInView })
 
   return (
     <motion.section
@@ -84,7 +61,7 @@ export function WellnessScorecard({
             color: "#eaecf4"
           }}
         >
-          {animatedScore}
+          <motion.span>{animatedScore}</motion.span>
         </span>
         <span className="text-[13px]" style={{ color: "#7e8a9e" }}>
           out of 100
@@ -130,7 +107,12 @@ function SubScoreCard({
   index,
   isInView 
 }: SubScore & { index: number; isInView: boolean }) {
-  const animatedValue = useAnimatedCounter(value, 1400, isInView)
+  const animatedValue = useCountUp(value, { start: isInView })
+  // Four subscores today, so these ramps were already short — routed through
+  // the shared helper so they stay short if a fifth is added, and so the card
+  // stops animating at all under reduced motion.
+  const cardDelay = useStaggerDelay(0.06, 0.1)
+  const barDelay = useStaggerDelay(0.08, 0.2)
 
   return (
     <motion.div
@@ -145,7 +127,7 @@ function SubScoreCard({
       transition={{ 
         duration: 0.5, 
         ease: [0.22, 1, 0.36, 1],
-        delay: 0.1 + index * 0.06
+        delay: cardDelay(index)
       }}
     >
       <span 
@@ -163,7 +145,7 @@ function SubScoreCard({
           color: "#eaecf4"
         }}
       >
-        {animatedValue}
+        <motion.span>{animatedValue}</motion.span>
       </span>
       {/* Progress bar */}
       <div 
@@ -179,7 +161,7 @@ function SubScoreCard({
           transition={{ 
             duration: 1.2, 
             ease: [0.22, 1, 0.36, 1],
-            delay: 0.2 + index * 0.08
+            delay: barDelay(index)
           }}
         />
       </div>

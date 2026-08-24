@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { STAGGER_CAP_SECONDS, useRevealScale } from "@/components/ui/stagger"
 
 interface CoachInsightCardProps {
   coachName?: string
@@ -19,7 +20,16 @@ export function CoachInsightCard({
 }: CoachInsightCardProps) {
   // Split insight into segments for staggered reveal
   const segments = insight.split(/(?<=[.!?])\s+/).filter(s => s.length > 0)
-  
+  const scale = useRevealScale(1)
+
+  /**
+   * This card carries the only thing on the dashboard the coach actually
+   * wrote. It used to wait 1.1s AFTER scrolling into view before appearing,
+   * then reveal its sentences at 90ms each — so a four-sentence note was not
+   * fully readable until ~1.7s after she had already scrolled to it. The 1.1s
+   * was choreography from a scripted page-load reveal; on a whileInView
+   * trigger it is just her waiting for a message that is already downloaded.
+   */
   const containerVariants = {
     hidden: { opacity: 0, y: 28 },
     visible: {
@@ -27,8 +37,8 @@ export function CoachInsightCard({
       y: 0,
       transition: { 
         duration: 0.65, 
-        ease: [0.22, 1, 0.36, 1],
-        delay: 1.1
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        delay: 0.15 * scale
       }
     }
   }
@@ -37,8 +47,10 @@ export function CoachInsightCard({
     hidden: {},
     visible: {
       transition: { 
-        staggerChildren: 0.09,
-        delayChildren: 0.3
+        // Derived from the sentence count so the whole text cascade lands
+        // inside STAGGER_CAP_SECONDS however long the coach's note runs.
+        staggerChildren: (Math.min(0.09, STAGGER_CAP_SECONDS / Math.max(segments.length - 1, 1))) * scale,
+        delayChildren: 0.1 * scale
       }
     }
   }
@@ -48,7 +60,7 @@ export function CoachInsightCard({
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
     }
   }
 

@@ -535,3 +535,38 @@
 @media (prefers-reduced-motion: reduce) {
   .tw-shimmer { animation: none; }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Entry-screen animation, without the library.
+
+   The auth screens pulled in framer-motion — 116 KB of JavaScript — to fade a
+   card up and scale a button on press. Those are the first screens every user
+   loads, including the cold start, and the effects are three CSS rules. Running
+   them as CSS also moves them onto the compositor instead of the main thread,
+   so they stay smooth on a phone that is busy parsing the rest of the app.
+
+   Kept deliberately close to the framer values they replace: 0.6s and the same
+   cubic-bezier(0.22, 1, 0.36, 1) easing, so nothing visibly changed.
+   ────────────────────────────────────────────────────────────────────────── */
+@keyframes tw-rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes tw-drop-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tw-rise    { animation: tw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.tw-drop-in { animation: tw-drop-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* whileHover / whileTap, as a transform the compositor owns. */
+.tw-press { transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+.tw-press:hover:not(:disabled)  { transform: scale(1.02); }
+.tw-press:active:not(:disabled) { transform: scale(0.98); }
+
+/* Nothing above should move for someone who has asked it not to. */
+@media (prefers-reduced-motion: reduce) {
+  .tw-rise, .tw-drop-in { animation: none; opacity: 1; transform: none; }
+  .tw-press, .tw-press:hover, .tw-press:active { transition: none; transform: none; }
+}

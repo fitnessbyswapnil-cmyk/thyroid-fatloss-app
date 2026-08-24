@@ -18,6 +18,7 @@ import {
 import { submitWeeklyCheckIn } from '@/app/actions/submit-checkin'
 import { SYMPTOMS, SEVERITY_LABELS, parseSymptoms, type SymptomScores } from '@/lib/health/symptoms'
 import { SITES, type Measurements } from '@/lib/health/measurements'
+import { useRevealScale } from '@/components/ui/stagger'
 import { toLabel, DIGESTION, BLOATING, CRAVINGS, ADHERENCE } from '@/lib/health/checkin-scales'
 
 // Types for check-in data
@@ -52,6 +53,11 @@ interface StepProps {
 
 // Step 0: Prime - Welcome screen
 function PrimeStep({ onNext }: { onNext: () => void }) {
+  // Scale 1: this intro beat is deliberate and stays as designed. Routing it
+  // through reveal() only so it collapses to nothing under reduced motion.
+  const scale = useRevealScale(1)
+  const reveal = (seconds: number) => seconds * scale
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -69,7 +75,7 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
           }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: reveal(0.2), duration: 0.6 }}
         >
           This is your time.
         </motion.h2>
@@ -78,7 +84,7 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
           style={{ color: '#8892a4' }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
+          transition={{ delay: reveal(0.4), duration: 0.6 }}
         >
           Let&apos;s see how far you&apos;ve come.
         </motion.p>
@@ -93,7 +99,7 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
         }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.6 }}
+        transition={{ delay: reveal(0.6), duration: 0.6 }}
         whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
         whileTap={{ transform: 'scale(0.98)' }}
       >
@@ -776,6 +782,15 @@ const RING_RADIUS = 72
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS
 
 function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInData; submissionData: any; error: string | null }) {
+  /**
+   * The celebration cascade ran 0.2s -> 2.0s, so "Back to dashboard" did not
+   * exist for the first two seconds after she pressed submit. She is finished
+   * and wants out; the app was still performing at her. Halving every delay
+   * keeps the choreography — same order, same proportions, same beats — and
+   * gets her to the exit in one second instead of two.
+   */
+  const scale = useRevealScale(0.5)
+  const reveal = (seconds: number) => seconds * scale
   if (error) {
     return (
       <motion.div
@@ -803,7 +818,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: reveal(0.1) }}
         >
           Submission Failed
         </motion.h2>
@@ -813,7 +828,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           style={{ color: '#ef4444' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: reveal(0.15) }}
         >
           {error}
         </motion.p>
@@ -828,7 +843,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
+          transition={{ delay: reveal(0.2) }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -896,7 +911,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 100, damping: 15, delay: 0.2 }}
+        transition={{ type: 'spring', stiffness: 100, damping: 15, delay: reveal(0.2) }}
         className="relative w-40 h-40 rounded-full flex items-center justify-center"
         style={{
           background: 'radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%)',
@@ -946,14 +961,14 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
           className="flex flex-col items-center gap-2 z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: reveal(0.8) }}
         >
           <motion.div
             className="text-5xl font-bold"
             style={{ color: '#2dd4bf' }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 150, delay: 1.2 }}
+            transition={{ type: 'spring', stiffness: 150, delay: reveal(1.2) }}
           >
             {weekScore}
           </motion.div>
@@ -968,7 +983,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         className="w-full max-w-sm space-y-3"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.4 }}
+        transition={{ delay: reveal(1.4) }}
       >
         <div className="text-xs uppercase font-medium" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
           Week Over Week
@@ -1035,7 +1050,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.6 }}
+        transition={{ delay: reveal(1.6) }}
       >
         <div className="flex items-center gap-3 mb-2">
           <span className="text-2xl">{highlight.emoji}</span>
@@ -1054,7 +1069,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         className="text-center space-y-1"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.8 }}
+        transition={{ delay: reveal(1.8) }}
       >
         <p className="text-sm leading-relaxed" style={{ color: '#8892a4' }}>
           Your coach will review this and reply
@@ -1069,7 +1084,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
         className="w-full max-w-sm mt-8 space-y-3"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2 }}
+        transition={{ delay: reveal(2) }}
       >
         <motion.button
           onClick={() => window.location.href = '/dashboard/check-in/photos'}

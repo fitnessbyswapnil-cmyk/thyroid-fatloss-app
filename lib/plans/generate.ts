@@ -1,5 +1,5 @@
 import type { Food } from "@/app/actions/library"
-import { PREF_QUESTIONS } from "@/lib/plans/preferences"
+import { isFoodAllowed, PREF_QUESTIONS, type DietGate } from "@/lib/plans/preferences"
 
 /**
  * Deterministic meal-plan generator.
@@ -24,6 +24,14 @@ export interface GenerateInput {
   targetProtein: number
   /** A vegetarian is never offered meat. Non-veg clients may eat either. */
   isVeg: boolean
+  /**
+   * The three-state diet gate from her saved preferences. When present it wins
+   * over `isVeg`, which cannot express "Veg + egg" and answered `false` for it —
+   * handing a woman who eats eggs and nothing else from an animal the whole meat
+   * library. `isVeg` stays for the coach's manual checkbox and for callers with
+   * no preferences on file.
+   */
+  diet?: DietGate | null
   /** Allergy / dislike keywords — any food whose name or tags match is excluded. */
   avoid?: string[]
   /** Rotation index. Same inputs + same variety = same plan; bump it for an alternative. */
@@ -289,12 +297,11 @@ export function generatePlan(input: GenerateInput): GeneratedPlan {
   const avoid = (input.avoid ?? []).map((a) => a.trim().toLowerCase()).filter(Boolean)
   const warnings: string[] = []
 
+  // One gate, shared with the Claude path, so the two draft buttons in the same
+  // panel can never disagree about what she is allowed to eat.
+  const diet: DietGate = input.diet ?? (isVeg ? "veg" : "any")
   const usable = input.foods.filter(
-    (f) =>
-      typeof f.calories === "number" &&
-      f.calories > 0 &&
-      (!isVeg || f.is_veg) &&
-      !isExcluded(f, avoid)
+    (f) => typeof f.calories === "number" && f.calories > 0 && isFoodAllowed(f, { diet, avoid })
   )
 
   if (usable.length === 0) {

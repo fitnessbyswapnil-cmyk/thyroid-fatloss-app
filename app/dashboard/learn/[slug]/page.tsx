@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect, notFound } from "next/navigation"
 import { getLesson } from "@/app/actions/lessons"
 import { LessonReader } from "@/components/learn/LessonReader"
@@ -6,7 +7,9 @@ import { LessonReader } from "@/components/learn/LessonReader"
 export default async function LessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // Locally verified token. getLesson still does its own auth work internally,
+  // so this gate should not also be paying an Auth-server round trip for it.
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   const lesson = await getLesson(slug)

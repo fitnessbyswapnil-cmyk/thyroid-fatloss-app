@@ -17,14 +17,42 @@ export function TodayLogCard({ initialWorkoutDone, initialMealsFollowed }: { ini
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  /**
+   * Save, and put the toggles back if it did not land.
+   *
+   * Both controls flipped optimistically with no rollback anywhere, so a failed
+   * write left a teal tick on a workout the database had never heard of. The
+   * coach's adherence view then disagreed with what she was looking at — wrong
+   * in the direction that costs trust, and invisible from both sides.
+   *
+   * The await was also unguarded. A transport rejection — a tunnel, a dropped
+   * connection, the everyday case on mobile data — skipped setSaving(false)
+   * entirely, and all three controls carry disabled={saving}, so the card went
+   * permanently dead: spinner running, workout showing as done, nothing
+   * tappable until she reloaded.
+   */
   const save = async (nextWorkout: boolean, nextMeals: number) => {
+    const prevWorkout = workoutDone
+    const prevMeals = meals
+    const revert = () => { setWorkoutDone(prevWorkout); setMeals(prevMeals) }
+
     setSaving(true); setError(null)
-    const res = await saveDailyLog({ date: localDate(), workoutDone: nextWorkout, mealsFollowed: nextMeals })
-    setSaving(false)
-    if (res.success) {
-      setSaved(true); setTimeout(() => setSaved(false), 1500)
-      router.refresh()
-    } else setError(res.error || "Couldn't save")
+    try {
+      const res = await saveDailyLog({ date: localDate(), workoutDone: nextWorkout, mealsFollowed: nextMeals })
+      if (res.success) {
+        setSaved(true); setTimeout(() => setSaved(false), 1500)
+        router.refresh()
+      } else {
+        revert()
+        setError(res.error || "That didn't save. Please try again.")
+      }
+    } catch (e) {
+      console.error("[TodayLogCard]", e)
+      revert()
+      setError("That didn't save — you may have lost signal. Nothing is lost; try again.")
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (

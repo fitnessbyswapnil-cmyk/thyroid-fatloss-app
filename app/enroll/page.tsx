@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Check, Sparkles, ArrowRight, LogOut } from "lucide-react"
@@ -14,7 +15,9 @@ const benefits = [
 export default async function EnrollPage() {
   const PAYMENT_URL = getPaymentUrl()
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // Locally verified token, not an Auth-server round trip in front of the one
+  // query this page makes.
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   // Already active? Send them in.

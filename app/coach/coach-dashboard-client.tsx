@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -15,6 +15,7 @@ import type { CoachAlert } from "@/lib/coach/alerts"
 import type { ClientSetup } from "@/lib/coach/assignment"
 import { PendingReviewsQueue } from "@/components/coach/PendingReviewsQueue"
 import { AddClientButton } from "@/components/coach/AddClientButton"
+import { useStaggeredEntrance } from "@/components/ui/stagger"
 
 interface Client {
   id: string
@@ -81,18 +82,33 @@ export function CoachDashboardClient({
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedFilter, setSelectedFilter] = useState<"all" | "active" | "pending">("all")
 
-  const filteredClients = clients.filter(client => {
-    const matchesSearch = client.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      client.email.toLowerCase().includes(searchQuery.toLowerCase())
-    
-    if (selectedFilter === "active") {
-      return matchesSearch && client.subscription_status === "active"
-    }
-    if (selectedFilter === "pending") {
-      return matchesSearch && client.subscription_status === "paused"
-    }
-    return matchesSearch
-  })
+  // The stat grid used i * 0.1 and the roster i * 0.05, so a 20-client roster
+  // took a full second to finish appearing and the fourth stat card landed
+  // 300ms after the first. Both ramps are now capped at 300ms total.
+  const statEntrance = useStaggeredEntrance(0.06, 20)
+  const rosterEntrance = useStaggeredEntrance(0.04, 10)
+
+  // Re-lowercasing every client's name and email on every keystroke is work
+  // the coach pays for while typing. Normalise once, filter against that.
+  const searchable = useMemo(
+    () => clients.map(c => ({
+      client: c,
+      haystack: `${c.full_name} ${c.email}`.toLowerCase(),
+    })),
+    [clients]
+  )
+
+  const filteredClients = useMemo(() => {
+    const q = searchQuery.toLowerCase()
+    return searchable
+      .filter(({ client, haystack }) => {
+        if (q && !haystack.includes(q)) return false
+        if (selectedFilter === "active") return client.subscription_status === "active"
+        if (selectedFilter === "pending") return client.subscription_status === "paused"
+        return true
+      })
+      .map(({ client }) => client)
+  }, [searchable, searchQuery, selectedFilter])
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -417,9 +433,7 @@ export function CoachDashboardClient({
           {statCards.map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              {...statEntrance(i)}
               className="p-5 rounded-2xl"
               style={{
                 background: "rgba(255, 255, 255, 0.03)",
@@ -510,12 +524,7 @@ export function CoachDashboardClient({
             </div>
           ) : (
             filteredClients.map((client, i) => (
-              <motion.div
-                key={client.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
+              <motion.div key={client.id} {...rosterEntrance(i)}>
                 <Link
                   href={`/coach/client/${client.id}`}
                   className="block p-5 rounded-2xl transition-all hover:scale-[1.01]"

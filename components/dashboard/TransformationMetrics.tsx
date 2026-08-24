@@ -1,31 +1,8 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
-
-function useAnimatedCounter(target: number, duration: number = 1400, decimals: number = 0, shouldAnimate: boolean = true) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<number>(0)
-
-  useEffect(() => {
-    if (!shouldAnimate) {
-      setCount(target)
-      return
-    }
-    const startTime = performance.now()
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
-      setCount(parseFloat((eased * target).toFixed(decimals)))
-      if (progress < 1) ref.current = requestAnimationFrame(animate)
-    }
-    ref.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(ref.current)
-  }, [target, duration, decimals, shouldAnimate])
-
-  return count
-}
+import { useRef } from "react"
+import { useCountUp } from "@/components/ui/count-up"
 
 interface WeightData {
   current: number
@@ -41,7 +18,7 @@ export function TransformationMetrics({
 }) {
   const containerRef = useRef(null)
   const isInView = useInView(containerRef, { once: true, margin: "-60px" })
-  const animatedWeight = useAnimatedCounter(weight.current, 1400, 1, isInView)
+  const animatedWeight = useCountUp(weight.current, { decimals: 1, start: isInView })
 
   // Progress toward goal from the client's own start weight (no hardcoded values).
   const span = weight.start - weight.goal
@@ -86,7 +63,7 @@ export function TransformationMetrics({
               color: "white"
             }}
           >
-            {animatedWeight} kg
+            <motion.span>{animatedWeight}</motion.span> kg
           </span>
         </div>
         <p className="text-[13px] mb-4" style={{ color: "#7e8a9e" }}>

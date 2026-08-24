@@ -6,6 +6,7 @@ import { PendingReview } from '@/app/actions/coach-reviews'
 import { useState } from 'react'
 import { CheckInReviewScreen } from './CheckInReviewScreen'
 import { deltaTone } from "@/lib/coach/delta-tone"
+import { useStaggeredEntrance } from "@/components/ui/stagger"
 
 interface PendingReviewsQueueProps {
   reviews: PendingReview[]
@@ -14,6 +15,10 @@ interface PendingReviewsQueueProps {
 
 export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReviewsQueueProps) {
   const [selectedReview, setSelectedReview] = useState<PendingReview | null>(null)
+
+  // Was idx * 0.05 uncapped: a Monday queue of 15 check-ins took 750ms to
+  // finish appearing before the coach could click the first one.
+  const entrance = useStaggeredEntrance(0.04, 10)
 
   if (selectedReview) {
     return (
@@ -72,9 +77,7 @@ export function PendingReviewsQueue({ reviews, onReviewComplete }: PendingReview
             background: 'rgba(45, 212, 191, 0.08)',
             borderColor: 'rgba(45, 212, 191, 0.3)',
           }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.05 }}
+          {...entrance(idx)}
         >
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">

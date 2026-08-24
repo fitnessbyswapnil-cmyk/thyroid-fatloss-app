@@ -39,16 +39,50 @@ export function ChatView({
   // result now only ever keeps what is already there — a thread cannot shrink to
   // nothing mid-session, and a genuinely empty one is already right because it
   // started empty.
+  //
+  // The poll is also gated on the tab being visible. This app runs inside a
+  // Capacitor shell that loads the live site over the network, so a chat screen
+  // left open in the background was firing a request every 12 seconds against
+  // the client's mobile data for as long as the app stayed alive — and on
+  // resume the WebView had a queue of them to work through before it could
+  // paint. Instead the poll pauses when hidden and fires once immediately on
+  // becoming visible again, which is also strictly fresher: she sees new
+  // messages the moment she opens the app rather than up to 12s later.
   useEffect(() => {
-    const t = setInterval(async () => {
+    const refresh = async () => {
       try {
         const fresh = await listMessages(clientId)
-        if (fresh.length) setMessages(fresh)
+        if (!fresh.length) return
+        // listMessages returns the whole thread, so the usual poll hands back
+        // an identical array. Swapping it in anyway re-rendered every bubble in
+        // a months-old conversation every 12 seconds for nothing. Same count
+        // and same last id means nothing arrived; keep the existing array so
+        // React has no work to do.
+        setMessages((prev) =>
+          prev.length === fresh.length && prev[prev.length - 1]?.id === fresh[fresh.length - 1]?.id
+            ? prev
+            : fresh
+        )
       } catch {
         // Offline or a dropped request: keep the conversation on screen.
       }
-    }, 12000)
-    return () => clearInterval(t)
+    }
+
+    const tick = () => {
+      if (document.visibilityState !== "visible") return
+      void refresh()
+    }
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void refresh()
+    }
+
+    const t = setInterval(tick, 12000)
+    document.addEventListener("visibilitychange", onVisible)
+    return () => {
+      clearInterval(t)
+      document.removeEventListener("visibilitychange", onVisible)
+    }
   }, [clientId])
 
   const send = async () => {

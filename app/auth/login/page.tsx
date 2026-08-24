@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { createClient } from "@/lib/supabase/client"
 import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react"
 
@@ -94,11 +93,8 @@ export default function LoginPage() {
         }}
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-md relative"
+      <div
+        className="tw-rise w-full max-w-md relative"
       >
         {/* Logo */}
         <div className="text-center mb-8">
@@ -214,10 +210,8 @@ export default function LoginPage() {
 
             {/* Error Message */}
             {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 rounded-lg text-sm"
+              <div
+                className="tw-drop-in p-3 rounded-lg text-sm"
                 style={{ 
                   background: "rgba(239, 68, 68, 0.1)", 
                   border: "1px solid rgba(239, 68, 68, 0.2)",
@@ -225,16 +219,14 @@ export default function LoginPage() {
                 }}
               >
                 {error}
-              </motion.div>
+              </div>
             )}
 
             {/* Submit Button */}
-            <motion.button
+            <button
               type="submit"
               disabled={isLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all duration-300"
+              className="tw-press w-full py-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2"
               style={{
                 background: "linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)",
                 color: "#0a0d14",
@@ -249,7 +241,7 @@ export default function LoginPage() {
                   <ArrowRight size={16} />
                 </>
               )}
-            </motion.button>
+            </button>
           </form>
 
           {/* Divider */}
@@ -276,7 +268,7 @@ export default function LoginPage() {
         <p className="text-center text-xs mt-6" style={{ color: "#404858" }}>
           By signing in, you agree to our Terms of Service and Privacy Policy
         </p>
-      </motion.div>
+      </div>
     </div>
   )
 }

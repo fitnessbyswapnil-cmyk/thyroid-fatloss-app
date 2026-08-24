@@ -316,18 +316,89 @@ const DAIRY_WORDS = [
   "malai", "khoya", "kheer", "cream", "shrikhand",
 ]
 
+/**
+ * Wheat, by the names it actually appears under — and deliberately NOT the bare
+ * word "roti".
+ *
+ * Jowar Roti, Bajra Roti, Ragi Roti and Bajra Bhakri are millet breads and are
+ * naturally gluten-free. Excluding on "roti" would strip a coeliac client of
+ * precisely the four flatbreads she is supposed to be eating and leave her on
+ * rice at every meal — over-exclusion that reads as safe and is actually just a
+ * worse plan. Every wheat item in the library is caught by an unambiguous word
+ * below; verified against all 216 rows.
+ */
+const GLUTEN_WORDS = [
+  // Deliberately NOT the bare word "gluten". Matching is a substring test over
+  // name + tags, and the only place "gluten" appears in this library is the tag
+  // "gluten-free" — so including it excluded every food explicitly marked safe,
+  // Bajra Roti and Ragi Roti among them. A keyword that is a prefix of its own
+  // negation cannot be used here.
+  "wheat", "atta", "maida", "barley",
+  "chapati", "phulka", "paratha", "thepla", "missi", "khakhra",
+  "naan", "kulcha", "bhatura", "puri", "poori", "bread", "rusk", "biscuit",
+  "rava", "suji", "sooji", "semolina", "upma", "dalia", "daliya",
+  "seviya", "semiya", "vermicelli", "pasta", "noodle",
+]
+
+/** Tofu and soya chunks are soy. The word "soy" alone matches neither. */
+const SOY_WORDS = ["soy", "soya", "tofu", "edamame", "tempeh"]
+
+/**
+ * Seafood under its regional names. "fish" alone misses Doi Maach, Macher Jhol,
+ * Chingri Malai Curry, Bhetki Paturi and Masor Tenga — five of the fourteen
+ * seafood rows, in a library written for Indian kitchens.
+ */
+const FISH_WORDS = [
+  "fish", "prawn", "shrimp", "crab", "seafood",
+  "maach", "macher", "machli", "chingri", "bhetki", "masor",
+  "pomfret", "surmai", "rohu", "katla", "tuna", "salmon", "anchov",
+]
+
+/**
+ * What each chip actually means in a food name.
+ *
+ * The chip `value` is a category, not a word that appears on a plate, and the
+ * first version pushed those values straight into the keyword list. Two things
+ * went wrong. "gluten" is a prefix of the tag "gluten-free", so a coeliac
+ * client lost Bajra Roti, Jowar Roti, Ragi Roti and Bajra Bhakri — the four
+ * breads she can actually eat — because they are labelled safe. And "soy"
+ * matched no food at all, leaving three tofu dishes on the plate of someone who
+ * had tapped Soy.
+ *
+ * So nothing here is implicit: every chip is expanded, and a chip whose value
+ * happens to be a real food word still has to say so.
+ */
+const CHIP_WORDS: Record<string, string[]> = {
+  dairy: DAIRY_WORDS,
+  gluten: GLUTEN_WORDS,
+  soy: SOY_WORDS,
+  fish: FISH_WORDS,
+  "onion-garlic": ["onion", "garlic", "kanda"],
+  egg: ["egg", "omelette", "bhurji (egg)"],
+  peanut: ["peanut", "groundnut", "moongphali"],
+  mushroom: ["mushroom", "khumb"],
+  brinjal: ["brinjal", "baingan", "eggplant", "aubergine"],
+  paneer: ["paneer", "cottage cheese"],
+  curd: ["curd", "dahi", "yogurt", "yoghurt", "raita", "lassi", "chaas", "buttermilk"],
+  sugar: ["sugar", "jaggery", "gulab jamun", "jalebi", "halwa", "laddu", "barfi", "mithai", "kheer", "payasam"],
+}
+
 export function hardExclusions(prefs: FoodPreferences): Exclusions {
-  const avoid = [...prefs.avoid]
+  const avoid: string[] = []
+
+  // Only expansions — never the raw chip value. See CHIP_WORDS above.
+  for (const chip of prefs.avoid) {
+    const words = CHIP_WORDS[chip]
+    if (words) avoid.push(...words)
+    // An unrecognised value can only come from a question added without a
+    // mapping, so fall back to using it literally rather than ignoring it.
+    else avoid.push(chip)
+  }
 
   // Vegan excludes more than the is_veg flag can express, so it is spelled out.
   if (prefs.diet_type === "vegan") {
     avoid.push(...DAIRY_WORDS, "egg", "omelette", "honey")
   }
-  if (prefs.avoid.includes("dairy")) avoid.push(...DAIRY_WORDS)
-  if (prefs.avoid.includes("gluten")) avoid.push("wheat", "roti", "chapati", "atta", "maida", "bread", "suji", "rava")
-  if (prefs.avoid.includes("onion-garlic")) avoid.push("onion", "garlic")
-  if (prefs.avoid.includes("fish")) avoid.push("fish", "prawn", "seafood")
-  if (prefs.avoid.includes("egg")) avoid.push("egg", "omelette")
 
   const diet: DietGate =
     prefs.diet_type === "veg" || prefs.diet_type === "vegan"
@@ -338,7 +409,7 @@ export function hardExclusions(prefs: FoodPreferences): Exclusions {
 
   return {
     diet,
-    // The generator's isExcluded() ignores anything under 3 characters, and
+    // The generator's matcher ignores anything under 3 characters, and
     // duplicates cost a pointless pass over every food.
     avoid: [...new Set(avoid.map((a) => a.toLowerCase().trim()))].filter((a) => a.length >= 3),
   }

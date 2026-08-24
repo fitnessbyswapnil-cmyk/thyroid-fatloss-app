@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/auth'
 import { redirect } from 'next/navigation'
 import { programmeWeek } from '@/lib/health/programme'
 import { ProgressPhotoFlow } from '@/components/dashboard/ProgressPhotoFlow'
@@ -6,7 +7,10 @@ import { ProgressPhotoFlow } from '@/components/dashboard/ProgressPhotoFlow'
 export default async function ProgressPhotoPage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
+  // getUser() here was an Auth-server round trip to Singapore in front of the
+  // one query this page actually needs. getAuthUser verifies the same token
+  // locally, which is what the rest of the dashboard already does.
+  const user = await getAuthUser(supabase)
 
   if (!user) {
     redirect('/auth/login')

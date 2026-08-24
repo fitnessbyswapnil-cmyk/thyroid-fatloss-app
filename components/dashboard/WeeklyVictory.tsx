@@ -1,32 +1,9 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
+import { useRef } from "react"
+import { useCountUp } from "@/components/ui/count-up"
 import { Activity, Sparkles, ArrowDown, ArrowUp, Minus, Zap } from "lucide-react"
-
-function useAnimatedCounter(target: number, duration: number = 1400, decimals: number = 0, shouldAnimate: boolean = true) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<number>(0)
-
-  useEffect(() => {
-    if (!shouldAnimate) {
-      setCount(target)
-      return
-    }
-    const startTime = performance.now()
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
-      setCount(parseFloat((eased * target).toFixed(decimals)))
-      if (progress < 1) ref.current = requestAnimationFrame(animate)
-    }
-    ref.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(ref.current)
-  }, [target, duration, decimals, shouldAnimate])
-
-  return count
-}
 
 interface WeeklyVictoryProps {
   weekNumber?: number
@@ -45,8 +22,8 @@ export function WeeklyVictory({
 }: WeeklyVictoryProps) {
   const containerRef = useRef(null)
   const isInView = useInView(containerRef, { once: true, margin: "-60px" })
-  const animatedTsh = useAnimatedCounter(tshCurrent, 1600, 1, isInView)
-  const animatedEnergy = useAnimatedCounter(energyLevel, 1600, 0, isInView)
+  const animatedTsh = useCountUp(tshCurrent, { duration: 1.6, decimals: 1, start: isInView })
+  const animatedEnergy = useCountUp(energyLevel, { duration: 1.6, start: isInView })
 
   // Direction-aware, no value judgment: just show which way it moved.
   const lower = tshChangePct > 0
@@ -132,7 +109,7 @@ export function WeeklyVictory({
                   color: "#eaecf4"
                 }}
               >
-                {animatedTsh}
+                <motion.span>{animatedTsh}</motion.span>
               </span>
               <span className="text-[11px]" style={{ color: "#7e8a9e" }}>
                 {changeLabel}
@@ -158,7 +135,7 @@ export function WeeklyVictory({
                   color: "#eaecf4"
                 }}
               >
-                {animatedEnergy}<span style={{ fontSize: 16, color: "#7e8a9e" }}>/10</span>
+                <motion.span>{animatedEnergy}</motion.span><span style={{ fontSize: 16, color: "#7e8a9e" }}>/10</span>
               </span>
               <span className="text-[11px]" style={{ color: "#7e8a9e" }}>
                 Energy level

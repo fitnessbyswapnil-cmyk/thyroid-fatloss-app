@@ -1,32 +1,10 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
+import { useRef } from "react"
+import { useCountUp } from "@/components/ui/count-up"
+import { useStaggerDelay } from "@/components/ui/stagger"
 import { Flame, Check } from "lucide-react"
-
-function useAnimatedCounter(target: number, duration: number = 1400, shouldAnimate: boolean = true) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<number>(0)
-
-  useEffect(() => {
-    if (!shouldAnimate) {
-      setCount(target)
-      return
-    }
-    const startTime = performance.now()
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
-      setCount(Math.round(eased * target))
-      if (progress < 1) ref.current = requestAnimationFrame(animate)
-    }
-    ref.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(ref.current)
-  }, [target, duration, shouldAnimate])
-
-  return count
-}
 
 interface StreakAchievementsProps {
   currentStreak?: number
@@ -47,7 +25,8 @@ export function StreakAchievements({
   // the week she'd just had. The hero already made the same move to a monotonic
   // "weeks together"; this is that decision finished. Best only ever goes up, and
   // the live run still gets its line below whenever there is one to report.
-  const animatedStreak = useAnimatedCounter(bestStreak, 1400, isInView)
+  const animatedStreak = useCountUp(bestStreak, { start: isInView })
+  const milestoneDelay = useStaggerDelay(0.07)
 
   // Milestones are derived from the real streak — earned when reached, the next
   // unreached one is the current target. No hardcoded "earned" badges. Measured
@@ -89,7 +68,7 @@ export function StreakAchievements({
               className="tabular-nums"
               style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 64, color: "#f59e0b" }}
             >
-              {animatedStreak}
+              <motion.span>{animatedStreak}</motion.span>
             </span>
           </div>
           <span className="text-[12px] font-medium uppercase block" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>
@@ -141,7 +120,7 @@ export function StreakAchievements({
               initial={{ scale: 0 }}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.1 * index }}
+              transition={{ type: "spring", stiffness: 300, damping: 18, delay: milestoneDelay(index) }}
             >
               <span
                 className="text-[14px] font-semibold block"

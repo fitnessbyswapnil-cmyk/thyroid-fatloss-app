@@ -5,13 +5,25 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Camera, Calendar, Check, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { programmeWeek } from '@/lib/health/programme'
 import { createClient } from '@/lib/supabase/client'
 import { PhotoUpload } from '@/components/dashboard/PhotoUpload'
 
 export default function ProgressPhotosPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [weekNumber, setWeekNumber] = useState(1)
+  /**
+   * null until we actually know, never 1 as a placeholder.
+   *
+   * It used to start at 1 and only get its real value after two browser round
+   * trips to Singapore. Between those, the page rendered a confident "Week 1
+   * Check-in" AND put week_number: 1 into the insert payload — so a week-20
+   * client with her photos ready could file them as week 1, on top of her real
+   * week-1 set, with nothing telling her or the coach. If getUser() resolved
+   * with user: null on a transient failure (which auth-js does instead of
+   * throwing), it stayed 1 permanently.
+   */
+  const [weekNumber, setWeekNumber] = useState<number | null>(null)
   const [photos, setPhotos] = useState({
     front: null as string | null,
     side: null as string | null,
@@ -22,30 +34,31 @@ export default function ProgressPhotosPage() {
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    // Calculate current week number based on start date
-    async function getWeekNumber() {
+    async function loadWeek() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data: client } = await supabase
-          .from('clients')
-          .select('start_date')
-          .eq('id', user.id)
-          .single()
-        
-        if (client?.start_date) {
-          const startDate = new Date(client.start_date)
-          const today = new Date()
-          const diffTime = Math.abs(today.getTime() - startDate.getTime())
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-          setWeekNumber(Math.ceil(diffDays / 7))
-        }
-      }
+      if (!user) return
+      const { data: client } = await supabase
+        .from('clients')
+        .select('start_date')
+        .eq('id', user.id)
+        .single()
+      // programmeWeek() is the single definition of "week" in this app
+      // (lib/health/programme.ts). This file had its own Math.ceil version,
+      // which is how a codebase ends up with two answers to the same question.
+      setWeekNumber(programmeWeek(client?.start_date ?? null))
     }
-    getWeekNumber()
+    loadWeek()
   }, [])
 
   const handleSubmit = async () => {
+    // Refuse rather than guess. Filing a week-20 set as week 1 corrupts the
+    // before-and-after these photos exist for, and it is not recoverable from
+    // the client side.
+    if (weekNumber === null) {
+      setError("Still checking which week you're on — give it a second and tap again.")
+      return
+    }
     if (!photos.front && !photos.side && !photos.back) {
       setError('Please upload at least one photo')
       return
@@ -69,7 +82,7 @@ export default function ProgressPhotosPage() {
           front_photo: photos.front,
           side_photo: photos.side,
           back_photo: photos.back,
-          week_number: weekNumber,
+          week_number: weekNumber,   // guaranteed non-null by the guard in handleSubmit
           notes: notes || null,
         })
 
@@ -154,7 +167,7 @@ export default function ProgressPhotosPage() {
               Progress Photos
             </h1>
             <p className="text-sm" style={{ color: '#7e8a9e' }}>
-              Week {weekNumber} Check-in
+              Week {weekNumber ?? '—'} Check-in
             </p>
           </div>
         </div>
@@ -180,7 +193,7 @@ export default function ProgressPhotosPage() {
               className="text-lg font-semibold"
               style={{ color: '#e8eaf0' }}
             >
-              Week {weekNumber}
+              Week {weekNumber ?? '—'}
             </p>
           </div>
         </div>

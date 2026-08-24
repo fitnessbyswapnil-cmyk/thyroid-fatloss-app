@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
 import { PhotoCompare, type PhotoSet } from "@/components/progress/PhotoCompare"
 
@@ -9,7 +10,8 @@ export const metadata = {
 
 export default async function ComparePhotosPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // Locally verified token, not an Auth-server round trip in front of the batch.
+  const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
   const [{ data: photos }, { data: checkins }] = await Promise.all([

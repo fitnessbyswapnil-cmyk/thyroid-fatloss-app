@@ -61,9 +61,23 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-[#0a0d14]">
       <head>
-        {/* Satoshi font from Fontshare */}
-        <link 
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" 
+        {/*
+          Satoshi, the body font, comes from a third party — which means a fresh
+          DNS lookup, a TLS handshake, the stylesheet, and only THEN the font
+          files it names. That chain is render-blocking, and on Indian mobile
+          data it is comfortably half a second before the first word appears.
+          Instrument Serif does not pay this: next/font self-hosts and preloads
+          it from our own origin.
+
+          preconnect warms both hops while the HTML is still parsing, which
+          removes the DNS and TLS cost from the critical path. The remaining
+          round trips only go away by self-hosting the woff2 files, which is a
+          separate decision because it means adding font files to the repo.
+        */}
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap"
           rel="stylesheet"
         />
       </head>

@@ -205,6 +205,11 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
                   <img
                     src={`/api/file?pathname=${encodeURIComponent(photo.file_path)}`}
                     alt={`Photo ${idx + 1}`}
+                    // Photos sit well below the fold on a review screen that opens
+                    // scrolled to the top, and each is a 1440px JPEG behind two
+                    // Supabase round trips. Don't spend that until she scrolls to it.
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </div>

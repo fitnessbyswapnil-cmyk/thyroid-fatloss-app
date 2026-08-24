@@ -21,6 +21,21 @@ type State = "loading" | "unsupported" | "needs-install" | "off" | "on" | "block
  * on iPhone, web push only works once the app is added to the Home Screen, so
  * that case gets its own explanation instead of a dead button.
  */
+/**
+ * serviceWorker.ready never settles when no worker is registered — it does not
+ * reject, so a .catch() on it is dead code. Both call sites below awaited it
+ * bare, which meant the card could sit in its initial loading state forever, and
+ * tapping Enable could leave the spinner running after she had already granted
+ * permission. Racing it against a timeout turns "never" into "no".
+ */
+async function readyOrNull(ms = 5000): Promise<ServiceWorkerRegistration | null> {
+  if (!("serviceWorker" in navigator)) return null
+  return Promise.race([
+    navigator.serviceWorker.ready.catch(() => null),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
+  ])
+}
+
 export function ReminderToggle() {
   const [state, setState] = useState<State>("loading")
   const [busy, setBusy] = useState(false)
@@ -38,8 +53,9 @@ export function ReminderToggle() {
         return
       }
       if (Notification.permission === "denied") { setState("blocked"); return }
-      const reg = await navigator.serviceWorker.ready.catch(() => null)
-      const existing = await reg?.pushManager.getSubscription()
+      const reg = await readyOrNull()
+      if (!reg) { setState("unsupported"); return }
+      const existing = await reg.pushManager.getSubscription().catch(() => null)
       setState(existing ? "on" : "off")
     })()
   }, [])
@@ -50,7 +66,8 @@ export function ReminderToggle() {
       const permission = await Notification.requestPermission()
       if (permission !== "granted") { setState(permission === "denied" ? "blocked" : "off"); return }
 
-      const reg = await navigator.serviceWorker.ready
+      const reg = await readyOrNull()
+      if (!reg) { setState("unsupported"); return }
       const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
       if (!key) { setState("unsupported"); return }
 

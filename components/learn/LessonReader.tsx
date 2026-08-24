@@ -25,13 +25,31 @@ export function LessonReader({ lesson }: { lesson: LessonWithRead }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done])
 
+  /**
+   * Marked complete only once the write lands.
+   *
+   * setDone(true) ran before the await and the return value was ignored, so a
+   * failed write still showed the lesson as read — and the `if (done)` guard on
+   * the next line then blocked every retry. The lesson looked complete to her
+   * while the dashboard kept offering it as the next one up, which reads as the
+   * app being broken rather than as a save that failed.
+   */
   const complete = async () => {
     if (done || saving) return
     setSaving(true)
-    setDone(true)
-    await markLessonRead(lesson.id)
-    setSaving(false)
-    router.refresh()
+    try {
+      const res = await markLessonRead(lesson.id)
+      if (res && typeof res === "object" && "success" in res && !res.success) {
+        setSaving(false)
+        return
+      }
+      setDone(true)
+      router.refresh()
+    } catch (e) {
+      console.error("[LessonReader]", e)
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (

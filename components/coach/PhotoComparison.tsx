@@ -162,7 +162,7 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
       {/* Slider comparison */}
       <div className="relative w-full max-w-sm mx-auto aspect-[3/4] rounded-2xl overflow-hidden select-none" style={{ background: "rgba(255,255,255,0.04)" }}>
         {leftImg ? (
-          <img src={leftImg} alt="before" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+          <img src={leftImg} alt="before" decoding="async" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center"><ImageIcon size={28} style={{ color: "#404858" }} /></div>
         )}
@@ -171,6 +171,9 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
           <img
             src={rightImg}
             alt="after"
+            // Both slider halves stay eager — the drag reveals the "after" image
+            // progressively, so it has to already be decoded when she starts dragging.
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             style={{ clipPath: `inset(0 ${100 - slider}% 0 0)` }}
           />

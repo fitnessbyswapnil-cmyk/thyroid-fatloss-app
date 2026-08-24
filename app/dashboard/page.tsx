@@ -37,6 +37,7 @@ export default async function DashboardPage() {
     { data: mealLogDays },
     { data: exerciseLogDays },
     { data: healthProfile },
+    { data: feedbackRows, error: feedbackError },
     upNextLesson,
     plansForClient,
   ] = await Promise.all([
@@ -47,6 +48,18 @@ export default async function DashboardPage() {
     supabase.from("meal_logs").select("date, done").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
     supabase.from("exercise_logs").select("date").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
     supabase.from("health_profiles").select("medication, medication_dose, medication_timing").eq("client_id", user.id).maybeSingle(),
+    // The coach's notes on her check-ins. checkin_feedback has no client_id of
+    // its own, only checkin_id, so this used to wait for the check-in ids and
+    // cost a SECOND Mumbai→Singapore round trip after this whole batch had
+    // already landed — on the screen she opens most. Filtering through an inner
+    // join on the parent check-in asks the same question ("feedback on rows that
+    // are mine") in this trip instead, and keeps the client_id filter explicit
+    // rather than leaning on RLS alone to scope it.
+    supabase
+      .from("checkin_feedback")
+      .select("id, checkin_id, body, created_at, weekly_checkins!inner(client_id)")
+      .eq("weekly_checkins.client_id", user.id)
+      .order("created_at", { ascending: false }),
     nextLesson(),
     getPlansForClient(user.id),
   ])
@@ -96,17 +109,26 @@ export default async function DashboardPage() {
 
   const latestCheckin = allCheckins[0]
 
-  // Fetch the coach's feedback on this client's check-ins. RLS policy
-  // feedback_select_own_client (migration 006) lets a client read feedback on
-  // their own check-ins, so this authed read is safe + scoped. Read-only.
+  // Feedback came back with the batch above. RLS policy feedback_select_own_client
+  // (migration 006) scopes it to her own check-ins as well; the join filter is
+  // belt and braces. Read-only.
   const checkinIdToWeek = new Map(allCheckins.map((c) => [c.id, c.week_number]))
-  const { data: feedbackRows } = await supabase
-    .from("checkin_feedback")
-    .select("id, checkin_id, body, created_at")
-    .in("checkin_id", allCheckins.map((c) => c.id))
-    .order("created_at", { ascending: false })
 
-  const coachFeedback = (feedbackRows || []).map((f) => ({
+  // The note from her coach is the single thing a 1:1 client is paying for, so
+  // it does not get to disappear quietly if the join above ever stops resolving
+  // — a schema change, a renamed relationship. Falling back costs a round trip
+  // that the normal path no longer pays at all.
+  const feedback = feedbackError
+    ? (
+        await supabase
+          .from("checkin_feedback")
+          .select("id, checkin_id, body, created_at")
+          .in("checkin_id", allCheckins.map((c) => c.id))
+          .order("created_at", { ascending: false })
+      ).data
+    : feedbackRows
+
+  const coachFeedback = (feedback || []).map((f) => ({
     id: f.id as string,
     weekNumber: (checkinIdToWeek.get(f.checkin_id) ?? null) as number | null,
     body: f.body as string,

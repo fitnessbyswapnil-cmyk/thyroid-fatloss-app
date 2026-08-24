@@ -10,10 +10,17 @@ export default async function LibraryPage() {
   const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
-  const { data: me } = await supabase.from("clients").select("role").eq("id", user.id).single()
+  // The role check used to block the two library reads, which made this page
+  // three sequential Mumbai→Singapore round trips for work that has no ordering
+  // between its parts. The library tables are coach-only under RLS and the
+  // redirect throws before anything renders, so fetching alongside the gate
+  // cannot show a non-coach anything.
+  const [{ data: me }, exercises, foods] = await Promise.all([
+    supabase.from("clients").select("role").eq("id", user.id).single(),
+    listExercises(),
+    listFoods(),
+  ])
   if (!me || !["coach", "admin"].includes(me.role)) redirect("/dashboard")
-
-  const [exercises, foods] = await Promise.all([listExercises(), listFoods()])
 
   return <LibraryManager initialExercises={exercises} initialFoods={foods} />
 }

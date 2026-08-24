@@ -1,5 +1,10 @@
-"use client"
-
+/**
+ * Server component by design. It renders from props and has no state, effects
+ * or handlers, so marking it "use client" only bought the browser a download:
+ * the entire lessons list plus six lucide icons shipped as JS to render markup
+ * the server had already produced. /dashboard/learn is a read-only screen —
+ * nothing on it needs to be interactive except the links, which are anchors.
+ */
 import Link from "next/link"
 import { ArrowLeft, BookOpen, Check, Lock, ChevronRight, Clock } from "lucide-react"
 import type { LessonWithRead } from "@/app/actions/lessons"

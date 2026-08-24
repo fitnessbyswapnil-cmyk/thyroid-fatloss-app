@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { guard, failed } from '@/lib/errors'
 import { searchIngredients as ifctSearch, computeRecipe, type Ingredient, type RecipePart } from '@/lib/nutrition/ifct'
 import type { Food } from '@/app/actions/library'
+import { EMPTY_PREFERENCES, hardExclusions, type FoodPreferences } from '@/lib/plans/preferences'
 import { generatePlan } from '@/lib/plans/generate'
 import { computeTargets, type ActivityLevel } from '@/lib/plans/targets'
 import { getAuthUser } from '@/lib/supabase/auth'
@@ -161,7 +162,7 @@ export async function generateMealPlan(input: {
   clientId: string
   targetCalories: number
   targetProtein: number
-  /** The coach sets this per client — there is no stored diet preference to infer it from. */
+  /** The coach's checkbox. Overridden by her saved diet_type when she has one. */
   isVeg: boolean
   variety?: number
 }) {
@@ -172,31 +173,59 @@ export async function generateMealPlan(input: {
     const { data: me } = await supabase.from('clients').select('role').eq('id', user.id).single()
     if (me?.role !== 'coach' && me?.role !== 'admin') return null
 
-    const [{ data: foods }, { data: profile }] = await Promise.all([
+    const [{ data: foods }, { data: profile }, { data: prefsRow }] = await Promise.all([
       supabase.from('foods').select('*'),
       supabase
         .from('health_profiles')
         .select('allergies, conditions')
         .eq('client_id', input.clientId)
         .maybeSingle(),
+      // Her onboarding answers. This query was missing, so every field the
+      // generator gained — meals a day, cuisine, staple, the diet gate — was
+      // unreachable: she answered ten questions and got the same four-slot
+      // roti-shaped day as everyone else.
+      supabase.from('food_preferences').select('*').eq('client_id', input.clientId).maybeSingle(),
     ])
     if (!foods?.length) return null
 
-    // Allergies and conditions become exclusion keywords. Split generously —
-    // missing an allergen matters far more than over-excluding a food.
-    const avoid = [profile?.allergies, profile?.conditions]
+    const prefs: FoodPreferences = { ...EMPTY_PREFERENCES, ...(prefsRow ?? {}) }
+
+    // The chips she tapped, expanded into real keywords.
+    //
+    // This used to parse health_profiles.allergies as prose, and onboarding
+    // writes that column as display LABELS — "Milk & dairy", "Onion & garlic",
+    // "Peanuts", "Fish & seafood". The splitter broke on "," and the word "and",
+    // never on "&", so those survived as single tokens that match no food name,
+    // and "Peanuts" missed "Peanut Butter" on the plural alone. Four of the
+    // twelve chips silently did nothing — peanut among them. The stored values
+    // are the source of truth; the prose column is for the coach to read.
+    const { diet, avoid: prefAvoid } = hardExclusions(prefs)
+
+    // Kept as a belt-and-braces layer: anything she typed in the free-text note,
+    // or the coach entered by hand, still excludes. Over-excluding a food costs
+    // her one option; missing an allergen can put her in hospital.
+    const typed = [profile?.allergies, profile?.conditions]
       .filter(Boolean)
       .join(',')
-      .split(/[,;/]+|\band\b/i)
+      .split(/[,;/&]+|\band\b/i)
       .map((s) => s.trim().toLowerCase())
-      .filter((s) => s.length >= 3 && !/^(none|nil|no|na|n\/a)$/i.test(s))
+      // Trailing "s" trimmed so a label like "Peanuts" still matches "Peanut Butter".
+      .flatMap((s) => (s.endsWith('s') && s.length > 4 ? [s, s.slice(0, -1)] : [s]))
+      .filter((s) => s.length >= 3 && !/^(none|nil|no|na|n\/a|nothing)$/i.test(s))
+
+    const avoid = [...new Set([...prefAvoid, ...typed])]
 
     const plan = generatePlan({
       foods: foods as Food[],
       targetCalories: Math.max(600, Math.min(5000, input.targetCalories)),
       targetProtein: Math.max(20, Math.min(400, input.targetProtein)),
       isVeg: input.isVeg,
+      // Her saved answer wins over the checkbox; null when she has not onboarded.
+      diet: prefs.diet_type ? diet : null,
       avoid,
+      mealsPerDay: prefs.meals_per_day,
+      cuisines: prefs.cuisines,
+      staple: prefs.staple,
       variety: input.variety ?? 0,
     })
 
