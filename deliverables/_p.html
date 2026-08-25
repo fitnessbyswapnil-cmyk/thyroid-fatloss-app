@@ -1,0 +1,364 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet">
+<style>/* ──────────────────────────────────────────────────────────────────────────
+   Heal Thyroid with Swapnil — client journey document
+   Brand: near-black ground, violet identity, Instrument Serif display.
+   Taken from the campaign banner, and deliberately continuous with the
+   ThyroWell app so the screens on these pages don't look pasted in.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@page { size: A4; margin: 0; }
+
+:root {
+  --ink:        #05050a;
+  --ink-2:      #0b0a12;
+  --card:       rgba(255,255,255,0.035);
+  --line:       rgba(255,255,255,0.08);
+  --line-soft:  rgba(255,255,255,0.05);
+
+  --violet:     #a855f7;
+  --violet-2:   #7c3aed;
+  --violet-3:   #c084fc;
+  --violet-dim: rgba(168,85,247,0.14);
+
+  --teal:       #2dd4bf;   /* the app's accent — used only on app-derived data */
+  --green:      #34d399;
+  --amber:      #f59e0b;
+
+  --w:          #ffffff;
+  --w-2:        #cfcbd9;
+  --w-3:        #948fa6;
+  --w-4:        #605b70;
+
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --sans:  'Satoshi', 'Manrope', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  background: var(--ink);
+  color: var(--w);
+  font-family: var(--sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  page-break-after: always;
+  break-after: page;
+  padding: 18mm 16mm;
+  display: flex;
+  flex-direction: column;
+}
+.page:last-child { page-break-after: auto; break-after: auto; }
+
+/* The violet bloom from the banner. Positioned per page via modifier. */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-a { width: 460px; height: 460px; background: rgba(124,58,237,0.30); top: -180px; left: -140px; }
+.glow-b { width: 380px; height: 380px; background: rgba(168,85,247,0.16); bottom: -160px; right: -120px; }
+.glow-c { width: 300px; height: 300px; background: rgba(168,85,247,0.10); top: 40%; right: -150px; }
+
+.page > *:not(.glow) { position: relative; z-index: 1; }
+
+/* ── Type ────────────────────────────────────────────────────────────────── */
+
+.eyebrow {
+  font-size: 9.5pt;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--violet-3);
+  font-weight: 600;
+}
+.eyebrow-muted { color: var(--w-3); }
+
+h1 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 46pt;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+h2 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 27pt;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+h3 {
+  font-size: 12pt;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--w);
+}
+p  { font-size: 10.5pt; line-height: 1.62; color: var(--w-2); max-width: 62ch; }
+.lead { font-size: 12.5pt; line-height: 1.55; color: var(--w-2); }
+.small { font-size: 9pt; line-height: 1.5; color: var(--w-3); }
+.tiny  { font-size: 7.8pt; line-height: 1.45; color: var(--w-4); }
+
+.grad {
+  background: linear-gradient(100deg, #c084fc 0%, #a855f7 45%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rule { height: 1px; background: var(--line); margin: 7mm 0; }
+.rule-violet {
+  height: 2px; width: 54px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--violet-3), var(--violet-2));
+}
+
+/* ── Furniture ───────────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 6mm;
+}
+.card-violet {
+  background: linear-gradient(160deg, rgba(168,85,247,0.10), rgba(124,58,237,0.04));
+  border: 1px solid rgba(168,85,247,0.26);
+}
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 11px; border-radius: 999px;
+  font-size: 8pt; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pill-violet { background: var(--violet-dim); color: var(--violet-3); border: 1px solid rgba(168,85,247,0.3); }
+.pill-amber  { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.pill-ghost  { background: rgba(255,255,255,0.04); color: var(--w-3); border: 1px solid var(--line); }
+
+.foot {
+  margin-top: auto;
+  padding-top: 6mm;
+  border-top: 1px solid var(--line-soft);
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 7.6pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--w-4);
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3.5mm; }
+
+.num {
+  font-family: var(--serif); font-style: italic;
+  font-size: 30pt; line-height: 1; color: var(--w);
+}
+.num-sm { font-size: 20pt; }
+.metric-label { font-size: 8pt; letter-spacing: 0.13em; text-transform: uppercase; color: var(--w-3); margin-bottom: 2mm; }
+
+/* ── The phone frames the app screens sit in ─────────────────────────────── */
+
+.phone {
+  width: 390px; height: 844px;
+  border-radius: 34px;
+  border: 1px solid rgba(255,255,255,0.13);
+  background: #090c14;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.65), 0 0 0 8px rgba(255,255,255,0.02);
+  flex: none;
+}
+.phone-scale { transform-origin: top left; }
+
+.screen-note {
+  margin-top: 4mm;
+  font-size: 9.5pt; line-height: 1.55; color: var(--w-2);
+}
+.screen-step {
+  font-family: var(--serif); font-style: italic;
+  font-size: 15pt; color: var(--violet-3);
+}
+
+/* Phone frames scaled to sit beside body copy on A4. transform doesn't affect
+   layout, so the wrapper carries the post-scale box. */
+.phone-wrap { width: 320px; height: 692px; flex: none; }
+.phone-wrap .phone { transform: scale(0.82); transform-origin: top left; }
+
+.journey { display: flex; gap: 8mm; align-items: stretch; margin-top: 6mm; flex: 1; }
+.journey-copy { flex: 1; padding-top: 4mm; display: flex; flex-direction: column; align-self: stretch; }
+
+.stepdot {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--violet-dim); border: 1px solid rgba(168,85,247,0.35);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10pt; font-weight: 700; color: var(--violet-3);
+}
+
+.tick { display: flex; gap: 3mm; align-items: flex-start; margin-bottom: 3mm; }
+.tick-mark {
+  flex: none; width: 15px; height: 15px; border-radius: 50%; margin-top: 2px;
+  background: rgba(45,212,191,0.14); border: 1px solid rgba(45,212,191,0.32);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 5mm; align-items: stretch; }
+.ba-arrow { display: flex; align-items: center; color: var(--violet); font-size: 16pt; }
+
+.s8-frame{position:relative;width:390px;height:844px;overflow:hidden;background:#090c14;font-family:'Satoshi',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;color:#e8eaf0;}
+.s8-glow{position:absolute;top:-150px;left:10px;width:360px;height:300px;border-radius:50%;filter:blur(26px);pointer-events:none;background:radial-gradient(closest-side,rgba(45,212,191,0.13),transparent 70%);z-index:0;}
+
+.s8-header{position:relative;z-index:3;padding:11px 20px;background:rgba(9,12,20,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.s8-headRow{display:flex;align-items:center;gap:14px;}
+.s8-back{display:flex;align-items:center;justify-content:center;width:20px;height:20px;color:#7e8a9e;flex:none;}
+.s8-title{margin:0;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:22px;line-height:28px;color:#e8eaf0;}
+
+.s8-main{position:relative;z-index:1;padding:8px 20px 0;}
+.s8-card{padding:12px;border-radius:20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
+.s8-cardTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.s8-cardTitle{margin:0;font-size:14.5px;font-weight:600;line-height:19px;color:#e8eaf0;}
+.s8-cardDate{font-size:11px;line-height:19px;color:#7e8a9e;}
+.s8-flagNote{margin:0 0 4px;font-size:11.5px;line-height:14.5px;color:#f59e0b;}
+.s8-egNote{margin:0 0 7px;font-size:10.5px;line-height:14px;color:#7e8a9e;padding-left:8px;border-left:2px solid rgba(255,255,255,0.10);}
+
+.s8-panels{display:flex;flex-direction:column;gap:7px;}
+.s8-panelLabel{margin:0 0 4px 2px;font-size:10px;line-height:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#7e8a9e;}
+.s8-rows{display:flex;flex-direction:column;gap:4px;}
+
+.s8-marker{padding:4px 10px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);}
+.s8-mHead{display:flex;align-items:center;gap:6px;}
+.s8-mName{flex:1 1 auto;min-width:0;font-size:12.5px;line-height:18px;font-weight:500;color:#e8eaf0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.s8-mValue{flex:none;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:17px;line-height:19px;color:#e8eaf0;font-variant-numeric:tabular-nums;}
+.s8-mUnit{flex:none;font-size:10px;line-height:19px;color:#7e8a9e;}
+
+.s8-bar{position:relative;height:7px;border-radius:999px;background:rgba(255,255,255,0.06);margin-top:4px;}
+.s8-band{position:absolute;top:0;bottom:0;border-radius:999px;background:rgba(52,211,153,0.22);border:1px solid rgba(52,211,153,0.25);}
+.s8-dot{position:absolute;top:50%;width:10px;height:10px;margin-top:-5px;margin-left:-5px;border-radius:50%;background:#0d111b;border:2.5px solid #2dd4bf;}
+.s8-dotOut{border-color:#f59e0b;}
+
+.s8-scale{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:5px;min-height:12px;}
+.s8-scaleEnd{font-size:10px;line-height:12px;color:#5a6578;font-variant-numeric:tabular-nums;flex:none;}
+.s8-scaleMid{font-size:10px;line-height:12px;color:#5a6578;}
+.s8-badge{font-size:10px;line-height:11px;font-weight:600;padding:1.5px 7px;border-radius:999px;color:#f59e0b;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.28);white-space:nowrap;}
+
+.s8-foot{margin:8px 0 0;font-size:10.5px;line-height:13.5px;color:#5a6578;}
+
+.s8-nav{position:absolute;z-index:5;bottom:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:9px 30px;border-radius:999px;background:rgba(9,12,20,0.75);border:1px solid rgba(255,255,255,0.10);box-shadow:0 8px 32px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.12);backdrop-filter:blur(28px) saturate(180%);}
+.s8-navBtn{position:relative;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;color:rgba(255,255,255,0.40);}
+.s8-navBtnOn{color:#2dd4bf;background:rgba(45,212,191,0.15);}
+body{background:#05050a;padding:36px;display:flex;justify-content:center}</style></head>
+<body><div class="phone"><div class="s8-frame">
+  <div class="s8-glow"></div>
+
+  <div class="s8-header">
+    <div class="s8-headRow">
+      <span class="s8-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>
+      <h1 class="s8-title">My Health</h1>
+    </div>
+  </div>
+
+  <div class="s8-main">
+    <div class="s8-card">
+      <div class="s8-cardTop">
+        <h3 class="s8-cardTitle">Latest report</h3>
+        <span class="s8-cardDate">10 May 2026</span>
+      </div>
+      <p class="s8-flagNote">2 values sit outside the printed range — worth raising with your doctor.</p>
+      <p class="s8-egNote">Example figures — this is what the page shows once a full panel has been done. Not your own results.</p>
+
+      <div class="s8-panels">
+
+        <div class="s8-panel">
+          <p class="s8-panelLabel">Thyroid</p>
+          <div class="s8-rows">
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">TSH</span><span class="s8-mValue">1.77</span><span class="s8-mUnit">mIU/L</span></div>
+              <div class="s8-bar"><div class="s8-band" style="left:20.59%;width:58.82%"></div><div class="s8-dot" style="left:38.79%"></div></div>
+              <div class="s8-scale"><span class="s8-scaleEnd">0.35</span><span class="s8-scaleMid">printed range</span><span class="s8-scaleEnd">4.94</span></div>
+            </div>
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">Free T3</span><span class="s8-mValue">2.8</span><span class="s8-mUnit">pg/mL</span></div>
+              <div class="s8-bar"><div class="s8-band" style="left:20.59%;width:58.82%"></div><div class="s8-dot" style="left:40.20%"></div></div>
+              <div class="s8-scale"><span class="s8-scaleEnd">2</span><span class="s8-scaleMid">printed range</span><span class="s8-scaleEnd">4.4</span></div>
+            </div>
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">Free T4</span><span class="s8-mValue">1.1</span><span class="s8-mUnit">ng/dL</span></div>
+              <div class="s8-bar"><div class="s8-band" style="left:20.59%;width:58.82%"></div><div class="s8-dot" style="left:38.24%"></div></div>
+              <div class="s8-scale"><span class="s8-scaleEnd">0.8</span><span class="s8-scaleMid">printed range</span><span class="s8-scaleEnd">1.8</span></div>
+            </div>
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">Anti-TPO</span><span class="s8-mValue">18</span><span class="s8-mUnit">IU/mL</span></div>
+<div class="s8-bar"><div class="s8-band" style="left:0%;width:100%"></div><div class="s8-dot" style="left:52.9%"></div></div>
+<div class="s8-scale"><span class="s8-scaleEnd">0</span><span class="s8-scaleMid">printed range</span><span class="s8-scaleEnd">34</span></div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="s8-panel">
+          <p class="s8-panelLabel">Vitamins &amp; minerals</p>
+          <div class="s8-rows">
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">Vitamin D (25-OH)</span><span class="s8-mValue">14</span><span class="s8-mUnit">ng/mL</span></div>
+              <div class="s8-bar"><div class="s8-band" style="left:20.59%;width:58.82%"></div><div class="s8-dot s8-dotOut" style="left:7.14%"></div></div>
+              <div class="s8-scale"><span class="s8-scaleEnd">30</span><span class="s8-badge">outside the printed range</span><span class="s8-scaleEnd">100</span></div>
+            </div>
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">Vitamin B12</span><span class="s8-mValue">189</span><span class="s8-mUnit">pg/mL</span></div>
+              <div class="s8-bar"><div class="s8-band" style="left:20.59%;width:58.82%"></div><div class="s8-dot s8-dotOut" style="left:19.66%"></div></div>
+              <div class="s8-scale"><span class="s8-scaleEnd">200</span><span class="s8-badge">outside the printed range</span><span class="s8-scaleEnd">900</span></div>
+            </div>
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">Ferritin</span><span class="s8-mValue">18</span><span class="s8-mUnit">ng/mL</span></div>
+              <div class="s8-bar"><div class="s8-band" style="left:20.59%;width:58.82%"></div><div class="s8-dot" style="left:21.90%"></div></div>
+              <div class="s8-scale"><span class="s8-scaleEnd">15</span><span class="s8-scaleMid">printed range</span><span class="s8-scaleEnd">150</span></div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="s8-panel">
+          <p class="s8-panelLabel">Metabolic</p>
+          <div class="s8-rows">
+
+            <div class="s8-marker">
+              <div class="s8-mHead"><span class="s8-mName">Fasting Insulin</span><span class="s8-mValue">12</span><span class="s8-mUnit">µIU/mL</span></div>
+              <div class="s8-bar"><div class="s8-band" style="left:20.59%;width:58.82%"></div><div class="s8-dot" style="left:53.27%"></div></div>
+              <div class="s8-scale"><span class="s8-scaleEnd">2</span><span class="s8-scaleMid">printed range</span><span class="s8-scaleEnd">20</span></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <p class="s8-foot">Ranges come from your own report when available. This is tracking, not medical advice.</p>
+    </div>
+  </div>
+
+  <div class="s8-nav">
+    <span class="s8-navBtn s8-navBtnOn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+    <span class="s8-navBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+    <span class="s8-navBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg></span>
+    <span class="s8-navBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+  </div>
+</div></div></body></html>

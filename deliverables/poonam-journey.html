@@ -1,0 +1,1501 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Heal Thyroid with Swapnil — Poonam Nikam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
+<style>
+/* ──────────────────────────────────────────────────────────────────────────
+   Heal Thyroid with Swapnil — client journey document
+   Brand: near-black ground, violet identity, Instrument Serif display.
+   Taken from the campaign banner, and deliberately continuous with the
+   ThyroWell app so the screens on these pages don't look pasted in.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@page { size: A4; margin: 0; }
+
+:root {
+  --ink:        #05050a;
+  --ink-2:      #0b0a12;
+  --card:       rgba(255,255,255,0.035);
+  --line:       rgba(255,255,255,0.08);
+  --line-soft:  rgba(255,255,255,0.05);
+
+  --violet:     #a855f7;
+  --violet-2:   #7c3aed;
+  --violet-3:   #c084fc;
+  --violet-dim: rgba(168,85,247,0.14);
+
+  --teal:       #2dd4bf;   /* the app's accent — used only on app-derived data */
+  --green:      #34d399;
+  --amber:      #f59e0b;
+
+  --w:          #ffffff;
+  --w-2:        #cfcbd9;
+  --w-3:        #948fa6;
+  --w-4:        #605b70;
+
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --sans:  'Satoshi', 'Manrope', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  background: var(--ink);
+  color: var(--w);
+  font-family: var(--sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  page-break-after: always;
+  break-after: page;
+  padding: 18mm 16mm;
+  display: flex;
+  flex-direction: column;
+}
+.page:last-child { page-break-after: auto; break-after: auto; }
+
+/* The violet bloom from the banner. Positioned per page via modifier. */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-a { width: 460px; height: 460px; background: rgba(124,58,237,0.30); top: -180px; left: -140px; }
+.glow-b { width: 380px; height: 380px; background: rgba(168,85,247,0.16); bottom: -160px; right: -120px; }
+.glow-c { width: 300px; height: 300px; background: rgba(168,85,247,0.10); top: 40%; right: -150px; }
+
+.page > *:not(.glow) { position: relative; z-index: 1; }
+
+/* ── Type ────────────────────────────────────────────────────────────────── */
+
+.eyebrow {
+  font-size: 9.5pt;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--violet-3);
+  font-weight: 600;
+}
+.eyebrow-muted { color: var(--w-3); }
+
+h1 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 46pt;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+h2 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 27pt;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+h3 {
+  font-size: 12pt;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--w);
+}
+p  { font-size: 10.5pt; line-height: 1.62; color: var(--w-2); max-width: 62ch; }
+.lead { font-size: 12.5pt; line-height: 1.55; color: var(--w-2); }
+.small { font-size: 9pt; line-height: 1.5; color: var(--w-3); }
+.tiny  { font-size: 7.8pt; line-height: 1.45; color: var(--w-4); }
+
+.grad {
+  background: linear-gradient(100deg, #c084fc 0%, #a855f7 45%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rule { height: 1px; background: var(--line); margin: 7mm 0; }
+.rule-violet {
+  height: 2px; width: 54px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--violet-3), var(--violet-2));
+}
+
+/* ── Furniture ───────────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 6mm;
+}
+.card-violet {
+  background: linear-gradient(160deg, rgba(168,85,247,0.10), rgba(124,58,237,0.04));
+  border: 1px solid rgba(168,85,247,0.26);
+}
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 11px; border-radius: 999px;
+  font-size: 8pt; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pill-violet { background: var(--violet-dim); color: var(--violet-3); border: 1px solid rgba(168,85,247,0.3); }
+.pill-amber  { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.pill-ghost  { background: rgba(255,255,255,0.04); color: var(--w-3); border: 1px solid var(--line); }
+
+.foot {
+  margin-top: auto;
+  padding-top: 6mm;
+  border-top: 1px solid var(--line-soft);
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 7.6pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--w-4);
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3.5mm; }
+
+.num {
+  font-family: var(--serif); font-style: italic;
+  font-size: 30pt; line-height: 1; color: var(--w);
+}
+.num-sm { font-size: 20pt; }
+.metric-label { font-size: 8pt; letter-spacing: 0.13em; text-transform: uppercase; color: var(--w-3); margin-bottom: 2mm; }
+
+/* ── The phone frames the app screens sit in ─────────────────────────────── */
+
+.phone {
+  width: 390px; height: 844px;
+  border-radius: 34px;
+  border: 1px solid rgba(255,255,255,0.13);
+  background: #090c14;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.65), 0 0 0 8px rgba(255,255,255,0.02);
+  flex: none;
+}
+.phone-scale { transform-origin: top left; }
+
+.screen-note {
+  margin-top: 4mm;
+  font-size: 9.5pt; line-height: 1.55; color: var(--w-2);
+}
+.screen-step {
+  font-family: var(--serif); font-style: italic;
+  font-size: 15pt; color: var(--violet-3);
+}
+
+/* Phone frames scaled to sit beside body copy on A4. transform doesn't affect
+   layout, so the wrapper carries the post-scale box. */
+.phone-wrap { width: 320px; height: 692px; flex: none; }
+.phone-wrap .phone { transform: scale(0.82); transform-origin: top left; }
+
+.journey { display: flex; gap: 8mm; align-items: stretch; margin-top: 6mm; flex: 1; }
+.journey-copy { flex: 1; padding-top: 4mm; display: flex; flex-direction: column; align-self: stretch; }
+
+.stepdot {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--violet-dim); border: 1px solid rgba(168,85,247,0.35);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10pt; font-weight: 700; color: var(--violet-3);
+}
+
+.tick { display: flex; gap: 3mm; align-items: flex-start; margin-bottom: 3mm; }
+.tick-mark {
+  flex: none; width: 15px; height: 15px; border-radius: 50%; margin-top: 2px;
+  background: rgba(45,212,191,0.14); border: 1px solid rgba(45,212,191,0.32);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 5mm; align-items: stretch; }
+.ba-arrow { display: flex; align-items: center; color: var(--violet); font-size: 16pt; }
+
+
+/* ── App screen styles, one scoped block per screen ─────────────────────── */
+.s1-screen *{box-sizing:border-box}
+.s1-screen{position:relative;width:390px;height:844px;overflow:hidden;background:#090c14;font-family:'Satoshi',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.s1-glow{position:absolute;top:211px;left:195px;width:600px;height:600px;margin-left:-300px;border-radius:9999px;background:radial-gradient(circle,rgba(45,212,191,0.08) 0%,transparent 70%);filter:blur(60px);pointer-events:none}
+.s1-wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:0 16px}
+.s1-panel{position:relative;width:100%;max-width:448px}
+.s1-brand{text-align:center;margin-bottom:32px}
+.s1-logo{margin:0 0 8px;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:700;font-size:30px;line-height:36px;color:#e8eaf0}
+.s1-tag{margin:0;font-size:14px;line-height:21px;color:#7e8a9e}
+.s1-card{padding:32px;border-radius:24px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.s1-form{display:flex;flex-direction:column;gap:20px}
+.s1-label{display:block;margin:0 0 8px;font-family:inherit;font-size:12px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:#7e8a9e}
+.s1-input{display:block;width:100%;margin:0;padding:14px 16px;border-radius:12px;font-family:inherit;font-size:14px;line-height:20px;font-weight:400;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#e8eaf0;outline:none;appearance:none;-webkit-appearance:none}
+.s1-pwwrap{position:relative}
+.s1-input-pw{padding-right:48px;letter-spacing:0.02em}
+.s1-eye{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:block;width:18px;height:18px;color:#7e8a9e}
+.s1-links{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.s1-magic{font-size:12px;line-height:16px;text-align:left;color:#2dd4bf}
+.s1-reset{flex-shrink:0;font-size:12px;line-height:16px;color:#7e8a9e}
+.s1-submit{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0;padding:16px;border:0;border-radius:12px;font-family:inherit;font-size:14px;line-height:20px;font-weight:500;background:linear-gradient(135deg,#2dd4bf 0%,#22c55e 100%);color:#0a0d14;box-shadow:0 8px 32px rgba(45,212,191,0.25)}
+.s1-divider{display:flex;align-items:center;gap:16px;margin:24px 0}
+.s1-rule{flex:1 1 0%;height:1px;background:rgba(255,255,255,0.06)}
+.s1-or{font-size:12px;line-height:16px;color:#7e8a9e}
+.s1-newto{margin:0;text-align:center;font-size:14px;line-height:20px;color:#7e8a9e}
+.s1-req{font-weight:500;color:#2dd4bf}
+.s1-legal{margin:24px 0 0;text-align:center;font-size:12px;line-height:16px;color:#404858}
+.s1-ico{display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.s2-screen,.s2-screen *{box-sizing:border-box;margin:0;padding:0;}
+.s2-screen{position:relative;width:390px;height:844px;overflow:hidden;background:#090c14;color:#e8eaf0;font-family:'Satoshi','Helvetica Neue',system-ui,-apple-system,Arial,sans-serif;font-weight:400;line-height:1.5;-webkit-font-smoothing:antialiased;}
+.s2-hero{position:relative;overflow:hidden;padding:52px 24px 8px;}
+.s2-glow{position:absolute;border-radius:50%;pointer-events:none;filter:blur(26px);background:radial-gradient(closest-side,rgba(45,212,191,0.13),transparent 70%);top:-140px;left:10px;width:360px;height:300px;z-index:0;}
+.s2-heroin{position:relative;z-index:1;}
+.s2-eyebrow{font-size:10.5px;text-transform:uppercase;font-weight:600;color:#7e8a9e;letter-spacing:0.16em;}
+.s2-greet{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:31px;line-height:1.15;color:#e8eaf0;margin-top:6px;}
+.s2-sub{font-size:14px;line-height:20px;color:#a9b2c1;margin-top:6px;}
+
+.s2-focus{position:relative;overflow:hidden;display:block;margin-top:20px;padding:20px;border-radius:24px;background:rgba(255,255,255,0.03);border:1px solid rgba(45,212,191,0.16);}
+.s2-focus-glow{top:-70px;right:-50px;width:220px;height:200px;left:auto;}
+.s2-focus-in{position:relative;z-index:1;}
+.s2-focus-label{font-size:10.5px;text-transform:uppercase;font-weight:600;color:#2dd4bf;letter-spacing:0.16em;}
+.s2-focus-h{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:24px;color:#e8eaf0;margin-top:6px;}
+.s2-focus-p{font-size:12.5px;color:#a9b2c1;margin-top:4px;}
+.s2-focus-btn{display:inline-block;margin-top:16px;border-radius:9999px;font-weight:700;font-size:13.5px;padding:10px 20px;background:#2dd4bf;color:#06231f;box-shadow:0 8px 24px rgba(45,212,191,0.25);}
+
+.s2-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px;}
+.s2-tile{padding:16px;border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
+.s2-tile-label{font-size:10.5px;text-transform:uppercase;font-weight:600;color:#7e8a9e;letter-spacing:0.16em;white-space:nowrap;}
+.s2-weeks{display:flex;align-items:baseline;gap:6px;margin-top:8px;}
+.s2-weeks-n{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:36px;line-height:1;color:#e8eaf0;}
+.s2-weeks-u{font-size:12px;line-height:16px;color:#7e8a9e;}
+.s2-dots{display:flex;gap:6px;margin-top:12px;}
+.s2-dot{width:15px;height:15px;border-radius:50%;background:rgba(45,212,191,0.2);border:1px solid rgba(45,212,191,0.2);}
+.s2-dot-on{background:rgba(45,212,191,0.9);border:1px solid #2dd4bf;}
+.s2-ci-week{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:22px;color:#e8eaf0;margin-top:8px;}
+.s2-ci-p{font-size:11.5px;color:#7e8a9e;margin-top:4px;}
+.s2-bar{height:5px;border-radius:9999px;margin-top:12px;overflow:hidden;background:rgba(255,255,255,0.06);}
+.s2-bar-fill{width:62%;height:100%;border-radius:999px;background:linear-gradient(90deg,#2dd4bf,#34d399);}
+
+.s2-qa-label{font-size:10.5px;text-transform:uppercase;font-weight:600;color:#7e8a9e;letter-spacing:0.16em;margin:24px 0 10px 2px;}
+.s2-qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+.s2-qa-item{display:flex;flex-direction:column;align-items:center;gap:6px;border-radius:16px;padding:14px 0;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
+.s2-qa-text{font-size:10.5px;font-weight:500;color:#a9b2c1;}
+
+.s2-learnwrap{padding:16px 24px 0;}
+.s2-learn{display:flex;align-items:flex-start;gap:12px;padding:20px;border-radius:24px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);}
+.s2-learn-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(167,139,250,0.15);}
+.s2-learn-body{flex:1;min-width:0;}
+.s2-learn-label{font-size:10.5px;text-transform:uppercase;font-weight:600;color:#a78bfa;letter-spacing:0.16em;}
+.s2-learn-title{font-weight:600;font-size:14px;line-height:20px;color:#e8eaf0;margin-top:4px;}
+.s2-learn-sum{font-size:11.5px;color:#7e8a9e;line-height:1.5;margin-top:4px;}
+.s2-learn-chev{flex-shrink:0;margin-top:4px;}
+
+.s2-nav{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(9,12,20,0.75);border:1px solid rgba(255,255,255,0.10);border-radius:9999px;padding:10px 32px;box-shadow:0 8px 32px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.12);-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);}
+.s2-nav-row{display:flex;align-items:center;gap:8px;position:relative;}
+.s2-nav-pip{position:absolute;border-radius:9999px;background:rgba(45,212,191,0.15);width:40px;height:40px;top:50%;margin-top:-20px;left:0;}
+.s2-nav-item{position:relative;z-index:10;display:flex;align-items:center;justify-content:center;border-radius:9999px;width:40px;height:40px;}
+.s2-ico{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+.s3-screen{position:relative;width:390px;height:844px;overflow:hidden;background:#090c14;color:#e8eaf0;font-family:'Satoshi','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;}
+.s3-glow{position:absolute;top:-140px;left:30px;width:340px;height:300px;border-radius:50%;filter:blur(26px);pointer-events:none;background:radial-gradient(closest-side,rgba(45,212,191,0.13),transparent 70%);z-index:0;}
+.s3-status{position:relative;z-index:5;height:32px;padding:0 26px;display:flex;align-items:center;justify-content:space-between;}
+.s3-time{font-size:11.5px;font-weight:600;letter-spacing:0.01em;color:#e8eaf0;}
+.s3-statusIcons{display:flex;align-items:center;gap:6px;color:rgba(232,234,240,0.85);}
+.s3-header{position:relative;z-index:4;padding:12px 24px;display:flex;align-items:center;gap:12px;background:rgba(9,12,20,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.s3-back{flex:0 0 auto;width:22px;height:29px;display:flex;align-items:center;color:#7e8a9e;}
+.s3-title{flex:1 1 auto;margin:0;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:22px;line-height:29px;color:#e8eaf0;}
+.s3-badge{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.28);color:#f59e0b;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;line-height:1;}
+.s3-dot{width:5px;height:5px;border-radius:50%;background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,0.85);}
+.s3-main{position:relative;z-index:2;padding:14px 24px 0;}
+.s3-hero{text-align:center;}
+.s3-eyebrow{margin:0;font-size:10.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#f59e0b;line-height:13px;}
+.s3-heroNum{margin:6px 0 0;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:40px;line-height:42px;color:#e8eaf0;text-shadow:0 0 44px rgba(45,212,191,0.35);}
+.s3-arrow{font-family:'Satoshi','Inter',system-ui,sans-serif;font-style:normal;font-size:26px;color:#2dd4bf;padding:0 5px;vertical-align:3px;}
+.s3-heroSub{margin:6px auto 0;max-width:316px;font-size:12.5px;line-height:1.5;color:#a9b2c1;}
+.s3-card{margin-top:14px;padding:18px;border-radius:20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
+.s3-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.s3-tab{flex:1 1 0;height:32px;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:12.5px;font-weight:500;background:rgba(255,255,255,0.05);color:#c9cdd5;white-space:nowrap;}
+.s3-tabOn{background:#2dd4bf;color:#04121a;font-weight:600;}
+.s3-chart{display:block;}
+.s3-axis{display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding:0 1px;height:16px;}
+.s3-axisEnd{font-size:11px;color:#5a6578;font-variant-numeric:tabular-nums;}
+.s3-delta{font-size:11px;font-weight:700;color:#f59e0b;font-variant-numeric:tabular-nums;}
+.s3-cardHead{display:flex;align-items:baseline;justify-content:space-between;height:19px;margin-bottom:12px;}
+.s3-cardTitle{margin:0;font-size:15px;font-weight:600;color:#e8eaf0;}
+.s3-cardTag{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;}
+.s3-rows{display:flex;flex-direction:column;gap:8px;}
+.s3-row{display:flex;align-items:center;gap:10px;}
+.s3-rowLabel{flex:0 0 76px;font-size:11.5px;color:#c9cdd5;}
+.s3-bar{flex:1 1 auto;height:26px;border-radius:8px;background:rgba(255,255,255,0.035);overflow:hidden;}
+.s3-fill{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,rgba(45,212,191,0.13) 0%,#2dd4bf 100%);box-shadow:0 0 18px rgba(45,212,191,0.20);}
+.s3-rowVals{flex:0 0 72px;display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+.s3-val{font-size:12.5px;color:#e8eaf0;font-variant-numeric:tabular-nums;}
+.s3-dlt{font-size:11.5px;font-weight:700;color:#2dd4bf;font-variant-numeric:tabular-nums;}
+.s3-foot{margin:14px 2px 0;font-size:11px;line-height:1.5;color:#5a6578;}
+.s3-nav{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:20;padding:10px 32px;border-radius:999px;background:rgba(9,12,20,0.75);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.10);box-shadow:0 8px 32px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.12);}
+.s3-navRow{position:relative;display:flex;align-items:center;gap:8px;}
+.s3-navPip{position:absolute;top:0;left:48px;width:40px;height:40px;border-radius:50%;background:rgba(45,212,191,0.15);}
+.s3-navItem{position:relative;z-index:1;width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.40);}
+.s3-navOn{color:#2dd4bf;}
+
+:where(.s4-screen,.s4-screen *,.s4-screen *::before,.s4-screen *::after){box-sizing:border-box;margin:0;padding:0;border:0}
+.s4-screen{position:relative;width:390px;height:844px;overflow:hidden;background:#090c14;font-family:'Satoshi',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;color:#e8eaf0}
+.s4-header{position:relative;z-index:40;display:flex;align-items:center;gap:16px;padding:16px 24px;background:rgba(9,12,20,0.8);border-bottom:1px solid rgba(255,255,255,0.06)}
+.s4-back{flex:0 0 auto;width:36px;height:36px;margin-left:-8px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#7e8a9e}
+.s4-h1{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:24px;line-height:32px;color:#e8eaf0}
+.s4-main{padding:32px 24px 0}
+.s4-card{border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);overflow:hidden}
+.s4-cardpad{padding:24px}
+.s4-card2{margin-top:20px}
+.s4-cardhead{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.s4-tile{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(45,212,191,0.12)}
+.s4-titlewrap{display:flex;flex-direction:column}
+.s4-title{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:20px;line-height:28px;color:#e8eaf0}
+.s4-sub{font-size:12px;line-height:16px;color:#7e8a9e}
+.s4-rows{display:flex;flex-direction:column;gap:8px}
+.s4-row{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);text-align:left}
+.s4-chip{flex:0 0 auto;padding:2px 8px;border-radius:4px;font-size:10px;line-height:14px;text-transform:uppercase;background:rgba(45,212,191,0.12);color:#2dd4bf}
+.s4-name{flex:1 1 0%;min-width:0;font-size:14px;line-height:20px;color:#e8eaf0}
+.s4-portion{font-size:12px;line-height:16px;margin-left:6px;color:#7e8a9e}
+.s4-kcal{flex:0 0 auto;font-size:12px;line-height:16px;color:#7e8a9e;font-variant-numeric:tabular-nums}
+.s4-chev{flex:0 0 auto;color:#4b5563}
+.s4-total{margin-top:8px;padding-right:4px;text-align:right;font-size:12px;line-height:16px;color:#2dd4bf;font-variant-numeric:tabular-nums}
+.s4-logger{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06)}
+.s4-logtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.s4-logtitle{font-size:10.5px;line-height:14px;text-transform:uppercase;font-weight:600;letter-spacing:0.16em;color:#7e8a9e}
+.s4-logcount{font-size:11px;line-height:14px;color:#5a6578;font-variant-numeric:tabular-nums}
+.s4-pills{display:flex;flex-wrap:wrap;gap:8px}
+.s4-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:9999px;font-size:12px;line-height:16px;font-weight:600}
+.s4-pill-done{background:rgba(52,211,153,0.14);color:#34d399;border:1px solid rgba(52,211,153,0.3)}
+.s4-pill-todo{background:rgba(255,255,255,0.04);color:#a9b2c1;border:1px solid rgba(255,255,255,0.08)}
+.s4-dot{flex:0 0 auto;width:12px;height:12px;border-radius:9999px;border:1.5px solid #5a6578}
+.s4-nav{position:absolute;z-index:50;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 32px;border-radius:9999px;background:rgba(9,12,20,0.75);border:1px solid rgba(255,255,255,0.10);box-shadow:0 8px 32px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.12)}
+.s4-navrow{position:relative;display:flex;align-items:center;gap:8px}
+.s4-navdot{position:absolute;left:96px;top:50%;margin-top:-20px;width:40px;height:40px;border-radius:9999px;background:rgba(45,212,191,0.15)}
+.s4-tab{position:relative;z-index:10;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9999px}
+
+.s5-screen{position:relative;width:390px;height:844px;overflow:hidden;background:#090c14;font-family:'Satoshi','Inter',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;color:#e8eaf0;-webkit-font-smoothing:antialiased}
+.s5-screen *{box-sizing:border-box;margin:0;padding:0}
+
+.s5-header{padding:16px 24px;background:rgba(9,12,20,0.8);border-bottom:1px solid rgba(255,255,255,0.06)}
+.s5-hrow{display:flex;align-items:center;gap:16px}
+.s5-back{width:36px;height:36px;margin-left:-8px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#7e8a9e;flex-shrink:0}
+.s5-title{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:24px;line-height:32px;color:#e8eaf0}
+
+.s5-main{padding:32px 24px}
+.s5-card{border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);overflow:hidden}
+.s5-cardpad{padding:24px}
+
+.s5-cardhead{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.s5-icontile{width:44px;height:44px;border-radius:12px;background:rgba(45,212,191,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s5-plantitle{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:20px;line-height:28px;color:#e8eaf0}
+.s5-planmeta{font-size:12px;line-height:16px;color:#7e8a9e}
+
+.s5-week{display:flex;gap:6px;margin-bottom:12px}
+.s5-day{flex:1 1 0;height:54px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:transparent;border:1px solid rgba(255,255,255,0.04)}
+.s5-day-has{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.07)}
+.s5-day-on{background:rgba(45,212,191,0.16);border-color:rgba(45,212,191,0.45)}
+.s5-dl{font-size:12px;line-height:14px;font-weight:600;color:#5a6578}
+.s5-day-has .s5-dl{color:#e8eaf0}
+.s5-day-on .s5-dl{color:#2dd4bf}
+.s5-ds{font-size:10px;line-height:12px;font-weight:600;color:#404858;letter-spacing:0.01em}
+.s5-day-has .s5-ds{color:#7e8a9e}
+.s5-day-on .s5-ds{color:#2dd4bf}
+
+.s5-session{font-size:12px;line-height:18px;color:#7e8a9e;padding:0 2px;margin-bottom:12px}
+
+.s5-rows{display:flex;flex-direction:column;gap:8px}
+.s5-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);text-align:left}
+.s5-thumb{position:relative;width:48px;height:48px;border-radius:10px;overflow:hidden;background:#fff;flex-shrink:0}
+.s5-figsvg{display:block}
+.s5-loop{position:absolute;right:3px;top:3px;width:16px;height:16px;border-radius:999px;background:rgba(4,8,14,0.78);display:flex;align-items:center;justify-content:center}
+.s5-loopdot{width:6px;height:6px;border-radius:999px;background:#2dd4bf}
+.s5-ename{flex:1 1 auto;font-size:14px;line-height:20px;color:#e8eaf0;white-space:nowrap}
+.s5-sets{font-size:12px;line-height:16px;color:#7e8a9e;font-variant-numeric:tabular-nums;flex-shrink:0}
+.s5-chev{flex-shrink:0;display:flex;color:#4b5563}
+
+.s5-nav{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(9,12,20,0.75);border:1px solid rgba(255,255,255,0.10);border-radius:999px;padding:10px 32px;box-shadow:0 8px 32px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.12)}
+.s5-navrow{position:relative;display:flex;align-items:center;gap:8px}
+.s5-navpill{position:absolute;left:96px;top:50%;margin-top:-20px;width:40px;height:40px;border-radius:999px;background:rgba(45,212,191,0.15)}
+.s5-tab{position:relative;z-index:1;width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.40)}
+.s5-tab-on{color:#2dd4bf}
+
+.s6-screen,.s6-screen *{box-sizing:border-box;}
+.s6-screen{position:relative;width:390px;height:844px;overflow:hidden;background:#090c14;font-family:'Satoshi',system-ui,-apple-system,'Segoe UI',sans-serif;color:#e8eaf0;-webkit-font-smoothing:antialiased;}
+.s6-glow{position:absolute;top:-150px;left:10px;width:360px;height:300px;border-radius:50%;filter:blur(26px);pointer-events:none;background:radial-gradient(closest-side,rgba(45,212,191,0.13),transparent 70%);z-index:0;}
+
+.s6-header{position:relative;z-index:40;display:flex;align-items:center;gap:16px;padding:16px 24px;background:rgba(9,12,20,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.s6-back{display:flex;align-items:center;justify-content:center;padding:8px;margin-left:-8px;border-radius:20px;color:#7e8a9e;}
+.s6-h1{margin:0;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:24px;line-height:1.15;color:#e8eaf0;}
+
+.s6-main{position:relative;z-index:1;display:flex;flex-direction:column;gap:20px;padding:32px 24px;}
+
+.s6-upload{display:flex;align-items:center;gap:12px;width:100%;padding:16px;border-radius:32px;text-align:left;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);}
+.s6-uploadicon{flex:0 0 auto;width:40px;height:40px;border-radius:26px;display:flex;align-items:center;justify-content:center;background:rgba(45,212,191,0.14);}
+.s6-uploadtext{flex:1;min-width:0;}
+.s6-uploadtitle{margin:0;font-size:14px;font-weight:600;color:#e8eaf0;letter-spacing:-0.005em;line-height:1.3;}
+.s6-uploadsub{margin:2px 0 0;font-size:11.5px;line-height:1.45;color:#7e8a9e;}
+
+.s6-card{padding:24px;border-radius:32px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
+.s6-cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:4px;}
+.s6-cardtitle{margin:0;font-size:16px;font-weight:600;color:#e8eaf0;letter-spacing:-0.01em;line-height:1.3;}
+.s6-carddate{font-size:11px;color:#7e8a9e;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.s6-cardsub{margin:0 0 16px;font-size:11.5px;line-height:1.45;color:#7e8a9e;}
+
+.s6-panel{margin:0 0 8px 2px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;color:#7e8a9e;line-height:1.3;}
+.s6-rows{display:flex;flex-direction:column;gap:10px;}
+
+.s6-row{padding:14px;border-radius:26px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);}
+.s6-rowtop{display:flex;align-items:center;gap:8px;}
+.s6-name{flex:1;min-width:0;font-size:14px;font-weight:500;color:#e8eaf0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.s6-val{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:20px;line-height:1;color:#e8eaf0;font-variant-numeric:tabular-nums;}
+.s6-unit{font-size:10.5px;color:#7e8a9e;}
+
+.s6-gauge{margin-top:12px;}
+.s6-track{position:relative;height:10px;border-radius:9999px;background:rgba(255,255,255,0.06);}
+.s6-band{position:absolute;top:0;bottom:0;border-radius:9999px;background:rgba(52,211,153,0.22);border:1px solid rgba(52,211,153,0.25);}
+.s6-dot{position:absolute;top:50%;width:14px;height:14px;border-radius:9999px;background:#0d111b;border:2.5px solid #2dd4bf;transform:translate(-50%,-50%);}
+.s6-scale{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;}
+.s6-tick{font-size:10px;line-height:1.3;color:#5a6578;font-variant-numeric:tabular-nums;}
+.s6-ticklabel{font-size:10px;line-height:1.3;color:#5a6578;}
+
+.s6-rowmuted{display:flex;align-items:center;gap:8px;padding:14px;border-radius:26px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);}
+.s6-namemuted{flex:1;min-width:0;font-size:14px;font-weight:500;color:#a9b2c1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.s6-nottested{font-size:11px;line-height:1.3;color:#7e8a9e;white-space:nowrap;}
+
+.s6-foot{margin:16px 0 0;font-size:10.5px;line-height:1.5;color:#5a6578;}
+
+.s6-nav{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;padding:10px 32px;border-radius:9999px;background:rgba(9,12,20,0.75);border:1px solid rgba(255,255,255,0.10);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);box-shadow:0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12);}
+.s6-navrow{position:relative;display:flex;align-items:center;gap:8px;}
+.s6-navpill{position:absolute;left:0;top:50%;margin-top:-20px;width:40px;height:40px;border-radius:9999px;background:rgba(45,212,191,0.15);}
+.s6-navitem{position:relative;z-index:10;width:40px;height:40px;border-radius:9999px;display:flex;align-items:center;justify-content:center;}
+</style>
+</head><body>
+<!-- ══ 1 · COVER ══════════════════════════════════════════════════════════ -->
+<section class="page" style="justify-content:space-between">
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div class="eyebrow">Private Thyroid Strategy Session</div>
+    <div class="tiny" style="text-align:right;letter-spacing:0.14em">Prepared for<br><span style="color:var(--w-2)">POONAM NIKAM</span></div>
+  </div>
+
+  <div style="margin-top:-6mm">
+    <h1>Heal Thyroid<br>with <span class="grad">Swapnil</span></h1>
+    <div class="rule-violet" style="margin:7mm 0 6mm"></div>
+    <p class="lead" style="max-width:52ch">
+      A twelve-week plan built around one report, one kitchen and one body —
+      yours. Everything in these pages is what you'll actually see, in the app,
+      from the day you start.
+    </p>
+
+    <div style="display:flex;gap:4mm;margin-top:9mm;flex-wrap:wrap">
+      <span class="pill pill-ghost">ACE Certified</span>
+      <span class="pill pill-ghost">INFS Certified</span>
+      <span class="pill pill-ghost">Hashimoto's Nutrition</span>
+    </div>
+  </div>
+
+  <div>
+    <div class="grid-3" style="margin-bottom:8mm">
+      <div class="card">
+        <div class="metric-label">Starting</div>
+        <div class="num">70<span style="font-size:13pt;color:var(--w-3)"> kg</span></div>
+      </div>
+      <div class="card">
+        <div class="metric-label">12-week target</div>
+        <div class="num" style="color:var(--violet-3)">60<span style="font-size:13pt;color:var(--w-3)"> kg</span></div>
+      </div>
+      <div class="card">
+        <div class="metric-label">Programme</div>
+        <div class="num">12<span style="font-size:13pt;color:var(--w-3)"> weeks</span></div>
+      </div>
+    </div>
+    <div class="foot" style="border-top:none;padding-top:0">
+      <span>swapnilumbarkarfitness.in</span>
+      <span>Personal &amp; confidential</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 2 · WHERE YOU ARE TODAY ════════════════════════════════════════════ -->
+<section class="page">
+  <div class="glow glow-c"></div>
+
+  <div class="eyebrow eyebrow-muted">Chapter One</div>
+  <h2 style="margin-top:3mm">Two years, fifty thousand<br>rupees, and 1.5 kg.</h2>
+  <div class="rule-violet" style="margin:6mm 0"></div>
+
+  <p style="max-width:58ch">
+    That isn't a story about willpower. You have plenty — you kept going for two
+    years. It's a story about being handed a list of foods and no idea why any
+    of them were on it.
+  </p>
+
+  <div class="card card-violet" style="margin-top:7mm">
+    <div class="eyebrow" style="font-size:8pt;margin-bottom:4mm">In your words</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:19pt;line-height:1.35;color:var(--w);max-width:none">
+      &ldquo;Half day mein thak jati hoon. Baithti hoon toh dard hota hai.
+      Do saal se face kar rahi hoon.&rdquo;
+    </p>
+  </div>
+
+  <h3 style="margin-top:9mm;margin-bottom:4mm">What you're carrying right now</h3>
+  <div class="grid-4">
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Morning fatigue</div></div>
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Exhausted by midday</div></div>
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Body pain</div></div>
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Knee pain</div></div>
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Hair fall</div></div>
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Dry skin</div></div>
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Brain fog</div></div>
+    <div class="card" style="padding:4mm"><div class="small" style="color:var(--w-2)">Procrastination</div></div>
+  </div>
+
+  <div class="card" style="margin-top:5mm;border-color:rgba(245,158,11,0.24);background:rgba(245,158,11,0.05)">
+    <div style="display:flex;gap:4mm;align-items:flex-start">
+      <span class="pill pill-amber" style="flex:none">For your doctor</span>
+      <p class="small" style="color:var(--w-2);max-width:none">
+        You've also mentioned blood pressure, low calcium and a thyroid nodule.
+        Those sit with your doctor, not with me — I'll build around them and
+        I'll never ask you to change anything you've been prescribed.
+      </p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>02</span></div>
+</section>
+
+<!-- ══ 3 · THE REPORT ═════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="glow glow-a" style="top:auto;bottom:-200px;left:auto;right:-160px;opacity:0.7"></div>
+
+  <div class="eyebrow eyebrow-muted">Chapter Two</div>
+  <h2 style="margin-top:3mm">You've been judged on one<br>number out of four.</h2>
+  <div class="rule-violet" style="margin:6mm 0"></div>
+
+  <p style="max-width:58ch">
+    Your report from 10 May shows a single thyroid marker. Here it is, exactly
+    as it reads — no interpretation from me, because that belongs to your doctor.
+  </p>
+
+  <div class="card" style="margin-top:6mm;padding:7mm">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5mm">
+      <div>
+        <div class="metric-label" style="margin-bottom:1mm">TSH</div>
+        <div class="tiny">Thyroid Stimulating Hormone · mIU/L</div>
+      </div>
+      <div style="text-align:right">
+        <div class="num">1.77</div>
+        <div class="tiny" style="color:var(--w-3);letter-spacing:0.1em">IN RANGE · 0.35–4.94</div>
+      </div>
+    </div>
+    <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.06);position:relative">
+      <div style="position:absolute;left:6%;right:18%;top:0;bottom:0;background:rgba(52,211,153,0.22);border-radius:3px"></div>
+      <div style="position:absolute;left:28%;top:-4px;width:2px;height:14px;background:var(--w);border-radius:1px"></div>
+    </div>
+
+    <div class="rule" style="margin:6mm 0"></div>
+
+    <div class="grid-3">
+      <div><div class="tiny" style="letter-spacing:0.1em">FREE T3</div><div class="small" style="color:var(--w-4);margin-top:1mm">Not tested</div></div>
+      <div><div class="tiny" style="letter-spacing:0.1em">FREE T4</div><div class="small" style="color:var(--w-4);margin-top:1mm">Not tested</div></div>
+      <div><div class="tiny" style="letter-spacing:0.1em">ANTI-TPO</div><div class="small" style="color:var(--w-4);margin-top:1mm">Not tested</div></div>
+    </div>
+  </div>
+
+  <div class="card card-violet" style="margin-top:6mm">
+    <h3 style="margin-bottom:3mm">One marker tested. Three missing.</h3>
+    <p class="small" style="color:var(--w-2);max-width:none">
+      TSH is the signal your brain sends. It doesn't show how much hormone your
+      body actually converts and uses, and it doesn't show whether your immune
+      system is involved. Vitamin D, B12, ferritin and fasting insulin aren't
+      there either — and every one of them affects how you feel in the morning.
+      <br><br>
+      Nobody is going to know what those say until they're measured. That's the
+      first thing we do, and it's why the plan starts with a conversation and a
+      test, not a diet chart.
+    </p>
+  </div>
+
+  <div class="foot"><span>Report snapshot · 10 May 2026 · The Lab Experts</span><span>03</span></div>
+</section>
+
+<!-- ══ 4 · THE THREE PILLARS ══════════════════════════════════════════════ -->
+<section class="page">
+  <div class="glow glow-b"></div>
+
+  <div class="eyebrow eyebrow-muted">The Method</div>
+  <h2 style="margin-top:3mm">Three pillars, working<br>together or not at all.</h2>
+  <div class="rule-violet" style="margin:6mm 0 7mm"></div>
+
+  <div class="card" style="margin-bottom:5mm">
+    <div style="display:flex;gap:5mm;align-items:flex-start">
+      <div class="num num-sm grad" style="flex:none;width:14mm">01</div>
+      <div>
+        <h3 style="margin-bottom:2.5mm">Fix the root</h3>
+        <p class="small" style="color:var(--w-2);max-width:none">
+          Your weight won't move despite trying multiple diets, and you feel
+          constantly low on energy. That's because the root — your thyroid and
+          hormonal health — hasn't been addressed. It's like pressing the
+          accelerator with the handbrake on. So we track your markers,
+          understand the gaps in your day, and use hormone-supportive nutrition
+          and routine to reset your metabolism. Your body starts responding
+          again, and stops feeling like it's working against you.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:5mm">
+    <div style="display:flex;gap:5mm;align-items:flex-start">
+      <div class="num num-sm grad" style="flex:none;width:14mm">02</div>
+      <div>
+        <h3 style="margin-bottom:2.5mm">Fuel the body</h3>
+        <p class="small" style="color:var(--w-2);max-width:none">
+          You're tired of complicated diets that cut out Indian food and leave
+          you feeling deprived and guilty. So the second pillar is about fuelling
+          the body, not starving it — simple Indian home-cooked meals built to
+          support thyroid healing. You eat smarter, feel more energetic, and
+          still enjoy your food. It's like charging your phone properly instead
+          of running it on 5% all day.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:5mm;align-items:flex-start">
+      <div class="num num-sm grad" style="flex:none;width:14mm">03</div>
+      <div>
+        <h3 style="margin-bottom:2.5mm">Flow into fitness</h3>
+        <p class="small" style="color:var(--w-2);max-width:none">
+          You don't have the energy or time for long workouts, and your joints
+          hurt if you push. So we take a low-impact, lifestyle-friendly approach:
+          joint-friendly routines, home or gym, gradual progression. We build
+          your sleep and daily rhythm alongside it, so you naturally feel
+          stronger and more consistent instead of forcing it.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-violet" style="margin-top:6mm">
+    <p class="small" style="color:var(--w-2);max-width:none">
+      These three work in sync. If one isn't properly implemented, the strategy
+      doesn't hold. So to help you execute it, five things come with it —
+      they're on the last page.
+    </p>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>04</span></div>
+</section>
+
+
+<section class="page">
+  <div class="glow glow-c"></div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <div class="eyebrow eyebrow-muted">Inside the app</div>
+    <div class="tiny" style="letter-spacing:0.16em">DAY 1</div>
+  </div>
+
+  <div class="journey">
+    <div class="phone-wrap"><div class="phone"><div class="s1-screen">
+  <div class="s1-glow"></div>
+  <div class="s1-wrap">
+    <div class="s1-panel">
+      <div class="s1-brand">
+        <h1 class="s1-logo">ThyroWell</h1>
+        <p class="s1-tag">Welcome back to your wellness journey</p>
+      </div>
+      <div class="s1-card">
+        <div class="s1-form">
+          <div>
+            <label class="s1-label">Email Address</label>
+            <input class="s1-input" type="email" value="poonam.nikam@gmail.com" readonly>
+          </div>
+          <div>
+            <label class="s1-label">Password</label>
+            <div class="s1-pwwrap">
+              <input class="s1-input s1-input-pw" type="password" value="Wellness26" readonly>
+              <span class="s1-eye"><svg class="s1-ico" width="18" height="18" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></span>
+            </div>
+          </div>
+          <div class="s1-links">
+            <span class="s1-magic">Email me a sign-in link instead</span>
+            <span class="s1-reset">Reset password</span>
+          </div>
+          <button class="s1-submit" type="button">Sign In<svg class="s1-ico" width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+        </div>
+        <div class="s1-divider"><span class="s1-rule"></span><span class="s1-or">or</span><span class="s1-rule"></span></div>
+        <p class="s1-newto">New to ThyroWell? <span class="s1-req">Request your spot</span></p>
+      </div>
+      <p class="s1-legal">By signing in, you agree to our Terms of Service and Privacy Policy</p>
+    </div>
+  </div>
+</div></div></div>
+    <div class="journey-copy">
+      <div class="screen-step">01</div>
+      <h2 style="font-size:22pt;margin:2mm 0 4mm">Your way in</h2>
+      <div class="rule-violet" style="margin-bottom:5mm"></div>
+      <p class="small" style="max-width:none;color:var(--w-2);margin-bottom:6mm">One link, one password you choose yourself. It opens on your phone like any other app — nothing to install from a store, nothing to keep updated.</p>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Works on the phone you already have</div></div><div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Your data is visible to you and me. Nobody else.</div></div>
+      <div style="margin-top:auto;padding-top:8mm">
+        <div class="rule" style="margin:0 0 4mm"></div>
+        <p style="font-family:var(--serif);font-style:italic;font-size:13pt;color:var(--violet-3);max-width:none">You will not need a manual for this.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>05</span></div>
+</section>
+<section class="page">
+  <div class="glow glow-c"></div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <div class="eyebrow eyebrow-muted">Inside the app</div>
+    <div class="tiny" style="letter-spacing:0.16em">DAY 1</div>
+  </div>
+
+  <div class="journey">
+    <div class="phone-wrap"><div class="phone"><div class="s2-screen">
+
+  <div class="s2-hero">
+    <div class="s2-glow"></div>
+    <div class="s2-heroin">
+      <p class="s2-eyebrow">Tuesday, 25 August</p>
+      <h1 class="s2-greet">Good morning, Poonam</h1>
+      <p class="s2-sub">Day 9 of your reset — steady wins.</p>
+
+      <div class="s2-focus">
+        <div class="s2-glow s2-focus-glow"></div>
+        <div class="s2-focus-in">
+          <p class="s2-focus-label">Today&rsquo;s focus</p>
+          <p class="s2-focus-h">5 exercises</p>
+          <p class="s2-focus-p">Scheduled for today — tap to start</p>
+          <span class="s2-focus-btn">Open plan</span>
+        </div>
+      </div>
+
+      <div class="s2-pair">
+        <div class="s2-tile">
+          <p class="s2-tile-label">Weeks together</p>
+          <div class="s2-weeks">
+            <span class="s2-weeks-n">2</span>
+            <span class="s2-weeks-u">weeks</span>
+          </div>
+          <div class="s2-dots">
+            <div class="s2-dot s2-dot-on"></div><div class="s2-dot s2-dot-on"></div><div class="s2-dot"></div><div class="s2-dot"></div><div class="s2-dot"></div><div class="s2-dot"></div><div class="s2-dot"></div>
+          </div>
+        </div>
+        <div class="s2-tile">
+          <p class="s2-tile-label">Weekly check-in</p>
+          <p class="s2-ci-week">Week 2</p>
+          <p class="s2-ci-p">Tap to submit yours</p>
+          <div class="s2-bar"><div class="s2-bar-fill"></div></div>
+        </div>
+      </div>
+
+      <p class="s2-qa-label">Quick actions</p>
+      <div class="s2-qa">
+        <div class="s2-qa-item">
+          <svg class="s2-ico" width="20" height="20" viewBox="0 0 24 24" style="color:#2dd4bf"><path d="M12 3v18"/><path d="m19 8 3 8a5 5 0 0 1-6 0zV7"/><path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1"/><path d="m5 8 3 8a5 5 0 0 1-6 0zV7"/><path d="M7 21h10"/></svg>
+          <span class="s2-qa-text">Labs</span>
+        </div>
+        <div class="s2-qa-item">
+          <svg class="s2-ico" width="20" height="20" viewBox="0 0 24 24" style="color:#2dd4bf"><path d="M12 6.528V3a1 1 0 0 1 1-1h0"/><path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21"/></svg>
+          <span class="s2-qa-text">Plan</span>
+        </div>
+        <div class="s2-qa-item">
+          <svg class="s2-ico" width="20" height="20" viewBox="0 0 24 24" style="color:#2dd4bf"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+          <span class="s2-qa-text">Progress</span>
+        </div>
+        <div class="s2-qa-item">
+          <svg class="s2-ico" width="20" height="20" viewBox="0 0 24 24" style="color:#2dd4bf"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>
+          <span class="s2-qa-text">Coach</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s2-learnwrap">
+    <div class="s2-learn">
+      <div class="s2-learn-ic">
+        <svg class="s2-ico" width="19" height="19" viewBox="0 0 24 24" style="color:#a78bfa"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+      </div>
+      <div class="s2-learn-body">
+        <p class="s2-learn-label">Learn · 3 min</p>
+        <p class="s2-learn-title">Protein is your highest-leverage food decision</p>
+        <p class="s2-learn-sum">Why protein does more for thyroid fat loss than any other single change.</p>
+      </div>
+      <svg class="s2-ico s2-learn-chev" width="18" height="18" viewBox="0 0 24 24" style="color:#a78bfa"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+  </div>
+
+  <div class="s2-nav">
+    <div class="s2-nav-row">
+      <div class="s2-nav-pip"></div>
+      <div class="s2-nav-item"><svg class="s2-ico" width="22" height="22" viewBox="0 0 24 24" style="color:#2dd4bf"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+      <div class="s2-nav-item"><svg class="s2-ico" width="20" height="20" viewBox="0 0 24 24" style="color:rgba(255,255,255,0.40)"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></div>
+      <div class="s2-nav-item"><svg class="s2-ico" width="20" height="20" viewBox="0 0 24 24" style="color:rgba(255,255,255,0.40)"><path d="M12 6.528V3a1 1 0 0 1 1-1h0"/><path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21"/></svg></div>
+      <div class="s2-nav-item"><svg class="s2-ico" width="20" height="20" viewBox="0 0 24 24" style="color:rgba(255,255,255,0.40)"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    </div>
+  </div>
+
+</div></div></div>
+    <div class="journey-copy">
+      <div class="screen-step">02</div>
+      <h2 style="font-size:22pt;margin:2mm 0 4mm">Everything, on one screen</h2>
+      <div class="rule-violet" style="margin-bottom:5mm"></div>
+      <p class="small" style="max-width:none;color:var(--w-2);margin-bottom:6mm">No hunting. Your plan, your check-in, your reports and me — four taps from the front page. On the days you have no energy to look for anything, it's already there.</p>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Today's focus, so there's one thing to do</div></div><div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Your week count, so progress is visible before the scale moves</div></div>
+      <div style="margin-top:auto;padding-top:8mm">
+        <div class="rule" style="margin:0 0 4mm"></div>
+        <p style="font-family:var(--serif);font-style:italic;font-size:13pt;color:var(--violet-3);max-width:none">Four taps. That is the whole app.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>06</span></div>
+</section>
+<section class="page">
+  <div class="glow glow-c"></div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <div class="eyebrow eyebrow-muted">Inside the app</div>
+    <div class="tiny" style="letter-spacing:0.16em">WEEK 1</div>
+  </div>
+
+  <div class="journey">
+    <div class="phone-wrap"><div class="phone"><div class="s6-screen">
+  <div class="s6-glow"></div>
+
+  <header class="s6-header">
+    <span class="s6-back" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+    </span>
+    <h1 class="s6-h1">My Health</h1>
+  </header>
+
+  <main class="s6-main">
+
+    <div class="s6-upload">
+      <span class="s6-uploadicon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+      </span>
+      <span class="s6-uploadtext">
+        <p class="s6-uploadtitle">Upload blood report</p>
+        <p class="s6-uploadsub">PDF or photo &mdash; values read on your phone, never uploaded</p>
+      </span>
+    </div>
+
+    <section class="s6-card">
+      <div class="s6-cardhead">
+        <h3 class="s6-cardtitle">Latest report</h3>
+        <span class="s6-carddate">10 May 2026</span>
+      </div>
+      <p class="s6-cardsub">Compared against the range printed on this report.</p>
+
+      <p class="s6-panel">Thyroid</p>
+      <div class="s6-rows">
+
+        <div class="s6-row">
+          <div class="s6-rowtop">
+            <span class="s6-name">TSH</span>
+            <span class="s6-val">1.77</span>
+            <span class="s6-unit">mIU/L</span>
+          </div>
+          <div class="s6-gauge">
+            <div class="s6-track">
+              <div class="s6-band" style="left:20.6%;width:58.8%;"></div>
+              <div class="s6-dot" style="left:38.8%;"></div>
+            </div>
+            <div class="s6-scale">
+              <span class="s6-tick">0.35</span>
+              <span class="s6-ticklabel">printed range</span>
+              <span class="s6-tick">4.94</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="s6-rowmuted"><span class="s6-namemuted">Free T3</span><span class="s6-nottested">not tested</span></div>
+        <div class="s6-rowmuted"><span class="s6-namemuted">Free T4</span><span class="s6-nottested">not tested</span></div>
+        <div class="s6-rowmuted"><span class="s6-namemuted">Anti-TPO</span><span class="s6-nottested">not tested</span></div>
+
+      </div>
+      <p class="s6-foot">Ranges come from your own report when available. This is tracking, not medical advice.</p>
+    </section>
+
+  </main>
+
+  <nav class="s6-nav">
+    <div class="s6-navrow">
+      <div class="s6-navpill"></div>
+      <span class="s6-navitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+      <span class="s6-navitem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></span>
+      <span class="s6-navitem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.528V3a1 1 0 0 1 1-1"/><path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21"/></svg></span>
+      <span class="s6-navitem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+    </div>
+  </nav>
+</div></div></div>
+    <div class="journey-copy">
+      <div class="screen-step">03</div>
+      <h2 style="font-size:22pt;margin:2mm 0 4mm">Your report, read for you</h2>
+      <div class="rule-violet" style="margin-bottom:5mm"></div>
+      <p class="small" style="max-width:none;color:var(--w-2);margin-bottom:6mm">Photograph the page or upload the PDF and the app pulls the markers out itself. No typing numbers off a printout. Your TSH goes in as it reads — and the three that were never tested show as exactly that.</p>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Every report you ever upload stays side by side</div></div><div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Missing is shown as missing — never dressed up as a finding</div></div>
+      <div style="margin-top:auto;padding-top:8mm">
+        <div class="rule" style="margin:0 0 4mm"></div>
+        <p style="font-family:var(--serif);font-style:italic;font-size:13pt;color:var(--violet-3);max-width:none">Your numbers stay yours, and they stay in one place.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>07</span></div>
+</section>
+<section class="page">
+  <div class="glow glow-c"></div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <div class="eyebrow eyebrow-muted">Inside the app</div>
+    <div class="tiny" style="letter-spacing:0.16em">WEEK 1</div>
+  </div>
+
+  <div class="journey">
+    <div class="phone-wrap"><div class="phone"><div class="s4-screen">
+  <div class="s4-header">
+    <span class="s4-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>
+    <span class="s4-h1">Your Plans</span>
+  </div>
+
+  <div class="s4-main">
+    <div class="s4-card"><div class="s4-cardpad">
+      <div class="s4-cardhead">
+        <span class="s4-tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg></span>
+        <span class="s4-titlewrap"><span class="s4-title">Meal Plan</span><span class="s4-sub">Updated 24 Aug</span></span>
+      </div>
+
+      <div class="s4-rows">
+        <div class="s4-row"><span class="s4-chip">Breakfast</span><span class="s4-name">Sprouts Usal<span class="s4-portion">2 &times; 1 katori (150g)</span></span><span class="s4-kcal">360 kcal</span><svg class="s4-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+        <div class="s4-row"><span class="s4-chip">Lunch</span><span class="s4-name">Bajra Bhakri<span class="s4-portion">1.5 &times; 1 medium (50g)</span></span><span class="s4-kcal">203 kcal</span><svg class="s4-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+        <div class="s4-row"><span class="s4-chip">Lunch</span><span class="s4-name">Matki Usal<span class="s4-portion">1.5 &times; 1 katori (150g)</span></span><span class="s4-kcal">285 kcal</span><svg class="s4-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+        <div class="s4-row"><span class="s4-chip">Snack</span><span class="s4-name">Khandvi<span class="s4-portion">4 pieces (100g)</span></span><span class="s4-kcal">150 kcal</span><svg class="s4-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+        <div class="s4-row"><span class="s4-chip">Dinner</span><span class="s4-name">Varan Bhaat<span class="s4-portion">0.5 &times; 1 katori (200g)</span></span><span class="s4-kcal">140 kcal</span><svg class="s4-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+        <div class="s4-row"><span class="s4-chip">Dinner</span><span class="s4-name">Panchmel Dal<span class="s4-portion">1.5 &times; 1 katori (150g)</span></span><span class="s4-kcal">263 kcal</span><svg class="s4-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+      </div>
+
+      <div class="s4-total">Day total &asymp; 1400 kcal &middot; 70g protein</div>
+
+      <div class="s4-logger">
+        <div class="s4-logtop"><span class="s4-logtitle">Today&rsquo;s meals</span><span class="s4-logcount">2/4</span></div>
+        <div class="s4-pills">
+          <span class="s4-pill s4-pill-done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Breakfast</span>
+          <span class="s4-pill s4-pill-done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Lunch</span>
+          <span class="s4-pill s4-pill-todo"><span class="s4-dot"></span>Snack</span>
+          <span class="s4-pill s4-pill-todo"><span class="s4-dot"></span>Dinner</span>
+        </div>
+      </div>
+    </div></div>
+    <div class="s4-card s4-card2"><div class="s4-cardpad">
+      <div class="s4-cardhead">
+        <span class="s4-tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span>
+        <span class="s4-titlewrap"><span class="s4-title">Workout Plan</span><span class="s4-sub">Updated 24 Aug</span></span>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="s4-nav">
+    <div class="s4-navrow">
+      <span class="s4-navdot"></span>
+      <span class="s4-tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span class="s4-tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+      <span class="s4-tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg></span>
+      <span class="s4-tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+    </div>
+  </div>
+</div></div></div>
+    <div class="journey-copy">
+      <div class="screen-step">04</div>
+      <h2 style="font-size:22pt;margin:2mm 0 4mm">Your plate, from your kitchen</h2>
+      <div class="rule-violet" style="margin-bottom:5mm"></div>
+      <p class="small" style="max-width:none;color:var(--w-2);margin-bottom:6mm">Not a diet chart. Real portions of the food you already cook, measured in katoris rather than grams, and built to the calorie number your body actually needs at 70 kg heading for 60.</p>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Roti, dal, sabzi, curd — nothing exotic, nothing imported</div></div><div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Swap anything you don't like and the numbers rebalance</div></div>
+      <div style="margin-top:auto;padding-top:8mm">
+        <div class="rule" style="margin:0 0 4mm"></div>
+        <p style="font-family:var(--serif);font-style:italic;font-size:13pt;color:var(--violet-3);max-width:none">Cooked in ten minutes, on a weekday, by you.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>08</span></div>
+</section>
+<section class="page">
+  <div class="glow glow-c"></div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <div class="eyebrow eyebrow-muted">Inside the app</div>
+    <div class="tiny" style="letter-spacing:0.16em">WEEK 1</div>
+  </div>
+
+  <div class="journey">
+    <div class="phone-wrap"><div class="phone"><div class="s5-screen">
+
+  <header class="s5-header">
+    <div class="s5-hrow">
+      <span class="s5-back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      </span>
+      <h1 class="s5-title">Your Plans</h1>
+    </div>
+  </header>
+
+  <main class="s5-main">
+    <div class="s5-card"><div class="s5-cardpad">
+
+      <div class="s5-cardhead">
+        <div class="s5-icontile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>
+        </div>
+        <div>
+          <h3 class="s5-plantitle">Low-Impact Strength</h3>
+          <p class="s5-planmeta">Updated 24 Aug</p>
+        </div>
+      </div>
+
+      <div class="s5-week">
+        <div class="s5-day"><span class="s5-dl">M</span><span class="s5-ds">rest</span></div>
+        <div class="s5-day s5-day-has s5-day-on"><span class="s5-dl">T</span><span class="s5-ds">TODAY</span></div>
+        <div class="s5-day"><span class="s5-dl">W</span><span class="s5-ds">rest</span></div>
+        <div class="s5-day s5-day-has"><span class="s5-dl">T</span><span class="s5-ds">&#8226;</span></div>
+        <div class="s5-day"><span class="s5-dl">F</span><span class="s5-ds">rest</span></div>
+        <div class="s5-day s5-day-has"><span class="s5-dl">S</span><span class="s5-ds">&#8226;</span></div>
+        <div class="s5-day"><span class="s5-dl">S</span><span class="s5-ds">rest</span></div>
+      </div>
+
+      <p class="s5-session">Today &middot; 5 exercises</p>
+
+      <div class="s5-rows">
+
+        <div class="s5-row">
+          <span class="s5-thumb">
+            <svg class="s5-figsvg" width="48" height="48" viewBox="0 0 48 48">
+              <g fill="none" stroke="#ccd2db" stroke-width="1.4" stroke-linecap="round"><path d="M11 8V30"/><path d="M11 30H27"/><path d="M27 30V41"/><path d="M11 30V41"/><path d="M4 41H44"/></g>
+              <g fill="none" stroke="#444c5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 16L18 29"/><path d="M18 29L31 25"/><path d="M31 25L34 34"/><path d="M18 29L23 31"/><path d="M23 31L24 41"/></g>
+              <circle cx="17" cy="12.5" r="3.4" fill="#444c5c"/>
+            </svg>
+            <span class="s5-loop"><span class="s5-loopdot"></span></span>
+          </span>
+          <span class="s5-ename">Seated Marching</span>
+          <span class="s5-sets">2 &times; 45 sec</span>
+          <span class="s5-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </div>
+
+        <div class="s5-row">
+          <span class="s5-thumb">
+            <svg class="s5-figsvg" width="48" height="48" viewBox="0 0 48 48">
+              <g fill="none" stroke="#ccd2db" stroke-width="1.4" stroke-linecap="round"><path d="M38 6V41"/><path d="M38 11L43 7.5"/><path d="M38 19L43 15.5"/><path d="M38 27L43 23.5"/><path d="M38 35L43 31.5"/><path d="M4 41H44"/></g>
+              <g fill="none" stroke="#444c5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24.5 16.5L11 36"/><path d="M25 17.5L37.5 15.5"/><path d="M11 36L8 40.5"/></g>
+              <circle cx="26" cy="13" r="3.4" fill="#444c5c"/>
+            </svg>
+          </span>
+          <span class="s5-ename">Wall Push-Up</span>
+          <span class="s5-sets">2 &times; 10</span>
+          <span class="s5-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </div>
+
+        <div class="s5-row">
+          <span class="s5-thumb">
+            <svg class="s5-figsvg" width="48" height="48" viewBox="0 0 48 48">
+              <g fill="none" stroke="#ccd2db" stroke-width="1.4" stroke-linecap="round"><path d="M9 9V30"/><path d="M9 30H23"/><path d="M23 30V41"/><path d="M9 30V41"/><path d="M4 41H44"/><path d="M40 20V40"/></g>
+              <path d="M28 24Q34 25 39.5 29" fill="none" stroke="#ccd2db" stroke-width="1.8" stroke-linecap="round"/>
+              <g fill="none" stroke="#444c5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 16.5L16 29"/><path d="M16 29L23 31"/><path d="M23 31L24 41"/><path d="M15.5 19.5L28 24"/></g>
+              <circle cx="15" cy="13" r="3.4" fill="#444c5c"/>
+            </svg>
+          </span>
+          <span class="s5-ename">Seated Band Row</span>
+          <span class="s5-sets">3 &times; 12</span>
+          <span class="s5-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </div>
+
+        <div class="s5-row">
+          <span class="s5-thumb">
+            <svg class="s5-figsvg" width="48" height="48" viewBox="0 0 48 48">
+              <g fill="none" stroke="#ccd2db" stroke-width="1.4" stroke-linecap="round"><path d="M4 41H44"/></g>
+              <g fill="none" stroke="#444c5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 38L24 29L34 28L35.5 40"/><path d="M15 38.5L21 41"/></g>
+              <circle cx="10" cy="37.5" r="3.4" fill="#444c5c"/>
+            </svg>
+          </span>
+          <span class="s5-ename">Glute Bridge</span>
+          <span class="s5-sets">2 &times; 12</span>
+          <span class="s5-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </div>
+
+        <div class="s5-row">
+          <span class="s5-thumb">
+            <svg class="s5-figsvg" width="48" height="48" viewBox="0 0 48 48">
+              <g fill="none" stroke="#ccd2db" stroke-width="1.4" stroke-linecap="round"><path d="M11 8V30"/><path d="M11 30H27"/><path d="M27 30V41"/><path d="M11 30V41"/><path d="M4 41H44"/></g>
+              <path d="M26.6 23.2L30.4 21.4" fill="none" stroke="#8d95a4" stroke-width="5.5" stroke-linecap="round"/>
+              <g fill="none" stroke="#444c5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 16L18 29"/><path d="M18 29L26 31"/><path d="M26 31L27 41"/><path d="M17.5 19L19 26"/><path d="M19 26L28 22"/></g>
+              <circle cx="17" cy="12.5" r="3.4" fill="#444c5c"/>
+            </svg>
+          </span>
+          <span class="s5-ename">Seated Arm Curl</span>
+          <span class="s5-sets">2 &times; 12</span>
+          <span class="s5-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </div>
+
+      </div>
+    </div></div>
+  </main>
+
+  <nav class="s5-nav">
+    <div class="s5-navrow">
+      <div class="s5-navpill"></div>
+      <span class="s5-tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+      <span class="s5-tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></span>
+      <span class="s5-tab s5-tab-on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5V4a2 2 0 0 1 2-2"/><path d="M18.6 8.4A4.4 4.4 0 0 0 15 7c-1.2 0-2.3.5-3 1.2A4.4 4.4 0 0 0 9 7a4.4 4.4 0 0 0-3.6 1.4C3.9 10.2 3.5 13 4.5 16c.9 2.7 2.5 5 3.9 5 .8 0 1.4-.5 2.6-.5s1.8.5 2.6.5c1.4 0 3-2.3 3.9-5 1-3 .6-5.8-.9-7.6Z"/></svg></span>
+      <span class="s5-tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+    </div>
+  </nav>
+
+</div></div></div>
+    <div class="journey-copy">
+      <div class="screen-step">05</div>
+      <h2 style="font-size:22pt;margin:2mm 0 4mm">Movement your knees agree with</h2>
+      <div class="rule-violet" style="margin-bottom:5mm"></div>
+      <p class="small" style="max-width:none;color:var(--w-2);margin-bottom:6mm">You told me your knees hurt and sitting is painful. So this starts seated and supported, stays short, and never asks you to jump. Every movement has a demo you can watch first.</p>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Ten to twenty minutes, not an hour</div></div><div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">It gets harder only when you're ready for it</div></div>
+      <div style="margin-top:auto;padding-top:8mm">
+        <div class="rule" style="margin:0 0 4mm"></div>
+        <p style="font-family:var(--serif);font-style:italic;font-size:13pt;color:var(--violet-3);max-width:none">Nothing here needs a gym you have not joined.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>09</span></div>
+</section>
+<section class="page">
+  <div class="glow glow-c"></div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <div class="eyebrow eyebrow-muted">Inside the app</div>
+    <div class="tiny" style="letter-spacing:0.16em">EVERY WEEK</div>
+  </div>
+
+  <div class="journey">
+    <div class="phone-wrap"><div class="phone"><div class="s3-screen">
+  <div class="s3-glow"></div>
+
+  <div class="s3-status">
+    <span class="s3-time">8:12</span>
+    <span class="s3-statusIcons">
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.6" y="5.2" width="3" height="5.8" rx="1"/><rect x="9.2" y="2.8" width="3" height="8.2" rx="1"/><rect x="13.8" y="0" width="3" height="11" rx="1"/></svg>
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1 3.6a9.4 9.4 0 0 1 13 0"/><path d="M3.6 6.4a5.7 5.7 0 0 1 7.8 0"/><path d="M6.2 9.1a2 2 0 0 1 2.6 0"/></svg>
+      <svg width="25" height="11" viewBox="0 0 25 11" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="10" rx="3" fill="none" stroke="currentColor" stroke-opacity="0.45"/><rect x="2.5" y="2.5" width="14.5" height="6" rx="1.6" fill="currentColor"/><path d="M23 4.1c1 .5 1 2.3 0 2.8z" fill="currentColor" fill-opacity="0.5"/></svg>
+    </span>
+  </div>
+
+  <div class="s3-header">
+    <span class="s3-back" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>
+    <h1 class="s3-title">My Progress</h1>
+    <span class="s3-badge"><span class="s3-dot"></span>Projection</span>
+  </div>
+
+  <div class="s3-main">
+    <div class="s3-hero">
+      <p class="s3-eyebrow">Target &middot; Week 12 of 12</p>
+      <p class="s3-heroNum">70<span class="s3-arrow">&rarr;</span>60 kg</p>
+      <p class="s3-heroSub">A target your plan is aiming at &mdash; not a result that has been logged.</p>
+    </div>
+
+    <div class="s3-card">
+      <div class="s3-tabs">
+        <span class="s3-tab s3-tabOn">Weight</span>
+        <span class="s3-tab">Body</span>
+        <span class="s3-tab">How you feel</span>
+      </div>
+
+      <svg class="s3-chart" width="306" height="150" viewBox="0 0 306 150" role="img" aria-label="Projected weight path from 70 kg at week 1 to a 60 kg target at week 12">
+        <defs>
+          <linearGradient id="s3-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.17"/>
+            <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <line x1="26" y1="13" x2="280" y2="13" stroke="rgba(255,255,255,0.07)" stroke-dasharray="3 4"/>
+        <path d="M26,13 L49.1,29.1 L72.2,40.3 L95.3,50.2 L118.4,61.4 L141.5,68.8 L164.5,75 L187.6,84.9 L210.7,96.1 L233.8,108.5 L256.9,123.4 L280,137 L280,137 L26,137 Z" fill="url(#s3-grad)"/>
+        <path d="M26,13 L49.1,29.1 L72.2,40.3 L95.3,50.2 L118.4,61.4 L141.5,68.8 L164.5,75 L187.6,84.9 L210.7,96.1 L233.8,108.5 L256.9,123.4 L280,137" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4"/>
+        <circle cx="26" cy="13" r="3.4" fill="#2dd4bf"/>
+        <circle cx="49.1" cy="29.1" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="72.2" cy="40.3" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="95.3" cy="50.2" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="118.4" cy="61.4" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="141.5" cy="68.8" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="164.5" cy="75" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="187.6" cy="84.9" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="210.7" cy="96.1" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="233.8" cy="108.5" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <circle cx="256.9" cy="123.4" r="2.4" fill="#2dd4bf" fill-opacity="0.8"/>
+        <line x1="26" y1="137" x2="280" y2="137" stroke="#f59e0b" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="28" y="130" font-size="10" font-weight="600" letter-spacing="1" fill="#f59e0b" fill-opacity="0.92">WEEK 12 TARGET</text>
+        <circle cx="280" cy="137" r="9" fill="#f59e0b" fill-opacity="0.16"/>
+        <circle cx="280" cy="137" r="5.5" fill="#0b0f18" stroke="#f59e0b" stroke-width="2"/>
+        <text x="1" y="17" font-size="10" fill="#5a6578">70kg</text>
+        <text x="1" y="141" font-size="10" fill="#5a6578">60kg</text>
+      </svg>
+
+      <div class="s3-axis">
+        <span class="s3-axisEnd">W1</span>
+        <span class="s3-delta">&minus;10.0kg targeted</span>
+        <span class="s3-axisEnd">W12</span>
+      </div>
+    </div>
+
+    <div class="s3-card">
+      <div class="s3-cardHead">
+        <h3 class="s3-cardTitle">How you feel</h3>
+        <span class="s3-cardTag">Week 12 target</span>
+      </div>
+      <div class="s3-rows">
+        <div class="s3-row">
+          <span class="s3-rowLabel">Energy</span>
+          <span class="s3-bar"><span class="s3-fill" style="width:70%"></span></span>
+          <span class="s3-rowVals"><span class="s3-val">7/10</span><span class="s3-dlt">&uarr; 4</span></span>
+        </div>
+        <div class="s3-row">
+          <span class="s3-rowLabel">Sleep</span>
+          <span class="s3-bar"><span class="s3-fill" style="width:70%"></span></span>
+          <span class="s3-rowVals"><span class="s3-val">7/10</span><span class="s3-dlt">&uarr; 3</span></span>
+        </div>
+        <div class="s3-row">
+          <span class="s3-rowLabel">Mood</span>
+          <span class="s3-bar"><span class="s3-fill" style="width:80%"></span></span>
+          <span class="s3-rowVals"><span class="s3-val">8/10</span><span class="s3-dlt">&uarr; 4</span></span>
+        </div>
+        <div class="s3-row">
+          <span class="s3-rowLabel">Mental clarity</span>
+          <span class="s3-bar"><span class="s3-fill" style="width:60%"></span></span>
+          <span class="s3-rowVals"><span class="s3-val">6/10</span><span class="s3-dlt">&uarr; 3</span></span>
+        </div>
+      </div>
+    </div>
+
+    <p class="s3-foot">Targets are set with your coach and re-checked at every weekly check-in. They move when your body does.</p>
+  </div>
+
+  <nav class="s3-nav" aria-label="Main">
+    <div class="s3-navRow">
+      <span class="s3-navPip"></span>
+      <span class="s3-navItem" aria-label="Home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span class="s3-navItem s3-navOn" aria-label="Progress"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+      <span class="s3-navItem" aria-label="Plans"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg></span>
+      <span class="s3-navItem" aria-label="Profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+    </div>
+  </nav>
+</div></div></div>
+    <div class="journey-copy">
+      <div class="screen-step">06</div>
+      <h2 style="font-size:22pt;margin:2mm 0 4mm">Proof, in your own numbers</h2>
+      <div class="rule-violet" style="margin-bottom:5mm"></div>
+      <p class="small" style="max-width:none;color:var(--w-2);margin-bottom:6mm">Five minutes a week — weight, energy, sleep, mood. Then the app draws the line for you, and I read every single one. This is the screen where two years of guessing turns into something you can actually see.</p>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Your weight, energy and sleep on one chart</div></div><div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)">Reviewed with me every fortnight</div></div>
+      <div style="margin-top:auto;padding-top:8mm">
+        <div class="rule" style="margin:0 0 4mm"></div>
+        <p style="font-family:var(--serif);font-style:italic;font-size:13pt;color:var(--violet-3);max-width:none">This is the page that tells us when to change something.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>10</span></div>
+</section>
+<!-- ══ BEFORE / AFTER ═════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="glow glow-b"></div>
+
+  <div class="eyebrow eyebrow-muted">Where this goes</div>
+  <h2 style="margin-top:3mm">Week 1 today. Week 12 is<br>what we're aiming at.</h2>
+  <div class="rule-violet" style="margin:6mm 0"></div>
+
+  <p style="max-width:60ch">
+    The right-hand column is a <strong style="color:var(--w)">target, not a promise</strong>.
+    It's the plan we work to — and the app will show you the real numbers every
+    single week, whether they match this or not.
+  </p>
+
+  <div class="ba" style="margin-top:7mm">
+    <div class="card">
+      <div class="pill pill-ghost" style="margin-bottom:5mm">Week 1 · today</div>
+      <div style="margin-bottom:5mm"><div class="metric-label">Weight</div><div class="num">70<span style="font-size:12pt;color:var(--w-3)"> kg</span></div></div>
+      <div style="margin-bottom:5mm"><div class="metric-label">BMI</div><div class="num num-sm">31.1</div></div>
+      <div class="rule" style="margin:5mm 0"></div>
+      <div class="small" style="line-height:1.9">
+        Morning fatigue &mdash; daily<br>
+        Exhausted by midday<br>
+        Brain fog &mdash; most days<br>
+        Sleep &mdash; broken<br>
+        Movement &mdash; none
+      </div>
+    </div>
+
+    <div class="ba-arrow">&rarr;</div>
+
+    <div class="card card-violet">
+      <div class="pill pill-amber" style="margin-bottom:5mm">Week 12 · target</div>
+      <div style="margin-bottom:5mm"><div class="metric-label">Weight</div><div class="num" style="color:var(--violet-3)">60<span style="font-size:12pt;color:var(--w-3)"> kg</span></div></div>
+      <div style="margin-bottom:5mm"><div class="metric-label">BMI</div><div class="num num-sm" style="color:var(--violet-3)">26.7</div></div>
+      <div class="rule" style="margin:5mm 0;background:rgba(168,85,247,0.2)"></div>
+      <div class="small" style="line-height:1.9;color:var(--w-2)">
+        Mornings you can get up in<br>
+        Afternoons that hold<br>
+        Fog lifting<br>
+        Sleep &mdash; steadier<br>
+        Movement &mdash; a habit
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:6mm">
+    <h3 style="margin-bottom:3mm">One thing I'd rather you hear now than in week six</h3>
+    <p class="small" style="color:var(--w-2);max-width:none">
+      This won't be a straight line. With a thyroid condition the usual shape is
+      a good first few weeks, then a flat stretch somewhere around week five to
+      eight where the scale simply stops. That's not you failing and it's not
+      the plan failing &mdash; it's the ordinary shape of it, and the app will
+      tell you so at the time rather than letting you assume the worst.
+    </p>
+  </div>
+
+  <div class="foot"><span>Targets, not guarantees</span><span>11</span></div>
+</section>
+
+<!-- ══ DELIVERABLES ═══════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="glow glow-a"></div>
+
+  <div class="eyebrow eyebrow-muted">What comes with it</div>
+  <h2 style="margin-top:3mm">Five things, so the<br>strategy actually gets done.</h2>
+  <div class="rule-violet" style="margin:6mm 0 7mm"></div>
+
+  <div style="display:flex;flex-direction:column;gap:4mm">
+    <div class="card" style="padding:5mm">
+      <div style="display:flex;gap:4mm;align-items:flex-start">
+        <div class="stepdot">1</div>
+        <div>
+          <h3 style="margin-bottom:2mm">Thyroid &amp; lifestyle consultation call</h3>
+          <p class="small" style="max-width:none">
+            A 60-minute deep-dive where I go through your blood reports, your
+            lifestyle and your symptoms to work out the root causes &mdash; and
+            we both get clear on what's actually been blocking progress.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:5mm">
+      <div style="display:flex;gap:4mm;align-items:flex-start">
+        <div class="stepdot">2</div>
+        <div>
+          <h3 style="margin-bottom:2mm">Customised Indian nutrition plan</h3>
+          <p class="small" style="max-width:none">
+            Built from that call &mdash; Indian meals you already eat, designed
+            around thyroid health and sustainable fat loss. You get it as a PDF
+            and inside the app, so it's there whichever way you prefer.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:5mm">
+      <div style="display:flex;gap:4mm;align-items:flex-start">
+        <div class="stepdot">3</div>
+        <div>
+          <h3 style="margin-bottom:2mm">Low-impact custom training plan</h3>
+          <p class="small" style="max-width:none">
+            Fully personalised to your routine, home or gym, with demo videos and
+            clear goals. Easy on your knees, and built to raise your strength and
+            energy steadily rather than all at once.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:5mm">
+      <div style="display:flex;gap:4mm;align-items:flex-start">
+        <div class="stepdot">4</div>
+        <div>
+          <h3 style="margin-bottom:2mm">Weekly check-ins &amp; biweekly reviews</h3>
+          <p class="small" style="max-width:none">
+            Every week we check what's working. Every two weeks we go deeper
+            &mdash; weight, energy, mood, sleep and training, reviewed together
+            so the plan changes when your body does.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:5mm">
+      <div style="display:flex;gap:4mm;align-items:flex-start">
+        <div class="stepdot">5</div>
+        <div>
+          <h3 style="margin-bottom:2mm">Unlimited WhatsApp support</h3>
+          <p class="small" style="max-width:none">
+            Direct access to me for real-time questions and help, so you're never
+            stuck at 9pm wondering whether something is allowed.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-violet" style="margin-top:5mm;padding:5mm">
+    <div style="display:flex;gap:4mm;align-items:center">
+      <span class="pill pill-violet" style="flex:none">Bonus</span>
+      <p class="small" style="color:var(--w-2);max-width:none">
+        Lifetime access to my private client community &mdash; so you stay
+        supported even after the programme ends.
+      </p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Heal Thyroid with Swapnil</span><span>12</span></div>
+</section>
+
+<!-- ══ NEXT STEP ══════════════════════════════════════════════════════════ -->
+<section class="page" style="justify-content:center">
+  <div class="glow glow-a" style="top:-120px;left:50%;transform:translateX(-50%);opacity:0.8"></div>
+  <div class="glow glow-b"></div>
+
+  <div style="text-align:center;max-width:130mm;margin:0 auto">
+    <div class="eyebrow" style="margin-bottom:6mm">Your first week</div>
+    <h2 style="font-size:32pt">Nothing here needs<br>you to be different.</h2>
+    <div class="rule-violet" style="margin:7mm auto"></div>
+    <p style="max-width:none;margin:0 auto 8mm">
+      It needs the four markers measured, one plan built around the food you
+      already cook, and someone checking in every week. That's it.
+    </p>
+
+    <div class="card" style="text-align:left;margin-bottom:5mm">
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)"><strong style="color:var(--w)">Day 1</strong> &mdash; your 60-minute consultation. Reports, symptoms, and where the gaps actually are.</div></div>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)"><strong style="color:var(--w)">Day 2</strong> &mdash; you get your app login, and your nutrition and training plans land inside it.</div></div>
+      <div class="tick"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)"><strong style="color:var(--w)">Day 7</strong> &mdash; your first check-in. Five minutes. I read every one.</div></div>
+      <div class="tick" style="margin-bottom:0"><div class="tick-mark"><span style="color:#2dd4bf;font-size:9px">&#10003;</span></div><div class="small" style="color:var(--w-2)"><strong style="color:var(--w)">Week 12</strong> &mdash; we look at the whole picture together, with twelve weeks of your own data behind it.</div></div>
+    </div>
+
+    <p class="small" style="margin:0 auto">
+      Bring your latest reports to the call. If the four markers haven't been
+      done, that's the first thing we sort out &mdash; through your doctor.
+    </p>
+  </div>
+
+  <div style="margin-top:auto;text-align:center">
+    <div class="rule"></div>
+    <div style="font-family:var(--serif);font-style:italic;font-size:19pt">Heal Thyroid with <span class="grad">Swapnil</span></div>
+    <div class="tiny" style="margin-top:3mm;letter-spacing:0.16em">ACE CERTIFIED &nbsp;·&nbsp; INFS CERTIFIED &nbsp;·&nbsp; HASHIMOTO'S NUTRITION</div>
+    <div class="tiny" style="margin-top:2mm">swapnilumbarkarfitness.in</div>
+  </div>
+</section>
+
+</body></html>

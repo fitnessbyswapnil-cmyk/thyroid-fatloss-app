@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import { deltaTone, levelTone } from '@/lib/coach/delta-tone'
 import {
   ChevronDown,
   ChevronLeft,
@@ -228,15 +229,15 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
             onChange={(e) => setData({ ...data, stress: parseInt(e.target.value) })}
             className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #34d399 0%, #34d399 ${(10 - data.stress / 10) * 100}%, #ef4444 ${(10 - data.stress / 10) * 100}%, #ef4444 100%)`,
+              background: `linear-gradient(to right, #34d399 0%, #34d399 ${((data.stress - 1) / 9) * 100}%, rgba(255,255,255,0.08) ${((data.stress - 1) / 9) * 100}%, rgba(255,255,255,0.08) 100%)`,
             }}
           />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: '#ef4444', minWidth: '40px' }}>
+          <span className="text-sm font-semibold tabular-nums" style={{ color: levelTone(data.stress, 6), minWidth: '40px' }}>
             {data.stress}
           </span>
         </div>
         <p className="text-xs" style={{ color: '#5a6578' }}>
-          Supportive microcopy: Stress is temporary. You're doing great.
+          However this week went, recording it honestly is what makes it useful.
         </p>
       </div>
 
@@ -997,7 +998,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
               {data.energy}
             </span>
             {energyDelta !== 0 && (
-              <div className="flex items-center gap-1" style={{ color: energyDelta > 0 ? '#34d399' : '#ef4444' }}>
+              <div className="flex items-center gap-1" style={{ color: deltaTone(energyDelta, 'up').color }}>
                 {energyDelta > 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                 <span className="text-xs font-semibold">{Math.abs(energyDelta)}</span>
               </div>
@@ -1013,7 +1014,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
               {data.sleepQuality}
             </span>
             {sleepDelta !== 0 && (
-              <div className="flex items-center gap-1" style={{ color: sleepDelta > 0 ? '#34d399' : '#ef4444' }}>
+              <div className="flex items-center gap-1" style={{ color: deltaTone(sleepDelta, 'up').color }}>
                 {sleepDelta > 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                 <span className="text-xs font-semibold">{Math.abs(sleepDelta)}</span>
               </div>
@@ -1030,7 +1031,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
                 {data.weight.toFixed(1)} kg
               </span>
               {weightDelta !== null && weightDelta !== 0 && (
-                <div className="flex items-center gap-1" style={{ color: weightDelta < 0 ? '#34d399' : '#ef4444' }}>
+                <div className="flex items-center gap-1" style={{ color: deltaTone(weightDelta, 'down').color }}>
                   {weightDelta < 0 ? <ArrowDown size={14} /> : <ArrowUp size={14} />}
                   <span className="text-xs font-semibold">{Math.abs(weightDelta).toFixed(1)}</span>
                 </div>
