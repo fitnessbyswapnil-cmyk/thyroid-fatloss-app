@@ -570,3 +570,30 @@
   .tw-rise, .tw-drop-in { animation: none; opacity: 1; transform: none; }
   .tw-press, .tw-press:hover, .tw-press:active { transition: none; transform: none; }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   iOS zoom guard.
+
+   Safari zooms the whole page when a form field under 16px takes focus, and it
+   does NOT zoom back out on blur. One tap on the medication field and she is
+   reading the rest of the app at a cropped viewport, with the right-hand column
+   off screen — on a page where she then has to fill in ten more fields.
+
+   Every input in this app is 14px or smaller: 80-odd of them across eighteen
+   files, none set explicitly. Editing each one is a large diff and a large
+   chance of breaking a layout, so the floor is applied here instead.
+
+   Scoped to touch devices on purpose. The coach works on a laptop where the
+   dense 14px is deliberate and there is no zoom behaviour to guard against;
+   only phones and tablets get the bump.
+
+   The viewport meta already sets maximumScale and userScalable, both of which
+   iOS has ignored for this case since iOS 10 — 16px is the only fix that works.
+   ────────────────────────────────────────────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
