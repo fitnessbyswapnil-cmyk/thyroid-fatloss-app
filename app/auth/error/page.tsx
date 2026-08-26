@@ -1,10 +1,12 @@
 import Link from "next/link"
 import { AlertTriangle } from "lucide-react"
+import { FragmentRescue } from "./fragment-rescue"
 
 export const metadata = { title: "Link problem · ThyroWell" }
 
 export default function AuthErrorPage() {
   return (
+    <FragmentRescue>
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#090c14" }}>
       <div className="w-full max-w-md text-center">
         <div className="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: "rgba(239,68,68,0.12)" }}>
@@ -26,5 +28,6 @@ export default function AuthErrorPage() {
         </Link>
       </div>
     </div>
+    </FragmentRescue>
   )
 }
