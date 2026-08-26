@@ -49,7 +49,7 @@ MONTHS = [
              "Not a diet chart. Real portions of the food you already cook, measured in "
              "katoris rather than grams, and built to the calorie number your body actually "
              "needs at 70 kg heading for 60.",
-             ["Roti, dal, sabzi, curd — nothing exotic", "Swap anything you dislike and the numbers rebalance"],
+             ["Roti, dal, sabzi, curd — nothing exotic", "Breakfast shown here. The full day arrives when you start"],
              "Cooked in ten minutes, on a weekday, by you."),
             (("a", 4), "Week 1", "Movement your knees agree with",
              "You told me your knees hurt and sitting is painful. So this starts seated and "
@@ -69,11 +69,6 @@ MONTHS = [
         "me": ["Read every check-in", "Adjust food and training",
                "Biweekly deeper review", "WhatsApp, same day"],
         "screens": [
-            (("b", 6), "Daily", "Ticking off the day",
-             "Two taps a meal. It is not for me to police you — it is so that when a week "
-             "goes badly we can both see exactly where, instead of guessing.",
-             ["Your running total for the day", "The streak that keeps the small days worth doing"],
-             "Two taps. Not a food diary."),
             (("b", 7), "3–4× a week", "Twenty minutes, done",
              "Open the session, watch the demo if you want it, log the set. The app remembers "
              "what you lifted last time so you are never guessing where to start.",
@@ -207,7 +202,7 @@ def main():
     front = open(os.path.join(HERE, "pages2-front.html")).read()
     end = open(os.path.join(HERE, "pages-end.html")).read()
 
-    body, page = [], 4
+    body, page = [], 6
     for m in MONTHS:
         body.append(month_divider(m, page)); page += 1
         for ref, when, title, txt, bullets, closer in m["screens"]:
@@ -217,7 +212,7 @@ def main():
     html = f"""<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
-<title>Heal Thyroid with Swapnil — Poonam Nikam · 90 Days</title>
+<title>3 Month Roadmap — Poonam Nikam</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -238,7 +233,7 @@ def main():
     open(out_html, "w").write(html)
     print(f"html  {len(html)//1024} KB · {page + 2} pages  →  {out_html}")
 
-    out_pdf = os.path.join(HERE, "Poonam-Nikam-90-Day-Programme.pdf")
+    out_pdf = os.path.join(HERE, "3 Month Roadmap.pdf")
     subprocess.run([
         "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
         "--headless", "--disable-gpu", "--no-sandbox", "--no-pdf-header-footer",

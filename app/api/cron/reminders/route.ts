@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import webpush from 'web-push'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { logError } from '@/lib/errors'
+import { programmeWeek } from '@/lib/health/programme'
 
 /**
  * Daily reminder sweep (Vercel Cron).
@@ -11,15 +12,58 @@ import { logError } from '@/lib/errors'
  *
  * Rules, deliberately conservative — an app that over-notifies gets its
  * notifications switched off, which is worse than not having them:
- *   - checkin_due  : active client, onboarded, no check-in in 7+ days
  *   - coach_reply  : unread coach message older than ~6h she hasn't opened
+ *   - lab_retest   : week 10-12, and her newest report is 8+ weeks old
+ *   - checkin_due  : active client, onboarded, no check-in in 7+ days
+ *   - photo_due    : week 4+, and her newest photo set is 28+ days old
  * At most ONE notification per client per day, enforced by reminder_sends.
+ *
+ * The two periodic ones also carry their own cooldown, because unlike a weekly
+ * check-in they are not naturally self-limiting: once she is past 28 days
+ * without a photo she is past it every day after, and a nudge that repeats
+ * daily is how an app gets its notifications switched off for good.
  */
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const DAY = 24 * 60 * 60 * 1000
+
+/**
+ * How long a periodic nudge stays quiet after being sent, whether or not she
+ * acted on it. Seven days means she sees the photo prompt about four times
+ * across a twelve-week programme, and the lab prompt two or three times inside
+ * its window — enough to land, not enough to nag.
+ */
+const PERIODIC_COOLDOWN_DAYS = 7
+
+/** Photos: monthly from week 4. Week 1 photos come from the Week 0 checklist. */
+const PHOTO_INTERVAL_DAYS = 28
+const PHOTO_FROM_WEEK = 4
+/**
+ * From week 12 the interval shortens, because the closing set is the one that
+ * completes the before-and-after — and on a strict 28-day cycle it falls two
+ * days after the twelve-week review it exists for.
+ */
+const PHOTO_FINAL_WEEK = 12
+const PHOTO_FINAL_INTERVAL_DAYS = 14
+
+/**
+ * Lifetime ceilings. Cooldowns alone do not stop a nudge that has become
+ * permanently true: a client who decides not to take photos is past 28 days
+ * every day after, so she was being asked eight times in a quarter. After this
+ * many she has not missed the message, she has declined it — and the coach's
+ * own roster shows him she has no photos.
+ */
+const MAX_SENDS = { photo_due: 4, lab_retest: 3 } as const
+
+/**
+ * The re-test window. The programme is sold on comparing a second blood panel
+ * with the first, and a panel booked in week 12 arrives after the review it was
+ * meant to inform — so the ask goes out at two and a half months.
+ */
+const LAB_WINDOW_WEEKS = { from: 10, to: 12 }
+const LAB_MIN_AGE_DAYS = 56
 
 function configureWebPush(): boolean {
   const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
@@ -66,15 +110,62 @@ export async function GET(request: NextRequest) {
     }
     const clientIds = [...subsByClient.keys()]
 
-    const [{ data: clients }, { data: checkins }, { data: unread }, { data: alreadySent }] = await Promise.all([
-      db.from('clients').select('id, full_name, subscription_status, onboarding_completed, role').in('id', clientIds),
+    const [
+      { data: clients }, { data: checkins }, { data: unread },
+      { data: recentSends }, { data: photos }, { data: labs },
+    ] = await Promise.all([
+      db.from('clients').select('id, full_name, subscription_status, onboarding_completed, role, start_date').in('id', clientIds),
       db.from('weekly_checkins').select('client_id, submitted_at').in('client_id', clientIds),
       db.from('messages').select('client_id, created_at').in('client_id', clientIds)
         .eq('from_coach', true).eq('read_by_client', false),
-      db.from('reminder_sends').select('client_id, kind').eq('sent_on', today),
+      // Every send in the cooldown window, not just today's — the periodic
+      // nudges need to know when they last fired, not merely that something did.
+      // A full programme's worth, not just the cooldown window — the caps
+      // below count lifetime sends, not recent ones.
+      db.from('reminder_sends').select('client_id, kind, sent_on')
+        .gte('sent_on', new Date(now - 180 * DAY).toISOString().slice(0, 10)),
+      db.from('progress_photos').select('client_id, created_at').in('client_id', clientIds),
+      db.from('lab_results').select('client_id, taken_on').in('client_id', clientIds),
     ])
 
-    const sentToday = new Set((alreadySent || []).map((r) => r.client_id))
+    const sentToday = new Set(
+      (recentSends || []).filter((r) => r.sent_on === today).map((r) => r.client_id)
+    )
+    // Latest send per (client, kind), for the periodic cooldowns.
+    const lastSendOfKind = new Map<string, string>()
+    for (const r of recentSends || []) {
+      const key = `${r.client_id}:${r.kind}`
+      if (!lastSendOfKind.has(key) || r.sent_on > lastSendOfKind.get(key)!) {
+        lastSendOfKind.set(key, r.sent_on)
+      }
+    }
+    const sendCount = new Map<string, number>()
+    for (const r of recentSends || []) {
+      const key = `${r.client_id}:${r.kind}`
+      sendCount.set(key, (sendCount.get(key) ?? 0) + 1)
+    }
+
+    const inCooldown = (clientId: string, kind: string) => {
+      const on = lastSendOfKind.get(`${clientId}:${kind}`)
+      return !!on && (now - new Date(on).getTime()) / DAY < PERIODIC_COOLDOWN_DAYS
+    }
+    const overCap = (clientId: string, kind: keyof typeof MAX_SENDS) =>
+      (sendCount.get(`${clientId}:${kind}`) ?? 0) >= MAX_SENDS[kind]
+
+    /** Newest of a set of dated rows, per client. */
+    const newestBy = (rows: { client_id: string }[] | null, field: string) => {
+      const m = new Map<string, number>()
+      for (const r of rows || []) {
+        const raw = (r as Record<string, unknown>)[field]
+        if (!raw) continue
+        const t = new Date(raw as string).getTime()
+        if (!Number.isFinite(t)) continue
+        if (t > (m.get(r.client_id) ?? 0)) m.set(r.client_id, t)
+      }
+      return m
+    }
+    const lastPhoto = newestBy(photos, 'created_at')
+    const lastLab = newestBy(labs, 'taken_on')
 
     const lastCheckin = new Map<string, number>()
     for (const c of checkins || []) {
@@ -111,6 +202,32 @@ export async function GET(request: NextRequest) {
         continue
       }
 
+      const week = programmeWeek(c.start_date)
+      const daysSincePhoto = lastPhoto.has(c.id)
+        ? Math.floor((now - lastPhoto.get(c.id)!) / DAY)
+        : null
+      const daysSinceLab = lastLab.has(c.id)
+        ? Math.floor((now - lastLab.get(c.id)!) / DAY)
+        : null
+
+      // The re-test, ahead of the weekly nudge on purpose. A missed check-in is
+      // recoverable next week; the second blood panel has a window, and if it
+      // is booked after the twelve-week review it cannot inform it.
+      if (
+        week !== null &&
+        week >= LAB_WINDOW_WEEKS.from && week <= LAB_WINDOW_WEEKS.to &&
+        (daysSinceLab === null || daysSinceLab >= LAB_MIN_AGE_DAYS) &&
+        !inCooldown(c.id, 'lab_retest') && !overCap(c.id, 'lab_retest')
+      ) {
+        jobs.push({
+          clientId: c.id, kind: 'lab_retest',
+          title: 'Time for your second blood panel',
+          body: 'Book the same tests as last time — the comparison is the point.',
+          url: '/dashboard/health',
+        })
+        continue
+      }
+
       const last = lastCheckin.get(c.id)
       const daysSince = last ? Math.floor((now - last) / DAY) : null
       // Stop after three weeks. Past that she has not lapsed, she has stopped,
@@ -123,6 +240,24 @@ export async function GET(request: NextRequest) {
           title: 'Your weekly check-in is ready',
           body: 'Five minutes to log this week — it unlocks your trends.',
           url: '/dashboard/check-in',
+        })
+        continue
+      }
+
+      // Monthly photos. Not before week 4 — her week-1 set comes from the Week 0
+      // checklist, and asking again a fortnight later shows her nothing.
+      const photoInterval =
+        week !== null && week >= PHOTO_FINAL_WEEK ? PHOTO_FINAL_INTERVAL_DAYS : PHOTO_INTERVAL_DAYS
+      if (
+        week !== null && week >= PHOTO_FROM_WEEK &&
+        (daysSincePhoto === null || daysSincePhoto >= photoInterval) &&
+        !inCooldown(c.id, 'photo_due') && !overCap(c.id, 'photo_due')
+      ) {
+        jobs.push({
+          clientId: c.id, kind: 'photo_due',
+          title: 'Your monthly photos are due',
+          body: 'Same pose, same light. These usually show what the scale does not.',
+          url: '/dashboard/progress-photos',
         })
       }
     }
