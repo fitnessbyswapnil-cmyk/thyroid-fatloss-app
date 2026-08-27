@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { guard, failed } from '@/lib/errors'
-import { searchIngredients as ifctSearch, computeRecipe, type Ingredient, type RecipePart } from '@/lib/nutrition/ifct'
+import { searchIngredients as ifctSearch, computeRecipe, type ComputedMacros, type Ingredient, type RecipePart } from '@/lib/nutrition/ifct'
 import type { Food } from '@/app/actions/library'
 import { EMPTY_PREFERENCES, expandAvoidTerm, hardExclusions, type FoodPreferences } from '@/lib/plans/preferences'
 import { generatePlan } from '@/lib/plans/generate'
@@ -35,7 +35,8 @@ export async function saveComposedFood(input: {
   tags?: string | null
   isVeg?: boolean
 }) {
-  return guard('nutrition.saveComposedFood', failed('Could not save that recipe.'), async () => {
+  return guard<{ success: boolean; error?: string; totals?: ComputedMacros }>(
+    'nutrition.saveComposedFood', failed('Could not save that recipe.'), async () => {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { success: false, error: 'Not authenticated' }

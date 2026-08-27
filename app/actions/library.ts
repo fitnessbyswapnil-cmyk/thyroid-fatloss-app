@@ -131,7 +131,8 @@ export async function deleteFood(id: string) {
 // ---------- CSV bulk import ----------
 // Rows are pre-parsed client-side; this validates, caps, and inserts in one batch.
 export async function importExercises(rows: Array<Partial<Exercise> & { name: string }>) {
-  return guard('library.importExercises', failed('Import failed. Check the file and try again.'), async () => {
+  return guard<{ success: boolean; error?: string; count?: number }>(
+    'library.importExercises', failed('Import failed. Check the file and try again.'), async () => {
     const { supabase, user } = await requireCoach()
     if (!user) return { success: false, error: 'Only the coach can import' }
     const clean = rows
@@ -157,7 +158,8 @@ export async function importExercises(rows: Array<Partial<Exercise> & { name: st
 }
 
 export async function importFoods(rows: Array<Partial<Food> & { name: string }>) {
-  return guard('library.importFoods', failed('Import failed. Check the file and try again.'), async () => {
+  return guard<{ success: boolean; error?: string; count?: number }>(
+    'library.importFoods', failed('Import failed. Check the file and try again.'), async () => {
     const { supabase, user } = await requireCoach()
     if (!user) return { success: false, error: 'Only the coach can import' }
     const num = (v: unknown) => {

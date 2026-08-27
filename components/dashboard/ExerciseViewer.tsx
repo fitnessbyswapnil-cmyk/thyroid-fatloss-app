@@ -71,7 +71,7 @@ export function ExerciseViewer({ item, onClose }: { item: WorkoutItem; onClose: 
           {showDemo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={item.demoUrl}
+              src={item.demoUrl ?? undefined}
               alt={item.name}
               className="absolute inset-0 w-full h-full object-contain"
               onError={() => setDemoBroken(true)}

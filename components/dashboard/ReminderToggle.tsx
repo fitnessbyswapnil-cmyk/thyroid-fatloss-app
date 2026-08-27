@@ -36,7 +36,13 @@ async function readyOrNull(ms = 5000): Promise<ServiceWorkerRegistration | null>
   ])
 }
 
-export function ReminderToggle() {
+/**
+ * @param hideWhenOn  Render nothing once she is already subscribed. The
+ *   dashboard placement is a nudge and should disappear the moment it has done
+ *   its job; Settings is the control, and keeps showing "Reminders are on" so
+ *   she can see the state and turn it back off.
+ */
+export function ReminderToggle({ hideWhenOn = false }: { hideWhenOn?: boolean } = {}) {
   const [state, setState] = useState<State>("loading")
   const [busy, setBusy] = useState(false)
 
@@ -106,6 +112,7 @@ export function ReminderToggle() {
   }
 
   if (state === "loading") return null
+  if (hideWhenOn && state === "on") return null
 
   // Rendering nothing here was the wrong call. In the Android WebView build
   // there is no Push API, so the setting simply vanished — she sees a gap where

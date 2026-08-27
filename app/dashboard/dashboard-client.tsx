@@ -19,6 +19,7 @@ import { DailyReminder } from "@/components/dashboard/DailyReminder"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
 import { CoachFeedbackCard, type CoachFeedbackItem } from "@/components/dashboard/CoachFeedbackCard"
 import { TodayLogCard } from "@/components/dashboard/TodayLogCard"
+import { ReminderToggle } from "@/components/dashboard/ReminderToggle"
 import { CheckInCTA } from "@/components/dashboard/CheckInCTA"
 
 interface DashboardData {
@@ -162,6 +163,19 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       {/* SECTION 5b — Weekly check-in entry point */}
       <div className="pt-2 pb-4">
         <CheckInCTA programWeek={data.programWeek} />
+      </div>
+
+      {/* SECTION 5b-ii — Reminders, for anyone who has not switched them on.
+          There are zero push subscribers across the whole roster, and the only
+          two places to enable them were the Week 1 screen and Settings — the
+          moment she is most overwhelmed, and a page nobody opens. A client who
+          taps past Week 1 never gets a single nudge for twelve weeks, which
+          makes the entire reminder system dead weight.
+
+          hideWhenOn means this disappears the moment it has done its job, so a
+          subscribed client never sees it here. Settings keeps the control. */}
+      <div className="pb-4">
+        <ReminderToggle hideWhenOn />
       </div>
 
       {/* SECTION 5c — Today's adherence log (drives the real streak) */}

@@ -1,14 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Was `ignoreBuildErrors: true`, which let real errors ship — a JSX syntax
+  // error compiled cleanly through it earlier this week. The four errors it was
+  // covering are fixed, so the build verifies again instead of hoping.
   typescript: {
-    // Load-bearing, unfortunately. Real type errors currently ship — run
-    // `npx tsc --noEmit` for the live list rather than trusting a count written
-    // here, which goes stale the moment anyone fixes one. Flipping this to false does not
-    // make the app safer, it makes the next deploy fail — and this app is live
-    // with paying clients on it. Fix the six errors first, then flip it, in that
-    // order and not the other way round.
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
+
   images: {
     // Keep this true. It is not a shortcut and it is not laziness.
     //
