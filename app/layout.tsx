@@ -62,8 +62,28 @@ export const viewport: Viewport = {
   themeColor: '#0a0d14',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+
+  /**
+   * viewportFit 'cover' is what makes env(safe-area-inset-*) return real
+   * numbers on a notched iPhone. Twenty places in this app read those insets —
+   * the bottom nav pill, every page's bottom padding, the loading skeletons —
+   * and without this they all silently fall back to their default, which means
+   * the app letterboxes with black bars top and bottom once it is installed to
+   * the Home Screen. That is the difference between looking native and looking
+   * like a web page in a box.
+   */
+  viewportFit: 'cover',
+
+  /**
+   * maximumScale and userScalable are deliberately gone.
+   *
+   * They were there to stop iOS zooming on input focus, which they never did —
+   * iOS has ignored both for that case since iOS 10, and the real fix (a 16px
+   * floor on every field) now lives in globals.css. What they DID do was block
+   * pinch-zoom entirely, for a client base of women in their forties reading
+   * lab values on a phone. Taking someone's ability to zoom is not a
+   * reasonable price for a bug it never fixed.
+   */
 }
 
 export default function RootLayout({
