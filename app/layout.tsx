@@ -26,6 +26,19 @@ export const metadata: Metadata = {
     title: 'ThyroWell',
     statusBarStyle: 'black-translucent',
   },
+  other: {
+    // Next renders `appleWebApp.capable` as the modern, unprefixed
+    // <meta name="mobile-web-app-capable">, and no longer emits the Apple one.
+    // iOS below 17.4 reads ONLY the apple- prefixed tag, and without it "Add to
+    // Home Screen" opens inside Safari with the address bar still there — which
+    // is the difference between something that feels like an app and something
+    // that feels like a bookmark.
+    //
+    // It also gates web push on iPhone: notifications only work from a
+    // home-screen install, so a client whose install is not standalone gets no
+    // reminders at all, however well the cron behaves.
+    'apple-mobile-web-app-capable': 'yes',
+  },
   icons: {
     icon: [
       {
