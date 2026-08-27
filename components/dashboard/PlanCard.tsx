@@ -176,19 +176,43 @@ export function PlanCard({ type, plan }: { type: PlanType; plan: Plan | null }) 
                   </button>
                 ))}
                 {(() => {
-                  const t = plan.content.mealItems!.reduce(
-                    (acc, m) => {
-                      const q = m.qty || 1
-                      return {
-                        kcal: acc.kcal + (m.calories || 0) * q,
-                        p: acc.p + (Number(m.protein) || 0) * q,
-                      }
-                    },
-                    { kcal: 0, p: 0 }
-                  )
-                  return t.kcal > 0 ? (
+                  /* A plan can be a single day ("Breakfast", "Lunch") or a menu
+                     of alternatives ("Breakfast — option 3"). Summing every row
+                     is right for the first and badly wrong for the second: a
+                     3-meal plan with 10 options each totalled all 30 and showed
+                     an 1,800 kcal day as 18,000.
+
+                     So total each named meal, then average the options within a
+                     slot and add the slots together. With no options present
+                     every slot has one entry and this is the plain sum. */
+                  const byMeal = new Map<string, { kcal: number; p: number }>()
+                  for (const m of plan.content.mealItems!) {
+                    const key = (m.meal || "").trim() || "—"
+                    const q = m.qty || 1
+                    const cur = byMeal.get(key) || { kcal: 0, p: 0 }
+                    cur.kcal += (m.calories || 0) * q
+                    cur.p += (Number(m.protein) || 0) * q
+                    byMeal.set(key, cur)
+                  }
+                  const bySlot = new Map<string, { kcal: number; p: number; n: number }>()
+                  for (const [meal, v] of byMeal) {
+                    const slot = meal.split(" — ")[0].trim()
+                    const cur = bySlot.get(slot) || { kcal: 0, p: 0, n: 0 }
+                    cur.kcal += v.kcal
+                    cur.p += v.p
+                    cur.n += 1
+                    bySlot.set(slot, cur)
+                  }
+                  let kcal = 0, p = 0, options = false
+                  for (const v of bySlot.values()) {
+                    if (v.n > 1) options = true
+                    kcal += v.kcal / v.n
+                    p += v.p / v.n
+                  }
+                  return kcal > 0 ? (
                     <p className="text-right text-xs tabular-nums pr-1" style={{ color: "#2dd4bf" }}>
-                      Day total ≈ {Math.round(t.kcal)} kcal · {t.p.toFixed(0)}g protein
+                      Day total ≈ {Math.round(kcal)} kcal · {p.toFixed(0)}g protein
+                      {options ? " · any one option per meal" : ""}
                     </p>
                   ) : null
                 })()}

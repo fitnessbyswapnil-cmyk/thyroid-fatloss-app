@@ -350,7 +350,7 @@ const SOY_WORDS = ["soy", "soya", "tofu", "edamame", "tempeh"]
  */
 const FISH_WORDS = [
   "fish", "prawn", "shrimp", "crab", "seafood",
-  "maach", "macher", "machli", "chingri", "bhetki", "masor",
+  "maach", "macher", "machli", "chingri", "bhetki", "masor", "meen", "paturi",
   "pomfret", "surmai", "rohu", "katla", "tuna", "salmon", "anchov",
 ]
 
