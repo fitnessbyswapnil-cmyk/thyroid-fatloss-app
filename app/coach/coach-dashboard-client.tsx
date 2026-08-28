@@ -640,15 +640,21 @@ export function CoachDashboardClient({
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
-                      <button 
+                      {/* Inside the card's Link, so this must both stop the
+                          card navigating and do its own. A nested <Link> would
+                          be invalid markup here. */}
+                      <button
                         className="p-2 rounded-lg transition-colors"
-                        style={{ 
+                        style={{
                           background: "rgba(255, 255, 255, 0.04)",
-                          color: "#7e8a9e" 
+                          color: "#7e8a9e"
                         }}
+                        aria-label={`Message ${client.full_name || "client"}`}
+                        title={`Message ${client.full_name || "client"}`}
                         onClick={(e) => {
                           e.preventDefault()
-                          // TODO: Open message modal
+                          e.stopPropagation()
+                          router.push(`/coach/client/${client.id}/messages`)
                         }}
                       >
                         <MessageSquare size={16} />
