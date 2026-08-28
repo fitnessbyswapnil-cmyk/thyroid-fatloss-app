@@ -31,7 +31,23 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(new URL('/maintenance', request.url))
   }
 
-  return await updateSession(request)
+  const response = await updateSession(request)
+
+  /**
+   * Which region did the proxy actually run in?
+   *
+   * Vercel deploys Routing Middleware to all regions regardless of the
+   * `regions` key in vercel.json, so pinning functions to sin1 does not
+   * necessarily move this file. That matters: anything this proxy does over
+   * the network is paid on every matched request, from wherever it lands.
+   *
+   * updateSession only verifies the JWT locally (getClaims + JWKS, no Auth
+   * server call), so a distant proxy region should cost CPU and not latency —
+   * but "should" is worth measuring. Compare this against the compute region
+   * in x-vercel-id.
+   */
+  response.headers.set('x-proxy-region', process.env.VERCEL_REGION ?? 'unknown')
+  return response
 }
 
 export const config = {
@@ -41,9 +57,11 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - images - .svg, .png, .jpg, .jpeg, .gif, .webp
-     * Feel free to modify this pattern to include more paths.
+     * - images and fonts — anything with no session to refresh. Every path
+     *   matched here runs the proxy, so trimming this list is the cheapest
+     *   latency win available: avif, ico and woff/woff2 were still falling
+     *   through to it.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|woff|woff2|ttf|map)$).*)',
   ],
 }
