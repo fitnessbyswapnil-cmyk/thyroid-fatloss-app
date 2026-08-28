@@ -50,7 +50,7 @@ interface DashboardData {
   dailyIntention: string
   chartData: Array<{ week_number: number; weight: number; energy_level: number; sleep_score: number }>
   coachFeedback: CoachFeedbackItem[]
-  todayLog: { workoutDone: boolean; mealsFollowed: number }
+  todayLog: { workoutDone: boolean; walkDone: boolean; mealsFollowed: number }
 }
 
 export function DashboardClient({ data }: { data: DashboardData }) {
@@ -182,6 +182,7 @@ export function DashboardClient({ data }: { data: DashboardData }) {
       <div className="py-8">
         <TodayLogCard
           initialWorkoutDone={data.todayLog.workoutDone}
+          initialWalkDone={data.todayLog.walkDone}
           initialMealsFollowed={data.todayLog.mealsFollowed}
         />
       </div>

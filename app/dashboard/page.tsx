@@ -44,7 +44,7 @@ export default async function DashboardPage() {
     supabase.from("clients").select("*").eq("id", user.id).single(),
     supabase.from("weekly_checkins").select("*").eq("client_id", user.id).order("submitted_at", { ascending: false }),
     supabase.from("coach_insights").select("*").eq("client_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
-    supabase.from("daily_logs").select("date, workout_done, meals_followed").eq("client_id", user.id).order("date", { ascending: false }).limit(180),
+    supabase.from("daily_logs").select("date, workout_done, walk_done, meals_followed").eq("client_id", user.id).order("date", { ascending: false }).limit(180),
     supabase.from("meal_logs").select("date, done").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
     supabase.from("exercise_logs").select("date").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
     supabase.from("health_profiles").select("medication, medication_dose, medication_timing").eq("client_id", user.id).maybeSingle(),
@@ -144,7 +144,7 @@ export default async function DashboardPage() {
   // zero. The app asked for the work and then denied it happened.
   const activeDays = new Set<string>([
     ...(logs || [])
-      .filter((l) => l.workout_done || (l.meals_followed || 0) > 0)
+      .filter((l) => l.workout_done || l.walk_done || (l.meals_followed || 0) > 0)
       .map((l) => l.date as string),
     ...(mealLogDays || []).filter((m) => m.done).map((m) => m.date as string),
     ...(exerciseLogDays || []).map((e) => e.date as string),
@@ -266,6 +266,7 @@ export default async function DashboardPage() {
     monthlyGoal: { current: monthlyCount, target: 30 },
     todayLog: {
       workoutDone: Boolean(todayLog?.workout_done),
+      walkDone: Boolean(todayLog?.walk_done),
       mealsFollowed: todayLog?.meals_followed || 0,
     },
     weight: { 

@@ -22,6 +22,7 @@ import { PhotoComparison } from "@/components/coach/PhotoComparison"
 import { TrendChart } from "@/components/coach/TrendChart"
 import type { Plan } from "@/app/actions/plans"
 import { EngagementPanel } from "@/components/coach/EngagementPanel"
+import { DailyLogStrip, type DailyLogRow } from "@/components/coach/DailyLogStrip"
 import type { buildEngagement } from "@/lib/coach/engagement"
 import { weekLabel } from "@/lib/health/programme"
 
@@ -273,6 +274,7 @@ export function ClientDetailView({
   coachId,
   engagement,
   foodPrefs,
+  dailyLogs,
 }: {
   client: Client
   checkins: Checkin[]
@@ -283,6 +285,7 @@ export function ClientDetailView({
   coachId: string
   engagement: ReturnType<typeof buildEngagement>
   foodPrefs: FoodPrefsRow | null
+  dailyLogs: DailyLogRow[]
 }) {
   const router = useRouter()
   // Derived from props already on the page — no extra query for this panel.
@@ -552,6 +555,10 @@ export function ClientDetailView({
             {/* Is she actually using the app? The alert rules only see a
                 client who is still checking in — this catches the one who
                 went quiet before that shows up anywhere else. */}
+            {/* What she ticked, day by day. The engagement panel answers "is she
+                opening the app"; this answers "is she doing the three things". */}
+            <DailyLogStrip logs={dailyLogs} />
+
             <EngagementPanel
               signals={engagement.signals}
               active={engagement.active}
