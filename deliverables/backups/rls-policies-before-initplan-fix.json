@@ -1,0 +1,1118 @@
+[
+    {
+        "cmd": "DELETE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "weekly_checkins",
+        "permissive": "PERMISSIVE",
+        "policyname": "checkins_delete_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "weekly_checkins",
+        "permissive": "PERMISSIVE",
+        "policyname": "checkins_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "weekly_checkins",
+        "permissive": "PERMISSIVE",
+        "policyname": "checkins_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "weekly_checkins",
+        "permissive": "PERMISSIVE",
+        "policyname": "checkins_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "weekly_checkins",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_checkins_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "weekly_checkins",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_checkins_update",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "DELETE",
+        "qual": "((coach_id = auth.uid()) AND is_coach())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "checkin_feedback",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_feedback_delete",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "checkin_feedback",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_feedback_insert",
+        "schemaname": "public",
+        "with_check": "((coach_id = auth.uid()) AND is_coach())"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "checkin_feedback",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_feedback_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "((coach_id = auth.uid()) AND is_coach())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "checkin_feedback",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_feedback_update",
+        "schemaname": "public",
+        "with_check": "(coach_id = auth.uid())"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(EXISTS ( SELECT 1\n   FROM weekly_checkins wc\n  WHERE ((wc.id = checkin_feedback.checkin_id) AND (wc.client_id = auth.uid()))))",
+        "roles": [
+            "public"
+        ],
+        "tablename": "checkin_feedback",
+        "permissive": "PERMISSIVE",
+        "policyname": "feedback_select_own_client",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(EXISTS ( SELECT 1\n   FROM weekly_checkins wc\n  WHERE ((wc.id = checkin_feedback.checkin_id) AND (wc.client_id = auth.uid()))))",
+        "roles": [
+            "authenticated"
+        ],
+        "tablename": "checkin_feedback",
+        "permissive": "PERMISSIVE",
+        "policyname": "feedback_update_read_own_client",
+        "schemaname": "public",
+        "with_check": "(EXISTS ( SELECT 1\n   FROM weekly_checkins wc\n  WHERE ((wc.id = checkin_feedback.checkin_id) AND (wc.client_id = auth.uid()))))"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "viewed_comparisons",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_viewed_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "viewed_comparisons",
+        "permissive": "PERMISSIVE",
+        "policyname": "viewed_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "viewed_comparisons",
+        "permissive": "PERMISSIVE",
+        "policyname": "viewed_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "viewed_comparisons",
+        "permissive": "PERMISSIVE",
+        "policyname": "viewed_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "email_reminders",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_reminders_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "email_reminders",
+        "permissive": "PERMISSIVE",
+        "policyname": "reminders_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(client_id = auth.uid())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "plans",
+        "permissive": "PERMISSIVE",
+        "policyname": "clients_select_own_plans",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "DELETE",
+        "qual": "(coach_id = auth.uid())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "plans",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_delete_plans",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "plans",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_insert_plans",
+        "schemaname": "public",
+        "with_check": "((coach_id = auth.uid()) AND is_coach())"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "((coach_id = auth.uid()) OR is_coach())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "plans",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_select_client_plans",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(coach_id = auth.uid())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "plans",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_update_plans",
+        "schemaname": "public",
+        "with_check": "(coach_id = auth.uid())"
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "exercises",
+        "permissive": "PERMISSIVE",
+        "policyname": "exercises_coach_all",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "foods",
+        "permissive": "PERMISSIVE",
+        "policyname": "foods_coach_all",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "true",
+        "roles": [
+            "authenticated"
+        ],
+        "tablename": "foods",
+        "permissive": "PERMISSIVE",
+        "policyname": "foods_read_authenticated",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_logs_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "logs_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "logs_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "logs_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "(is_coach() AND (coach_id = auth.uid()))",
+        "roles": [
+            "public"
+        ],
+        "tablename": "plan_templates",
+        "permissive": "PERMISSIVE",
+        "policyname": "templates_coach_all",
+        "schemaname": "public",
+        "with_check": "(is_coach() AND (coach_id = auth.uid()))"
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "lab_results",
+        "permissive": "PERMISSIVE",
+        "policyname": "lab_coach_all",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "DELETE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "lab_results",
+        "permissive": "PERMISSIVE",
+        "policyname": "lab_delete_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "lab_results",
+        "permissive": "PERMISSIVE",
+        "policyname": "lab_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "lab_results",
+        "permissive": "PERMISSIVE",
+        "policyname": "lab_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "lab_results",
+        "permissive": "PERMISSIVE",
+        "policyname": "lab_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "health_profiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "hp_coach_all",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "health_profiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "hp_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "health_profiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "hp_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "health_profiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "hp_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "messages",
+        "permissive": "PERMISSIVE",
+        "policyname": "msg_insert",
+        "schemaname": "public",
+        "with_check": "(((auth.uid() = client_id) AND (from_coach = false)) OR is_coach())"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "((auth.uid() = client_id) OR is_coach())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "messages",
+        "permissive": "PERMISSIVE",
+        "policyname": "msg_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "((auth.uid() = client_id) OR is_coach())",
+        "roles": [
+            "public"
+        ],
+        "tablename": "messages",
+        "permissive": "PERMISSIVE",
+        "policyname": "msg_update",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "meal_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "meal_logs_coach_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "meal_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "meal_logs_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "exercise_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "exercise_logs_coach_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "exercise_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "exercise_logs_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "DELETE",
+        "qual": "(auth.uid() = id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "clients",
+        "permissive": "PERMISSIVE",
+        "policyname": "clients_delete_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "clients",
+        "permissive": "PERMISSIVE",
+        "policyname": "clients_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "clients",
+        "permissive": "PERMISSIVE",
+        "policyname": "clients_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "clients",
+        "permissive": "PERMISSIVE",
+        "policyname": "clients_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "clients",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_select_all",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "clients",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_update_all",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "progress_photos",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_photos_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "DELETE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "progress_photos",
+        "permissive": "PERMISSIVE",
+        "policyname": "photos_delete_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "progress_photos",
+        "permissive": "PERMISSIVE",
+        "policyname": "photos_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "progress_photos",
+        "permissive": "PERMISSIVE",
+        "policyname": "photos_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "progress_photos",
+        "permissive": "PERMISSIVE",
+        "policyname": "photos_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "meal_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_meals_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "DELETE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "meal_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "meals_delete_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "meal_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "meals_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "meal_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "meals_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "meal_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "meals_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "workout_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_workouts_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "DELETE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "workout_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "workouts_delete_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "workout_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "workouts_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "workout_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "workouts_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "workout_tracking",
+        "permissive": "PERMISSIVE",
+        "policyname": "workouts_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "testimonials",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_testimonials_all",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "testimonials",
+        "permissive": "PERMISSIVE",
+        "policyname": "testimonials_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(is_approved = true)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "testimonials",
+        "permissive": "PERMISSIVE",
+        "policyname": "testimonials_public_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "lesson_reads",
+        "permissive": "PERMISSIVE",
+        "policyname": "lesson_reads_coach",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "lesson_reads",
+        "permissive": "PERMISSIVE",
+        "policyname": "lesson_reads_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "coach_insights",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_insights_insert",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "coach_insights",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_insights_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "coach_insights",
+        "permissive": "PERMISSIVE",
+        "policyname": "insights_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "coach_insights",
+        "permissive": "PERMISSIVE",
+        "policyname": "insights_update_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "lessons",
+        "permissive": "PERMISSIVE",
+        "policyname": "lessons_coach_write",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(published OR is_coach())",
+        "roles": [
+            "authenticated"
+        ],
+        "tablename": "lessons",
+        "permissive": "PERMISSIVE",
+        "policyname": "lessons_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_habits",
+        "permissive": "PERMISSIVE",
+        "policyname": "coaches_habits_select",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_habits",
+        "permissive": "PERMISSIVE",
+        "policyname": "habits_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_habits",
+        "permissive": "PERMISSIVE",
+        "policyname": "habits_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "daily_habits",
+        "permissive": "PERMISSIVE",
+        "policyname": "habits_update_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "error_logs",
+        "permissive": "PERMISSIVE",
+        "policyname": "error_logs_coach_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(client_id = auth.uid())",
+        "roles": [
+            "authenticated"
+        ],
+        "tablename": "plan_revisions",
+        "permissive": "PERMISSIVE",
+        "policyname": "plan_revisions_client_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "authenticated"
+        ],
+        "tablename": "plan_revisions",
+        "permissive": "PERMISSIVE",
+        "policyname": "plan_revisions_coach_all",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "push_subscriptions",
+        "permissive": "PERMISSIVE",
+        "policyname": "push_subs_coach_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "push_subscriptions",
+        "permissive": "PERMISSIVE",
+        "policyname": "push_subs_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "reminder_sends",
+        "permissive": "PERMISSIVE",
+        "policyname": "reminder_sends_coach_read",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "ALL",
+        "qual": "is_coach()",
+        "roles": [
+            "public"
+        ],
+        "tablename": "food_preferences",
+        "permissive": "PERMISSIVE",
+        "policyname": "fp_coach_all",
+        "schemaname": "public",
+        "with_check": "is_coach()"
+    },
+    {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+            "public"
+        ],
+        "tablename": "food_preferences",
+        "permissive": "PERMISSIVE",
+        "policyname": "fp_insert_own",
+        "schemaname": "public",
+        "with_check": "(auth.uid() = client_id)"
+    },
+    {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "food_preferences",
+        "permissive": "PERMISSIVE",
+        "policyname": "fp_select_own",
+        "schemaname": "public",
+        "with_check": null
+    },
+    {
+        "cmd": "UPDATE",
+        "qual": "(auth.uid() = client_id)",
+        "roles": [
+            "public"
+        ],
+        "tablename": "food_preferences",
+        "permissive": "PERMISSIVE",
+        "policyname": "fp_update_own",
+        "schemaname": "public",
+        "with_check": null
+    }
+]

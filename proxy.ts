@@ -46,7 +46,13 @@ export async function proxy(request: NextRequest) {
    * but "should" is worth measuring. Compare this against the compute region
    * in x-vercel-id.
    */
-  response.headers.set('x-proxy-region', process.env.VERCEL_REGION ?? 'unknown')
+  // Preview/dev only: it answered its question (the proxy runs in bom1 while
+  // functions run in sin1), and in production it is bytes on every response
+  // plus free reconnaissance on the infrastructure topology. x-vercel-id
+  // already encodes PoP and compute region for anyone who needs it.
+  if (process.env.VERCEL_ENV !== 'production') {
+    response.headers.set('x-proxy-region', process.env.VERCEL_REGION ?? 'unknown')
+  }
   return response
 }
 
