@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { updateTag } from 'next/cache'
 import { guard, failed } from '@/lib/errors'
 import { searchIngredients as ifctSearch, computeRecipe, type ComputedMacros, type Ingredient, type RecipePart } from '@/lib/nutrition/ifct'
 import type { Food } from '@/app/actions/library'
@@ -79,6 +80,9 @@ export async function saveComposedFood(input: {
       ? await supabase.from('foods').update(row).eq('id', input.id)
       : await supabase.from('foods').insert({ ...row, created_by: user.id })
     if (error) return { success: false, error: error.message }
+    // Same library the plan editor reads from a cache — bust it, or a dish
+    // composed here stays invisible there for up to an hour.
+    updateTag('library:foods')
     return { success: true, totals }
   })
 }

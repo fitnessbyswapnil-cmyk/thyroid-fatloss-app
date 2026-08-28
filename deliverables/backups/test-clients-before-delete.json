@@ -1,0 +1,549 @@
+{
+    "plans": [
+        {
+            "id": "40b9a3e5-f926-48a8-8b9b-215221e25e83",
+            "type": "meal",
+            "title": "Meal Plan",
+            "content": {
+                "sections": [
+                ],
+                "mealItems": [
+                    {
+                        "qty": 1,
+                        "fats": 0,
+                        "meal": "",
+                        "name": "Apple",
+                        "carbs": 21,
+                        "foodId": "dea05f8e-59f9-41b9-b3b1-76725359b6f0",
+                        "portion": "1 medium",
+                        "protein": 0,
+                        "calories": 80
+                    },
+                    {
+                        "qty": 1,
+                        "fats": 2,
+                        "meal": "",
+                        "name": "Bajra Roti",
+                        "carbs": 22,
+                        "foodId": "63731867-ff01-48fc-81a4-fcdf835c619d",
+                        "portion": "1 roti (45g)",
+                        "protein": 3,
+                        "calories": 115
+                    }
+                ]
+            },
+            "coach_id": "ba053ef9-bb06-432d-8f34-be56def7472c",
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "file_path": null,
+            "created_at": "2026-07-23T09:08:35.575272+00:00",
+            "updated_at": "2026-07-23T09:08:35.575272+00:00",
+            "assigned_at": "2026-07-23T09:08:35.575272+00:00"
+        },
+        {
+            "id": "69616856-da0b-45cf-87d1-0d3325c6794d",
+            "type": "workout",
+            "title": "Workout Plan",
+            "content": {
+                "sections": [
+                ],
+                "workoutItems": [
+                    {
+                        "day": "",
+                        "name": "90/90 Hamstring",
+                        "reps": "10",
+                        "sets": 3,
+                        "notes": "Lie on your back, with one leg extended straight out. With the other leg, bend the hip and knee to 90 degrees. You may brace your leg with your hands if necessary. This will be your starting position. Extend your leg straight into the ai…",
+                        "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/90_90_Hamstring/1.jpg",
+                        "videoUrl": null,
+                        "exerciseId": "3f702316-c545-42c2-8f65-7fef57a7bece",
+                        "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/90_90_Hamstring/0.jpg"
+                    },
+                    {
+                        "day": "",
+                        "name": "Bench Jump",
+                        "reps": "10",
+                        "sets": 3,
+                        "notes": "Begin with a box or bench 1-2 feet in front of you. Stand with your feet shoulder width apart. This will be your starting position. Perform a short squat in preparation for the jump; swing your arms behind you. Rebound out of this positi…",
+                        "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bench_Jump/1.jpg",
+                        "videoUrl": null,
+                        "exerciseId": "a953ed6f-2860-48b8-9295-58b24d26794a",
+                        "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bench_Jump/0.jpg"
+                    },
+                    {
+                        "day": "",
+                        "name": "Glute Bridge",
+                        "reps": "12",
+                        "sets": 3,
+                        "notes": null,
+                        "exerciseId": "d531e732-1511-4231-8ab4-27dddb9c0246"
+                    }
+                ]
+            },
+            "coach_id": "ba053ef9-bb06-432d-8f34-be56def7472c",
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "file_path": null,
+            "created_at": "2026-07-23T09:08:19.750079+00:00",
+            "updated_at": "2026-07-23T09:08:38.872+00:00",
+            "assigned_at": "2026-07-23T09:08:19.750079+00:00"
+        }
+    ],
+    "clients": [
+        {
+            "id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "age": 40,
+            "role": "client",
+            "email": "test+client@swapnilumbarkarfitness.in",
+            "phone": null,
+            "gender": "female",
+            "allergies": "Low Carb",
+            "full_name": "Test Client",
+            "height_cm": null,
+            "plan_type": "standard",
+            "consent_at": "2026-06-16T10:04:33.9+00:00",
+            "created_at": "2026-06-16T10:03:25.881077+00:00",
+            "start_date": "2026-06-16",
+            "tsh_before": 5.50,
+            "updated_at": "2026-08-23T11:36:08.93015+00:00",
+            "coach_notes": null,
+            "medications": "Thyronorm 87",
+            "streak_best": 0,
+            "tsh_current": 5.50,
+            "renewal_date": null,
+            "start_weight": 85.00,
+            "profile_photo": null,
+            "target_weight": 68.00,
+            "activity_level": null,
+            "current_weight": 75.00,
+            "recovery_score": 0,
+            "streak_current": 0,
+            "wellness_score": 50,
+            "reminder_enabled": true,
+            "thyroid_condition": "hyperthyroidism",
+            "subscription_status": "active",
+            "onboarding_completed": true,
+            "reminder_day_of_week": 0,
+            "reminder_time_of_day": "18:00:00",
+            "last_reminder_sent_at": null
+        },
+        {
+            "id": "ee5608ac-8c40-42ef-9629-a56a8b9ce89a",
+            "age": 32,
+            "role": "client",
+            "email": "test@gmail.com",
+            "phone": null,
+            "gender": "male",
+            "allergies": "Dairy free",
+            "full_name": "test",
+            "height_cm": 165,
+            "plan_type": "standard",
+            "consent_at": "2026-08-23T14:42:55.469+00:00",
+            "created_at": "2026-08-23T14:41:32.236751+00:00",
+            "start_date": "2026-08-23",
+            "tsh_before": 5.20,
+            "updated_at": "2026-08-23T14:42:55.709315+00:00",
+            "coach_notes": null,
+            "medications": "Thyronorm 50",
+            "streak_best": 0,
+            "tsh_current": 5.20,
+            "renewal_date": null,
+            "start_weight": 68.00,
+            "profile_photo": null,
+            "target_weight": 60.00,
+            "activity_level": "active",
+            "current_weight": 68.00,
+            "recovery_score": 0,
+            "streak_current": 0,
+            "wellness_score": 50,
+            "reminder_enabled": true,
+            "thyroid_condition": "hypothyroidism",
+            "subscription_status": "active",
+            "onboarding_completed": true,
+            "reminder_day_of_week": 0,
+            "reminder_time_of_day": "18:00:00",
+            "last_reminder_sent_at": null
+        }
+    ],
+    "lab_results": [
+        {
+            "id": "0a9b2fa9-3bee-473e-b4bc-b0afe7d82269",
+            "t3": null,
+            "t4": null,
+            "b12": null,
+            "tsh": null,
+            "notes": null,
+            "extras": null,
+            "source": "manual",
+            "ferritin": null,
+            "taken_on": "2026-08-22",
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "vitamin_d": null,
+            "weight_kg": null,
+            "created_at": "2026-08-22T13:02:31.562655+00:00",
+            "created_by": "3d0f9c64-bb51-41d3-a54f-d01d513a4305"
+        },
+        {
+            "id": "0c6bc9c3-b25c-484b-aef0-31e21848f34e",
+            "t3": null,
+            "t4": null,
+            "b12": null,
+            "tsh": 3,
+            "notes": null,
+            "extras": [
+                {
+                    "low": 4,
+                    "high": 5.7,
+                    "name": "HbA1c",
+                    "unit": "%",
+                    "value": 6.5
+                },
+                {
+                    "low": 0.4,
+                    "high": 4,
+                    "name": "TSH",
+                    "unit": "mIU/L",
+                    "value": 3
+                },
+                {
+                    "low": 12,
+                    "high": 16,
+                    "name": "Hemoglobin",
+                    "unit": "g/dL",
+                    "value": 11.4
+                },
+                {
+                    "low": 0,
+                    "high": 150,
+                    "name": "Triglycerides",
+                    "unit": "mg/dL",
+                    "value": 112
+                },
+                {
+                    "low": 40,
+                    "high": 100,
+                    "name": "HDL",
+                    "unit": "mg/dL",
+                    "value": 54
+                },
+                {
+                    "low": 0,
+                    "high": 100,
+                    "name": "LDL",
+                    "unit": "mg/dL",
+                    "value": 138.87
+                },
+                {
+                    "low": 0.52,
+                    "high": 1.04,
+                    "name": "Creatinine",
+                    "unit": "mg/dL",
+                    "value": 0.7
+                }
+            ],
+            "source": "upload",
+            "ferritin": null,
+            "taken_on": "2026-08-22",
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "vitamin_d": null,
+            "weight_kg": null,
+            "created_at": "2026-08-22T13:03:28.232742+00:00",
+            "created_by": "3d0f9c64-bb51-41d3-a54f-d01d513a4305"
+        },
+        {
+            "id": "a2560c61-f054-4e47-9654-ecfbb039258d",
+            "t3": 4,
+            "t4": 5.78,
+            "b12": null,
+            "tsh": 7.6357,
+            "notes": null,
+            "extras": [
+                {
+                    "low": 4.87,
+                    "high": 11.72,
+                    "name": "T4 (Total)",
+                    "unit": "µg/dL",
+                    "value": 5.78
+                },
+                {
+                    "low": 0.35,
+                    "high": 4.94,
+                    "name": "TSH",
+                    "unit": "mIU/L",
+                    "value": 7.6357
+                },
+                {
+                    "low": 2,
+                    "high": 4.4,
+                    "name": "Free T3",
+                    "unit": "pg/mL",
+                    "value": 4
+                },
+                {
+                    "low": 0.8,
+                    "high": 1.8,
+                    "name": "Free T4",
+                    "unit": "ng/dL",
+                    "value": 3
+                },
+                {
+                    "low": 0,
+                    "high": 34,
+                    "name": "Anti-TPO",
+                    "unit": "IU/mL",
+                    "value": 4
+                }
+            ],
+            "source": "upload",
+            "ferritin": null,
+            "taken_on": "2026-08-22",
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "vitamin_d": null,
+            "weight_kg": null,
+            "created_at": "2026-08-22T13:03:55.983911+00:00",
+            "created_by": "3d0f9c64-bb51-41d3-a54f-d01d513a4305"
+        },
+        {
+            "id": "922a2245-1ce0-496e-907d-7691c2284d94",
+            "t3": null,
+            "t4": null,
+            "b12": null,
+            "tsh": 1.183,
+            "notes": null,
+            "extras": [
+                {
+                    "low": 4,
+                    "high": 5.7,
+                    "name": "HbA1c",
+                    "unit": "%",
+                    "value": 5.6
+                },
+                {
+                    "low": 0,
+                    "high": 100,
+                    "name": "LDL",
+                    "unit": "mg/dL",
+                    "value": 127
+                },
+                {
+                    "low": 40,
+                    "high": 100,
+                    "name": "HDL",
+                    "unit": "mg/dL",
+                    "value": 42.3
+                },
+                {
+                    "low": 0,
+                    "high": 150,
+                    "name": "Triglycerides",
+                    "unit": "mg/dL",
+                    "value": 93.5
+                },
+                {
+                    "low": 0.4,
+                    "high": 4.04,
+                    "name": "TSH",
+                    "unit": "mIU/L",
+                    "value": 1.183
+                }
+            ],
+            "source": "upload",
+            "ferritin": null,
+            "taken_on": "2026-08-22",
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "vitamin_d": null,
+            "weight_kg": null,
+            "created_at": "2026-08-22T13:05:00.195863+00:00",
+            "created_by": "3d0f9c64-bb51-41d3-a54f-d01d513a4305"
+        },
+        {
+            "id": "fdea5fba-c224-411d-a4d6-193346777711",
+            "t3": null,
+            "t4": null,
+            "b12": null,
+            "tsh": 3,
+            "notes": null,
+            "extras": [
+                {
+                    "low": 4,
+                    "high": 5.7,
+                    "name": "HbA1c",
+                    "unit": "%",
+                    "value": 6.5
+                },
+                {
+                    "low": 0.4,
+                    "high": 4,
+                    "name": "TSH",
+                    "unit": "mIU/L",
+                    "value": 3
+                },
+                {
+                    "low": 12,
+                    "high": 16,
+                    "name": "Hemoglobin",
+                    "unit": "g/dL",
+                    "value": 11.4
+                },
+                {
+                    "low": 0,
+                    "high": 150,
+                    "name": "Triglycerides",
+                    "unit": "mg/dL",
+                    "value": 112
+                },
+                {
+                    "low": 40,
+                    "high": 100,
+                    "name": "HDL",
+                    "unit": "mg/dL",
+                    "value": 54
+                },
+                {
+                    "low": 0,
+                    "high": 100,
+                    "name": "LDL",
+                    "unit": "mg/dL",
+                    "value": 138.87
+                },
+                {
+                    "low": 0.52,
+                    "high": 1.04,
+                    "name": "Creatinine",
+                    "unit": "mg/dL",
+                    "value": 0.7
+                }
+            ],
+            "source": "upload",
+            "ferritin": null,
+            "taken_on": "2026-07-21",
+            "client_id": "ee5608ac-8c40-42ef-9629-a56a8b9ce89a",
+            "vitamin_d": null,
+            "weight_kg": null,
+            "created_at": "2026-08-23T14:45:47.546683+00:00",
+            "created_by": "ee5608ac-8c40-42ef-9629-a56a8b9ce89a"
+        }
+    ],
+    "health_profiles": [
+        {
+            "id": "bfce4f7f-7d11-4bc4-8888-b60b5506e8ad",
+            "notes": null,
+            "allergies": "Lactose Intolerant",
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "diagnosis": "Hypothyroid",
+            "conditions": "Diabetes",
+            "created_at": "2026-08-22T12:57:03.850773+00:00",
+            "medication": "Levothyroxine",
+            "updated_at": "2026-08-22T13:02:56.455+00:00",
+            "diagnosis_year": 2025,
+            "medication_dose": "100mcg",
+            "menopause_status": "N/A",
+            "medication_timing": "Empty stomach before 30 min"
+        },
+        {
+            "id": "c0432eb9-b699-4a7b-902c-7a6d3c5e034f",
+            "notes": null,
+            "allergies": "Dairy free",
+            "client_id": "ee5608ac-8c40-42ef-9629-a56a8b9ce89a",
+            "diagnosis": "Hypothyroid",
+            "conditions": null,
+            "created_at": "2026-08-23T14:42:55.461963+00:00",
+            "medication": "Thyronorm 50",
+            "updated_at": "2026-08-23T14:42:54.988+00:00",
+            "diagnosis_year": null,
+            "medication_dose": null,
+            "menopause_status": null,
+            "medication_timing": null
+        }
+    ],
+    "progress_photos": [
+        {
+            "id": "0b729909-6235-4548-8639-4cfbcf154294",
+            "notes": null,
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "back_photo": "3d0f9c64-bb51-41d3-a54f-d01d513a4305/progress-back/1787404014195.jpeg",
+            "created_at": "2026-08-22T13:06:58.622627+00:00",
+            "side_photo": "3d0f9c64-bb51-41d3-a54f-d01d513a4305/progress-side/1787404004802.jpeg",
+            "front_photo": "3d0f9c64-bb51-41d3-a54f-d01d513a4305/progress-front/1787403996647.jpeg",
+            "upload_date": "2026-08-22",
+            "week_number": 10
+        }
+    ],
+    "weekly_checkins": [
+        {
+            "id": "3e076abf-2a30-4d1a-baa4-7f01f9ad0f25",
+            "arm": null,
+            "calf": null,
+            "hips": null,
+            "mood": 1,
+            "neck": null,
+            "chest": null,
+            "notes": null,
+            "steps": null,
+            "thigh": null,
+            "waist": null,
+            "status": "submitted",
+            "weight": 86.00,
+            "bloating": 7,
+            "cravings": 9,
+            "symptoms": [
+                "Brain fog"
+            ],
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "created_at": "2026-06-16T10:05:23.19349+00:00",
+            "meds_taken": 4,
+            "meds_target": 7,
+            "sleep_score": null,
+            "week_number": 25,
+            "energy_level": 5,
+            "stress_level": 5,
+            "submitted_at": "2026-06-16T10:05:23.071+00:00",
+            "sleep_quality": 3,
+            "coach_feedback": null,
+            "adherence_score": 75,
+            "digestion_score": 6,
+            "reflection_text": "Want to lose 5 kg quickly ",
+            "workouts_target": 3,
+            "workouts_completed": 3
+        },
+        {
+            "id": "3039ca92-6342-4266-b76e-86d51fb9228d",
+            "arm": 15.00,
+            "calf": 14.00,
+            "hips": 36.00,
+            "mood": 2,
+            "neck": 12.00,
+            "chest": 40.00,
+            "notes": null,
+            "steps": 5000,
+            "thigh": 23.00,
+            "waist": 32.00,
+            "status": "submitted",
+            "weight": 75.00,
+            "bloating": 4,
+            "cravings": 2,
+            "symptoms": {
+                "Dry skin": 2,
+                "Brain fog": 2,
+                "Joint aches": 1,
+                "Palpitations": 1,
+                "Hair thinning": 1,
+                "Cold sensitivity": 1
+            },
+            "client_id": "3d0f9c64-bb51-41d3-a54f-d01d513a4305",
+            "created_at": "2026-08-22T13:22:44.345868+00:00",
+            "meds_taken": 5,
+            "meds_target": 7,
+            "sleep_score": null,
+            "week_number": 34,
+            "energy_level": 5,
+            "stress_level": 7,
+            "submitted_at": "2026-08-22T13:22:43.638+00:00",
+            "sleep_quality": 4,
+            "coach_feedback": null,
+            "adherence_score": 50,
+            "digestion_score": 3,
+            "reflection_text": "Its getting improved really well ",
+            "workouts_target": 3,
+            "workouts_completed": 2
+        }
+    ]
+}

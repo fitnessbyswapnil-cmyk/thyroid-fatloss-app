@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, updateTag, unstable_cache } from 'next/cache'
 import { guard, failed } from '@/lib/errors'
 
 export interface Exercise {
@@ -39,12 +39,36 @@ async function requireCoach() {
   return { supabase, user }
 }
 
+/**
+ * Cache tags for the two whole-library reads.
+ *
+ * 527 exercises and 228 foods were refetched from Singapore on every plan
+ * editor open, every library page load and every draft — the two heaviest
+ * queries in the app, for data that changes when the coach edits it and at no
+ * other time. RLS on both tables reads `true` for any authenticated user, so
+ * every caller gets byte-identical rows and one cache entry is correct for
+ * everyone. Every write path below busts its tag, so an edit is visible on the
+ * next read rather than after a timeout.
+ */
+const TAG_EXERCISES = 'library:exercises'
+const TAG_FOODS = 'library:foods'
+
 // ---------- exercises ----------
 export async function listExercises(): Promise<Exercise[]> {
   return guard('library.listExercises', [], async () => {
-    const supabase = await createClient()
-    const { data } = await supabase.from('exercises').select('*').order('name')
-    return (data || []) as Exercise[]
+    // The Supabase client is built INSIDE the cached function on purpose: it
+    // reads cookies, and closing over a request-scoped client would leak one
+    // request's auth into another's cache entry.
+    const read = unstable_cache(
+      async () => {
+        const supabase = await createClient()
+        const { data } = await supabase.from('exercises').select('*').order('name')
+        return (data || []) as Exercise[]
+      },
+      ['library-exercises-v1'],
+      { tags: [TAG_EXERCISES], revalidate: 3600 }
+    )
+    return read()
   })
 }
 
@@ -67,6 +91,7 @@ export async function upsertExercise(input: Partial<Exercise> & { name: string }
       ? await supabase.from('exercises').update(row).eq('id', input.id)
       : await supabase.from('exercises').insert({ ...row, created_by: user.id })
     if (error) return { success: false, error: error.message }
+    updateTag(TAG_EXERCISES)
     revalidatePath('/coach/library')
     return { success: true }
   })
@@ -78,6 +103,7 @@ export async function deleteExercise(id: string) {
     if (!user) return { success: false, error: 'Only the coach can edit the library' }
     const { error } = await supabase.from('exercises').delete().eq('id', id)
     if (error) return { success: false, error: error.message }
+    updateTag(TAG_EXERCISES)
     revalidatePath('/coach/library')
     return { success: true }
   })
@@ -86,9 +112,16 @@ export async function deleteExercise(id: string) {
 // ---------- foods ----------
 export async function listFoods(): Promise<Food[]> {
   return guard('library.listFoods', [], async () => {
-    const supabase = await createClient()
-    const { data } = await supabase.from('foods').select('*').order('name')
-    return (data || []) as Food[]
+    const read = unstable_cache(
+      async () => {
+        const supabase = await createClient()
+        const { data } = await supabase.from('foods').select('*').order('name')
+        return (data || []) as Food[]
+      },
+      ['library-foods-v1'],
+      { tags: [TAG_FOODS], revalidate: 3600 }
+    )
+    return read()
   })
 }
 
@@ -112,6 +145,7 @@ export async function upsertFood(input: Partial<Food> & { name: string; portion:
       ? await supabase.from('foods').update(row).eq('id', input.id)
       : await supabase.from('foods').insert({ ...row, created_by: user.id })
     if (error) return { success: false, error: error.message }
+    updateTag(TAG_FOODS)
     revalidatePath('/coach/library')
     return { success: true }
   })
@@ -123,6 +157,7 @@ export async function deleteFood(id: string) {
     if (!user) return { success: false, error: 'Only the coach can edit the library' }
     const { error } = await supabase.from('foods').delete().eq('id', id)
     if (error) return { success: false, error: error.message }
+    updateTag(TAG_FOODS)
     revalidatePath('/coach/library')
     return { success: true }
   })
@@ -152,6 +187,7 @@ export async function importExercises(rows: Array<Partial<Exercise> & { name: st
     if (!clean.length) return { success: false, error: 'No valid rows found' }
     const { error } = await supabase.from('exercises').insert(clean)
     if (error) return { success: false, error: error.message }
+    updateTag(TAG_EXERCISES)
     revalidatePath('/coach/library')
     return { success: true, count: clean.length }
   })
@@ -183,6 +219,7 @@ export async function importFoods(rows: Array<Partial<Food> & { name: string }>)
     if (!clean.length) return { success: false, error: 'No valid rows found' }
     const { error } = await supabase.from('foods').insert(clean)
     if (error) return { success: false, error: error.message }
+    updateTag(TAG_FOODS)
     revalidatePath('/coach/library')
     return { success: true, count: clean.length }
   })
