@@ -63,7 +63,7 @@
 }
 
 @theme inline {
-  --font-sans: 'Satoshi', system-ui, sans-serif;
+  --font-sans: var(--font-satoshi), system-ui, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
   --font-mono: 'Geist Mono', monospace;
   --color-background: var(--background);

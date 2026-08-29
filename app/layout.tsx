@@ -1,8 +1,38 @@
 import type { Metadata, Viewport } from 'next'
 import { Instrument_Serif } from 'next/font/google'
+import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import { RegisterSW } from '@/components/pwa/RegisterSW'
 import './globals.css'
+
+/**
+ * Satoshi, self-hosted.
+ *
+ * It used to come from Fontshare, which meant a DNS lookup, a TLS handshake,
+ * a stylesheet, and only THEN the font files it named — a render-blocking
+ * chain of round trips before the first word appeared, and the slowest part of
+ * the page for a client on Indian mobile data.
+ *
+ * Serving the woff2 files from our own origin collapses that to zero extra
+ * connections: they come from the same edge PoP as the HTML, and next/font
+ * emits the @font-face and the preload itself. Fontshare's licence permits
+ * self-hosting.
+ *
+ * Three weights, not four. Fontshare only serves 400/500/700 for Satoshi, so
+ * anything asking for 600 resolves to 700 rather than silently synthesising a
+ * faux-bold. `display: swap` keeps text visible in the fallback while it loads.
+ */
+const satoshi = localFont({
+  src: [
+    { path: '../public/fonts/Satoshi-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Satoshi-Medium.woff2',  weight: '500', style: 'normal' },
+    { path: '../public/fonts/Satoshi-Bold.woff2',    weight: '700', style: 'normal' },
+  ],
+  variable: '--font-satoshi',
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+})
 
 // Instrument Serif for score numbers and key metrics
 const instrumentSerif = Instrument_Serif({ 
@@ -93,28 +123,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-[#0a0d14]">
-      <head>
-        {/*
-          Satoshi, the body font, comes from a third party — which means a fresh
-          DNS lookup, a TLS handshake, the stylesheet, and only THEN the font
-          files it names. That chain is render-blocking, and on Indian mobile
-          data it is comfortably half a second before the first word appears.
-          Instrument Serif does not pay this: next/font self-hosts and preloads
-          it from our own origin.
-
-          preconnect warms both hops while the HTML is still parsing, which
-          removes the DNS and TLS cost from the critical path. The remaining
-          round trips only go away by self-hosting the woff2 files, which is a
-          separate decision because it means adding font files to the repo.
-        */}
-        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${instrumentSerif.variable} font-sans antialiased`}>
+      <body className={`${satoshi.variable} ${instrumentSerif.variable} font-sans antialiased`}>
         {children}
         <RegisterSW />
         {process.env.NODE_ENV === 'production' && <Analytics />}
