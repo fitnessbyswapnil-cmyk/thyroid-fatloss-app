@@ -3,6 +3,7 @@ import { Instrument_Serif } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import { RegisterSW } from '@/components/pwa/RegisterSW'
+import { AndroidBackButton } from '@/components/native/AndroidBackButton'
 import './globals.css'
 
 /**
@@ -126,6 +127,7 @@ export default function RootLayout({
       <body className={`${satoshi.variable} ${instrumentSerif.variable} font-sans antialiased`}>
         {children}
         <RegisterSW />
+        <AndroidBackButton />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

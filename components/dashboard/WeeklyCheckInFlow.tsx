@@ -1328,7 +1328,17 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
 
       {/* Step content */}
       <div className="pb-safe min-h-[calc(100vh-120px)]">
-        <AnimatePresence mode="wait">{steps[currentStep]}</AnimatePresence>
+        {/* No mode="wait" here, deliberately.
+            "wait" holds the next step until the previous one's exit animation
+            reports finished. Framer-motion drives that from requestAnimationFrame,
+            and inside the Android WebView shell rAF is throttled or paused
+            whenever the view loses focus — a notification, a call, the keyboard
+            opening, the screen locking mid-answer. When that happens the exit
+            never completes, the next step is never mounted, and the flow is
+            stuck on a frozen screen with a Next button that does nothing.
+            Reported from a real phone, on the screen a client is least likely
+            to retry. Cross-fading costs one frame of overlap and cannot wedge. */}
+        <AnimatePresence>{steps[currentStep]}</AnimatePresence>
       </div>
     </div>
   )
