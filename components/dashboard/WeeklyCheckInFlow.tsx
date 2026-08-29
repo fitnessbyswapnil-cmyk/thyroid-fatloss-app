@@ -61,9 +61,8 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="flex flex-col items-center justify-center h-full gap-8 px-6 py-12"
     >
       <div className="space-y-6 text-center max-w-sm">
@@ -122,9 +121,8 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="space-y-8 px-6 py-8"
     >
       {/* Energy Slider */}
@@ -298,9 +296,8 @@ function BodyStep({ data, setData, onNext }: StepProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="space-y-6 px-6 py-8"
     >
       <ChipGroup
@@ -466,9 +463,8 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="space-y-6 px-6 py-8"
     >
       <ChipGroup
@@ -540,9 +536,8 @@ function WeightStep({ data, setData, onNext }: StepProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="space-y-6 px-6 py-8"
     >
       <div className="space-y-2">
@@ -606,7 +601,8 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="space-y-5 px-6 py-8"
     >
       <div className="space-y-1">
@@ -667,9 +663,8 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="space-y-5 px-6 py-8"
     >
       <div className="space-y-1">
@@ -739,9 +734,8 @@ function ReflectionStep({ data, setData, onNext, onSubmit, isLoading }: StepProp
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="space-y-6 px-6 py-8"
     >
       <div className="space-y-3">
@@ -795,9 +789,8 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
   if (error) {
     return (
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        // Container does not fade: with rAF paused this would stay at 0.
+        initial={false}
         className="flex flex-col items-center justify-center h-full gap-6 px-6 py-12"
       >
         <motion.div
@@ -903,9 +896,8 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
   
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // Container does not fade: with rAF paused this would stay at 0.
+      initial={false}
       className="flex flex-col items-center justify-start h-full gap-8 px-6 py-8 pb-safe"
     >
       {/* Animated Ring Counter */}
@@ -1328,17 +1320,21 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
 
       {/* Step content */}
       <div className="pb-safe min-h-[calc(100vh-120px)]">
-        {/* No mode="wait" here, deliberately.
-            "wait" holds the next step until the previous one's exit animation
-            reports finished. Framer-motion drives that from requestAnimationFrame,
-            and inside the Android WebView shell rAF is throttled or paused
+        {/* Rendered directly, with no AnimatePresence.
+            AnimatePresence keeps an exiting child mounted until its exit
+            animation reports finished, and framer-motion reports that from
+            requestAnimationFrame. Inside the Android WebView rAF is paused
             whenever the view loses focus — a notification, a call, the keyboard
-            opening, the screen locking mid-answer. When that happens the exit
-            never completes, the next step is never mounted, and the flow is
-            stuck on a frozen screen with a Next button that does nothing.
-            Reported from a real phone, on the screen a client is least likely
-            to retry. Cross-fading costs one frame of overlap and cannot wedge. */}
-        <AnimatePresence>{steps[currentStep]}</AnimatePresence>
+            opening. The exit then never completes.
+
+            With mode="wait" that froze the flow: the next step was never
+            mounted and Next did nothing. Without it, the exiting steps simply
+            never left, and nine screens stacked into one 7,800px page — which
+            is what this actually did in testing.
+
+            Unmounting outright cannot do either. The step swap is instant and
+            depends on no animation frame. */}
+        {steps[currentStep]}
       </div>
     </div>
   )
