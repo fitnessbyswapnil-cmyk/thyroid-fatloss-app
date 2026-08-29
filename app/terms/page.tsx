@@ -66,7 +66,7 @@ export default function TermsPage() {
         </Section>
 
         <Section title="Cancellation and deletion">
-          <p>You may delete your account and data at any time from your settings. We may suspend or
+          <p>You may download your data at any time from your settings, and you can ask us to delete your account and data by contacting your coach. We may suspend or
           terminate access for violations of these Terms.</p>
         </Section>
 

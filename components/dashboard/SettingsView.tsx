@@ -4,9 +4,9 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Download, Trash2, Loader2, ShieldCheck, FileText, LogOut, AlertTriangle, X, LayoutDashboard, ChevronRight, Activity, MessageSquare, BookOpen } from "lucide-react"
+import { ArrowLeft, Download, Loader2, ShieldCheck, FileText, LogOut, LayoutDashboard, ChevronRight, Activity, MessageSquare, BookOpen } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
-import { exportMyData, deleteMyAccount } from "@/app/actions/account"
+import { exportMyData } from "@/app/actions/account"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
 import { ReminderToggle } from "@/components/dashboard/ReminderToggle"
 
@@ -26,9 +26,6 @@ export function SettingsView({
   const router = useRouter()
   const backHref = isActive ? "/dashboard" : "/enroll"
   const [exporting, setExporting] = useState(false)
-  const [confirmOpen, setConfirmOpen] = useState(false)
-  const [confirmText, setConfirmText] = useState("")
-  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleExport = async () => {
@@ -44,15 +41,6 @@ export function SettingsView({
     a.download = `thyrowell-my-data-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
-  }
-
-  const handleDelete = async () => {
-    setDeleting(true)
-    setError(null)
-    const result = await deleteMyAccount()
-    if (!result.success) { setDeleting(false); setError(result.error || "Deletion failed"); return }
-    router.push("/")
-    router.refresh()
   }
 
   const handleSignOut = async () => {
@@ -172,13 +160,9 @@ export function SettingsView({
             Download my data
           </button>
 
-          <button
-            onClick={() => setConfirmOpen(true)}
-            className="w-full h-12 rounded-xl font-medium inline-flex items-center justify-center gap-2"
-            style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", color: "#fb7185" }}
-          >
-            <Trash2 size={18} /> Delete my account and data
-          </button>
+          {/* Account deletion is handled by the coach on request rather than
+              self-serve, so the client cannot wipe an active programme by
+              tapping through a dialog. "Download my data" above still works. */}
 
           {error && <p className="text-xs mt-3" style={{ color: "#fb7185" }}>{error}</p>}
         </div>
@@ -199,52 +183,6 @@ export function SettingsView({
         </button>
       </main>
 
-      {/* Delete confirmation */}
-      <AnimatePresence>
-        {confirmOpen && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center px-4"
-            style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
-            onClick={() => !deleting && setConfirmOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md rounded-2xl p-6"
-              style={{ background: "#0d111b", border: "1px solid rgba(239,68,68,0.2)" }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle size={18} style={{ color: "#fb7185" }} />
-                  <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>Delete everything?</h3>
-                </div>
-                <button onClick={() => !deleting && setConfirmOpen(false)} style={{ color: "#7e8a9e" }} aria-label="Close"><X size={18} /></button>
-              </div>
-              <p className="text-sm mb-4" style={{ color: "#a9b2c1" }}>
-                This permanently deletes your account, check-ins, photos, plans, and all related data.
-                This cannot be undone. Type <strong style={{ color: "#e8eaf0" }}>DELETE</strong> to confirm.
-              </p>
-              <input
-                value={confirmText}
-                onChange={(e) => setConfirmText(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none mb-4"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e8eaf0" }}
-                placeholder="DELETE"
-              />
-              <button
-                onClick={handleDelete}
-                disabled={confirmText !== "DELETE" || deleting}
-                className="w-full h-12 rounded-xl font-semibold inline-flex items-center justify-center gap-2"
-                style={{ background: confirmText === "DELETE" ? "#ef4444" : "rgba(239,68,68,0.3)", color: "#fff", opacity: confirmText === "DELETE" ? 1 : 0.6 }}
-              >
-                {deleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-                Permanently delete
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {isActive && <BottomNavPill />}
     </div>
