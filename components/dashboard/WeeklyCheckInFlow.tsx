@@ -1208,7 +1208,21 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
         window.localStorage.removeItem(DRAFT_KEY)
         return
       }
-      setData(saved.data)
+      // MERGE over the defaults rather than replacing them.
+      //
+      // A draft is written by whatever version of this file was deployed when
+      // she started, and it is read by whatever is deployed when she comes
+      // back. Replacing state wholesale means one missing key — `measurements`
+      // or `symptoms`, both of which are indexed directly — throws on render,
+      // and the flow shows nothing while the console shows a TypeError. Every
+      // key is guaranteed to exist this way, and anything unrecognised in the
+      // draft is simply ignored.
+      setData((current) => ({
+        ...current,
+        ...saved.data,
+        measurements: { ...current.measurements, ...(saved.data.measurements ?? {}) },
+        symptoms: { ...current.symptoms, ...(saved.data.symptoms ?? {}) },
+      }))
       if (typeof saved.step === "number" && saved.step > 0 && saved.step < COMPLETION_STEP) {
         setCurrentStep(saved.step)
       }
