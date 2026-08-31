@@ -195,17 +195,23 @@ export function EmptyCheckInState({ name, status }: { name: string; status?: Wee
             At the end of your first week, your check-in unlocks your trends —
             weight, energy, sleep and symptoms, all in one place.
           </p>
-          <Link href="/dashboard/check-in">
-            <button
-              className="w-full h-13 py-4 rounded-full font-bold text-sm text-white flex items-center justify-center gap-2"
-              style={{
-                background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-                boxShadow: '0 8px 28px rgba(45, 212, 191, 0.28)',
-              }}
-            >
-              Start your first check-in
-              <ArrowRight size={17} />
-            </button>
+          {/* The Link IS the button — do not nest a <button> inside it.
+              An <a> cannot contain interactive content, and while desktop
+              Chrome forgives the nesting and navigates anyway, the Android
+              WebView does not: the inner button swallows the tap and the
+              anchor never fires. This screen is what a client sees until her
+              first check-in exists, so that one invalid nesting left every new
+              client with a dead button and no way into the flow. */}
+          <Link
+            href="/dashboard/check-in"
+            className="w-full h-13 py-4 rounded-full font-bold text-sm text-white flex items-center justify-center gap-2"
+            style={{
+              background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
+              boxShadow: '0 8px 28px rgba(45, 212, 191, 0.28)',
+            }}
+          >
+            Start your first check-in
+            <ArrowRight size={17} />
           </Link>
           <p className="text-[11px] text-center mt-3" style={{ color: '#5a6578' }}>
             About 5 minutes · your data stays private to you and your coach
