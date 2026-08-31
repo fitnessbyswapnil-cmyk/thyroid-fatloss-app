@@ -56,7 +56,7 @@ export default async function ClientDetailPage({
     supabase.from("progress_photos").select("*").eq("client_id", id).order("created_at", { ascending: false }),
     supabase.from("coach_insights").select("*").eq("client_id", id).order("created_at", { ascending: false }),
     getPlansForClient(id),
-    supabase.from("daily_logs").select("date, workout_done, walk_done, meals_followed").eq("client_id", id).order("date", { ascending: false }).limit(60),
+    supabase.from("daily_logs").select("date, workout_done, walk_done, meals_followed, steps").eq("client_id", id).order("date", { ascending: false }).limit(60),
     supabase.from("meal_logs").select("created_at").eq("client_id", id),
     supabase.from("exercise_logs").select("created_at").eq("client_id", id),
     supabase.from("lesson_reads").select("read_at, lesson_id").eq("client_id", id),

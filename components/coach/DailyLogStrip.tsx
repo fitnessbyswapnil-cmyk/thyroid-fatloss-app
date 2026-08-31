@@ -5,6 +5,7 @@ export interface DailyLogRow {
   workout_done: boolean | null
   walk_done: boolean | null
   meals_followed: number | null
+  steps: number | null
 }
 
 const DAY_MS = 86_400_000
@@ -31,13 +32,20 @@ export function DailyLogStrip({ logs, days = 14 }: { logs: DailyLogRow[]; days?:
   const logged = window.filter((w) => w.log).length
   const mealsHit = window.filter((w) => (w.log?.meals_followed ?? 0) >= 3).length
   const workouts = window.filter((w) => w.log?.workout_done).length
-  const walks = window.filter((w) => w.log?.walk_done).length
+  // Steps she actually tapped a band for, and the average of those bands.
+  const stepDays = window.filter((w) => typeof w.log?.steps === "number")
+  const avgSteps = stepDays.length
+    ? Math.round(stepDays.reduce((a, w) => a + (w.log!.steps as number), 0) / stepDays.length)
+    : null
 
   const ROWS = [
     { label: "Meals", Icon: UtensilsCrossed, hit: (l: DailyLogRow) => (l.meals_followed ?? 0) >= 3,
       partial: (l: DailyLogRow) => (l.meals_followed ?? 0) > 0, count: mealsHit },
     { label: "Exercises", Icon: Dumbbell, hit: (l: DailyLogRow) => !!l.workout_done, count: workouts },
-    { label: "Walk", Icon: Footprints, hit: (l: DailyLogRow) => !!l.walk_done, count: walks },
+    // 3,000 is the midpoint of the "2-4k" band — the first tap that means she
+    // genuinely moved rather than went to the kitchen and back.
+    { label: "Steps", Icon: Footprints, hit: (l: DailyLogRow) => (l.steps ?? 0) >= 5000,
+      partial: (l: DailyLogRow) => (l.steps ?? 0) >= 3000, count: stepDays.filter((w) => (w.log!.steps as number) >= 5000).length },
   ] as const
 
   return (
@@ -77,7 +85,11 @@ export function DailyLogStrip({ logs, days = 14 }: { logs: DailyLogRow[]; days?:
                 const bg = full ? "#2dd4bf" : part ? "rgba(45,212,191,0.28)" : l ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.03)"
                 const title = !l
                   ? `${w.key} — nothing logged`
-                  : `${w.key} — ${row.label}: ${row.label === "Meals" ? `${l.meals_followed ?? 0} of 3` : full ? "done" : "not done"}`
+                  : row.label === "Meals"
+                    ? `${w.key} — Meals: ${l.meals_followed ?? 0} of 3`
+                    : row.label === "Steps"
+                      ? `${w.key} — Steps: ${l.steps == null ? "not logged" : l.steps.toLocaleString()}`
+                      : `${w.key} — ${row.label}: ${full ? "done" : "not done"}`
                 return (
                   <div
                     key={w.key}
@@ -99,8 +111,14 @@ export function DailyLogStrip({ logs, days = 14 }: { logs: DailyLogRow[]; days?:
             <span style={{ color: "#5a6578" }}>/{days}</span>
           </span>
         ))}
+        {avgSteps !== null && (
+          <span className="text-[11px] tabular-nums" style={{ color: "#9aa4b5" }}>
+            avg <strong style={{ color: "#e8eaf0" }}>{avgSteps.toLocaleString()}</strong>
+            <span style={{ color: "#5a6578" }}> steps</span>
+          </span>
+        )}
         <span className="text-[10px] ml-auto" style={{ color: "#5a6578" }}>
-          Dashed = she logged nothing that day
+          Dashed = nothing logged · half-shade = partial
         </span>
       </div>
     </div>
