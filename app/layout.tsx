@@ -4,6 +4,7 @@ import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import { RegisterSW } from '@/components/pwa/RegisterSW'
 import { AndroidBackButton } from '@/components/native/AndroidBackButton'
+import { ClientErrorReporter } from '@/components/dashboard/ClientErrorReporter'
 import './globals.css'
 
 /**
@@ -128,6 +129,7 @@ export default function RootLayout({
         {children}
         <RegisterSW />
         <AndroidBackButton />
+        <ClientErrorReporter />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
