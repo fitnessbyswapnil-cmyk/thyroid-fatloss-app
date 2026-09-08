@@ -107,7 +107,7 @@ export function MoveToday({
                       <span className="flex-1 min-w-0">
                         <span className="block text-[15px]" style={{ color: "#e8eaf0" }}>{it.name}</span>
                         <span className="block text-[12px] mt-0.5 tabular-nums" style={{ color: "#7e8a9e" }}>
-                          {it.sets ? `${it.sets} sets × ` : ""}{it.reps || ""}
+                          {it.sets ? `${it.sets} ${it.sets === 1 ? "set" : "sets"} × ` : ""}{it.reps || ""}
                         </span>
                       </span>
                       <ChevronRight size={16} className="shrink-0" style={{ color: "#4b5563" }} />
@@ -262,13 +262,18 @@ function Walkthrough({
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 pt-6 pb-4 max-w-md mx-auto w-full">
-        <div className="flex justify-center">
-          <ExerciseDemo demo={it.demoUrl} start={it.imageStart} end={it.imageEnd} alt={it.name} size={240} rounded={24} interval={1000} />
-        </div>
+        {/* Stills only, and only when there are some. The GIF route goes through
+            a metered API that is currently exhausted, which rendered as a large
+            blank white square — worse than no picture. */}
+        {(it.imageStart || it.imageEnd) && (
+          <div className="flex justify-center">
+            <ExerciseDemo demo={null} start={it.imageStart} end={it.imageEnd} alt={it.name} size={240} rounded={24} interval={1000} />
+          </div>
+        )}
         <h2 className="mt-6 text-[24px] font-semibold" style={{ color: "#e8eaf0", lineHeight: 1.25 }}>{it.name}</h2>
         {(it.sets || it.reps) && (
           <p className="mt-2 text-[28px] tabular-nums" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#2dd4bf" }}>
-            {it.sets ? `${it.sets} sets × ` : ""}{it.reps || ""}
+            {it.sets ? `${it.sets} ${it.sets === 1 ? "set" : "sets"} × ` : ""}{it.reps || ""}
           </p>
         )}
         {it.notes && (
