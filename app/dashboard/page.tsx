@@ -74,7 +74,7 @@ export default async function DashboardPage() {
     // Week 0: give her real things to do while the coach builds her plan, and
     // reflect what she's already completed instead of a static wall.
     const [
-      { data: w0Plan },
+      { data: w0Plans },
       { data: w0Profile },
       { data: w0Labs },
       { data: w0Msgs },
@@ -82,7 +82,10 @@ export default async function DashboardPage() {
       { data: w0Photos },
       { data: w0FirstLesson },
     ] = await Promise.all([
-      supabase.from("plans").select("id").eq("client_id", user.id).limit(1),
+      // Full plan content, not just existence: week one is the week she most
+      // needs "what do I eat today" on the front page, and it was the one week
+      // the front page did not show it.
+      supabase.from("plans").select("type, content").eq("client_id", user.id),
       supabase.from("health_profiles").select("medication").eq("client_id", user.id).maybeSingle(),
       supabase.from("lab_results").select("id").eq("client_id", user.id).limit(1),
       supabase.from("messages").select("id").eq("client_id", user.id).eq("from_coach", false).limit(1),
@@ -91,11 +94,67 @@ export default async function DashboardPage() {
       supabase.from("lessons").select("slug").eq("published", true).order("week_number").limit(1).maybeSingle(),
     ])
 
+    const w0Meal = (w0Plans || []).find((p) => p.type === "meal")?.content as
+      { mealItems?: { meal?: string | null; name: string; qty?: number | null; calories?: number | null; protein?: number | null }[] } | undefined
+    const w0Workout = (w0Plans || []).find((p) => p.type === "workout")?.content as
+      { workoutItems?: { name: string; sets?: number | null; reps?: string | null; dayOfWeek?: number | null; day?: string | null }[] } | undefined
+
+    // Day N of the programme, from her start date; day 1 if she has none yet.
+    const w0Start = client.start_date ? new Date(client.start_date) : new Date()
+    const dayNumber = Math.max(1, Math.floor((Date.now() - w0Start.getTime()) / 86400000) + 1)
+
+    // Group meal options by slot, and pick TODAY'S suggestion by rotating
+    // through the seven — so she gets variety without having to choose, and
+    // can still open the plan for the other six.
+    const slots: Record<string, { label: string; items: string[]; kcal: number; protein: number }[]> = {}
+    const groups = new Map<string, typeof w0Meal extends undefined ? never : NonNullable<typeof w0Meal>["mealItems"]>()
+    for (const it of w0Meal?.mealItems || []) {
+      const key = (it.meal || "").trim()
+      if (!key) continue
+      const arr = groups.get(key) || []
+      arr!.push(it)
+      groups.set(key, arr!)
+    }
+    for (const [key, items] of groups) {
+      const slot = key.split(" — ")[0]
+      const q = (x: { qty?: number | null }) => x.qty || 1
+      slots[slot] = slots[slot] || []
+      slots[slot].push({
+        label: key,
+        items: items!.map((x) => x.name),
+        kcal: Math.round(items!.reduce((a, x) => a + (x.calories || 0) * q(x), 0)),
+        protein: Math.round(items!.reduce((a, x) => a + (x.protein || 0) * q(x), 0)),
+      })
+    }
+    const todayMeals = (["Breakfast", "Lunch", "Dinner"] as const).map((slot) => {
+      const opts = slots[slot] || []
+      const pick = opts.length ? opts[(dayNumber - 1) % opts.length] : null
+      return { slot, pick, total: opts.length }
+    })
+
+    // Today's session from the workout plan, by weekday.
+    const jsDay = new Date().getDay()
+    const dow = jsDay === 0 ? 7 : jsDay
+    const todayWorkout = (w0Workout?.workoutItems || [])
+      .filter((w) => w.dayOfWeek === dow)
+      .map((w) => ({ name: w.name, sets: w.sets ?? null, reps: w.reps ?? null }))
+
+    const w0Today = new Date().toLocaleDateString("en-CA")
+    const w0TodayLog = (logs || []).find((l) => l.date === w0Today) || null
+
     return (
       <EmptyCheckInState
         name={client.full_name?.split(" ")[0] || "Friend"}
+        dayNumber={dayNumber}
+        todayMeals={todayMeals}
+        todayWorkout={todayWorkout}
+        todayLog={{
+          workoutDone: Boolean(w0TodayLog?.workout_done),
+          mealsFollowed: w0TodayLog?.meals_followed || 0,
+          steps: typeof w0TodayLog?.steps === "number" ? w0TodayLog.steps : null,
+        }}
         status={{
-          hasPlan: (w0Plan?.length ?? 0) > 0,
+          hasPlan: (w0Plans?.length ?? 0) > 0,
           hasMedication: Boolean(w0Profile?.medication),
           hasLabs: (w0Labs?.length ?? 0) > 0,
           hasMessaged: (w0Msgs?.length ?? 0) > 0,

@@ -1,0 +1,702 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Your Kerala Plan — Nisha A.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>/* Heal Thyroid with Swapnil — client plan document.
+   Light editorial ground, violet identity, Instrument Serif display.
+   Continuous with the lab-review sheet so the two read as one set. */
+@page { size: A4; margin: 0; }
+:root{
+  --ink:#1a1520; --ink-2:#3d3548; --muted:#6b6478; --faint:#9c94aa;
+  --violet:#7c3aed; --violet-2:#6d28d9; --violet-3:#a855f7;
+  --violet-wash:#f4f0fe; --rule:#e4e0ea; --rule-soft:#f0edf5;
+  --paper:#ffffff; --paper-2:#faf9fc;
+  --flag:#c2410c;
+  --serif:'Instrument Serif', Georgia, serif;
+  --sans:'Manrope', -apple-system, 'Segoe UI', sans-serif;
+}
+*{box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+body{margin:0; font-family:var(--sans); color:var(--ink); background:var(--paper)}
+.page{
+  position:relative; width:210mm; height:297mm; padding:18mm 16mm 14mm;
+  page-break-after:always; overflow:hidden; display:flex; flex-direction:column;
+  border-top:3px solid var(--violet);
+}
+.page:last-child{page-break-after:auto}
+.eyebrow{font-size:8.2pt; font-weight:700; letter-spacing:.20em; text-transform:uppercase; color:var(--violet)}
+.eyebrow-muted{color:var(--faint); font-weight:600; letter-spacing:.16em}
+.masthead{display:flex; justify-content:space-between; align-items:baseline; padding-bottom:5mm; border-bottom:1px solid var(--rule)}
+h1{font-family:var(--serif); font-weight:400; font-size:40pt; line-height:1.02; margin:8mm 0 0; letter-spacing:-.01em}
+h2{font-family:var(--serif); font-weight:400; font-size:25pt; line-height:1.08; margin:0 0 3mm}
+h3{font-size:11pt; font-weight:700; margin:0 0 1.5mm; letter-spacing:-.01em}
+.sub{font-size:11pt; color:var(--muted); margin-top:3mm; line-height:1.55; max-width:62ch}
+p{font-size:9.6pt; line-height:1.62; color:var(--ink-2); margin:0 0 3mm; max-width:70ch}
+.foot{position:absolute; left:16mm; right:16mm; bottom:9mm; display:flex; justify-content:space-between;
+      font-size:7.6pt; color:var(--faint); border-top:1px solid var(--rule-soft); padding-top:2.5mm}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:5mm}
+.card{border:1px solid var(--rule); border-top:2.5px solid var(--violet); border-radius:2px; padding:5mm 5.5mm; background:var(--paper)}
+.card-soft{background:var(--violet-wash); border:1px solid #e6dcfb; border-top:2.5px solid var(--violet-3)}
+.opt-num{font-family:var(--serif); font-size:17pt; color:var(--violet); line-height:1}
+.macros{display:flex; gap:4mm; margin-top:2.5mm; padding-top:2.5mm; border-top:1px solid var(--rule-soft); font-size:8pt; color:var(--muted)}
+.macros b{color:var(--ink); font-weight:700}
+.plate{list-style:none; padding:0; margin:2.5mm 0 0}
+.plate li{font-size:9.2pt; line-height:1.5; color:var(--ink-2); padding-left:4.5mm; position:relative}
+.plate li:before{content:''; position:absolute; left:0; top:1.9mm; width:2mm; height:2mm; border-radius:50%; background:var(--violet-3)}
+.qty{color:var(--faint); font-size:8.2pt}
+.tag{display:inline-block; font-size:7pt; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+     color:var(--violet-2); background:var(--violet-wash); border:1px solid #e6dcfb; padding:.9mm 2mm; border-radius:2px}
+.rule{height:1px; background:var(--rule); margin:5mm 0}
+.oil{background:var(--violet-wash); border-left:2.5px solid var(--violet); padding:3mm 4mm; margin:0 0 3mm;
+     font-size:9pt; line-height:1.55; color:var(--ink)}
+.oil b{color:var(--violet-2)}
+.rec{break-inside:avoid; margin-bottom:6mm}
+.rec-head{display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--rule); padding-bottom:1.5mm; margin-bottom:2.5mm}
+.rec-macros{font-size:8pt; color:var(--muted); white-space:nowrap}
+.ing{font-size:8.4pt; color:var(--muted); line-height:1.5; margin-top:2mm}
+.ing b{color:var(--ink-2); font-weight:600}
+.banner{background:var(--ink); color:#fff; padding:6mm 7mm; border-radius:2px; margin-top:auto}
+.banner h2{color:#fff; margin-bottom:2mm}
+.banner p{color:#c9c2d6; margin:0; font-size:9.4pt}
+.steps{counter-reset:s; list-style:none; padding:0; margin:4mm 0 0}
+.steps li{counter-increment:s; position:relative; padding-left:9mm; margin-bottom:3.5mm; font-size:9.8pt; line-height:1.6; color:var(--ink-2)}
+.steps li:before{content:counter(s,decimal-leading-zero); position:absolute; left:0; top:-.4mm;
+  font-family:var(--serif); font-size:13pt; color:var(--violet)}
+.note{font-size:8.6pt; color:var(--faint); font-style:italic}
+
+/* ── grams on every line, and a real ingredient table ─────────────────── */
+.plate li{display:flex; justify-content:space-between; gap:3mm; align-items:baseline}
+.plate .nm{flex:1}
+.g{font-variant-numeric:tabular-nums; font-weight:700; color:var(--violet-2); font-size:8.6pt; white-space:nowrap}
+.itab{width:100%; border-collapse:collapse; margin-top:2.5mm; font-size:8.3pt}
+.itab th{text-align:left; font-size:7pt; letter-spacing:.12em; text-transform:uppercase; color:var(--faint);
+         font-weight:700; padding:0 0 1.2mm; border-bottom:1px solid var(--rule)}
+.itab th.r,.itab td.r{text-align:right}
+.itab td{padding:1.1mm 0; border-bottom:1px solid var(--rule-soft); color:var(--ink-2)}
+.itab td.r{font-variant-numeric:tabular-nums; color:var(--ink); font-weight:600; white-space:nowrap}
+.itab tr:last-child td{border-bottom:none}
+.itab tfoot td{border-top:1px solid var(--rule); border-bottom:none; font-weight:700; color:var(--ink); padding-top:1.5mm}
+.method{counter-reset:m; list-style:none; padding:0; margin:2.5mm 0 0}
+.method li{counter-increment:m; position:relative; padding-left:6.5mm; margin-bottom:2mm; font-size:9pt; line-height:1.55; color:var(--ink-2)}
+.method li:before{content:counter(m); position:absolute; left:0; top:0; font-weight:700; color:var(--violet); font-size:8.4pt}
+.slotbar{display:flex; gap:3mm; margin:4mm 0 5mm}
+.slotbar div{flex:1; border:1px solid var(--rule); border-left:2.5px solid var(--violet-3); padding:2.5mm 3mm}
+.slotbar b{display:block; font-size:8pt; color:var(--muted); font-weight:600}
+.slotbar span{font-family:var(--serif); font-size:14pt; color:var(--ink)}
+</style></head><body><section class="page">
+<div class="masthead"><span class="eyebrow">Heal Thyroid with Swapnil</span>
+<span class="eyebrow eyebrow-muted">Nutrition Plan · 27 May 2026 review</span></div>
+<div style="margin-top:26mm">
+  <h1>Your Kerala<br>Plan</h1>
+  <p class="sub">Nisha A. · 49 · built from your 27 May report and the way you told us you eat.</p>
+  <div style="margin-top:9mm"><span class="tag">21 options</span>
+  <span class="tag" style="margin-left:2mm">Three meals a day</span>
+  <span class="tag" style="margin-left:2mm">Ten minutes or less</span></div>
+
+  <div class="rule" style="margin:12mm 0 7mm"></div>
+  <div class="grid2" style="gap:7mm">
+    <div>
+      <div class="eyebrow eyebrow-muted" style="margin-bottom:3mm">Inside</div>
+      <ul class="plate">
+        <li>Seven breakfasts, seven lunches, seven dinners</li>
+        <li>Every recipe, with the oil measured</li>
+        <li>What to get right in week one</li>
+        <li>Oil, salt, digestion and cravings</li>
+      </ul>
+    </div>
+    <div>
+      <div class="eyebrow eyebrow-muted" style="margin-bottom:3mm">The shape of a day</div>
+      <ul class="plate">
+        <li>A late breakfast, whenever you are hungry</li>
+        <li>Lunch as the big meal</li>
+        <li>A light dinner, finished early</li>
+        <li>Chicken or fish once in the week</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="banner">
+  <h2>Built for what your report showed.</h2>
+  <p>Your last panel pointed to a specific pattern, and this plan is shaped around it —
+  the food, the protein, and the order it arrives in. You do not need to know the mechanics
+  to follow it. Cook what is on these pages and the plan does its work.</p>
+</div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>01</span></div></section><section class="page">
+<div class="masthead"><span class="eyebrow">Start here</span><span class="eyebrow eyebrow-muted">How this works</span></div>
+<h2 style="margin-top:8mm">Five things, then you can stop reading</h2>
+<ol class="steps">
+  <li><b>Three meals a day.</b> Breakfast, lunch, dinner — seven options each. Pick whichever one you feel like that day. They are built to land within a few percent of one another, so any combination gives you the same day.</li>
+  <li><b>Lunch is the big meal, dinner is the light one.</b> That is deliberate and it is the order you asked for.</li>
+  <li><b>Nothing here takes more than ten minutes.</b> Buy your idli and dosa batter ready-made and your curd in a tub. Nothing asks you to ferment or soak anything overnight.</li>
+  <li><b>Cook the grams once for the week.</b> Soak and boil cherupayar, vanpayar or muthira on a Sunday and keep them in the fridge. Every thoran after that is six minutes.</li>
+  <li><b>Measure the oil.</b> Every recipe opens with exactly how much fat goes in it. That one habit is the difference between this plan and half again as many calories.</li>
+</ol>
+<div class="rule"></div>
+<div class="grid2">
+  <div class="card"><h3>Chicken and fish</h3><p>Chicken or fish appears in exactly two of the twenty-one options — the meen curry lunch and the chicken chettinad lunch. Once a week, as you told us.</p><p>Every other option is vegetarian, egg or dairy. Eggs are in most of them, and they are the reason the protein works: two egg whites carry 22g of protein for 104 calories, which nothing else in a Kerala kitchen can match. If you want an egg-free day, take the soya thoran or the cherupayar options — they carry their own protein.</p></div>
+  <div class="card"><h3>Your tea and coffee</h3><p>One tea and two coffees a day is fine and they can stay. Two things make them work with the plan rather than against it.</p><p>No sugar. Milk and sugar across three cups adds up quietly — two spoons a cup is roughly 100 calories a day you never notice drinking, and it is the easiest 100 in the whole plan to remove. If black is a step too far, cut it in half first, then again in a fortnight. Nobody switches in one go.</p><p>Leave a gap between your Eltroxin and your first cup. Coffee close to the tablet reduces how much of it your body takes up, so the usual habit is tablet first with water, then wait 45 minutes to an hour before tea, coffee or breakfast. Nothing about your tablet changes — only the gap before the cup.</p></div>
+</div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>02</span></div></section><section class="page">
+<div class="masthead"><span class="eyebrow">Getting started</span><span class="eyebrow eyebrow-muted">Before day one</span></div>
+<h2 style="margin-top:8mm">Two days to set up</h2>
+<p>Two days to get set up, and none of it is hard.</p><p>Weigh yourself on the morning you start, after the toilet, before food, in the same clothes you will use every week. Write it down. That one number is the line everything else gets measured against, and it only works if it is taken the same way each time.</p><p>Take your photos. Front, side, back, in fitted clothes, in the same spot with the same light. You will not want to. Take them anyway — in twelve weeks they are the only thing that shows what the scale cannot, and they cannot be taken later.</p><p>Do one shop. Look at the seven breakfasts, seven lunches and seven dinners, pick the three or four you actually want to eat this week, and buy only for those. Ready idli and dosa batter, a tub of curd, eggs, dal, paneer or tofu, and vegetables. You are not cooking anything from scratch that needs soaking overnight — nothing in this plan asks for that.</p><p>Get a proper pair of walking shoes with real cushioning, and turn on the step counter on your phone. Carrying the phone in your pocket is enough. We are not buying a watch.</p>
+<div class="rule"></div>
+<h2>Week one</h2>
+<p>You start in two days, and you have told us your motivation is low. Good — that is honest, and it is exactly why week one is small.</p><p>Three things. That is all.</p><p>1. Eat three meals from the plan. Not perfectly. Pick the same easy option every day if that is what gets it done — a week of the same breakfast is a week of breakfasts you actually ate.</p><p>2. Walk 30 minutes a day. Split it if you like: fifteen after lunch, fifteen after dinner. On the day you cannot face it, walk ten minutes after dinner and call the day done.</p><p>3. Tap the three things in Today&#x27;s Log each night. It takes five seconds and it is how I see how the week actually went rather than how you remember it on Sunday.</p><p>Everything else in this plan — the oil measuring, the fibre, the salt, the exercises — can wait until week two. Do these three and week one is a success.</p><div class="foot"><span>Heal Thyroid with Swapnil</span><span>03</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Breakfast</span>
+          <span class="eyebrow eyebrow-muted">Options 1–4 of 7</span></div>
+          <h2 style="margin-top:8mm">Breakfast<span style="color:var(--faint)"> · continued</span></h2><div style="height:4mm"></div><div class="grid2"><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">01</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Puttu <span class="qty">· 0.7 × 1 cylinder</span></span><span class="g">84 g</span></li><li><span class="nm">Kadala Curry <span class="qty">· 0.5 × 1 katori</span></span><span class="g">90 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>380</b> kcal</span><span><b>30g</b> protein</span>
+              <span>41g carbs</span><span>10g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">02</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Appam <span class="qty">· 0.8 × 2 pieces</span></span><span class="g">88 g</span></li><li><span class="nm">Egg Curry <span class="qty">· 0.5 × 1 katori with 2 eggs</span></span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>396</b> kcal</span><span><b>32g</b> protein</span>
+              <span>35g carbs</span><span>14g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">03</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Idiyappam <span class="qty">· 0.7 × 3 pieces</span></span><span class="g">84 g</span></li><li><span class="nm">Egg Roast (Kerala Style) <span class="qty">· 0.5 × 2 eggs in masala</span></span><span class="g">100 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>388</b> kcal</span><span><b>33g</b> protein</span>
+              <span>35g carbs</span><span>12g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">04</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Idli <span class="qty">· 2 pieces</span></span><span class="g">120 g</span></li><li><span class="nm">Sambar <span class="qty">· 0.8 × 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 × 3 whites</span></span><span class="g">300 g</span></li></ul>
+              <div class="macros"><span><b>392</b> kcal</span><span><b>42g</b> protein</span>
+              <span>45g carbs</span><span>4g fat</span></div>
+            </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>04</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Breakfast</span>
+          <span class="eyebrow eyebrow-muted">Options 5–7 of 7</span></div>
+          <h2 style="margin-top:8mm">Breakfast<span style="color:var(--faint)"> · continued</span></h2><div style="height:4mm"></div><div class="grid2"><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">05</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Ragi Dosa <span class="qty">· 1 medium</span></span><span class="g">100 g</span></li><li><span class="nm">Cherupayar Thoran (Green Gram) <span class="qty">· 0.5 × 1 katori</span></span><span class="g">60 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>377</b> kcal</span><span><b>32g</b> protein</span>
+              <span>40g carbs</span><span>8g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">06</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Kanji with Green Gram (Rice Gruel) <span class="qty">· 1 bowl</span></span><span class="g">300 g</span></li><li><span class="nm">Soya Thoran (Kerala Style) <span class="qty">· 0.7 × 1 katori</span></span><span class="g">84 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 1.5 × 3 whites</span></span><span class="g">150 g</span></li></ul>
+              <div class="macros"><span><b>384</b> kcal</span><span><b>34g</b> protein</span>
+              <span>40g carbs</span><span>9g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">07</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Oats Dosa <span class="qty">· 1 medium</span></span><span class="g">100 g</span></li><li><span class="nm">Kadala Curry <span class="qty">· 0.5 × 1 katori</span></span><span class="g">90 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>385</b> kcal</span><span><b>32g</b> protein</span>
+              <span>36g carbs</span><span>11g fat</span></div>
+            </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>05</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Lunch</span>
+          <span class="eyebrow eyebrow-muted">Options 1–4 of 7</span></div>
+          <h2 style="margin-top:8mm">Lunch<span style="color:var(--faint)"> · continued</span></h2><div style="height:4mm"></div><div class="grid2"><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">01</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Matta Rice (Kerala Red Parboiled Rice) <span class="qty">· 0.8 × 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Meen Curry <span class="qty">· 1 katori with 1 piece</span></span><span class="g">170 g</span></li><li><span class="nm">Cherupayar Thoran (Green Gram) <span class="qty">· 0.5 × 1 katori</span></span><span class="g">60 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 whites</span></span><span class="g">100 g</span></li></ul>
+              <div class="macros"><span><b>595</b> kcal</span><span><b>43g</b> protein</span>
+              <span>51g carbs</span><span>23g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">02</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Matta Rice (Kerala Red Parboiled Rice) <span class="qty">· 0.7 × 1 katori</span></span><span class="g">105 g</span></li><li><span class="nm">Chicken Chettinad <span class="qty">· 1 katori</span></span><span class="g">150 g</span></li><li><span class="nm">Muthira Thoran (Horse Gram) <span class="qty">· 0.5 × 1 katori</span></span><span class="g">60 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>621</b> kcal</span><span><b>55g</b> protein</span>
+              <span>52g carbs</span><span>21g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">03</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Matta Rice (Kerala Red Parboiled Rice) <span class="qty">· 0.8 × 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Soya Thoran (Kerala Style) <span class="qty">· 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Sambar <span class="qty">· 1 katori</span></span><span class="g">150 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 × 3 whites</span></span><span class="g">300 g</span></li></ul>
+              <div class="macros"><span><b>611</b> kcal</span><span><b>59g</b> protein</span>
+              <span>63g carbs</span><span>12g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">04</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Matta Rice (Kerala Red Parboiled Rice) <span class="qty">· 0.8 × 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Cherupayar Curry (Green Gram) <span class="qty">· 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Beans Thoran <span class="qty">· 0.5 × 1 katori</span></span><span class="g">60 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 × 3 whites</span></span><span class="g">300 g</span></li></ul>
+              <div class="macros"><span><b>627</b> kcal</span><span><b>49g</b> protein</span>
+              <span>60g carbs</span><span>19g fat</span></div>
+            </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>06</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Lunch</span>
+          <span class="eyebrow eyebrow-muted">Options 5–7 of 7</span></div>
+          <h2 style="margin-top:8mm">Lunch<span style="color:var(--faint)"> · continued</span></h2><div style="height:4mm"></div><div class="grid2"><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">05</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Matta Rice (Kerala Red Parboiled Rice) <span class="qty">· 0.7 × 1 katori</span></span><span class="g">105 g</span></li><li><span class="nm">Kadala Curry <span class="qty">· 1 katori</span></span><span class="g">180 g</span></li><li><span class="nm">Muthira Thoran (Horse Gram) <span class="qty">· 0.5 × 1 katori</span></span><span class="g">60 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>623</b> kcal</span><span><b>41g</b> protein</span>
+              <span>66g carbs</span><span>20g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">06</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Matta Rice (Kerala Red Parboiled Rice) <span class="qty">· 0.7 × 1 katori</span></span><span class="g">105 g</span></li><li><span class="nm">Egg Roast (Kerala Style) <span class="qty">· 2 eggs in masala</span></span><span class="g">200 g</span></li><li><span class="nm">Soya Thoran (Kerala Style) <span class="qty">· 0.7 × 1 katori</span></span><span class="g">84 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 whites</span></span><span class="g">100 g</span></li></ul>
+              <div class="macros"><span><b>627</b> kcal</span><span><b>42g</b> protein</span>
+              <span>51g carbs</span><span>27g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">07</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Matta Rice (Kerala Red Parboiled Rice) <span class="qty">· 0.8 × 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Parippu Curry <span class="qty">· 1 katori</span></span><span class="g">150 g</span></li><li><span class="nm">Cherupayar Thoran (Green Gram) <span class="qty">· 0.6 × 1 katori</span></span><span class="g">72 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 × 3 whites</span></span><span class="g">300 g</span></li></ul>
+              <div class="macros"><span><b>616</b> kcal</span><span><b>52g</b> protein</span>
+              <span>66g carbs</span><span>14g fat</span></div>
+            </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>07</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Dinner</span>
+          <span class="eyebrow eyebrow-muted">Options 1–4 of 7</span></div>
+          <h2 style="margin-top:8mm">Dinner<span style="color:var(--faint)"> · continued</span></h2><div style="height:4mm"></div><div class="grid2"><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">01</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Kanji with Green Gram (Rice Gruel) <span class="qty">· 0.8 × 1 bowl</span></span><span class="g">240 g</span></li><li><span class="nm">Soya Thoran (Kerala Style) <span class="qty">· 0.8 × 1 katori</span></span><span class="g">96 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>395</b> kcal</span><span><b>40g</b> protein</span>
+              <span>36g carbs</span><span>9g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">02</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Idiyappam <span class="qty">· 0.7 × 3 pieces</span></span><span class="g">84 g</span></li><li><span class="nm">Kerala Vegetable Stew (Ishtu) <span class="qty">· 0.4 × 1 katori</span></span><span class="g">80 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 × 3 whites</span></span><span class="g">300 g</span></li></ul>
+              <div class="macros"><span><b>380</b> kcal</span><span><b>37g</b> protein</span>
+              <span>35g carbs</span><span>9g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">03</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Appam <span class="qty">· 0.6 × 2 pieces</span></span><span class="g">66 g</span></li><li><span class="nm">Egg Curry <span class="qty">· 0.6 × 1 katori with 2 eggs</span></span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2.5 × 3 whites</span></span><span class="g">250 g</span></li></ul>
+              <div class="macros"><span><b>412</b> kcal</span><span><b>38g</b> protein</span>
+              <span>29g carbs</span><span>15g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">04</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Ragi Dosa <span class="qty">· 1 medium</span></span><span class="g">100 g</span></li><li><span class="nm">Cherupayar Thoran (Green Gram) <span class="qty">· 0.5 × 1 katori</span></span><span class="g">60 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2.5 × 3 whites</span></span><span class="g">250 g</span></li></ul>
+              <div class="macros"><span><b>403</b> kcal</span><span><b>38g</b> protein</span>
+              <span>41g carbs</span><span>9g fat</span></div>
+            </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>08</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Dinner</span>
+          <span class="eyebrow eyebrow-muted">Options 5–7 of 7</span></div>
+          <h2 style="margin-top:8mm">Dinner<span style="color:var(--faint)"> · continued</span></h2><div style="height:4mm"></div><div class="grid2"><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">05</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Plain Dosa <span class="qty">· 0.9 × 1 medium</span></span><span class="g">90 g</span></li><li><span class="nm">Sambar <span class="qty">· 0.8 × 1 katori</span></span><span class="g">120 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 3 × 3 whites</span></span><span class="g">300 g</span></li></ul>
+              <div class="macros"><span><b>401</b> kcal</span><span><b>41g</b> protein</span>
+              <span>41g carbs</span><span>7g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">06</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Idli <span class="qty">· 2 pieces</span></span><span class="g">120 g</span></li><li><span class="nm">Soya Thoran (Kerala Style) <span class="qty">· 0.8 × 1 katori</span></span><span class="g">96 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2 × 3 whites</span></span><span class="g">200 g</span></li></ul>
+              <div class="macros"><span><b>399</b> kcal</span><span><b>39g</b> protein</span>
+              <span>41g carbs</span><span>8g fat</span></div>
+            </div><div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span class="opt-num">07</span>
+              </div>
+              <ul class="plate"><li><span class="nm">Kanji with Green Gram (Rice Gruel) <span class="qty">· 0.7 × 1 bowl</span></span><span class="g">210 g</span></li><li><span class="nm">Vanpayar Thoran (Red Cowpea) <span class="qty">· 0.5 × 1 katori</span></span><span class="g">60 g</span></li><li><span class="nm">Egg White (boiled) <span class="qty">· 2.5 × 3 whites</span></span><span class="g">250 g</span></li></ul>
+              <div class="macros"><span><b>379</b> kcal</span><span><b>37g</b> protein</span>
+              <span>38g carbs</span><span>7g fat</span></div>
+            </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>09</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">1–1 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Appam</h3>
+            <span class="rec-macros">2 pieces (110g) · 190 kcal ·
+              3g P · 36g C · 4g F</span></div>
+          <div class="oil">Oil: a few drops of coconut oil (0.3g) wiped over the appachatti with a cloth or a halved onion — never poured. The fat you cannot see matters more: about 3 tbsp thin coconut milk (45ml, roughly 3.5g fat) goes into the batter for these two appams, and that is nearly all the fat on the plate. Ferment the raw-rice and cooked-rice batter overnight with a pinch of yeast and sugar, then stir the thin coconut milk in just before cooking. Pour one ladle into the hot appachatti, swirl once so the edges go lacy, cover and cook two minutes on one side only. Use second-press thin milk, not the thick first press or tinned milk, which would double the fat.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Rice, raw, milled</td><td class="r">45 g</td><td class="r">160.4</td><td class="r">3.6 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">8 g</td><td class="r">32.7</td><td class="r">0.3 g</td></tr><tr><td>Coconut oil</td><td class="r">0.3 g</td><td class="r">2.7</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">53.3 g</td>
+                <td class="r">190</td><td class="r">3 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>10</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">2–2 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Beans Thoran</h3>
+            <span class="rec-macros">1 katori (120g) · 144 kcal ·
+              3.7g P · 5.6g C · 11.8g F</span></div>
+          <div class="oil">Oil: 2/3 tsp coconut oil (3g), plus 3 tbsp grated coconut (20g) stirred through at the end, which carries about 8g fat — nearly three times the oil, and invisible once it is mixed in. Measure the oil; do not pour from the tin.</div>
+          <ol class="method"><li>Chop French beans very fine.</li><li>Coarsely crush 20g grated fresh coconut with green chilli, a shallot and a pinch of turmeric — do not make a wet paste.</li><li>Heat coconut oil, splutter mustard seeds and curry leaves, add the beans with a splash of water, cover and cook 6-8 minutes until just tender.</li><li>Stir in the crushed coconut, salt, and cook uncovered 2-3 minutes so it finishes dry, not saucy.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>French beans, country (D049)</td><td class="r">100 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut kernel, fresh, grated (H007)</td><td class="r">20 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut oil (T001)</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Onion, small / shallot (G018)</td><td class="r">10 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Green chilli (G008)</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Curry leaves (G010)</td><td class="r">1 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Mustard seeds (H013)</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Turmeric powder (G033)</td><td class="r">0.3 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">137.8 g</td>
+                <td class="r">144</td><td class="r">3.7 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>11</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">3–3 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Cherupayar Curry (Green Gram)</h3>
+            <span class="rec-macros">1 katori (120g) · 258 kcal ·
+              11.5g P · 24.6g C · 12.2g F</span></div>
+          <div class="oil">Oil: 4/5 tsp coconut oil (4g), plus 18g grated coconut ground into the paste at about 7.5g fat — nearly twice the oil, and you will not see it.</div>
+          <ol class="method"><li>The same gram as the thoran, but as a gravy for rice.</li><li>Grind the grated coconut with jeera and a little water to a coarse paste in the mixer.</li><li>Heat the measured oil, fry chopped shallots, green chilli and curry leaves, add turmeric and red chilli powder, then 45g of cooked green gram with half a cup of water.</li><li>Stir in the coconut paste and simmer four minutes — do not let it boil hard after the coconut goes in or it splits.</li></ol>
+          <p class="note" style="margin-top:2.5mm">Cooking the gram: do it once for the week, not every evening. Soak 250g overnight, pressure cook with salt and turmeric in the morning, drain, and keep it in a box in the fridge — it holds four days. Every thoran after that is the 6 minutes below and nothing more. This is the only part of your plan that asks for planning, and it is one pot on a Sunday.</p>
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Green gram, whole</td><td class="r">45 g</td><td class="r">132.2</td><td class="r">10.1 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">18 g</td><td class="r">73.6</td><td class="r">0.7 g</td></tr><tr><td>Coconut oil</td><td class="r">4 g</td><td class="r">36</td><td class="r">0 g</td></tr><tr><td>Onion, small</td><td class="r">15 g</td><td class="r">8.5</td><td class="r">0.3 g</td></tr><tr><td>Chillies, green - all varieties</td><td class="r">3 g</td><td class="r">1.3</td><td class="r">0.1 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Cumin seeds</td><td class="r">0.5 g</td><td class="r">1.5</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr><tr><td>Chillies, red</td><td class="r">1.5 g</td><td class="r">3.5</td><td class="r">0.2 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">88.3 g</td>
+                <td class="r">258</td><td class="r">11.5 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>12</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">4–4 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Cherupayar Thoran (Green Gram)</h3>
+            <span class="rec-macros">1 katori (120g) · 246 kcal ·
+              12.3g P · 25.6g C · 10g F</span></div>
+          <div class="oil">Oil: 3/5 tsp coconut oil (3g), plus 3 tbsp grated coconut (15g) which carries about 6g fat — twice the oil, and invisible once it is mixed through. Measure the oil; do not pour from the tin.</div>
+          <ol class="method"><li>Heat the measured oil in a kadai, splutter mustard seeds with curry leaves and a slit green chilli.</li><li>Add chopped shallots and cook two minutes till soft.</li><li>Tip in 50g of cooked green gram with turmeric and salt, stir through, then fold in the grated coconut and cook two minutes more on a low flame until dry.</li><li>Cherupayar is the highest-protein everyday dish in a Kerala kitchen and it belongs at lunch.</li></ol>
+          <p class="note" style="margin-top:2.5mm">Cooking the gram: do it once for the week, not every evening. Soak 250g overnight, pressure cook with salt and turmeric in the morning, drain, and keep it in a box in the fridge — it holds four days. Every thoran after that is the 6 minutes below and nothing more. This is the only part of your plan that asks for planning, and it is one pot on a Sunday.</p>
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Green gram, whole</td><td class="r">50 g</td><td class="r">146.9</td><td class="r">11.3 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">15 g</td><td class="r">61.3</td><td class="r">0.6 g</td></tr><tr><td>Coconut oil</td><td class="r">3 g</td><td class="r">27</td><td class="r">0 g</td></tr><tr><td>Onion, small</td><td class="r">10 g</td><td class="r">5.7</td><td class="r">0.2 g</td></tr><tr><td>Chillies, green - all varieties</td><td class="r">3 g</td><td class="r">1.3</td><td class="r">0.1 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.5 g</td><td class="r">2.5</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">82.8 g</td>
+                <td class="r">246</td><td class="r">12.3 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>13</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">5–5 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Chicken Chettinad</h3>
+            <span class="rec-macros">1 katori (150g) · 270 kcal ·
+              25g P · 9g C · 15g F</span></div>
+          <div class="oil">Oil: 4/5 tsp coconut oil (4g), plus 2 tbsp grated coconut (10g) roasted and ground into the masala at about 4g fat. Measure the oil — chettinad masala tastes rich because of the spices, not because of the pan.</div>
+          <ol class="method"><li>Makes 1 katori. Hands-on: 10 minutes. This is your one chicken meal of the week.</li></ol>
+          <p class="note" style="margin-top:2.5mm">Dry-roast the coconut with coriander seeds, dried red chilli, a little jeera and a few peppercorns in a hot kadai until the coconut turns brown and smells nutty — three minutes, no oil at this stage. Cool it and grind to a paste in the mixer with a little water.</p><p class="note" style="margin-top:2.5mm">Heat the measured oil, splutter curry leaves, add sliced shallots, ginger and garlic and cook two minutes. Add 95g of skinless chicken with turmeric and salt, sear it, then the chopped tomato. Stir in the ground masala with half a cup of water, cover and cook 12 minutes on a low flame until the gravy clings.</p><p class="note" style="margin-top:2.5mm">Take the skin off before it goes in the pan — skin alone adds 6-7g of fat this row has no room for.</p>
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Chicken, poultry, breast, skinless</td><td class="r">95 g</td><td class="r">159.8</td><td class="r">20.7 g</td></tr><tr><td>Coconut oil</td><td class="r">4 g</td><td class="r">36</td><td class="r">0 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">10 g</td><td class="r">40.9</td><td class="r">0.4 g</td></tr><tr><td>Onion, small</td><td class="r">25 g</td><td class="r">14.2</td><td class="r">0.5 g</td></tr><tr><td>Tomato, ripe, local</td><td class="r">20 g</td><td class="r">3.9</td><td class="r">0.2 g</td></tr><tr><td>Ginger, fresh</td><td class="r">4 g</td><td class="r">2.2</td><td class="r">0.1 g</td></tr><tr><td>Garlic, big clove</td><td class="r">4 g</td><td class="r">5</td><td class="r">0.3 g</td></tr><tr><td>Coriander seeds</td><td class="r">2.5 g</td><td class="r">6.7</td><td class="r">0.3 g</td></tr><tr><td>Chillies, red</td><td class="r">2 g</td><td class="r">4.7</td><td class="r">0.3 g</td></tr><tr><td>Pepper, black</td><td class="r">1 g</td><td class="r">2.2</td><td class="r">0.1 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr><tr><td>Cumin seeds</td><td class="r">0.5 g</td><td class="r">1.5</td><td class="r">0.1 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">169.3 g</td>
+                <td class="r">270</td><td class="r">25 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>14</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">6–6 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Egg Curry</h3>
+            <span class="rec-macros">1 katori with 2 eggs (180g) · 280 kcal ·
+              15g P · 10g C · 20g F</span></div>
+          <div class="oil">Oil: 1 tsp coconut oil (5g), plus 15g grated coconut ground into the masala — one and a half level tablespoons, measured level, not one heaped spoon. But read this first — the two eggs are already 10g fat, half the dish, before anything touches the pan. Boil and halve the eggs. Heat the measured oil, fry sliced shallots, ginger, garlic and curry leaves, then add turmeric, chilli and coriander powder with a chopped tomato. Grind the coconut smooth with a little water, add it with half a cup of water, simmer 5 minutes, slip in the egg halves and turn the flame off. Do not fry the boiled eggs in extra oil first — that habit is where this dish usually goes 8g over.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Egg, poultry, whole, boiled</td><td class="r">100 g</td><td class="r">147.7</td><td class="r">13.4 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">15 g</td><td class="r">61.3</td><td class="r">0.6 g</td></tr><tr><td>Coconut oil</td><td class="r">5 g</td><td class="r">45</td><td class="r">0 g</td></tr><tr><td>Onion, small</td><td class="r">25 g</td><td class="r">14.2</td><td class="r">0.5 g</td></tr><tr><td>Tomato, ripe, local</td><td class="r">20 g</td><td class="r">3.9</td><td class="r">0.2 g</td></tr><tr><td>Ginger, fresh</td><td class="r">3 g</td><td class="r">1.6</td><td class="r">0.1 g</td></tr><tr><td>Garlic, big clove</td><td class="r">3 g</td><td class="r">3.7</td><td class="r">0.2 g</td></tr><tr><td>Coriander seeds</td><td class="r">2 g</td><td class="r">5.4</td><td class="r">0.2 g</td></tr><tr><td>Chillies, red</td><td class="r">1.5 g</td><td class="r">3.5</td><td class="r">0.2 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">175.8 g</td>
+                <td class="r">280</td><td class="r">15 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>15</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">7–7 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Egg Roast (Kerala Style)</h3>
+            <span class="rec-macros">2 eggs in masala (200g) · 316 kcal ·
+              16.4g P · 14.1g C · 21.2g F</span></div>
+          <div class="oil">Oil: 2 tsp coconut oil (10g). This is the most oil of any dish in your plan, and it is deliberate — the onions have to go slowly to dark brown, and that needs the fat. Measure all 10g into the pan at the start; adding more later because the pan looks dry is the one thing that breaks this dish&#x27;s numbers. The two eggs bring another 10g of fat on their own.</div>
+          <ol class="method"><li>Hard-boil 2 eggs, peel and halve them.</li><li>Heat 2 tsp coconut oil and brown a cup of sliced onion with slit green chilli, ginger, garlic and curry leaves until deep golden — the browning is the dish.</li><li>Add chopped tomato with turmeric, red chilli and black pepper, cook down to a thick masala, then fold the eggs in and coat them over low heat. Serve with appam, puttu or matta rice.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Egg, poultry, whole, boiled [IFCT M004]</td><td class="r">100 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Onion, big [IFCT G017]</td><td class="r">100 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Tomato, ripe, local [IFCT D076]</td><td class="r">40 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut oil [IFCT T001]</td><td class="r">10 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, green - all varieties [IFCT G008]</td><td class="r">5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Ginger, fresh [IFCT G014]</td><td class="r">5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Garlic, big clove [IFCT G011]</td><td class="r">5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Curry leaves [IFCT G010]</td><td class="r">2 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, red [IFCT G022]</td><td class="r">2 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Turmeric powder [IFCT G033]</td><td class="r">1 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Pepper, black [IFCT G031]</td><td class="r">1 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">271 g</td>
+                <td class="r">316</td><td class="r">16.4 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>16</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">8–8 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Egg White (boiled)</h3>
+            <span class="rec-macros">3 whites (100g) · 52 kcal ·
+              11g P · 0.7g C · 0.2g F</span></div>
+          <div class="oil">Oil: none. Boil 3 eggs the same way, 8 minutes on a low flame, peel them and keep only the whites. The whites hold almost no fat at all, 0.2g for all three, which is the entire reason this row exists separately from the boiled eggs. Season with salt, black pepper and a little chilli powder. If you eat the yolks as well you have eaten the Boiled Eggs row, not this one, and the day&#x27;s fat goes up by about 10g.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Egg, poultry, white, boiled</td><td class="r">100 g</td><td class="r">52.6</td><td class="r">12.4 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">100 g</td>
+                <td class="r">52</td><td class="r">11 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>17</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">9–9 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Idiyappam</h3>
+            <span class="rec-macros">3 pieces (120g) · 180 kcal ·
+              4g P · 38g C · 1.5g F</span></div>
+          <div class="oil">Oil: none in the pan. The only fat is 1 tsp grated coconut (3g) sprinkled through the press — a full tablespoon would more than double it. Scald roasted rice flour with boiling salted water, knead while still warm, and press thin nests onto the idli plate with just that dusting of coconut. Steam 5 to 6 minutes. Have all three with a watery vegetable stew or egg curry rather than coconut milk poured over the top.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Rice, raw, milled</td><td class="r">45 g</td><td class="r">160.4</td><td class="r">3.6 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">3 g</td><td class="r">12.3</td><td class="r">0.1 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">48 g</td>
+                <td class="r">180</td><td class="r">4 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>18</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">10–10 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Idli</h3>
+            <span class="rec-macros">2 pieces (120g) · 140 kcal ·
+              4g P · 29g C · 0.5g F</span></div>
+          <div class="oil">Oil: none. Not a drop — wipe the idli plates with a damp cloth instead of greasing them and the whole plate stays at half a gram of fat. Steam the fermented rice-and-urad batter 10 to 12 minutes, until a knife comes out clean. Eat with sambar and a thin tomato or coriander chutney. A coconut chutney would carry more fat than the idlis themselves, so keep that for another day.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Rice, raw, milled</td><td class="r">30 g</td><td class="r">106.9</td><td class="r">2.4 g</td></tr><tr><td>Black gram, dal</td><td class="r">10 g</td><td class="r">32.4</td><td class="r">2.3 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">40 g</td>
+                <td class="r">140</td><td class="r">4 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>19</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">11–11 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Kadala Curry</h3>
+            <span class="rec-macros">1 katori (180g) · 272 kcal ·
+              10.5g P · 23.5g C · 14.6g F</span></div>
+          <div class="oil">Oil: 3/4 tsp coconut oil (4g), plus 18g grated coconut roasted dark and ground into the masala, about 8g fat. Roast the coconut in a dry pan — no oil at that stage, it browns perfectly well without it.</div>
+          <ol class="method"><li>Pressure-cook 45g black chana (kadala) with turmeric and salt until soft, keeping the cooking water.</li><li>Dry-roast 18g grated coconut with the coriander and chilli powder until deep brown, grind to a smooth paste with a little water (varutharacha).</li><li>Saute shallots, ginger, garlic, green chilli and tomato in 4g coconut oil, add the roasted coconut paste, then the chana with its water, and simmer 8-10 minutes until thick.</li><li>Finish with a mustard-seed and curry-leaf tempering.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Bengal gram, whole (black chana / kadala), dry</td><td class="r">45 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut, kernel, fresh, grated</td><td class="r">18 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut oil</td><td class="r">4 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Onion, small (shallot)</td><td class="r">20 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Tomato, ripe</td><td class="r">15 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Ginger, fresh</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Garlic</td><td class="r">2 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, green</td><td class="r">2 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coriander seeds (powder)</td><td class="r">2.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, red (powder)</td><td class="r">1 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">114.5 g</td>
+                <td class="r">272</td><td class="r">10.5 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>20</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">12–12 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Kanji with Green Gram (Rice Gruel)</h3>
+            <span class="rec-macros">1 bowl (300g) · 170 kcal ·
+              5.9g P · 30.4g C · 2.4g F</span></div>
+          <div class="oil">Oil: none. The only fat here is 1 tbsp grated coconut (5g) stirred in at the end, about 2g. Kanji is the lightest thing in your plan and it is meant to be — do not finish it with a mustard-and-coconut-oil tadka, which would triple the fat of the whole bowl.</div>
+          <ol class="method"><li>Cook whole green gram (cherupayar) separately until just tender but not mushy.</li><li>Boil the parboiled matta rice in six to eight times its volume of water until the grains burst and the liquid turns starchy — do not drain the starch water, it is the dish.</li><li>Stir the cooked green gram and grated fresh coconut into the gruel, salt it, and serve hot in a bowl with all its liquid.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Rice, parboiled, milled (A014) — dry</td><td class="r">30 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Green gram, whole (B011) — dry</td><td class="r">15 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut, kernel, fresh (H007), grated</td><td class="r">5 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">50 g</td>
+                <td class="r">170</td><td class="r">5.9 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>21</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">13–13 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Kerala Vegetable Stew (Ishtu)</h3>
+            <span class="rec-macros">1 katori (200g) · 246 kcal ·
+              3.6g P · 14.8g C · 19.1g F</span></div>
+          <div class="oil">Oil: 2/3 tsp coconut oil (3g), plus 38g of coconut kernel extracted into the thin and thick milk, carrying about 16g fat — five times the oil. The coconut milk IS the fat in this dish. Use the thin milk to cook the vegetables and the thick milk only at the end off the flame, and do not top it up because it looks pale.</div>
+          <ol class="method"><li>Simmer diced potato, carrot and French beans with sliced shallots, slit green chilli, ginger, curry leaves and crushed pepper in the thin (second) coconut milk until the vegetables are just tender.</li><li>Lower the heat, pour in the thick (first) coconut milk and warm through without letting it boil, or it will split.</li><li>Finish with a drizzle of raw coconut oil and a few curry leaves off the heat.</li><li>No chilli powder, no turmeric — the stew stays white.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Potato, brown skin, big (F006)</td><td class="r">50 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Carrot, orange (F002)</td><td class="r">25 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>French beans, country (D049)</td><td class="r">20 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Onion, small / shallot (G018)</td><td class="r">20 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, green - all varieties (G008)</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Ginger, fresh (G014)</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Curry leaves (G010)</td><td class="r">1 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Pepper, black (G031)</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut oil (T001)</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut, kernel, fresh (H007) — extracted into milk</td><td class="r">38 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">163.5 g</td>
+                <td class="r">246</td><td class="r">3.6 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>22</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">14–14 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Matta Rice (Kerala Red Parboiled Rice)</h3>
+            <span class="rec-macros">1 katori (150g cooked) · 176 kcal ·
+              3.9g P · 38.6g C · 0.3g F</span></div>
+          <div class="oil">Oil: none. Rice, water, salt — nothing else, and no ghee at the end. Cook 50g raw matta in plenty of water for 25–30 minutes and drain; it stays chewier than white rice, which is the point.</div>
+          <ol class="method"><li>Rinse 50g matta rice and boil it in 4-5 parts water for 25-30 minutes, until the grain is soft but still holds its shape — matta takes noticeably longer than white rice.</li><li>Drain off the excess starch water (kanji vellam) and serve. 50g raw yields about one katori, 150g cooked.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Matta rice, raw — proxy: Rice, parboiled, milled [IFCT A014]</td><td class="r">50 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">50 g</td>
+                <td class="r">176</td><td class="r">3.9 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>23</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">15–15 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Meen Curry</h3>
+            <span class="rec-macros">1 katori with 1 piece (170g) · 279 kcal ·
+              22.5g P · 6.6g C · 17.9g F</span></div>
+          <div class="oil">Oil: 3/4 tsp coconut oil (4g), plus 20g grated coconut ground into the masala at about 8g fat, and the seer fish itself brings roughly 5g. Cook it in a manchatti or a heavy pan and let it sit — meen curry does not need extra oil to taste rich, it needs an hour.</div>
+          <ol class="method"><li>Soak 2 pieces of kudampuli in warm water.</li><li>Grind 20g fresh coconut with the chilli, coriander and turmeric powders to a fine paste.</li><li>In a manchatti, saute shallots, ginger, garlic, green chilli and curry leaves in 4g coconut oil, add the coconut-spice paste and fry until the oil separates, then add the tomato, the kudampuli with its water and enough water for a gravy.</li><li>Once it boils, slide in 90g seer fish, simmer 8-10 minutes without stirring, and rest off the heat before serving.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Seer fish (vanjaram / neymeen), raw</td><td class="r">90 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut, kernel, fresh, grated</td><td class="r">20 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut oil</td><td class="r">4 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Onion, small (shallot)</td><td class="r">20 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Tomato, ripe</td><td class="r">15 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Ginger, fresh</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Garlic</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, green</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, red (Kashmiri powder)</td><td class="r">3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coriander seeds (powder)</td><td class="r">2 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Fenugreek seeds</td><td class="r">0.3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Kudampuli (Garcinia gummi-gutta), dried</td><td class="r">2 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">167.3 g</td>
+                <td class="r">279</td><td class="r">22.5 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>24</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">16–16 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Muthira Thoran (Horse Gram)</h3>
+            <span class="rec-macros">1 katori (120g) · 248 kcal ·
+              10.8g P · 28.3g C · 9.8g F</span></div>
+          <div class="oil">Oil: 3/5 tsp coconut oil (3g), plus 3 tbsp grated coconut (15g) at about 6g fat.</div>
+          <ol class="method"><li>Muthira takes the longest to cook of the three grams and gives the most protein for the fewest calories, so it earns the pot.</li><li>Splutter mustard and curry leaves in the measured oil, add shallots, then 45g of cooked horse gram with turmeric, crushed garlic and salt. Fold in the coconut, cook dry four minutes. It is nuttier and firmer than the other two.</li></ol>
+          <p class="note" style="margin-top:2.5mm">Cooking the gram: do it once for the week, not every evening. Soak 250g overnight, pressure cook with salt and turmeric in the morning, drain, and keep it in a box in the fridge — it holds four days. Every thoran after that is the 6 minutes below and nothing more. This is the only part of your plan that asks for planning, and it is one pot on a Sunday.</p>
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Horse gram, whole</td><td class="r">45 g</td><td class="r">148.3</td><td class="r">9.8 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">15 g</td><td class="r">61.3</td><td class="r">0.6 g</td></tr><tr><td>Coconut oil</td><td class="r">3 g</td><td class="r">27</td><td class="r">0 g</td></tr><tr><td>Onion, small</td><td class="r">10 g</td><td class="r">5.7</td><td class="r">0.2 g</td></tr><tr><td>Chillies, green - all varieties</td><td class="r">3 g</td><td class="r">1.3</td><td class="r">0.1 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.5 g</td><td class="r">2.5</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">77.8 g</td>
+                <td class="r">248</td><td class="r">10.8 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>25</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">17–17 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Oats Dosa</h3>
+            <span class="rec-macros">1 medium (100g) · 145 kcal ·
+              5g P · 23g C · 3.5g F</span></div>
+          <div class="oil">Oil: 2g coconut oil (a scant 1/2 tsp) — brush it on with a folded cloth or a silicone brush, do not pour. Grind rolled oats coarsely, mix with a spoon of rice flour, curd, salt and enough water to make a thin batter, and rest ten minutes. Pour on a hot tawa, spread thin, and brush the 2g of oil over the surface. Flip once and serve — the oats themselves are already oily even though you cannot see it.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Oats, rolled, dry</td><td class="r">20 g</td><td class="r">77.8</td><td class="r">3.4 g</td></tr><tr><td>Rice, raw, milled</td><td class="r">10 g</td><td class="r">35.6</td><td class="r">0.8 g</td></tr><tr><td>Milk, toned (curd base)</td><td class="r">15 g</td><td class="r">8.7</td><td class="r">0.5 g</td></tr><tr><td>Coconut oil</td><td class="r">2 g</td><td class="r">18</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">47 g</td>
+                <td class="r">145</td><td class="r">5 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>26</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">18–18 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Parippu Curry</h3>
+            <span class="rec-macros">1 katori (150g) · 172 kcal ·
+              8g P · 18g C · 7.4g F</span></div>
+          <div class="oil">Oil: 1/2 tsp coconut oil (2.5g) for the tadka, plus 2 tbsp grated coconut (10g) ground with cumin into the dal, about 4g fat. Ghee is the usual finish for parippu in a sadya — this version uses the measured coconut oil instead, so do not add both.</div>
+          <ol class="method"><li>Cook 30g moong dal (cherupayar parippu) with turmeric and plenty of water until it collapses, then mash lightly and thin it to a pourable consistency.</li><li>Grind 10g fresh coconut with green chilli and cumin to a paste, stir it in and bring to a bare simmer without boiling hard.</li><li>Temper mustard seeds, a dried red chilli, sliced shallots and curry leaves in 2.5g coconut oil and pour over.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Green gram dal (moong dal), dry</td><td class="r">30 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut, kernel, fresh, grated</td><td class="r">10 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Coconut oil</td><td class="r">2.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Onion, small (shallot)</td><td class="r">8 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, green</td><td class="r">2 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Chillies, red (1 dried)</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Cumin seeds</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.4 g</td><td class="r">0</td><td class="r">0 g</td></tr><tr><td>Curry leaves</td><td class="r">0.5 g</td><td class="r">0</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">54.7 g</td>
+                <td class="r">172</td><td class="r">8 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>27</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">19–19 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Plain Dosa</h3>
+            <span class="rec-macros">1 medium (100g) · 165 kcal ·
+              4g P · 28g C · 4g F</span></div>
+          <div class="oil">Oil: 3/4 tsp coconut oil (3.5g), measured into a katori first and spread on the tawa with the back of a spoon or a halved onion — do not pour from the tin. Heat the tawa until a flick of water dances, wipe the oil across, pour one ladle of fermented batter and spread thin from the centre outward. Cook until the edges lift, flip for 15 seconds, and add no oil on top. That three-quarter teaspoon is almost the entire fat on this plate; the batter itself is only half a gram.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Rice, raw, milled</td><td class="r">30 g</td><td class="r">106.9</td><td class="r">2.4 g</td></tr><tr><td>Black gram, dal</td><td class="r">8 g</td><td class="r">25.9</td><td class="r">1.8 g</td></tr><tr><td>Coconut oil</td><td class="r">3.5 g</td><td class="r">31.5</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">41.5 g</td>
+                <td class="r">165</td><td class="r">4 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>28</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">20–20 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Puttu</h3>
+            <span class="rec-macros">1 cylinder (120g) · 200 kcal ·
+              4g P · 40g C · 3g F</span></div>
+          <div class="oil">Oil: none, but 2 tsp grated coconut (7g) layered inside — that is roughly a third of what most people put in a puttu kutti, so measure it into a spoon first. Dampen half a cup of puttu podi with warm salted water until it holds shape when squeezed but crumbles when you press it. Fill the kutti in layers — a little coconut, then flour, then coconut — and steam 6 to 8 minutes, until steam comes cleanly through the top. Eat it with kadala curry, and do not sprinkle extra coconut at the table.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Rice, raw, milled</td><td class="r">50 g</td><td class="r">178.2</td><td class="r">4 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">7 g</td><td class="r">28.6</td><td class="r">0.3 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">57 g</td>
+                <td class="r">200</td><td class="r">4 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>29</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">21–21 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Ragi Dosa</h3>
+            <span class="rec-macros">1 medium (100g) · 150 kcal ·
+              4g P · 26g C · 3g F</span></div>
+          <div class="oil">Oil: 1/2 tsp coconut oil (2.5g). Measure it — do not pour from the tin. Mix ragi flour with a little rice flour, curd and salt into a thin, pourable batter and rest it while the tawa heats. Pour a ladle on a hot non-stick tawa and swirl thin; drizzle the half teaspoon around the edge with a spoon, never straight from the tin. Cook till the edges lift, flip once, and take it off — one dosa gets one half teaspoon, not the pan.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Ragi</td><td class="r">30 g</td><td class="r">96.2</td><td class="r">2.1 g</td></tr><tr><td>Rice, raw, milled</td><td class="r">6 g</td><td class="r">21.4</td><td class="r">0.5 g</td></tr><tr><td>Milk, toned (curd base)</td><td class="r">10 g</td><td class="r">5.8</td><td class="r">0.3 g</td></tr><tr><td>Coconut oil</td><td class="r">2.5 g</td><td class="r">22.5</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">48.5 g</td>
+                <td class="r">150</td><td class="r">4 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>30</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">22–22 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Sambar</h3>
+            <span class="rec-macros">1 katori (150g) · 120 kcal ·
+              6g P · 17g C · 3g F</span></div>
+          <div class="oil">Oil: 1/2 tsp coconut oil (2.5g) for the tempering, measured into the ladle — no ground coconut in this one, the recorded fat cannot carry it. Cook toor dal soft, add drumstick, pumpkin or brinjal with tamarind water, sambar powder, turmeric and salt, and simmer till the vegetables are done. Heat the half teaspoon of oil, splutter mustard seeds with curry leaves, a dried chilli and a pinch of hing, and pour it over. Simmer one minute more and take it off.</div>
+          
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Red gram, dal</td><td class="r">15 g</td><td class="r">49.6</td><td class="r">3.3 g</td></tr><tr><td>Tamarind, pulp</td><td class="r">6 g</td><td class="r">17.3</td><td class="r">0.2 g</td></tr><tr><td>Drumstick</td><td class="r">15 g</td><td class="r">4.4</td><td class="r">0.4 g</td></tr><tr><td>Carrot, orange</td><td class="r">12 g</td><td class="r">4</td><td class="r">0.1 g</td></tr><tr><td>Pumpkin, green, cylindrical</td><td class="r">15 g</td><td class="r">3.7</td><td class="r">0.1 g</td></tr><tr><td>Onion, small</td><td class="r">15 g</td><td class="r">8.5</td><td class="r">0.3 g</td></tr><tr><td>Tomato, ripe, local</td><td class="r">20 g</td><td class="r">3.9</td><td class="r">0.2 g</td></tr><tr><td>Coconut oil</td><td class="r">2.5 g</td><td class="r">22.5</td><td class="r">0 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.5 g</td><td class="r">2.5</td><td class="r">0.1 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr><tr><td>Chillies, red</td><td class="r">1.5 g</td><td class="r">3.5</td><td class="r">0.2 g</td></tr><tr><td>Coriander seeds</td><td class="r">2 g</td><td class="r">5.4</td><td class="r">0.2 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">105.8 g</td>
+                <td class="r">120</td><td class="r">6 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>31</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">23–23 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Soya Thoran (Kerala Style)</h3>
+            <span class="rec-macros">1 katori (120g) · 194 kcal ·
+              16.7g P · 12.8g C · 8.4g F</span></div>
+          <div class="oil">Oil: 3/5 tsp coconut oil (3g), plus 2 tbsp grated coconut (12g) at about 5g fat.</div>
+          <ol class="method"><li>Not a traditional thoran, but it is the most protein you can put on a plate here and it takes the seasoning perfectly.</li><li>Boil 30g of soya chunks in water for 5 minutes, drain, and squeeze them hard between your palms — chunks full of water taste of water. Chop them small.</li><li>Splutter mustard and curry leaves in the measured oil, add shallots, green chilli and a pinch of red chilli, then the chopped soya with turmeric and salt. Fold in the coconut and cook three minutes.</li><li>No soaking, no batch — 9 minutes start to finish.</li></ol>
+          
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Soya chunks (TVP), dry</td><td class="r">30 g</td><td class="r">103.5</td><td class="r">15.6 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">12 g</td><td class="r">49.1</td><td class="r">0.5 g</td></tr><tr><td>Coconut oil</td><td class="r">3 g</td><td class="r">27</td><td class="r">0 g</td></tr><tr><td>Onion, small</td><td class="r">12 g</td><td class="r">6.8</td><td class="r">0.2 g</td></tr><tr><td>Chillies, green - all varieties</td><td class="r">3 g</td><td class="r">1.3</td><td class="r">0.1 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.5 g</td><td class="r">2.5</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr><tr><td>Chillies, red</td><td class="r">1 g</td><td class="r">2.4</td><td class="r">0.1 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">62.8 g</td>
+                <td class="r">194</td><td class="r">16.7 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>32</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">Recipes</span>
+      <span class="eyebrow eyebrow-muted">24–24 of 24</span></div>
+      <div style="margin-top:7mm"><div class="rec">
+          <div class="rec-head"><h3>Vanpayar Thoran (Red Cowpea)</h3>
+            <span class="rec-macros">1 katori (120g) · 259 kcal ·
+              11.2g P · 29.9g C · 10g F</span></div>
+          <div class="oil">Oil: 3/5 tsp coconut oil (3g), plus 3 tbsp grated coconut (15g) at about 6g fat. Measure the oil.</div>
+          <ol class="method"><li>Splutter mustard and curry leaves in the measured oil, add chopped shallots and green chilli, then 50g of cooked vanpayar with turmeric and salt.</li><li>Fold the coconut through and cook it dry over a low flame, three or four minutes.</li><li>Vanpayar holds its shape better than cherupayar, so stir gently — a thoran should be loose grains, not a mash.</li></ol>
+          <p class="note" style="margin-top:2.5mm">Cooking the gram: do it once for the week, not every evening. Soak 250g overnight, pressure cook with salt and turmeric in the morning, drain, and keep it in a box in the fridge — it holds four days. Every thoran after that is the 6 minutes below and nothing more. This is the only part of your plan that asks for planning, and it is one pot on a Sunday.</p>
+          <table class="itab">
+              <thead><tr><th>Ingredient</th><th class="r">Weight</th><th class="r">kcal</th><th class="r">Protein</th></tr></thead>
+              <tbody><tr><td>Cowpea, brown</td><td class="r">50 g</td><td class="r">160.1</td><td class="r">10.2 g</td></tr><tr><td>Coconut, kernel, fresh</td><td class="r">15 g</td><td class="r">61.3</td><td class="r">0.6 g</td></tr><tr><td>Coconut oil</td><td class="r">3 g</td><td class="r">27</td><td class="r">0 g</td></tr><tr><td>Onion, small</td><td class="r">10 g</td><td class="r">5.7</td><td class="r">0.2 g</td></tr><tr><td>Chillies, green - all varieties</td><td class="r">3 g</td><td class="r">1.3</td><td class="r">0.1 g</td></tr><tr><td>Curry leaves</td><td class="r">1 g</td><td class="r">0.6</td><td class="r">0.1 g</td></tr><tr><td>Mustard seeds</td><td class="r">0.5 g</td><td class="r">2.5</td><td class="r">0.1 g</td></tr><tr><td>Turmeric powder</td><td class="r">0.3 g</td><td class="r">0.8</td><td class="r">0 g</td></tr></tbody>
+              <tfoot><tr><td>Total, raw</td><td class="r">82.8 g</td>
+                <td class="r">259</td><td class="r">11.2 g</td></tr></tfoot>
+            </table>
+        </div></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>33</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">The rest of it</span>
+      <span class="eyebrow eyebrow-muted">How much oil</span></div>
+      <h2 style="margin-top:8mm">How much oil</h2>
+      <div style="margin-top:5mm"><p>About 3 teaspoons of added oil a day. That is for everything - tadka, the sabzi, the pan. Around 15g in total.</p><p>The measurements, so there is no guessing:
+One level teaspoon of any oil or ghee is 5g and about 45 calories.
+One level tablespoon of grated coconut is about 10g and carries about 4g of fat, so count it as oil, not as a garnish.</p><p>You have sunflower, rice bran, coconut, cow ghee and butter at home. All five can stay in the kitchen. But make rice bran or sunflower your everyday cooking oil — it is the one your report points to - that is the one that goes into the daily dal and sabzi. Keep coconut oil and ghee for the dishes that genuinely need them, a couple of times a week, not as the default. Butter is an occasional thing, not a daily one. Nobody is asking you to throw anything away.</p><p>The part that decides whether this works: measure it. Take a small katori, put your day&#x27;s 3 teaspoons into it in the morning, and cook from that katori all day. Never tip the tin straight into the hot kadai. A two-second pour is very easily 3 teaspoons on its own, and then the whole day&#x27;s fat is gone before lunch.</p><p>You already listed oily food as something you avoid. This is just the number that goes with that instinct.</p></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>34</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">The rest of it</span>
+      <span class="eyebrow eyebrow-muted">Salt</span></div>
+      <h2 style="margin-top:8mm">Salt</h2>
+      <div style="margin-top:5mm"><p>Blood pressure is on your list, so salt matters here - but the salt problem in an Indian kitchen is almost never the salt in the dal.</p><p>It is these:
+Pickle. One spoon can carry more salt than an entire home-cooked meal.
+Papad. One papad is a surprising amount of salt for something that feels like nothing.
+Packeted namkeen, mixture, chips, bhujia. This is the biggest one for most people.
+Sauces - tomato ketchup, soy sauce, chilli sauce, packaged chutneys.
+Ready masala mixes, instant noodles, packet soups, and anything that comes in a sachet promising a meal in two minutes.</p><p>Practical version: salt goes in while cooking, and the salt shaker does not come to the table. Pickle and papad become an occasional thing, not a daily accompaniment. And when you buy anything packaged, the useful habit is simply to buy less of it, rather than to start reading labels you will get tired of reading.</p><p>One thing to keep doing exactly as you are: you use iodised salt daily. Continue. Iodine matters for you, and iodised salt is the main way most Indian households get it. Do not switch to rock salt, black salt, sea salt or any &#x27;low sodium&#x27; substitute on your own - the low-sodium ones swap in potassium, which is not a straight swap.</p><p>Cooking at home, which this whole plan does, has already cut most of your salt without you doing anything else.</p></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>35</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">The rest of it</span>
+      <span class="eyebrow eyebrow-muted">Digestion</span></div>
+      <h2 style="margin-top:8mm">Digestion</h2>
+      <div style="margin-top:5mm"><p>You have told us about bloating, and you are going once a day. This plan is built to carry about 30g of fibre a day - from the dal, the vegetables, the salads and the whole grains - which is more fibre than most people are used to. That is good for you, for your digestion and for your blood sugar. But fibre has one rule attached to it.</p><p>Fibre needs water. Fibre works by absorbing water and making the stool soft and bulky so it moves easily. If the fibre goes up and the water does not, it does the opposite - the stool gets harder and drier, and you feel more blocked and more bloated than before you started. This is the single most common reason a healthy diet makes someone&#x27;s stomach worse in week one.</p><p>So: 2.5 to 3 litres of water a day. You are at 2 to 3 now, so push to the upper end and stay there. Practical way to do it - a one-litre bottle on your desk, finished by lunch, refilled, finished by evening, and a third around dinner. Do not try to drink it all in the last two hours of the day.</p><p>For the bloating specifically, four things that actually help:
+Eat slower and chew properly. Bloating is very often swallowed air, especially at a big lunch eaten fast.
+Sit and eat, do not eat standing or walking.
+A glass of buttermilk or plain curd with lunch settles most stomachs.
+A 10-minute slow walk after lunch and after dinner. It helps digestion and it counts towards your movement.</p><p>Give it a fortnight. Bloating that comes from more fibre usually settles as your gut adjusts.</p></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>36</span></div></section><section class="page"><div class="masthead"><span class="eyebrow">The rest of it</span>
+      <span class="eyebrow eyebrow-muted">Cravings</span></div>
+      <h2 style="margin-top:8mm">Cravings</h2>
+      <div style="margin-top:5mm"><p>You named cravings as your biggest challenge. So let us treat it as a real problem with a real method, not with the word &#x27;willpower&#x27;.</p><p>First, the thing that does most of the work, and you will not feel it happening: protein at every single meal. 35g at breakfast, 55g at lunch, 40g at dinner. Protein keeps you full for hours in a way that rice and chapati alone do not. Most evening cravings are not a character flaw, they are a lunch that had no protein in it. Eat the meals as written and you will find the 5 PM pull is smaller before you have had to fight it once.</p><p>Second, know your own timing. For most women with a desk job, it hits between 4 and 6 PM, and again after dinner. Yours may differ - watch for a week and you will know. A craving you saw coming is much easier to handle than one that ambushes you.</p><p>Third, what to actually eat when it hits. Not nothing - something. Keep these in the house so the choice is already made:
+Curd or plain Greek yogurt
+Boiled eggs, two, already boiled and sitting in the fridge
+Roasted chana
+Buttermilk
+Cucumber and a katori of fruit
+Green tea, which handles the &#x27;I want something&#x27; feeling more often than you would expect</p><p>Fourth, what not to keep in the house. Biscuits, namkeen packets, mithai, chocolate, cold drinks. Not because they are forbidden, but because a packet in the kitchen is a decision you have to win every evening, and a packet you never bought is a decision you never have to make. Willpower is a small budget. Do not spend it on your own kitchen shelf.</p><p>Fifth, the ten-minute rule. When it hits: one full glass of water, then wait ten minutes. A fair number of cravings are thirst or boredom and they simply leave. If after ten minutes it is still there, eat one of the things from the list above, properly, sitting down.</p><p>And sixth, the one that keeps people in the game: if you eat the sweet, eat it. Then the next meal happens exactly as planned. Do not skip dinner to make up for it, do not double the walk as punishment, do not write off the week. One sweet does not undo anything. A week of skipping meals to atone for one sweet undoes plenty.</p><p>One last thing worth knowing: two coffees on a nearly empty stomach with breakfast pushed late is a setup for a hard hunger crash later in the day. Eating your late breakfast rather than letting it slide into lunch will take the edge off your afternoon.</p></div><div class="foot"><span>Heal Thyroid with Swapnil</span><span>37</span></div></section><section class="page">
+<div class="masthead"><span class="eyebrow">Heal Thyroid with Swapnil</span>
+<span class="eyebrow eyebrow-muted">Nisha A. · Kerala Plan</span></div>
+<div style="margin-top:34mm">
+  <h1>Cook what is<br>on these pages.</h1>
+  <p class="sub">Not perfectly, and not every day. Pick the same easy option all week if that is
+  what gets it eaten — a week of the same breakfast is a week of breakfasts you actually had.</p>
+</div>
+<div class="banner">
+  <h2>Any question, message me in the app.</h2>
+  <p>That is what it is there for, and I read every one.</p>
+</div><div class="foot"><span>swapnilumbarkarfitness.in</span><span>38</span></div></section></body></html>

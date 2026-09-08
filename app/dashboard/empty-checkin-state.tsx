@@ -1,10 +1,11 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { ArrowRight, Camera, Check, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill, Sparkles } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, Camera, Check, ChevronDown, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill, Dumbbell, Footprints, UtensilsCrossed } from 'lucide-react'
 import Link from 'next/link'
 import { BottomNavPill } from '@/components/dashboard/BottomNavPill'
 import { ReminderToggle } from '@/components/dashboard/ReminderToggle'
+import { TodayLogCard } from '@/components/dashboard/TodayLogCard'
 
 export interface Week0Status {
   hasPlan: boolean
@@ -16,207 +17,249 @@ export interface Week0Status {
   firstLessonSlug: string | null
 }
 
+export interface TodayMeal {
+  slot: 'Breakfast' | 'Lunch' | 'Dinner'
+  pick: { label: string; items: string[]; kcal: number; protein: number } | null
+  total: number
+}
+
+export interface TodayExercise {
+  name: string
+  sets: number | null
+  reps: string | null
+}
+
 /**
- * Week 0 — what a client sees between finishing onboarding and submitting her
- * first check-in.
+ * Week one — the screen a client sees every day until her first check-in exists.
  *
- * This used to be a single full-screen "do your first check-in" wall with no
- * navigation, which meant a client who had just paid could not reach her plan,
- * labs, lessons or coach. That's the highest-churn moment in the funnel, so it
- * now gives her real things to do today and completes as she does them.
+ * It used to be a setup checklist with a weekly check-in as the main button.
+ * That is backwards for the first seven days: what she needs on day one is
+ * what to eat today, what to do today, and somewhere to tap that she did it.
+ * Those three things were on the normal dashboard she could not reach yet, so
+ * for her whole first week the daily log did not exist as far as she could see.
+ *
+ * Now it leads with today. Setup is one card for the only time-sensitive item
+ * (photos), with the rest folded away. The check-in is named for when it
+ * actually applies — the end of the week — rather than shouted on day one.
  */
-export function EmptyCheckInState({ name, status }: { name: string; status?: Week0Status }) {
+export function EmptyCheckInState({
+  name,
+  dayNumber,
+  todayMeals,
+  todayWorkout,
+  todayLog,
+  status,
+}: {
+  name: string
+  dayNumber: number
+  todayMeals: TodayMeal[]
+  todayWorkout: TodayExercise[]
+  todayLog: { workoutDone: boolean; mealsFollowed: number; steps: number | null }
+  status?: Week0Status
+}) {
   const s: Week0Status = status ?? {
     hasPlan: false, hasLabs: false, hasMedication: false,
     hasMessaged: false, hasReadLesson: false, hasBaselinePhotos: false, firstLessonSlug: null,
   }
+  const [moreOpen, setMoreOpen] = useState(false)
 
-  const steps = [
-    {
-      done: s.hasMedication,
-      icon: Pill,
-      title: 'Add your thyroid medication',
-      detail: 'So your reminders and plan respect your timing',
-      href: '/dashboard/health',
-      tint: '#34d399',
-    },
-    {
-      // Deliberately high in the list: week-1 photos are the only ones that
-      // can never be taken later, and without them there is no 3-month
-      // before-and-after to show her.
-      done: s.hasBaselinePhotos,
-      icon: Camera,
-      title: 'Take your week-1 photos',
-      detail: "Today's the only day you can capture your starting point",
-      href: '/dashboard/progress-photos',
-      tint: '#f59e0b',
-    },
-    {
-      done: s.hasLabs,
-      icon: FlaskConical,
-      title: 'Add your latest blood report',
-      detail: 'Optional — but it makes week one far more personal',
-      href: '/dashboard/health',
-      tint: '#60a5fa',
-    },
-    {
-      done: s.hasReadLesson,
-      icon: BookOpen,
-      title: 'Read your first lesson',
-      detail: 'Two minutes on how to take your tablet for best effect',
-      href: s.firstLessonSlug ? `/dashboard/learn/${s.firstLessonSlug}` : '/dashboard/learn',
-      tint: '#a78bfa',
-    },
-    {
-      done: s.hasMessaged,
-      icon: MessageSquare,
-      title: 'Say hello to your coach',
-      detail: 'Tell them what you want out of these three months',
-      href: '/dashboard/messages',
-      tint: '#2dd4bf',
-    },
+  const weekday = new Date().toLocaleDateString('en-IN', { weekday: 'long' })
+  const daysToCheckin = Math.max(0, 7 - dayNumber)
+
+  const setup = [
+    { done: s.hasMedication, icon: Pill, title: 'Add your thyroid tablet', detail: 'So the app knows your timing', href: '/dashboard/health' },
+    { done: s.hasLabs, icon: FlaskConical, title: 'Add your blood report', detail: 'Optional, but useful', href: '/dashboard/health' },
+    { done: s.hasReadLesson, icon: BookOpen, title: 'Read your first lesson', detail: 'Two minutes', href: s.firstLessonSlug ? `/dashboard/learn/${s.firstLessonSlug}` : '/dashboard/learn' },
+    { done: s.hasMessaged, icon: MessageSquare, title: 'Say hello to your coach', detail: 'Any question, any time', href: '/dashboard/messages' },
   ]
-  const doneCount = steps.filter((x) => x.done).length
+  const setupDone = setup.filter((x) => x.done).length
+
+  const card = { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' } as const
 
   return (
     <div
       className="min-h-screen relative"
       style={{ background: '#090c14', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 24px))' }}
     >
-      <div className="tw-glow" style={{ position: 'fixed', top: -150, left: 20, width: 350, height: 300, zIndex: 0 }} />
-
-      <main className="max-w-2xl mx-auto px-6 relative" style={{ zIndex: 1, paddingTop: 'calc(56px + env(safe-area-inset-top, 0px))' }}>
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
-            Week one
-          </p>
-          <h1
-            className="mt-1.5"
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 31, lineHeight: 1.15, color: '#e8eaf0' }}
-          >
-            Welcome, {name}
-          </h1>
-          <p className="text-sm mt-2" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
-            Everything starts small. Here&rsquo;s what to do while your plan is being built for you.
-          </p>
-        </motion.div>
-
-        {/* Plan status */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-5"
+      <main className="max-w-2xl mx-auto px-5 relative" style={{ paddingTop: 'calc(48px + env(safe-area-inset-top, 0px))' }}>
+        {/* ── Header: where she is, in one line ─────────────────────────── */}
+        <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
+          Day {dayNumber} · {weekday}
+        </p>
+        <h1
+          className="mt-1"
+          style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 30, lineHeight: 1.15, color: '#e8eaf0' }}
         >
-          {s.hasPlan ? (
-            <Link
-              href="/dashboard/plans"
-              className="flex items-center gap-3 p-5 rounded-3xl"
-              style={{ background: 'rgba(45,212,191,0.09)', border: '1px solid rgba(45,212,191,0.25)' }}
-            >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(45,212,191,0.15)' }}>
-                <Sparkles size={19} style={{ color: '#2dd4bf' }} />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-sm" style={{ color: '#e8eaf0' }}>Your plan is ready</p>
-                <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>Open it and start when you feel ready</p>
-              </div>
-              <ChevronRight size={18} style={{ color: '#2dd4bf' }} />
-            </Link>
-          ) : (
-            <div
-              className="flex items-center gap-3 p-5 rounded-3xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.12)' }}
-            >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(45,212,191,0.1)' }}>
-                <Sparkles size={19} style={{ color: '#2dd4bf' }} />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-sm" style={{ color: '#e8eaf0' }}>Your coach is building your plan</p>
-                <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>
-                  It&rsquo;ll appear here — the steps below matter more in week one anyway
-                </p>
-              </div>
-            </div>
-          )}
-        </motion.div>
+          {dayNumber === 1 ? `Welcome, ${name}` : `Hello, ${name}`}
+        </h1>
+        <p className="text-sm mt-1.5" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
+          {s.hasPlan
+            ? 'Three things today. Eat, move, tap. That is the whole job.'
+            : 'Your coach is building your plan. It will appear here — the photos below matter most right now.'}
+        </p>
 
-        {/* Reminders offered here rather than only in Settings. This is the
-            week she is most willing to set the app up, and the reminder is what
-            brings her back in week six — by which point nobody is browsing
-            Settings looking for it. */}
-        <div className="mt-6">
+        {/* ── TODAY: what to eat ─────────────────────────────────────────── */}
+        {s.hasPlan && (
+          <section className="mt-6">
+            <div className="flex items-baseline justify-between mb-2.5">
+              <p className="text-[10.5px] uppercase font-semibold inline-flex items-center gap-1.5" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
+                <UtensilsCrossed size={12} /> Today&apos;s food
+              </p>
+              <Link href="/dashboard/plans" className="text-[11px] font-medium" style={{ color: '#2dd4bf' }}>
+                See all options
+              </Link>
+            </div>
+            <div className="space-y-2">
+              {todayMeals.map((m) => (
+                <Link key={m.slot} href="/dashboard/plans" className="block p-4 rounded-2xl" style={card}>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-[11px] font-semibold uppercase" style={{ color: '#7e8a9e', letterSpacing: '0.1em' }}>{m.slot}</span>
+                    {m.pick && (
+                      <span className="text-[11px] tabular-nums" style={{ color: '#5a6578' }}>
+                        {m.pick.kcal} kcal · {m.pick.protein}g protein
+                      </span>
+                    )}
+                  </div>
+                  {m.pick ? (
+                    <>
+                      <p className="text-[15px] font-medium mt-1" style={{ color: '#e8eaf0', lineHeight: 1.4 }}>
+                        {m.pick.items.join(' · ')}
+                      </p>
+                      <p className="text-[11px] mt-1.5" style={{ color: '#5a6578' }}>
+                        Suggested for today · or pick any of the other {Math.max(0, m.total - 1)}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-sm mt-1" style={{ color: '#7e8a9e' }}>Not set yet</p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── TODAY: what to do ──────────────────────────────────────────── */}
+        {s.hasPlan && (
+          <section className="mt-6">
+            <div className="flex items-baseline justify-between mb-2.5">
+              <p className="text-[10.5px] uppercase font-semibold inline-flex items-center gap-1.5" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
+                <Dumbbell size={12} /> Today&apos;s movement
+              </p>
+              <Link href="/dashboard/plans" className="text-[11px] font-medium" style={{ color: '#2dd4bf' }}>
+                Open with demos
+              </Link>
+            </div>
+            <Link href="/dashboard/plans" className="block p-4 rounded-2xl" style={card}>
+              <div className="flex items-center gap-3 pb-3 mb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <Footprints size={18} style={{ color: '#2dd4bf' }} />
+                <div>
+                  <p className="text-[15px] font-medium" style={{ color: '#e8eaf0' }}>Walk 30 minutes</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: '#7e8a9e' }}>Split it if you like — 15 after lunch, 15 after dinner</p>
+                </div>
+              </div>
+              {todayWorkout.length > 0 ? (
+                <ul className="space-y-1.5">
+                  {todayWorkout.filter((w) => w.name !== 'Brisk Walk').map((w) => (
+                    <li key={w.name} className="flex items-baseline justify-between text-sm">
+                      <span style={{ color: '#e8eaf0' }}>{w.name}</span>
+                      <span className="text-[11px] tabular-nums shrink-0 ml-3" style={{ color: '#7e8a9e' }}>
+                        {w.sets ? `${w.sets} × ` : ''}{w.reps || ''}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm" style={{ color: '#7e8a9e' }}>Rest day — the walk still counts.</p>
+              )}
+            </Link>
+          </section>
+        )}
+
+        {/* ── TODAY: tap what you did ────────────────────────────────────── */}
+        {s.hasPlan && (
+          <div className="mt-7 -mx-1">
+            <TodayLogCard
+              initialWorkoutDone={todayLog.workoutDone}
+              initialMealsFollowed={todayLog.mealsFollowed}
+              initialSteps={todayLog.steps}
+            />
+          </div>
+        )}
+
+        {/* ── The one setup task that cannot wait ───────────────────────── */}
+        {!s.hasBaselinePhotos && (
+          <Link
+            href="/dashboard/progress-photos"
+            className="flex items-center gap-3 p-4 rounded-2xl mt-7"
+            style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}
+          >
+            <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(245,158,11,0.16)' }}>
+              <Camera size={18} style={{ color: '#f59e0b' }} />
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold" style={{ color: '#e8eaf0' }}>Take your day-one photos</p>
+              <p className="text-[11.5px] mt-0.5" style={{ color: '#a9b2c1' }}>
+                The only thing here that cannot be done later. Two minutes.
+              </p>
+            </div>
+            <ChevronRight size={16} className="shrink-0" style={{ color: '#f59e0b' }} />
+          </Link>
+        )}
+
+        {/* ── Reminders — offered in the week she is most willing ───────── */}
+        <div className="mt-5">
           <ReminderToggle />
         </div>
 
-        {/* Starter checklist */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-          <div className="flex items-center justify-between mt-7 mb-2.5 px-0.5">
-            <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
-              Start here
-            </p>
-            <span className="text-[11px] tabular-nums" style={{ color: doneCount === steps.length ? '#34d399' : '#5a6578' }}>
-              {doneCount}/{steps.length} done
+        {/* ── Everything else, folded away ──────────────────────────────── */}
+        <div className="mt-6">
+          <button
+            onClick={() => setMoreOpen((v) => !v)}
+            className="w-full flex items-center justify-between px-1 py-2"
+            aria-expanded={moreOpen}
+          >
+            <span className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
+              More setup · {setupDone}/{setup.length} done
             </span>
-          </div>
+            <ChevronDown size={16} style={{ color: '#5a6578', transform: moreOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }} />
+          </button>
+          {moreOpen && (
+            <div className="space-y-2 mt-1">
+              {setup.map((step) => (
+                <Link key={step.title} href={step.href} className="flex items-center gap-3 p-3.5 rounded-2xl" style={card}>
+                  <span
+                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: step.done ? 'rgba(52,211,153,0.14)' : 'rgba(255,255,255,0.05)' }}
+                  >
+                    {step.done ? <Check size={15} style={{ color: '#34d399' }} strokeWidth={3} /> : <step.icon size={15} style={{ color: '#7e8a9e' }} />}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm" style={{ color: step.done ? '#7e8a9e' : '#e8eaf0' }}>{step.title}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: '#5a6578' }}>{step.detail}</p>
+                  </div>
+                  {!step.done && <ChevronRight size={15} style={{ color: '#404858' }} />}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
 
-          <div className="space-y-2.5">
-            {steps.map((step) => (
-              <Link
-                key={step.title}
-                href={step.href}
-                className="flex items-center gap-3 p-4 rounded-2xl"
-                style={{
-                  background: step.done ? 'rgba(52,211,153,0.06)' : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${step.done ? 'rgba(52,211,153,0.18)' : 'rgba(255,255,255,0.06)'}`,
-                }}
-              >
-                <span
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: step.done ? 'rgba(52,211,153,0.14)' : `${step.tint}1f` }}
-                >
-                  {step.done
-                    ? <Check size={17} style={{ color: '#34d399' }} strokeWidth={3} />
-                    : <step.icon size={17} style={{ color: step.tint }} />}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium" style={{ color: step.done ? '#a9b2c1' : '#e8eaf0' }}>
-                    {step.title}
-                  </p>
-                  <p className="text-[11.5px] mt-0.5" style={{ color: '#7e8a9e' }}>{step.detail}</p>
-                </div>
-                {!step.done && <ChevronRight size={16} className="shrink-0" style={{ color: '#404858' }} />}
-              </Link>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* First check-in */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-8">
-          <p className="text-sm text-center mb-3" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
-            At the end of your first week, your check-in unlocks your trends —
-            weight, energy, sleep and symptoms, all in one place.
+        {/* ── Check-in, named for when it applies ───────────────────────── */}
+        <div className="mt-8 p-4 rounded-2xl" style={card}>
+          <p className="text-sm font-medium" style={{ color: '#e8eaf0' }}>
+            {daysToCheckin > 0 ? `Your first check-in opens in ${daysToCheckin} day${daysToCheckin === 1 ? '' : 's'}` : 'Your first check-in is ready'}
           </p>
-          {/* The Link IS the button — do not nest a <button> inside it.
-              An <a> cannot contain interactive content, and while desktop
-              Chrome forgives the nesting and navigates anyway, the Android
-              WebView does not: the inner button swallows the tap and the
-              anchor never fires. This screen is what a client sees until her
-              first check-in exists, so that one invalid nesting left every new
-              client with a dead button and no way into the flow. */}
+          <p className="text-[12px] mt-1" style={{ color: '#7e8a9e', lineHeight: 1.5 }}>
+            Once a week, five minutes: weight, energy, sleep. It is how your coach sees the week, and it unlocks your trends.
+          </p>
           <Link
             href="/dashboard/check-in"
-            className="w-full h-13 py-4 rounded-full font-bold text-sm text-white flex items-center justify-center gap-2"
-            style={{
-              background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-              boxShadow: '0 8px 28px rgba(45, 212, 191, 0.28)',
-            }}
+            className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold"
+            style={{ color: '#2dd4bf' }}
           >
-            Start your first check-in
-            <ArrowRight size={17} />
+            {daysToCheckin > 0 ? 'Do it early if you like' : 'Start your check-in'} <ArrowRight size={15} />
           </Link>
-          <p className="text-[11px] text-center mt-3" style={{ color: '#5a6578' }}>
-            About 5 minutes · your data stays private to you and your coach
-          </p>
-        </motion.div>
+        </div>
       </main>
 
       <BottomNavPill />

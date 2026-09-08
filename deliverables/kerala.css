@@ -1,0 +1,80 @@
+/* Heal Thyroid with Swapnil — client plan document.
+   Light editorial ground, violet identity, Instrument Serif display.
+   Continuous with the lab-review sheet so the two read as one set. */
+@page { size: A4; margin: 0; }
+:root{
+  --ink:#1a1520; --ink-2:#3d3548; --muted:#6b6478; --faint:#9c94aa;
+  --violet:#7c3aed; --violet-2:#6d28d9; --violet-3:#a855f7;
+  --violet-wash:#f4f0fe; --rule:#e4e0ea; --rule-soft:#f0edf5;
+  --paper:#ffffff; --paper-2:#faf9fc;
+  --flag:#c2410c;
+  --serif:'Instrument Serif', Georgia, serif;
+  --sans:'Manrope', -apple-system, 'Segoe UI', sans-serif;
+}
+*{box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+body{margin:0; font-family:var(--sans); color:var(--ink); background:var(--paper)}
+.page{
+  position:relative; width:210mm; height:297mm; padding:18mm 16mm 14mm;
+  page-break-after:always; overflow:hidden; display:flex; flex-direction:column;
+  border-top:3px solid var(--violet);
+}
+.page:last-child{page-break-after:auto}
+.eyebrow{font-size:8.2pt; font-weight:700; letter-spacing:.20em; text-transform:uppercase; color:var(--violet)}
+.eyebrow-muted{color:var(--faint); font-weight:600; letter-spacing:.16em}
+.masthead{display:flex; justify-content:space-between; align-items:baseline; padding-bottom:5mm; border-bottom:1px solid var(--rule)}
+h1{font-family:var(--serif); font-weight:400; font-size:40pt; line-height:1.02; margin:8mm 0 0; letter-spacing:-.01em}
+h2{font-family:var(--serif); font-weight:400; font-size:25pt; line-height:1.08; margin:0 0 3mm}
+h3{font-size:11pt; font-weight:700; margin:0 0 1.5mm; letter-spacing:-.01em}
+.sub{font-size:11pt; color:var(--muted); margin-top:3mm; line-height:1.55; max-width:62ch}
+p{font-size:9.6pt; line-height:1.62; color:var(--ink-2); margin:0 0 3mm; max-width:70ch}
+.foot{position:absolute; left:16mm; right:16mm; bottom:9mm; display:flex; justify-content:space-between;
+      font-size:7.6pt; color:var(--faint); border-top:1px solid var(--rule-soft); padding-top:2.5mm}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:5mm}
+.card{border:1px solid var(--rule); border-top:2.5px solid var(--violet); border-radius:2px; padding:5mm 5.5mm; background:var(--paper)}
+.card-soft{background:var(--violet-wash); border:1px solid #e6dcfb; border-top:2.5px solid var(--violet-3)}
+.opt-num{font-family:var(--serif); font-size:17pt; color:var(--violet); line-height:1}
+.macros{display:flex; gap:4mm; margin-top:2.5mm; padding-top:2.5mm; border-top:1px solid var(--rule-soft); font-size:8pt; color:var(--muted)}
+.macros b{color:var(--ink); font-weight:700}
+.plate{list-style:none; padding:0; margin:2.5mm 0 0}
+.plate li{font-size:9.2pt; line-height:1.5; color:var(--ink-2); padding-left:4.5mm; position:relative}
+.plate li:before{content:''; position:absolute; left:0; top:1.9mm; width:2mm; height:2mm; border-radius:50%; background:var(--violet-3)}
+.qty{color:var(--faint); font-size:8.2pt}
+.tag{display:inline-block; font-size:7pt; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+     color:var(--violet-2); background:var(--violet-wash); border:1px solid #e6dcfb; padding:.9mm 2mm; border-radius:2px}
+.rule{height:1px; background:var(--rule); margin:5mm 0}
+.oil{background:var(--violet-wash); border-left:2.5px solid var(--violet); padding:3mm 4mm; margin:0 0 3mm;
+     font-size:9pt; line-height:1.55; color:var(--ink)}
+.oil b{color:var(--violet-2)}
+.rec{break-inside:avoid; margin-bottom:6mm}
+.rec-head{display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--rule); padding-bottom:1.5mm; margin-bottom:2.5mm}
+.rec-macros{font-size:8pt; color:var(--muted); white-space:nowrap}
+.ing{font-size:8.4pt; color:var(--muted); line-height:1.5; margin-top:2mm}
+.ing b{color:var(--ink-2); font-weight:600}
+.banner{background:var(--ink); color:#fff; padding:6mm 7mm; border-radius:2px; margin-top:auto}
+.banner h2{color:#fff; margin-bottom:2mm}
+.banner p{color:#c9c2d6; margin:0; font-size:9.4pt}
+.steps{counter-reset:s; list-style:none; padding:0; margin:4mm 0 0}
+.steps li{counter-increment:s; position:relative; padding-left:9mm; margin-bottom:3.5mm; font-size:9.8pt; line-height:1.6; color:var(--ink-2)}
+.steps li:before{content:counter(s,decimal-leading-zero); position:absolute; left:0; top:-.4mm;
+  font-family:var(--serif); font-size:13pt; color:var(--violet)}
+.note{font-size:8.6pt; color:var(--faint); font-style:italic}
+
+/* ── grams on every line, and a real ingredient table ─────────────────── */
+.plate li{display:flex; justify-content:space-between; gap:3mm; align-items:baseline}
+.plate .nm{flex:1}
+.g{font-variant-numeric:tabular-nums; font-weight:700; color:var(--violet-2); font-size:8.6pt; white-space:nowrap}
+.itab{width:100%; border-collapse:collapse; margin-top:2.5mm; font-size:8.3pt}
+.itab th{text-align:left; font-size:7pt; letter-spacing:.12em; text-transform:uppercase; color:var(--faint);
+         font-weight:700; padding:0 0 1.2mm; border-bottom:1px solid var(--rule)}
+.itab th.r,.itab td.r{text-align:right}
+.itab td{padding:1.1mm 0; border-bottom:1px solid var(--rule-soft); color:var(--ink-2)}
+.itab td.r{font-variant-numeric:tabular-nums; color:var(--ink); font-weight:600; white-space:nowrap}
+.itab tr:last-child td{border-bottom:none}
+.itab tfoot td{border-top:1px solid var(--rule); border-bottom:none; font-weight:700; color:var(--ink); padding-top:1.5mm}
+.method{counter-reset:m; list-style:none; padding:0; margin:2.5mm 0 0}
+.method li{counter-increment:m; position:relative; padding-left:6.5mm; margin-bottom:2mm; font-size:9pt; line-height:1.55; color:var(--ink-2)}
+.method li:before{content:counter(m); position:absolute; left:0; top:0; font-weight:700; color:var(--violet); font-size:8.4pt}
+.slotbar{display:flex; gap:3mm; margin:4mm 0 5mm}
+.slotbar div{flex:1; border:1px solid var(--rule); border-left:2.5px solid var(--violet-3); padding:2.5mm 3mm}
+.slotbar b{display:block; font-size:8pt; color:var(--muted); font-weight:600}
+.slotbar span{font-family:var(--serif); font-size:14pt; color:var(--ink)}
