@@ -75,7 +75,7 @@ export function SettingsView({
             </div>
             <div className="flex-1">
               <p className="font-semibold" style={{ color: "#e8eaf0" }}>Coach Panel</p>
-              <p className="text-xs" style={{ color: "#7e8a9e" }}>Manage clients, plans & your exercise library</p>
+              <p className="text-xs" style={{ color: "#7e8a9e" }}>Your clients, their plans and your library</p>
             </div>
             <ChevronRight size={18} style={{ color: "#2dd4bf" }} />
           </Link>
@@ -92,7 +92,7 @@ export function SettingsView({
           </div>
           <div className="flex-1">
             <p className="font-semibold" style={{ color: "#e8eaf0" }}>Message your coach</p>
-            <p className="text-xs" style={{ color: "#7e8a9e" }}>Questions, wins, anything — chat anytime</p>
+            <p className="text-xs" style={{ color: "#7e8a9e" }}>Questions, wins, anything. Replies within a day</p>
           </div>
           <ChevronRight size={18} style={{ color: "#2dd4bf" }} />
         </Link>
@@ -112,7 +112,7 @@ export function SettingsView({
           </div>
           <div className="flex-1">
             <p className="font-semibold" style={{ color: "#e8eaf0" }}>Learn</p>
-            <p className="text-xs" style={{ color: "#7e8a9e" }}>Short thyroid lessons, unlocked week by week</p>
+            <p className="text-xs" style={{ color: "#7e8a9e" }}>Short lessons, one new one each week</p>
           </div>
           <ChevronRight size={18} style={{ color: "#7e8a9e" }} />
         </Link>
@@ -128,7 +128,7 @@ export function SettingsView({
           </div>
           <div className="flex-1">
             <p className="font-semibold" style={{ color: "#e8eaf0" }}>My Health &amp; Labs</p>
-            <p className="text-xs" style={{ color: "#7e8a9e" }}>Thyroid profile, medication & lab trends</p>
+            <p className="text-xs" style={{ color: "#7e8a9e" }}>Your tablet, timing and blood reports</p>
           </div>
           <ChevronRight size={18} style={{ color: "#7e8a9e" }} />
         </Link>
@@ -148,7 +148,7 @@ export function SettingsView({
           <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
             <ShieldCheck size={16} style={{ color: "#2dd4bf" }} /> Your data
           </h3>
-          <p className="text-xs mb-4" style={{ color: "#7e8a9e" }}>Download everything we hold about you, or remove it entirely.</p>
+          <p className="text-xs mb-4" style={{ color: "#7e8a9e" }}>Download a copy of everything in your account. To close your account, message your coach.</p>
 
           <button
             onClick={handleExport}

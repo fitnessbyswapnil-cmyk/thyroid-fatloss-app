@@ -57,6 +57,9 @@ export async function logExerciseSet(input: {
     )
     if (error) return { success: false, error: error.message }
     revalidatePath('/dashboard/plans')
+    revalidatePath('/dashboard/food')
+    revalidatePath('/dashboard/move')
+    revalidatePath('/dashboard')
     return { success: true }
   })
 }
@@ -73,6 +76,9 @@ export async function deleteExerciseSet(date: string, exerciseName: string, setN
       .eq('exercise_name', exerciseName).eq('set_number', setNumber)
     if (error) return { success: false, error: error.message }
     revalidatePath('/dashboard/plans')
+    revalidatePath('/dashboard/food')
+    revalidatePath('/dashboard/move')
+    revalidatePath('/dashboard')
     return { success: true }
   })
 }
@@ -142,6 +148,9 @@ export async function toggleMealLog(date: string, meal: string, done: boolean) {
       if (error) return { success: false, error: error.message }
     }
     revalidatePath('/dashboard/plans')
+    revalidatePath('/dashboard/food')
+    revalidatePath('/dashboard/move')
+    revalidatePath('/dashboard')
     revalidatePath('/dashboard')
     return { success: true }
   })

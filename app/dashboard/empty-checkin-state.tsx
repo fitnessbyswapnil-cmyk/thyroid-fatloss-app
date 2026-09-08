@@ -1,11 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowRight, Camera, Check, ChevronDown, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill, Dumbbell, Footprints, UtensilsCrossed } from 'lucide-react'
+import { ArrowRight, Camera, Check, ChevronDown, ChevronRight, FlaskConical, BookOpen, MessageSquare, Pill } from 'lucide-react'
 import Link from 'next/link'
 import { BottomNavPill } from '@/components/dashboard/BottomNavPill'
 import { ReminderToggle } from '@/components/dashboard/ReminderToggle'
-import { TodayLogCard } from '@/components/dashboard/TodayLogCard'
+import { TodayCard, type TodayLogState } from '@/components/dashboard/TodayCard'
+import { FirstOpenTour } from '@/components/dashboard/FirstOpenTour'
+import type { TodayMeal } from '@/lib/plans/today'
+import type { WorkoutItem } from '@/app/actions/plans'
 
 export interface Week0Status {
   hasPlan: boolean
@@ -17,30 +20,14 @@ export interface Week0Status {
   firstLessonSlug: string | null
 }
 
-export interface TodayMeal {
-  slot: 'Breakfast' | 'Lunch' | 'Dinner'
-  pick: { label: string; items: string[]; kcal: number; protein: number } | null
-  total: number
-}
-
-export interface TodayExercise {
-  name: string
-  sets: number | null
-  reps: string | null
-}
-
 /**
  * Week one — the screen a client sees every day until her first check-in exists.
  *
- * It used to be a setup checklist with a weekly check-in as the main button.
- * That is backwards for the first seven days: what she needs on day one is
- * what to eat today, what to do today, and somewhere to tap that she did it.
- * Those three things were on the normal dashboard she could not reach yet, so
- * for her whole first week the daily log did not exist as far as she could see.
- *
- * Now it leads with today. Setup is one card for the only time-sensitive item
- * (photos), with the rest folded away. The check-in is named for when it
- * actually applies — the end of the week — rather than shouted on day one.
+ * Leads with today (eat, move, tap) through the same TodayCard the normal
+ * dashboard uses, so nothing changes shape the day her first check-in lands.
+ * Setup is one card for the only time-sensitive item (photos), with the rest
+ * folded away. The check-in is named for when it applies — the end of the
+ * week — rather than shouted on day one.
  */
 export function EmptyCheckInState({
   name,
@@ -53,8 +40,8 @@ export function EmptyCheckInState({
   name: string
   dayNumber: number
   todayMeals: TodayMeal[]
-  todayWorkout: TodayExercise[]
-  todayLog: { workoutDone: boolean; mealsFollowed: number; steps: number | null }
+  todayWorkout: { hasPlan: boolean; walk: WorkoutItem | null; exercises: WorkoutItem[] }
+  todayLog: TodayLogState
   status?: Week0Status
 }) {
   const s: Week0Status = status ?? {
@@ -79,10 +66,11 @@ export function EmptyCheckInState({
   return (
     <div
       className="min-h-screen relative"
-      style={{ background: '#090c14', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 24px))' }}
+      style={{ background: '#090c14', paddingBottom: 'calc(90px + env(safe-area-inset-bottom, 24px))' }}
     >
-      <main className="max-w-2xl mx-auto px-5 relative" style={{ paddingTop: 'calc(48px + env(safe-area-inset-top, 0px))' }}>
-        {/* ── Header: where she is, in one line ─────────────────────────── */}
+      <FirstOpenTour />
+
+      <header className="max-w-2xl mx-auto px-5" style={{ paddingTop: 'calc(48px + env(safe-area-inset-top, 0px))' }}>
         <p className="text-[10.5px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
           Day {dayNumber} · {weekday}
         </p>
@@ -92,100 +80,22 @@ export function EmptyCheckInState({
         >
           {dayNumber === 1 ? `Welcome, ${name}` : `Hello, ${name}`}
         </h1>
-        <p className="text-sm mt-1.5" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
+        <p className="text-sm mt-1.5 mb-6" style={{ color: '#a9b2c1', lineHeight: 1.55 }}>
           {s.hasPlan
             ? 'Three things today. Eat, move, tap. That is the whole job.'
             : 'Your coach is building your plan. It will appear here — the photos below matter most right now.'}
         </p>
+      </header>
 
-        {/* ── TODAY: what to eat ─────────────────────────────────────────── */}
-        {s.hasPlan && (
-          <section className="mt-6">
-            <div className="flex items-baseline justify-between mb-2.5">
-              <p className="text-[10.5px] uppercase font-semibold inline-flex items-center gap-1.5" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
-                <UtensilsCrossed size={12} /> Today&apos;s food
-              </p>
-              <Link href="/dashboard/plans" className="text-[11px] font-medium" style={{ color: '#2dd4bf' }}>
-                See all options
-              </Link>
-            </div>
-            <div className="space-y-2">
-              {todayMeals.map((m) => (
-                <Link key={m.slot} href="/dashboard/plans" className="block p-4 rounded-2xl" style={card}>
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-[11px] font-semibold uppercase" style={{ color: '#7e8a9e', letterSpacing: '0.1em' }}>{m.slot}</span>
-                    {m.pick && (
-                      <span className="text-[11px] tabular-nums" style={{ color: '#5a6578' }}>
-                        {m.pick.kcal} kcal · {m.pick.protein}g protein
-                      </span>
-                    )}
-                  </div>
-                  {m.pick ? (
-                    <>
-                      <p className="text-[15px] font-medium mt-1" style={{ color: '#e8eaf0', lineHeight: 1.4 }}>
-                        {m.pick.items.join(' · ')}
-                      </p>
-                      <p className="text-[11px] mt-1.5" style={{ color: '#5a6578' }}>
-                        Suggested for today · or pick any of the other {Math.max(0, m.total - 1)}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-sm mt-1" style={{ color: '#7e8a9e' }}>Not set yet</p>
-                  )}
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+      <TodayCard
+        hasPlan={s.hasPlan}
+        meals={todayMeals}
+        walk={todayWorkout.walk}
+        exercises={todayWorkout.exercises}
+        log={todayLog}
+      />
 
-        {/* ── TODAY: what to do ──────────────────────────────────────────── */}
-        {s.hasPlan && (
-          <section className="mt-6">
-            <div className="flex items-baseline justify-between mb-2.5">
-              <p className="text-[10.5px] uppercase font-semibold inline-flex items-center gap-1.5" style={{ color: '#7e8a9e', letterSpacing: '0.16em' }}>
-                <Dumbbell size={12} /> Today&apos;s movement
-              </p>
-              <Link href="/dashboard/plans" className="text-[11px] font-medium" style={{ color: '#2dd4bf' }}>
-                Open with demos
-              </Link>
-            </div>
-            <Link href="/dashboard/plans" className="block p-4 rounded-2xl" style={card}>
-              <div className="flex items-center gap-3 pb-3 mb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                <Footprints size={18} style={{ color: '#2dd4bf' }} />
-                <div>
-                  <p className="text-[15px] font-medium" style={{ color: '#e8eaf0' }}>Walk 30 minutes</p>
-                  <p className="text-[11px] mt-0.5" style={{ color: '#7e8a9e' }}>Split it if you like — 15 after lunch, 15 after dinner</p>
-                </div>
-              </div>
-              {todayWorkout.length > 0 ? (
-                <ul className="space-y-1.5">
-                  {todayWorkout.filter((w) => w.name !== 'Brisk Walk').map((w) => (
-                    <li key={w.name} className="flex items-baseline justify-between text-sm">
-                      <span style={{ color: '#e8eaf0' }}>{w.name}</span>
-                      <span className="text-[11px] tabular-nums shrink-0 ml-3" style={{ color: '#7e8a9e' }}>
-                        {w.sets ? `${w.sets} × ` : ''}{w.reps || ''}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm" style={{ color: '#7e8a9e' }}>Rest day — the walk still counts.</p>
-              )}
-            </Link>
-          </section>
-        )}
-
-        {/* ── TODAY: tap what you did ────────────────────────────────────── */}
-        {s.hasPlan && (
-          <div className="mt-7 -mx-1">
-            <TodayLogCard
-              initialWorkoutDone={todayLog.workoutDone}
-              initialMealsFollowed={todayLog.mealsFollowed}
-              initialSteps={todayLog.steps}
-            />
-          </div>
-        )}
-
+      <main className="max-w-2xl mx-auto px-5">
         {/* ── The one setup task that cannot wait ───────────────────────── */}
         {!s.hasBaselinePhotos && (
           <Link
@@ -250,7 +160,7 @@ export function EmptyCheckInState({
             {daysToCheckin > 0 ? `Your first check-in opens in ${daysToCheckin} day${daysToCheckin === 1 ? '' : 's'}` : 'Your first check-in is ready'}
           </p>
           <p className="text-[12px] mt-1" style={{ color: '#7e8a9e', lineHeight: 1.5 }}>
-            Once a week, five minutes: weight, energy, sleep. It is how your coach sees the week, and it unlocks your trends.
+            Once a week, three minutes: weight, energy, sleep. It is how your coach sees the week and adjusts your plan.
           </p>
           <Link
             href="/dashboard/check-in"

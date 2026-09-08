@@ -40,10 +40,12 @@ export function TodayLogCard({
   initialWorkoutDone,
   initialMealsFollowed,
   initialSteps,
+  heading = "Today",
 }: {
   initialWorkoutDone: boolean
   initialMealsFollowed: number
   initialSteps: number | null
+  heading?: string
 }) {
   const router = useRouter()
   const [meals, setMeals] = useState(initialMealsFollowed)
@@ -107,10 +109,10 @@ export function TodayLogCard({
     <section className="px-4">
       <div className="flex items-baseline justify-between mb-3">
         <span className="text-[11px] font-medium uppercase" style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}>
-          Today
+          {heading}
         </span>
         <span className="text-[11px]" style={{ color: done ? TEAL : "#5a6578" }}>
-          {done ? "All three done" : "Three taps"}
+          {done ? "All three done — well done" : "Tap each one you did"}
         </span>
       </div>
 

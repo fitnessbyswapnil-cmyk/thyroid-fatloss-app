@@ -5,7 +5,7 @@ import { DashboardClient } from "./dashboard-client"
 import { EmptyCheckInState } from "./empty-checkin-state"
 import { nextLesson } from "@/app/actions/lessons"
 import { getPlansForClient } from "@/app/actions/plans"
-import { scheduledDays, sessionFor, todayDayOfWeek } from "@/lib/plans/schedule"
+import { buildTodayMeals, buildTodayWorkout, dayNumberFrom } from "@/lib/plans/today"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -94,50 +94,12 @@ export default async function DashboardPage() {
       supabase.from("lessons").select("slug").eq("published", true).order("week_number").limit(1).maybeSingle(),
     ])
 
-    const w0Meal = (w0Plans || []).find((p) => p.type === "meal")?.content as
-      { mealItems?: { meal?: string | null; name: string; qty?: number | null; calories?: number | null; protein?: number | null }[] } | undefined
-    const w0Workout = (w0Plans || []).find((p) => p.type === "workout")?.content as
-      { workoutItems?: { name: string; sets?: number | null; reps?: string | null; dayOfWeek?: number | null; day?: string | null }[] } | undefined
+    const w0MealItems = ((w0Plans || []).find((p) => p.type === "meal")?.content as { mealItems?: import("@/app/actions/plans").MealItem[] } | undefined)?.mealItems
+    const w0WorkoutItems = ((w0Plans || []).find((p) => p.type === "workout")?.content as { workoutItems?: import("@/app/actions/plans").WorkoutItem[] } | undefined)?.workoutItems
 
-    // Day N of the programme, from her start date; day 1 if she has none yet.
-    const w0Start = client.start_date ? new Date(client.start_date) : new Date()
-    const dayNumber = Math.max(1, Math.floor((Date.now() - w0Start.getTime()) / 86400000) + 1)
-
-    // Group meal options by slot, and pick TODAY'S suggestion by rotating
-    // through the seven — so she gets variety without having to choose, and
-    // can still open the plan for the other six.
-    const slots: Record<string, { label: string; items: string[]; kcal: number; protein: number }[]> = {}
-    const groups = new Map<string, typeof w0Meal extends undefined ? never : NonNullable<typeof w0Meal>["mealItems"]>()
-    for (const it of w0Meal?.mealItems || []) {
-      const key = (it.meal || "").trim()
-      if (!key) continue
-      const arr = groups.get(key) || []
-      arr!.push(it)
-      groups.set(key, arr!)
-    }
-    for (const [key, items] of groups) {
-      const slot = key.split(" — ")[0]
-      const q = (x: { qty?: number | null }) => x.qty || 1
-      slots[slot] = slots[slot] || []
-      slots[slot].push({
-        label: key,
-        items: items!.map((x) => x.name),
-        kcal: Math.round(items!.reduce((a, x) => a + (x.calories || 0) * q(x), 0)),
-        protein: Math.round(items!.reduce((a, x) => a + (x.protein || 0) * q(x), 0)),
-      })
-    }
-    const todayMeals = (["Breakfast", "Lunch", "Dinner"] as const).map((slot) => {
-      const opts = slots[slot] || []
-      const pick = opts.length ? opts[(dayNumber - 1) % opts.length] : null
-      return { slot, pick, total: opts.length }
-    })
-
-    // Today's session from the workout plan, by weekday.
-    const jsDay = new Date().getDay()
-    const dow = jsDay === 0 ? 7 : jsDay
-    const todayWorkout = (w0Workout?.workoutItems || [])
-      .filter((w) => w.dayOfWeek === dow)
-      .map((w) => ({ name: w.name, sets: w.sets ?? null, reps: w.reps ?? null }))
+    const dayNumber = dayNumberFrom(client.start_date)
+    const todayMeals = buildTodayMeals(w0MealItems, dayNumber)
+    const todayWorkout = buildTodayWorkout(w0WorkoutItems)
 
     const w0Today = new Date().toLocaleDateString("en-CA")
     const w0TodayLog = (logs || []).find((l) => l.date === w0Today) || null
@@ -275,20 +237,12 @@ export default async function DashboardPage() {
   const wellnessScoreDelta = wellnessScoreCurrent - wellnessScorePrevious
 
   // Prepare dashboard data
-  // Today's session, so home answers "what do I do today" rather than just
-  // linking to the plan and making her work it out.
-  const { workout: workoutPlan } = plansForClient
-  const workoutItems = workoutPlan?.content?.workoutItems || []
-  const todayDow = todayDayOfWeek()
-  const hasSchedule = scheduledDays(workoutItems).size > 0
-  const todaysSession = sessionFor(workoutItems, todayDow)
-  const todayFocus = {
-    hasPlan: workoutItems.length > 0,
-    hasSchedule,
-    count: todaysSession.length,
-    // Only call it a rest day when the coach actually scheduled a week.
-    isRestDay: hasSchedule && todaysSession.length === 0,
-  }
+  // Today's food and movement, shared with the Week-0 screen so the home
+  // screen never changes shape the day her first check-in lands.
+  const { meal: mealPlan, workout: workoutPlan } = plansForClient
+  const dayNumber = dayNumberFrom(client.start_date)
+  const todayMeals = buildTodayMeals(mealPlan?.content?.mealItems, dayNumber)
+  const todayWorkout = buildTodayWorkout(workoutPlan?.content?.workoutItems)
 
   const dashboardData = {
     name: client.full_name?.split(" ")[0] || "Friend",
@@ -297,7 +251,12 @@ export default async function DashboardPage() {
     nextLesson: upNextLesson
       ? { slug: upNextLesson.slug, title: upNextLesson.title, summary: upNextLesson.summary, minutes: upNextLesson.read_minutes, category: upNextLesson.category }
       : null,
-    todayFocus,
+    today: {
+      hasPlan: Boolean(mealPlan || workoutPlan),
+      meals: todayMeals,
+      walk: todayWorkout.walk,
+      exercises: todayWorkout.exercises,
+    },
     medication: healthProfile
       ? { name: healthProfile.medication, dose: healthProfile.medication_dose, timing: healthProfile.medication_timing }
       : null,

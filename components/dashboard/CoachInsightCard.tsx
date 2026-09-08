@@ -13,7 +13,7 @@ interface CoachInsightCardProps {
 
 export function CoachInsightCard({ 
   coachName = "Your Coach",
-  coachRole = "Wellness coach · Reviewing your week",
+  coachRole = "A note from your coach",
   insight = "Nice consistency this week. Keep focusing on your morning routine — small, steady habits add up.",
   timestamp = "Today · 9:14 AM",
   isNew = true
@@ -157,7 +157,7 @@ export function CoachInsightCard({
               className="text-[10px] font-medium uppercase"
               style={{ color: '#2dd4bf', letterSpacing: '0.08em' }}
             >
-              Coach Insight
+              From your coach
             </span>
           </div>
         </div>

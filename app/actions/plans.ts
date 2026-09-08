@@ -204,6 +204,9 @@ export async function savePlan(input: SavePlanInput) {
 
     revalidatePath(`/coach/client/${input.clientId}`)
     revalidatePath('/dashboard/plans')
+    revalidatePath('/dashboard/food')
+    revalidatePath('/dashboard/move')
+    revalidatePath('/dashboard')
     return { success: true }
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Failed to save plan' }

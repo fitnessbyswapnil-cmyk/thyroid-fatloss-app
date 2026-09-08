@@ -86,6 +86,19 @@ export function ProgressView({ checkins, startDate = null, backHref = "/dashboar
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8 space-y-5 relative" style={{ zIndex: 1 }}>
+        {/* Nothing to chart yet: say when it fills, and where the filling happens. */}
+        {checkins.length === 0 && (
+          <div className="p-5 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <p className="text-sm font-medium" style={{ color: "#e8eaf0" }}>Your progress starts with your first check-in</p>
+            <p className="text-[12.5px] mt-1" style={{ color: "#7e8a9e", lineHeight: 1.55 }}>
+              Every weekly check-in adds a point to your weight, energy and sleep here. Until then there is nothing to draw.
+            </p>
+            <Link href="/dashboard/check-in" className="mt-3 inline-flex items-center h-10 px-4 rounded-full text-[13px] font-semibold" style={{ background: "#2dd4bf", color: "#06231f" }}>
+              Do this week&apos;s check-in
+            </Link>
+          </div>
+        )}
+
         {/* Glowing headline moment (prototype style) */}
         {lost != null && (
           <div className="text-center py-4">

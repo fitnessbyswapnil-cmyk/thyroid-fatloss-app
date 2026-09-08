@@ -47,7 +47,7 @@ export function WellnessScorecard({
         className="text-[11px] font-medium uppercase block mb-2"
         style={{ color: "#2dd4bf", letterSpacing: "0.10em" }}
       >
-        Your Wellness Progress
+        How you feel this week
       </span>
 
       {/* Main Score */}

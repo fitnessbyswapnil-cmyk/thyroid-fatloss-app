@@ -2,47 +2,45 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
-import { Home, TrendingUp, Apple, User } from "lucide-react"
+import { Sun, UtensilsCrossed, Dumbbell, MessageCircle, User } from "lucide-react"
 
+/**
+ * Five tabs, named for what is inside them, with the word under the icon.
+ *
+ * The earlier pill had four unlabelled icons — Home, Progress, "Plans", Profile.
+ * A client looking for her food does not think "Plans", and the only way to
+ * message her coach was to open Profile first. Labels cost 12px of height and
+ * remove the guessing.
+ */
 const tabs = [
-  { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: TrendingUp, label: "Progress", href: "/dashboard/progress" },
-  { icon: Apple, label: "Plans", href: "/dashboard/plans" },
-  { icon: User, label: "Profile", href: "/account" },
+  { icon: Sun, label: "Today", href: "/dashboard", exact: true },
+  { icon: UtensilsCrossed, label: "Food", href: "/dashboard/food" },
+  { icon: Dumbbell, label: "Move", href: "/dashboard/move" },
+  { icon: MessageCircle, label: "Chat", href: "/dashboard/messages" },
+  { icon: User, label: "Me", href: "/account" },
 ]
 
 export function BottomNavPill() {
   const pathname = usePathname()
   const activeIndex = Math.max(
     0,
-    tabs.findIndex((t) => (t.href === "/dashboard" ? pathname === t.href : pathname.startsWith(t.href)))
+    tabs.findIndex((t) => (t.exact ? pathname === t.href : pathname.startsWith(t.href)))
   )
 
   return (
     <nav
-      className="fixed z-50"
+      className="fixed z-50 left-0 right-0"
       style={{
-        bottom: 24,
-        left: "50%",
-        transform: "translateX(-50%)",
+        bottom: 0,
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
         backdropFilter: "blur(28px) saturate(180%)",
         WebkitBackdropFilter: "blur(28px) saturate(180%)",
-        background: "rgba(9, 12, 20, 0.75)",
-        border: "1px solid rgba(255, 255, 255, 0.10)",
-        borderRadius: 9999,
-        padding: "10px 32px",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12)",
+        background: "rgba(9, 12, 20, 0.88)",
+        borderTop: "1px solid rgba(255, 255, 255, 0.08)",
       }}
+      aria-label="Main"
     >
-      <div className="flex items-center gap-2 relative">
-        <motion.div
-          className="absolute rounded-full"
-          style={{ background: "rgba(45, 212, 191, 0.15)", width: 40, height: 40, top: "50%", marginTop: -20 }}
-          animate={{ left: activeIndex * 48 }}
-          transition={{ type: "spring", stiffness: 300, damping: 26 }}
-        />
-
+      <div className="max-w-2xl mx-auto grid grid-cols-5" style={{ height: 60 }}>
         {tabs.map((tab, index) => {
           const isActive = index === activeIndex
           const Icon = tab.icon
@@ -50,18 +48,27 @@ export function BottomNavPill() {
             <Link
               key={tab.label}
               href={tab.href}
-              className="relative z-10 flex items-center justify-center rounded-full"
-              style={{ width: 40, height: 40 }}
+              className="flex flex-col items-center justify-center gap-1"
               aria-label={tab.label}
+              aria-current={isActive ? "page" : undefined}
             >
-              <Icon
+              <span
+                className="flex items-center justify-center rounded-full"
                 style={{
-                  width: isActive ? 22 : 20,
-                  height: isActive ? 22 : 20,
-                  color: isActive ? "#2dd4bf" : "rgba(255, 255, 255, 0.40)",
-                  transition: "color 200ms ease",
+                  width: 40,
+                  height: 26,
+                  background: isActive ? "rgba(45, 212, 191, 0.16)" : "transparent",
+                  transition: "background 200ms ease",
                 }}
-              />
+              >
+                <Icon size={20} style={{ color: isActive ? "#2dd4bf" : "rgba(255, 255, 255, 0.55)" }} />
+              </span>
+              <span
+                className="text-[10.5px] font-semibold"
+                style={{ color: isActive ? "#2dd4bf" : "rgba(255, 255, 255, 0.55)", letterSpacing: "0.02em" }}
+              >
+                {tab.label}
+              </span>
             </Link>
           )
         })}

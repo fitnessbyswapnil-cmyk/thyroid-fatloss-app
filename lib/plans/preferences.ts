@@ -173,7 +173,8 @@ export const PREF_QUESTIONS: PrefQuestion[] = [
     kind: "single",
     why: "Be honest about a weekday, not a Sunday.",
     options: [
-      { value: "under15", label: "Under 15 min", icon: "clock" },
+      { value: "under10", label: "Under 10 min", hint: "Assemble, not cook", icon: "clock" },
+      { value: "under15", label: "10–15 min", icon: "clock" },
       { value: "15to30", label: "15–30 min", icon: "clock" },
       { value: "over30", label: "I have time", icon: "clock" },
     ],

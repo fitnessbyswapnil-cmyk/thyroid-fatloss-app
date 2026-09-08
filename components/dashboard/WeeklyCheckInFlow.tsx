@@ -77,7 +77,7 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: reveal(0.2), duration: 0.6 }}
         >
-          This is your time.
+          Your weekly check-in
         </motion.h2>
         <motion.p
           className="text-lg leading-relaxed"
@@ -86,7 +86,8 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: reveal(0.4), duration: 0.6 }}
         >
-          Let&apos;s see how far you&apos;ve come.
+          About three minutes, once a week: how you feel, your weight, and what got done.
+          Your coach reads every answer and adjusts your plan from it.
         </motion.p>
       </div>
 
@@ -103,7 +104,7 @@ function PrimeStep({ onNext }: { onNext: () => void }) {
         whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
         whileTap={{ transform: 'scale(0.98)' }}
       >
-        Begin
+        Start
       </motion.button>
     </motion.div>
   )
@@ -250,7 +251,7 @@ function FeelingsStep({ data, setData, onNext }: StepProps) {
         whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
         whileTap={{ scale: 0.98 }}
       >
-        Continue
+        Next
       </motion.button>
     </motion.div>
   )
@@ -329,7 +330,7 @@ function BodyStep({ data, setData, onNext }: StepProps) {
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
-        Continue
+        Next
       </motion.button>
     </motion.div>
   )
@@ -521,7 +522,7 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
-        Continue
+        Next
       </motion.button>
     </motion.div>
   )
@@ -569,7 +570,7 @@ function WeightStep({ data, setData, onNext }: StepProps) {
           whileHover={{ transform: 'translateY(-2px)' }}
           whileTap={{ scale: 0.98 }}
         >
-          Continue
+          Next
         </motion.button>
         <motion.button
           onClick={handleSkip}
@@ -642,7 +643,7 @@ function MeasurementsStep({ data, setData, onNext }: StepProps) {
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
-        {filled > 0 ? `Continue with ${filled} recorded` : 'Continue'}
+        {filled > 0 ? `Next · ${filled} recorded` : 'Next'}
       </motion.button>
       {filled === 0 && (
         <button onClick={onNext} className="w-full text-center text-sm" style={{ color: '#5a6578' }}>
@@ -720,7 +721,7 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
         whileHover={{ transform: 'translateY(-2px)' }}
         whileTap={{ scale: 0.98 }}
       >
-        Continue
+        Next
       </motion.button>
     </motion.div>
   )
@@ -1280,6 +1281,9 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
   // this project silently dropped the last answer when a question was added.
   const next = () => setCurrentStep((s) => Math.min(s + 1, COMPLETION_STEP))
 
+  // Named from the same list order as `steps` below; index 0 is the intro.
+  const STEP_NAMES = ['', 'How you feel', 'Your body', 'What got done', 'Weight', 'Measurements', 'Symptoms', 'Looking back']
+
   const steps = [
     <PrimeStep key="prime" onNext={next} />,
     <FeelingsStep key="feelings" data={data} setData={setData} onNext={next} />,
@@ -1301,8 +1305,14 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
 
   return (
     <div className="min-h-screen w-full" style={{ background: '#090c14' }}>
-      {/* Progress dots at top */}
-      <div className="flex justify-center gap-1.5 px-6 py-6 sticky top-0 z-40">
+      {/* Progress: dots plus the step's name, so she knows where she is */}
+      <div className="sticky top-0 z-40 px-6 pt-6 pb-3" style={{ background: 'rgba(9,12,20,0.9)' }}>
+      {currentStep > 0 && currentStep < COMPLETION_STEP && (
+        <p className="text-center text-[11px] uppercase font-semibold mb-2" style={{ color: '#7e8a9e', letterSpacing: '0.14em' }}>
+          Step {currentStep} of {COMPLETION_STEP - 1} · {STEP_NAMES[currentStep] ?? ''}
+        </p>
+      )}
+      <div className="flex justify-center gap-1.5">
         {[...Array(COMPLETION_STEP)].map((_, idx) => (
           <motion.div
             key={idx}
@@ -1316,6 +1326,7 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
             transition={{ duration: 0.4 }}
           />
         ))}
+      </div>
       </div>
 
       {/* Back button */}
