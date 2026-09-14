@@ -4,9 +4,10 @@ import { useState, type ReactNode } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Activity, Pill, FlaskConical, Plus, Trash2, Loader2, Check } from "lucide-react"
+import type { LabReport } from "@/app/actions/health"
 import { saveHealthProfile, addLab, deleteLab, type HealthProfile, type LabResult } from "@/app/actions/health"
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
-import { LabReportUpload } from "@/components/health/LabReportUpload"
+import { ReportUpload, CoachReports } from "@/components/health/ReportUpload"
 import { LabGauges } from "@/components/health/LabGauges"
 import { LabDeltas } from "@/components/health/LabDeltas"
 
@@ -69,6 +70,7 @@ export function HealthView({
   clientName,
   asCoach = false,
   embedded = false,
+  reports = [],
 }: {
   profile: HealthProfile | null
   labs: LabResult[]
@@ -77,6 +79,8 @@ export function HealthView({
   asCoach?: boolean
   /** Render just the sections, for use inside the Progress tab. */
   embedded?: boolean
+  /** Uploaded report files, newest first. */
+  reports?: LabReport[]
 }) {
   const router = useRouter()
   const [p, setP] = useState<Partial<HealthProfile>>(profile || {})
@@ -126,8 +130,8 @@ export function HealthView({
 
   const body = (
     <>
-        {/* Free on-device report import */}
-        <LabReportUpload clientId={clientId} />
+        {/* Report files: she sends them, the coach enters the values. */}
+        {asCoach ? <CoachReports reports={reports} /> : <ReportUpload reports={reports} />}
 
         {/* Latest report as range gauges */}
         {/* "What changed" sits above the gauges: on a repeat report, the first
@@ -193,6 +197,8 @@ export function HealthView({
             <FlaskConical size={16} style={{ color: "#2dd4bf" }} /> Lab results
           </h3>
 
+          {asCoach && (
+            <>
           {/* add row */}
           <div className="grid grid-cols-2 gap-2 mb-3">
             <Field label="Date"><input type="date" value={lab.taken_on || ""} onChange={(e) => setLab({ ...lab, taken_on: e.target.value })} className="w-full px-3 py-2 rounded-lg text-sm" style={inputStyle} /></Field>
@@ -207,10 +213,13 @@ export function HealthView({
             {adding ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />} Add lab result
           </button>
 
+            </>
+          )}
+
           {err && <p className="text-xs mb-3" style={{ color: "#fb7185" }}>{err}</p>}
 
           {labs.length === 0 ? (
-            <p className="text-sm" style={{ color: "#7e8a9e" }}>No labs recorded yet. Add your latest report above.</p>
+            <p className="text-sm" style={{ color: "#7e8a9e" }}>{asCoach ? "No labs recorded yet. Enter values from a report above." : "No results yet. Send a report above and your coach adds the numbers here."}</p>
           ) : (
             <div className="space-y-1.5">
               {[...labs].reverse().map((l) => (
@@ -219,7 +228,7 @@ export function HealthView({
                   <span className="flex-1 text-xs tabular-nums" style={{ color: "#a9b2c1" }}>
                     {l.tsh != null && `TSH ${l.tsh}  `}{l.t4 != null && `T4 ${l.t4}  `}{l.vitamin_d != null && `D ${l.vitamin_d}  `}{l.ferritin != null && `Fer ${l.ferritin}  `}{l.weight_kg != null && `${l.weight_kg}kg`}
                   </span>
-                  <button onClick={() => removeLab(l.id)} style={{ color: "#5a6578" }} aria-label="Delete"><Trash2 size={14} /></button>
+                  {asCoach && <button onClick={() => removeLab(l.id)} style={{ color: "#5a6578" }} aria-label="Delete"><Trash2 size={14} /></button>}
                 </div>
               ))}
             </div>

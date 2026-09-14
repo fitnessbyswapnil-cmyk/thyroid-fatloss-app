@@ -37,7 +37,11 @@ export async function POST(request: NextRequest) {
     // Generate unique filename with user ID prefix for organization
     const timestamp = Date.now()
     const extension = file.name.split('.').pop()
-    const pathname = `${user.id}/${type || 'uploads'}/${timestamp}.${extension}`
+    // `type` becomes a folder name, so only a plain slug is allowed — it must
+    // never be able to climb out of the caller's own `${user.id}/` prefix.
+    const folder = /^[a-z0-9-]{1,40}$/.test(type || '') ? type : 'uploads'
+    const ext = (extension || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'bin'
+    const pathname = `${user.id}/${folder}/${timestamp}.${ext}`
 
     // Upload to Vercel Blob (private store)
     const blob = await put(pathname, file, {

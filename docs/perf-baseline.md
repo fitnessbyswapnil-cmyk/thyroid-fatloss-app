@@ -61,3 +61,5 @@ Tesseract then fetches its WASM core and English language data from a CDN at run
 | Phase | Change | `/dashboard` gzip | Notes |
 |---|---|---|---|
 | Baseline | — | 243 KB | |
+| 1–4 | Three tabs, time-aware Today, derived logging, 3-step check-in | 243 KB | `/dashboard/progress` 192 → 202 KB (health section now included); `/dashboard/check-in` 231 KB unchanged |
+| 5 | Removed tesseract.js 7 and pdfjs-dist 6 | 243 KB | No First Load change — both were dynamic imports. Removed from the upload path: 124 KB gzip pdf.js chunk plus tesseract's runtime WASM and language data (several MB from a CDN). 195 lockfile lines gone. |

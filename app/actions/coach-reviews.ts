@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { after } from 'next/server'
-import webpush from 'web-push'
+import { pushToUsers } from '@/lib/push/send'
 import { logError } from '@/lib/errors'
 import { programmeWeek } from '@/lib/health/programme'
 
@@ -30,59 +30,15 @@ const PHOTO_REVIEW_PREFIX = '📸 Photo review —'
  */
 async function notifyClientOfReview(clientId: string) {
   try {
-    const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-    const priv = process.env.VAPID_PRIVATE_KEY
-    if (!pub || !priv) return
-    webpush.setVapidDetails(
-      process.env.VAPID_SUBJECT || 'mailto:fitnessbyswapnil@gmail.com',
-      pub,
-      priv
-    )
-
-    // Service role: pruning a dead subscription and stamping the send ledger are
-    // writes on rows the coach's session has no business writing.
-    const db = createAdminClient()
-    const { data: devices } = await db
-      .from('push_subscriptions')
-      .select('endpoint, p256dh, auth')
-      .eq('client_id', clientId)
-    if (!devices?.length) return
-
-    let delivered = false
-    for (const d of devices) {
-      try {
-        await webpush.sendNotification(
-          { endpoint: d.endpoint, keys: { p256dh: d.p256dh, auth: d.auth } },
-          JSON.stringify({
-            title: 'Your coach reviewed your week',
-            body: 'Your weekly review is waiting in ThyroWell.',
-            url: '/dashboard',
-            tag: 'coach_review',
-          })
-        )
-        delivered = true
-      } catch (err: unknown) {
-        const status = (err as { statusCode?: number })?.statusCode
-        if (status === 404 || status === 410) {
-          await db.from('push_subscriptions').delete().eq('endpoint', d.endpoint)
-        } else {
-          await logError('coach-reviews.notify.send', err, clientId)
-        }
-      }
-    }
-
-    if (delivered) {
+    const reached = await pushToUsers([clientId], {
+      title: 'Your coach reviewed your week',
+      body: 'Your weekly review is waiting in ThyroWell.',
+      url: '/dashboard',
+      tag: 'coach_review',
+    })
+    if (reached.length) {
       const today = new Date().toISOString().slice(0, 10)
-      await db
-        .from('push_subscriptions')
-        .update({ last_sent_at: new Date().toISOString() })
-        .eq('client_id', clientId)
-      // Spends today's slot in the reminder ledger the cron reads, so she does
-      // not also get the generic check-in nudge hours later. A duplicate here
-      // (two reviews in one day) trips the unique key and is ignored on purpose.
-      await db
-        .from('reminder_sends')
-        .insert({ client_id: clientId, kind: 'coach_review', sent_on: today })
+      await createAdminClient().from('reminder_sends').insert({ client_id: clientId, kind: 'coach_review', sent_on: today })
     }
   } catch (err) {
     await logError('coach-reviews.notify', err, clientId)

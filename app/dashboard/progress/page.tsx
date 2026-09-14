@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import { ProgressView, type CheckinPoint } from "@/components/progress/ProgressView"
 import { HealthView } from "@/components/health/HealthView"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
-import { getHealthProfile, listLabs } from "@/app/actions/health"
+import { getHealthProfile, listLabReports, listLabs } from "@/app/actions/health"
 
 /**
  * The Progress tab: trends, milestones and photos, then her thyroid profile and
@@ -18,7 +18,7 @@ export default async function ProgressPage() {
 
   // start_date is what turns a stored ISO week into "Week 6 of your programme",
   // which is the only week number that means anything to her.
-  const [{ data }, { data: client }, profile, labs] = await Promise.all([
+  const [{ data }, { data: client }, profile, labs, reports] = await Promise.all([
     supabase
       .from("weekly_checkins")
       .select("week_number, submitted_at, weight, waist, hips, neck, chest, arm, thigh, calf, energy_level, sleep_quality, sleep_score, mood, digestion_score, adherence_score, steps, symptoms")
@@ -27,12 +27,13 @@ export default async function ProgressPage() {
     supabase.from("clients").select("start_date").eq("id", user.id).maybeSingle(),
     getHealthProfile(),
     listLabs(),
+    listLabReports(),
   ])
 
   return (
     <>
       <ProgressView checkins={(data || []) as CheckinPoint[]} startDate={client?.start_date ?? null} asTab>
-        <HealthView profile={profile} labs={labs} embedded />
+        <HealthView profile={profile} labs={labs} reports={reports} embedded />
       </ProgressView>
       <BottomNavPill />
     </>

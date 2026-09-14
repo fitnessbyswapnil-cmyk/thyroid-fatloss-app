@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { getAuthUser } from "@/lib/supabase/auth"
 import { redirect } from "next/navigation"
-import { getHealthProfile, listLabs } from "@/app/actions/health"
+import { getHealthProfile, listLabReports, listLabs } from "@/app/actions/health"
 import { HealthView } from "@/components/health/HealthView"
 
 // Coach view of a client's thyroid profile + labs (RLS coach policy allows all).
@@ -20,14 +20,15 @@ export default async function CoachClientHealthPage({ params }: { params: Promis
   // Fetching the labs alongside the role check rather than after it is safe:
   // RLS decides what comes back, so a non-coach gets nothing regardless, and
   // the redirect below fires before any of it reaches a component.
-  const [{ data: me }, { data: client }, profile, labs] = await Promise.all([
+  const [{ data: me }, { data: client }, profile, labs, reports] = await Promise.all([
     supabase.from("clients").select("role").eq("id", user.id).single(),
     supabase.from("clients").select("full_name").eq("id", id).single(),
     getHealthProfile(id),
     listLabs(id),
+    listLabReports(id),
   ])
 
   if (!me || (me.role !== "coach" && me.role !== "admin")) redirect("/dashboard")
 
-  return <HealthView profile={profile} labs={labs} clientId={id} clientName={client?.full_name || "Client"} asCoach />
+  return <HealthView profile={profile} labs={labs} reports={reports} clientId={id} clientName={client?.full_name || "Client"} asCoach />
 }
