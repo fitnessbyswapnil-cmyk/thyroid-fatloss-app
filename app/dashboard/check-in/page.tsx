@@ -19,17 +19,24 @@ export default async function CheckInPage() {
   const user = await getAuthUser(supabase)
 
   let existing = null
+  let lastWeight: number | null = null
   if (user) {
-    const { data } = await supabase
+    const [{ data }, { data: client }] = await Promise.all([
+      supabase
       .from('weekly_checkins')
       .select(
         'energy_level, mood, sleep_quality, stress_level, digestion_score, bloating, cravings, adherence_score, workouts_completed, workouts_target, meds_taken, meds_target, weight, steps, neck, chest, waist, hips, arm, thigh, calf, symptoms, reflection_text'
       )
       .eq('client_id', user.id)
       .eq('week_number', getWeekNumber(new Date()))
-      .maybeSingle()
+      .maybeSingle(),
+      // Her weight from the last check-in (kept on clients by submitWeeklyCheckIn),
+      // so the weight step starts there and needs taps, not typing.
+      supabase.from('clients').select('current_weight').eq('id', user.id).maybeSingle(),
+    ])
     existing = data ?? null
+    lastWeight = typeof client?.current_weight === 'number' ? client.current_weight : null
   }
 
-  return <WeeklyCheckInFlow existing={existing} />
+  return <WeeklyCheckInFlow existing={existing} lastWeight={lastWeight} />
 }

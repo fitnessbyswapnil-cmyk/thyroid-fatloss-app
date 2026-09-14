@@ -191,8 +191,11 @@ export async function getPendingReviews() {
         )
         const weeksAgo = Math.floor(daysAgo / 7)
 
-        const energyDelta = prevWeek ? review.energy_level - prevWeek.energy_level : 0
-        const sleepDelta = prevWeek ? review.sleep_quality - prevWeek.sleep_quality : 0
+        // Energy and sleep can be unanswered (null) since the three-step check-in;
+        // a delta only exists when both weeks have a real value.
+        const both = (a: number | null, b: number | null | undefined) => typeof a === 'number' && typeof b === 'number'
+        const energyDelta = prevWeek && both(review.energy_level, prevWeek.energy_level) ? review.energy_level - prevWeek.energy_level : 0
+        const sleepDelta = prevWeek && both(review.sleep_quality, prevWeek.sleep_quality) ? review.sleep_quality - prevWeek.sleep_quality : 0
         const weightDelta = prevWeek && review.weight && prevWeek.weight 
           ? review.weight - prevWeek.weight 
           : undefined
@@ -207,7 +210,7 @@ export async function getPendingReviews() {
           flag_reason = 'Energy drop'
         }
         // Sharp mood/stress spike
-        else if (review.stress_level >= 8) {
+        else if (typeof review.stress_level === 'number' && review.stress_level >= 8) {
           is_flagged = true
           flag_reason = 'High stress'
         }
@@ -230,7 +233,7 @@ export async function getPendingReviews() {
           status: review.status,
           energy: review.energy_level || 0,
           sleep_quality: review.sleep_quality || 0,
-          weight: review.weight,
+          weight: review.weight ?? undefined,
           stress: review.stress_level || 0,
           reflection: review.reflection_text || '',
           is_flagged,

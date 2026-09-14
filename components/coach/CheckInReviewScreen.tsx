@@ -87,7 +87,10 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
     )
   }
 
-  const weekScore = Math.round((review.energy + (10 - review.stress) + review.sleep_quality) / 3)
+  // 0 means unanswered (the three-step check-in makes stress optional), so
+  // average only the parts she actually gave.
+  const scoreParts = [review.energy, review.sleep_quality, review.stress ? 10 - review.stress : 0].filter((v) => v > 0)
+  const weekScore = scoreParts.length ? Math.round(scoreParts.reduce((a, b) => a + b, 0) / scoreParts.length) : 0
 
   return (
     <motion.div
@@ -239,7 +242,7 @@ export function CheckInReviewScreen({ review, onClose }: CheckInReviewScreenProp
                 </div>
               )}
               {/* Stress */}
-              {review.stress !== undefined && (
+              {review.stress > 0 && (
                 <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
                   <span style={{ color: '#e8eaf0' }}>Stress Level</span>
                   <span style={{ color: levelTone(review.stress, 7), fontWeight: 600 }}>

@@ -43,6 +43,8 @@ interface CheckInData {
   measurements: Measurements
   symptoms: SymptomScores
   reflectionText: string
+  /** Which questions she actually answered; everything else is sent as blank. */
+  touched: string[]
 }
 
 // Step components
@@ -52,208 +54,86 @@ interface StepProps {
   onNext: () => void
 }
 
-// Step 0: Prime - Welcome screen
-function PrimeStep({ onNext }: { onNext: () => void }) {
-  // Scale 1: this intro beat is deliberate and stays as designed. Routing it
-  // through reveal() only so it collapses to nothing under reduced motion.
-  const scale = useRevealScale(1)
-  const reveal = (seconds: number) => seconds * scale
-
+// Tap scales — five buttons, one tap, no slider to drag.
+const FIVE = [1, 2, 3, 4, 5] as const
+function TapScale({ label, low, high, value, onPick }: { label: string; low: string; high: string; value: number | null; onPick: (n: number) => void }) {
   return (
-    <motion.div
-      // Container does not fade: with rAF paused this would stay at 0.
-      initial={false}
-      className="flex flex-col items-center justify-center h-full gap-8 px-6 py-12"
-    >
-      <div className="space-y-6 text-center max-w-sm">
-        <motion.h2
-          className="text-4xl font-bold"
-          style={{
-            fontFamily: "'Instrument Serif', Georgia, serif",
-            fontStyle: 'italic',
-            color: '#e8eaf0',
-          }}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: reveal(0.2), duration: 0.6 }}
-        >
-          Your weekly check-in
-        </motion.h2>
-        <motion.p
-          className="text-lg leading-relaxed"
-          style={{ color: '#8892a4' }}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: reveal(0.4), duration: 0.6 }}
-        >
-          About three minutes, once a week: how you feel, your weight, and what got done.
-          Your coach reads every answer and adjusts your plan from it.
-        </motion.p>
+    <div className="space-y-2">
+      <div className="flex items-baseline justify-between">
+        <span className="text-[15px] font-medium" style={{ color: '#e8eaf0' }}>{label}</span>
+        <span className="text-[11px]" style={{ color: '#5a6578' }}>{low} → {high}</span>
       </div>
-
-      <motion.button
-        onClick={onNext}
-        className="w-full max-w-xs py-4 rounded-full font-semibold text-base text-white"
-        style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
-        }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: reveal(0.6), duration: 0.6 }}
-        whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
-        whileTap={{ transform: 'scale(0.98)' }}
-      >
-        Start
-      </motion.button>
-    </motion.div>
+      <div className="grid grid-cols-5 gap-2">
+        {FIVE.map((n) => {
+          const on = value === n
+          return (
+            <button
+              key={n}
+              type="button"
+              onClick={() => onPick(n)}
+              aria-pressed={on}
+              aria-label={`${label} ${n} of 5`}
+              className="h-12 rounded-xl text-[15px] font-semibold active:scale-[0.97] transition-transform"
+              style={{
+                background: on ? 'rgba(45,212,191,0.18)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${on ? 'rgba(45,212,191,0.55)' : 'rgba(255,255,255,0.08)'}`,
+                color: on ? '#e8eaf0' : '#7e8a9e',
+              }}
+            >
+              {n}
+            </button>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
-// Step 1: Feelings
-function FeelingsStep({ data, setData, onNext }: StepProps) {
-  const moodFaces = [
-    { value: 1, icon: Frown, label: 'Struggling' },
-    { value: 2, icon: Frown, label: 'Okay' },
-    { value: 3, icon: Meh, label: 'Neutral' },
-    { value: 4, icon: Smile, label: 'Good' },
-    { value: 5, icon: Smile, label: 'Excellent' },
-  ]
+const touch = (d: CheckInData, ...keys: string[]): string[] => Array.from(new Set([...d.touched, ...keys]))
+/** 1–10 scales are asked on five buttons: 1→2 … 5→10. */
+const toTen = (n: number) => n * 2
+const fromTen = (v: number, touched: boolean) => (touched ? Math.min(5, Math.max(1, Math.round(v / 2))) : null)
 
+// Step: how the week felt — energy, sleep, mood.
+function FeelStep({ data, setData, onNext, onMore }: StepProps & { onMore: () => void }) {
+  const t = (k: string) => data.touched.includes(k)
   return (
-    <motion.div
-      // Container does not fade: with rAF paused this would stay at 0.
-      initial={false}
-      className="space-y-8 px-6 py-8"
-    >
-      {/* Energy Slider */}
-      <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Energy Level
-        </label>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-medium" style={{ color: '#5a6578', minWidth: '60px' }}>
-            Drained
-          </span>
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={data.energy}
-            onChange={(e) => setData({ ...data, energy: parseInt(e.target.value) })}
-            className="flex-1 h-2 rounded-full appearance-none bg-gradient-to-r from-[#1c2438] to-[#1c2438] cursor-pointer"
-            style={{
-              background: `linear-gradient(to right, #2dd4bf 0%, #2dd4bf ${(data.energy / 10) * 100}%, #1c2438 ${(data.energy / 10) * 100}%, #1c2438 100%)`,
-            }}
-          />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: '#2dd4bf', minWidth: '40px' }}>
-            {data.energy}
-          </span>
-        </div>
-        <p className="text-xs" style={{ color: '#5a6578' }}>
-          How energized do you feel today?
-        </p>
+    <div className="space-y-7 px-6 py-6">
+      <div>
+        <h2 className="text-[22px] font-semibold" style={{ color: '#e8eaf0' }}>How did this week feel?</h2>
+        <p className="text-sm mt-1" style={{ color: '#8892a4' }}>One tap on each. 1 is low, 5 is great.</p>
       </div>
-
-      {/* Mood - Emoji faces */}
-      <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Mood
-        </label>
-        <div className="flex justify-between gap-2">
-          {moodFaces.map((face, idx) => {
-            const Icon = face.icon
-            return (
-              <motion.button
-                key={face.value}
-                onClick={() => setData({ ...data, mood: face.value })}
-                className="flex-1 p-3 rounded-xl transition-all"
-                style={{
-                  background: data.mood === face.value ? 'rgba(45, 212, 191, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-                  border: `1px solid ${data.mood === face.value ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Icon
-                  size={28}
-                  style={{ margin: '0 auto', color: data.mood === face.value ? '#2dd4bf' : '#8892a4' }}
-                />
-              </motion.button>
-            )
-          })}
-        </div>
+      <TapScale label="Energy" low="Drained" high="Full of it" value={fromTen(data.energy, t('energy'))}
+        onPick={(n) => setData({ ...data, energy: toTen(n), touched: touch(data, 'energy') })} />
+      <TapScale label="Sleep" low="Poor" high="Deep" value={fromTen(data.sleepQuality, t('sleepQuality'))}
+        onPick={(n) => setData({ ...data, sleepQuality: toTen(n), touched: touch(data, 'sleepQuality') })} />
+      <TapScale label="Mood" low="Low" high="Good" value={t('mood') ? data.mood : null}
+        onPick={(n) => setData({ ...data, mood: n, touched: touch(data, 'mood') })} />
+      <div className="flex flex-col gap-2 pt-2">
+        <button onClick={onNext} className="w-full h-14 rounded-full font-bold text-base" style={{ background: '#2dd4bf', color: '#06231f' }}>
+          Next
+        </button>
+        <button onClick={onMore} className="w-full h-11 text-sm" style={{ color: '#8892a4' }}>
+          Add more detail — symptoms, digestion, habits
+        </button>
       </div>
+    </div>
+  )
+}
 
-      {/* Sleep Quality Slider */}
-      <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Sleep Quality
-        </label>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-medium" style={{ color: '#5a6578', minWidth: '60px' }}>
-            Poor
-          </span>
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={data.sleepQuality}
-            onChange={(e) => setData({ ...data, sleepQuality: parseInt(e.target.value) })}
-            className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
-            style={{
-              background: `linear-gradient(to right, #2dd4bf 0%, #2dd4bf ${(data.sleepQuality / 10) * 100}%, #1c2438 ${(data.sleepQuality / 10) * 100}%, #1c2438 100%)`,
-            }}
-          />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: '#2dd4bf', minWidth: '40px' }}>
-            {data.sleepQuality}
-          </span>
-        </div>
-      </div>
-
-      {/* Stress Slider */}
-      <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Stress Level
-        </label>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-medium" style={{ color: '#5a6578', minWidth: '60px' }}>
-            Relaxed
-          </span>
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={data.stress}
-            onChange={(e) => setData({ ...data, stress: parseInt(e.target.value) })}
-            className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
-            style={{
-              background: `linear-gradient(to right, #34d399 0%, #34d399 ${((data.stress - 1) / 9) * 100}%, rgba(255,255,255,0.08) ${((data.stress - 1) / 9) * 100}%, rgba(255,255,255,0.08) 100%)`,
-            }}
-          />
-          <span className="text-sm font-semibold tabular-nums" style={{ color: levelTone(data.stress, 6), minWidth: '40px' }}>
-            {data.stress}
-          </span>
-        </div>
-        <p className="text-xs" style={{ color: '#5a6578' }}>
-          However this week went, recording it honestly is what makes it useful.
-        </p>
-      </div>
-
-      {/* Next Button */}
-      <motion.button
-        onClick={onNext}
-        className="w-full py-4 rounded-full font-semibold text-base text-white mt-8"
-        style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
-        }}
-        whileHover={{ transform: 'translateY(-2px)', boxShadow: '0 0 48px rgba(45, 212, 191, 0.4)' }}
-        whileTap={{ scale: 0.98 }}
-      >
+// Optional detail step: stress, on the same five-button scale.
+function StressStep({ data, setData, onNext }: StepProps) {
+  // Stress is stored 1–10 where high is bad; the buttons read 1 calm → 5 very stressed.
+  const picked = data.touched.includes('stress') ? Math.min(5, Math.max(1, Math.round(data.stress / 2))) : null
+  return (
+    <div className="space-y-7 px-6 py-6">
+      <h2 className="text-[22px] font-semibold" style={{ color: '#e8eaf0' }}>How stressful was the week?</h2>
+      <TapScale label="Stress" low="Calm" high="Very stressed" value={picked}
+        onPick={(n) => setData({ ...data, stress: toTen(n), touched: touch(data, 'stress') })} />
+      <button onClick={onNext} className="w-full h-14 rounded-full font-bold text-base" style={{ background: '#2dd4bf', color: '#06231f' }}>
         Next
-      </motion.button>
-    </motion.div>
+      </button>
+    </div>
   )
 }
 
@@ -528,67 +408,58 @@ function ActionsStep({ data, setData, onNext }: StepProps) {
   )
 }
 
-// Step 4: Weight (Skippable)
-function WeightStep({ data, setData, onNext }: StepProps) {
-  const handleSkip = () => {
-    setData({ ...data, weight: undefined })
-    onNext()
+// Step: weight — starts at her last weight and moves by tap, so no keyboard.
+function WeightStep({ data, setData, onNext, lastWeight }: StepProps & { lastWeight: number | null }) {
+  const shown = typeof data.weight === 'number' ? data.weight : lastWeight
+  const nudge = (d: number) => {
+    const base = typeof data.weight === 'number' ? data.weight : lastWeight ?? 60
+    const v = Math.round((base + d) * 10) / 10
+    setData({ ...data, weight: Math.min(400, Math.max(25, v)) })
   }
-
+  const btn = { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#e8eaf0' } as const
   return (
-    <motion.div
-      // Container does not fade: with rAF paused this would stay at 0.
-      initial={false}
-      className="space-y-6 px-6 py-8"
-    >
-      <div className="space-y-2">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Current Weight (kg)
-        </label>
-        <input
-          type="number"
-          step="0.1"
-          value={data.weight || ''}
-          onChange={(e) => setData({ ...data, weight: e.target.value ? parseFloat(e.target.value) : undefined })}
-          placeholder="e.g. 72.5"
-          className="w-full px-4 py-3 rounded-xl text-base font-semibold bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-white placeholder-[#5a6578] focus:outline-none focus:border-[#2dd4bf]"
-        />
+    <div className="space-y-6 px-6 py-6">
+      <div>
+        <h2 className="text-[22px] font-semibold" style={{ color: '#e8eaf0' }}>This morning&apos;s weight</h2>
+        <p className="text-sm mt-1" style={{ color: '#8892a4' }}>After the toilet, before food. Tap to adjust.</p>
       </div>
 
-      <p className="text-sm leading-relaxed" style={{ color: '#8892a4' }}>
-        One signal among many. Bodies fluctuate — especially thyroid bodies.
-      </p>
-
-      <div className="flex flex-col gap-3 pt-4">
-        <motion.button
-          onClick={onNext}
-          className="w-full py-4 rounded-full font-semibold text-base text-white"
-          style={{
-            background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-            boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
-          }}
-          whileHover={{ transform: 'translateY(-2px)' }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Next
-        </motion.button>
-        <motion.button
-          onClick={handleSkip}
-          className="w-full py-4 rounded-full font-semibold text-base"
-          style={{
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            color: '#8892a4',
-          }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Skip for now
-        </motion.button>
+      <div className="text-center py-2">
+        <span className="tabular-nums" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 64, lineHeight: 1, color: typeof data.weight === 'number' ? '#e8eaf0' : '#5a6578' }}>
+          {shown != null ? shown.toFixed(1) : '—'}
+        </span>
+        <span className="text-lg ml-1" style={{ color: '#8892a4' }}>kg</span>
+        {typeof data.weight !== 'number' && lastWeight != null && (
+          <p className="text-xs mt-2" style={{ color: '#5a6578' }}>Last time: {lastWeight.toFixed(1)} kg</p>
+        )}
       </div>
-    </motion.div>
+
+      <div className="grid grid-cols-4 gap-2">
+        {[-1, -0.1, 0.1, 1].map((d) => (
+          <button key={d} onClick={() => nudge(d)} className="h-14 rounded-2xl text-base font-semibold tabular-nums active:scale-[0.97]" style={btn}>
+            {d > 0 ? '+' : '−'}{Math.abs(d)}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-2 pt-2">
+        {typeof data.weight !== 'number' && lastWeight != null ? (
+          <button onClick={() => { setData({ ...data, weight: lastWeight }); onNext() }} className="w-full h-14 rounded-full font-bold text-base" style={{ background: '#2dd4bf', color: '#06231f' }}>
+            Same as last time · Next
+          </button>
+        ) : (
+          <button onClick={onNext} disabled={typeof data.weight !== 'number'} className="w-full h-14 rounded-full font-bold text-base disabled:opacity-50" style={{ background: '#2dd4bf', color: '#06231f' }}>
+            Next
+          </button>
+        )}
+        <button onClick={() => { setData({ ...data, weight: undefined }); onNext() }} className="w-full h-11 text-sm" style={{ color: '#8892a4' }}>
+          Didn&apos;t weigh this week
+        </button>
+      </div>
+    </div>
   )
 }
+
 
 // Measurements — the proof that works when the scale refuses to move.
 // Skippable: measuring every single week is unrealistic, and a client who
@@ -727,49 +598,34 @@ function SymptomsStep({ data, setData, onNext }: StepProps) {
   )
 }
 
-// Step 6: Reflection
-function ReflectionStep({ data, setData, onNext, onSubmit, isLoading }: StepProps & { onSubmit: (data: CheckInData) => void; isLoading: boolean }) {
-  const handleSubmit = async () => {
-    await onSubmit(data)
-  }
-
+// Step: one optional line, then send.
+function NoteStep({ data, setData, onSubmit, isLoading }: StepProps & { onSubmit: (data: CheckInData) => void; isLoading: boolean }) {
   return (
-    <motion.div
-      // Container does not fade: with rAF paused this would stay at 0.
-      initial={false}
-      className="space-y-6 px-6 py-8"
-    >
-      <div className="space-y-3">
-        <label className="text-sm font-medium uppercase" style={{ color: '#8892a4', letterSpacing: '0.08em' }}>
-          Your Reflection
-        </label>
-        <textarea
-          value={data.reflectionText}
-          onChange={(e) => setData({ ...data, reflectionText: e.target.value })}
-          placeholder="One win this week? Anything you're struggling with?"
-          className="w-full px-4 py-3 rounded-xl text-base bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-white placeholder-[#5a6578] focus:outline-none focus:border-[#2dd4bf] min-h-[120px] resize-none"
-          disabled={isLoading}
-        />
+    <div className="space-y-6 px-6 py-6">
+      <div>
+        <h2 className="text-[22px] font-semibold" style={{ color: '#e8eaf0' }}>Anything to tell your coach?</h2>
+        <p className="text-sm mt-1" style={{ color: '#8892a4' }}>Optional. A win, a struggle, a question.</p>
       </div>
-
-      <motion.button
-        onClick={handleSubmit}
+      <input
+        value={data.reflectionText}
+        onChange={(e) => setData({ ...data, reflectionText: e.target.value })}
+        placeholder="Skip if nothing comes to mind"
+        maxLength={280}
         disabled={isLoading}
-        className="w-full py-4 rounded-full font-semibold text-base text-white disabled:opacity-60"
-        style={{
-          background: 'linear-gradient(135deg, #2dd4bf 0%, #22c55e 100%)',
-          boxShadow: '0 0 32px rgba(45, 212, 191, 0.3)',
-        }}
-        whileHover={!isLoading ? { transform: 'translateY(-2px)' } : {}}
-        whileTap={!isLoading ? { scale: 0.98 } : {}}
+        className="w-full h-14 px-4 rounded-2xl text-base bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-white placeholder-[#5a6578] focus:outline-none focus:border-[#2dd4bf]"
+      />
+      <button
+        onClick={() => onSubmit(data)}
+        disabled={isLoading}
+        className="w-full h-14 rounded-full font-bold text-base disabled:opacity-60"
+        style={{ background: '#2dd4bf', color: '#06231f' }}
       >
-        {isLoading ? 'Submitting...' : 'Complete Check-In'}
-      </motion.button>
-    </motion.div>
+        {isLoading ? 'Sending…' : 'Send check-in'}
+      </button>
+    </div>
   )
 }
 
-// Submission Reveal Screen - Animated metrics and celebration
 
 /** Mean of energy, sleep and inverted stress — three 1-10 scales, so 10 is the ceiling. */
 const WEEK_SCORE_MAX = 10
@@ -1109,18 +965,7 @@ function SubmissionRevealStep({ data, submissionData, error }: { data: CheckInDa
     </motion.div>
   )
 }
-
 // Main component
-/**
- * Ordered step keys — the single source of truth for how long the flow is and
- * where the end sits. Everything (progress dots, back button, submit) derives
- * from this, so adding a step here is the only change required.
- */
-const STEP_KEYS = [
-  'prime', 'feelings', 'body', 'actions', 'weight',
-  'measurements', 'symptoms', 'reflection', 'completion',
-] as const
-const COMPLETION_STEP = STEP_KEYS.length - 1
 
 /** A saved check-in for the current week, as stored. */
 export interface ExistingCheckIn {
@@ -1162,13 +1007,52 @@ function seedMeasurements(e: ExistingCheckIn | null): Measurements {
 
 const num = (v: unknown, fallback: number): number =>
   typeof v === 'number' && Number.isFinite(v) ? v : fallback
+const has = (v: unknown) => v !== null && v !== undefined
 
-export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingCheckIn | null }) {
-  const [currentStep, setCurrentStep] = useState(0)
+type StepKey = 'weight' | 'feel' | 'measurements' | 'stress' | 'body' | 'actions' | 'symptoms' | 'note' | 'completion'
+
+const STEP_TITLES: Record<StepKey, string> = {
+  weight: 'Weight', feel: 'How the week felt', measurements: 'Monthly measurements', stress: 'Stress',
+  body: 'Digestion', actions: 'Habits', symptoms: 'Symptoms', note: 'A note for your coach', completion: '',
+}
+
+/**
+ * The steps, in order. Built from the list — nothing indexes into it by number,
+ * because a hardcoded index is how this project once silently dropped the last
+ * answer when a question was added.
+ *
+ *  - default: weight → how the week felt → optional note (three steps)
+ *  - first 7 days of a month: measurements before the note
+ *  - "add more detail": stress, digestion, habits and symptoms before the note
+ */
+function stepKeys(detail: boolean, monthly: boolean): StepKey[] {
+  return [
+    'weight', 'feel',
+    ...(monthly ? (['measurements'] as StepKey[]) : []),
+    ...(detail ? (['stress', 'body', 'actions', 'symptoms'] as StepKey[]) : []),
+    'note', 'completion',
+  ]
+}
+
+/** Which answers each detail step commits when she moves past it. */
+const COMMITS: Partial<Record<StepKey, string[]>> = {
+  body: ['digestion', 'bloating', 'cravings'],
+  actions: ['nutritionAdherence', 'workouts', 'meds'],
+}
+
+const DRAFT_KEY = 'thyrowell.checkin.draft.v2'
+
+export function WeeklyCheckInFlow({ existing = null, lastWeight = null }: { existing?: ExistingCheckIn | null; lastWeight?: number | null }) {
+  const monthly = new Date().getDate() <= 7
+  const [detail, setDetail] = useState(false)
+  const [stepKey, setStepKey] = useState<StepKey>('weight')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submissionData, setSubmissionData] = useState<any>(null)
-  const [data, setData] = useState<CheckInData>({
+  // False until the draft has been read. Saving before then would write the
+  // blank starting state over the very draft that is about to be restored.
+  const [restored, setRestored] = useState(false)
+  const [data, setData] = useState<CheckInData>(() => ({
     energy: num(existing?.energy_level, 5),
     mood: num(existing?.mood, 3),
     sleepQuality: num(existing?.sleep_quality, 6),
@@ -1186,181 +1070,151 @@ export function WeeklyCheckInFlow({ existing = null }: { existing?: ExistingChec
     measurements: seedMeasurements(existing),
     symptoms: parseSymptoms(existing?.symptoms) ?? {},
     reflectionText: existing?.reflection_text || '',
-  })
+    // Anything already saved this week counts as answered.
+    touched: [
+      has(existing?.energy_level) && 'energy', has(existing?.sleep_quality) && 'sleepQuality', has(existing?.mood) && 'mood',
+      has(existing?.stress_level) && 'stress', has(existing?.digestion_score) && 'digestion', has(existing?.bloating) && 'bloating',
+      has(existing?.cravings) && 'cravings', has(existing?.adherence_score) && 'nutritionAdherence',
+      has(existing?.workouts_completed) && 'workouts', has(existing?.meds_taken) && 'meds',
+    ].filter(Boolean) as string[],
+  }))
 
-  // Hold the draft locally between renders.
-  //
-  // This is nine screens on a phone, and on Android a hardware back tap, a call,
-  // or the browser reclaiming memory took every answer with it. She then has to
-  // decide whether to start again — which, on the week she is least motivated,
-  // she often will not.
-  //
-  // Keyed by programme-week storage key so last week's draft cannot resurface.
-  const DRAFT_KEY = "thyrowell.checkin.draft"
+  const keys = stepKeys(detail, monthly)
+  const index = Math.max(0, keys.indexOf(stepKey))
+  const questionCount = keys.length - 1
 
+  // Resume a draft: same answers, same step, same path. On Android a call, the
+  // back button or the WebView reclaiming memory used to take every answer with
+  // it; now a killed app reopens on the step she was on.
   useEffect(() => {
-    if (typeof window === "undefined") return
     try {
       const raw = window.localStorage.getItem(DRAFT_KEY)
-      if (!raw) return
-      const saved = JSON.parse(raw) as { savedAt: number; step: number; data: CheckInData }
-      // A draft older than a week belongs to a check-in she has since submitted.
+      if (!raw) return setRestored(true)
+      const saved = JSON.parse(raw) as { savedAt: number; stepKey: StepKey; detail: boolean; data: CheckInData }
       if (!saved?.data || Date.now() - saved.savedAt > 7 * 86400000) {
         window.localStorage.removeItem(DRAFT_KEY)
-        return
+        return setRestored(true)
       }
-      // MERGE over the defaults rather than replacing them.
-      //
-      // A draft is written by whatever version of this file was deployed when
-      // she started, and it is read by whatever is deployed when she comes
-      // back. Replacing state wholesale means one missing key — `measurements`
-      // or `symptoms`, both of which are indexed directly — throws on render,
-      // and the flow shows nothing while the console shows a TypeError. Every
-      // key is guaranteed to exist this way, and anything unrecognised in the
-      // draft is simply ignored.
+      // Merge over the defaults so a draft written by an older build can never
+      // leave a key missing that a step reads directly.
       setData((current) => ({
         ...current,
         ...saved.data,
         measurements: { ...current.measurements, ...(saved.data.measurements ?? {}) },
         symptoms: { ...current.symptoms, ...(saved.data.symptoms ?? {}) },
+        touched: Array.isArray(saved.data.touched) ? saved.data.touched : current.touched,
       }))
-      if (typeof saved.step === "number" && saved.step > 0 && saved.step < COMPLETION_STEP) {
-        setCurrentStep(saved.step)
+      setDetail(Boolean(saved.detail))
+      if (saved.stepKey && saved.stepKey !== 'completion' && stepKeys(Boolean(saved.detail), monthly).includes(saved.stepKey)) {
+        setStepKey(saved.stepKey)
       }
     } catch {
-      // A corrupt draft must never block the check-in itself.
       try { window.localStorage.removeItem(DRAFT_KEY) } catch {}
     }
-    // Intentionally once, on mount.
+    setRestored(true)
+    // Once, on mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Saved on every answer and every step change — not only at the end.
   useEffect(() => {
-    if (typeof window === "undefined") return
-    if (currentStep === 0 || currentStep >= COMPLETION_STEP) return
+    if (!restored || stepKey === 'completion') return
     try {
-      window.localStorage.setItem(DRAFT_KEY, JSON.stringify({ savedAt: Date.now(), step: currentStep, data }))
-    } catch {
-      // Private mode or a full quota — losing the draft is bad, but failing the
-      // check-in over it would be worse.
-    }
-  }, [data, currentStep])
+      window.localStorage.setItem(DRAFT_KEY, JSON.stringify({ savedAt: Date.now(), stepKey, detail, data }))
+    } catch {}
+  }, [data, stepKey, detail, restored])
+
+  const goNext = (from: StepKey = stepKey, withDetail = detail) => {
+    const commit = COMMITS[from]
+    if (commit) setData((d) => ({ ...d, touched: Array.from(new Set([...d.touched, ...commit])) }))
+    const list = stepKeys(withDetail, monthly)
+    const i = list.indexOf(from)
+    setStepKey(list[Math.min(i + 1, list.length - 1)])
+  }
+  const goBack = () => setStepKey(keys[Math.max(0, index - 1)])
 
   const handleSubmitCheckIn = async (checkInData: CheckInData) => {
     setIsSubmitting(true)
     setSubmitError(null)
-    
+    const t = (k: string) => checkInData.touched.includes(k)
     try {
-      const result = await submitWeeklyCheckIn(checkInData)
-      
+      // A question she was not asked is sent as blank, never as a made-up middle value.
+      const result = await submitWeeklyCheckIn({
+        ...checkInData,
+        energy: t('energy') ? checkInData.energy : null,
+        sleepQuality: t('sleepQuality') ? checkInData.sleepQuality : null,
+        mood: t('mood') ? checkInData.mood : null,
+        stress: t('stress') ? checkInData.stress : null,
+        digestion: t('digestion') ? checkInData.digestion : null,
+        bloating: t('bloating') ? checkInData.bloating : null,
+        cravings: t('cravings') ? checkInData.cravings : null,
+        nutritionAdherence: t('nutritionAdherence') ? checkInData.nutritionAdherence : null,
+        workoutsCompleted: t('workouts') ? checkInData.workoutsCompleted : null,
+        workoutsTarget: t('workouts') ? checkInData.workoutsTarget : null,
+        medsTaken: t('meds') ? checkInData.medsTaken : null,
+        medsTarget: t('meds') ? checkInData.medsTarget : null,
+      })
       if (!result.success) {
-        // Advance anyway. The completion step renders a proper "Submission
-        // Failed" screen with a retry when it has an error, but the step advance
-        // used to live only in the success branch — so after eight screens of
-        // questions a failure just flipped the button back to "Complete
-        // Check-In" and she reasonably assumed it had saved.
+        // Show the failure screen; the draft is kept, so "Try again" resumes.
         setSubmitError(result.error || 'Failed to submit check-in')
-        setCurrentStep(COMPLETION_STEP)
+        setStepKey('completion')
         return
       }
-      
       setSubmissionData(result)
-      // Saved for real — the draft has done its job.
       try { window.localStorage.removeItem(DRAFT_KEY) } catch {}
-      setCurrentStep(COMPLETION_STEP)
+      setStepKey('completion')
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred')
-      setCurrentStep(COMPLETION_STEP)
+      setStepKey('completion')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  // Every step advances to "the next one" rather than a hardcoded number.
-  // A hardcoded index derived from this list is exactly how a previous bug in
-  // this project silently dropped the last answer when a question was added.
-  const next = () => setCurrentStep((s) => Math.min(s + 1, COMPLETION_STEP))
-
-  // Named from the same list order as `steps` below; index 0 is the intro.
-  const STEP_NAMES = ['', 'How you feel', 'Your body', 'What got done', 'Weight', 'Measurements', 'Symptoms', 'Looking back']
-
-  const steps = [
-    <PrimeStep key="prime" onNext={next} />,
-    <FeelingsStep key="feelings" data={data} setData={setData} onNext={next} />,
-    <BodyStep key="body" data={data} setData={setData} onNext={next} />,
-    <ActionsStep key="actions" data={data} setData={setData} onNext={next} />,
-    <WeightStep key="weight" data={data} setData={setData} onNext={next} />,
-    <MeasurementsStep key="measurements" data={data} setData={setData} onNext={next} />,
-    <SymptomsStep key="symptoms" data={data} setData={setData} onNext={next} />,
-    <ReflectionStep
-      key="reflection"
-      data={data}
-      setData={setData}
-      onNext={next}
-      onSubmit={handleSubmitCheckIn}
-      isLoading={isSubmitting}
-    />,
-    <SubmissionRevealStep key="completion" data={data} submissionData={submissionData} error={submitError} />,
-  ]
+  const stepProps = { data, setData, onNext: () => goNext() }
+  const body: Record<StepKey, React.ReactNode> = {
+    weight: <WeightStep {...stepProps} lastWeight={lastWeight} />,
+    feel: <FeelStep {...stepProps} onMore={() => { setDetail(true); goNext('feel', true) }} />,
+    measurements: <MeasurementsStep {...stepProps} />,
+    stress: <StressStep {...stepProps} />,
+    body: <BodyStep {...stepProps} />,
+    actions: <ActionsStep {...stepProps} />,
+    symptoms: <SymptomsStep {...stepProps} />,
+    note: <NoteStep {...stepProps} onSubmit={handleSubmitCheckIn} isLoading={isSubmitting} />,
+    completion: <SubmissionRevealStep data={data} submissionData={submissionData} error={submitError} />,
+  }
 
   return (
     <div className="min-h-screen w-full" style={{ background: '#090c14' }}>
-      {/* Progress: dots plus the step's name, so she knows where she is */}
-      <div className="sticky top-0 z-40 px-6 pt-6 pb-3" style={{ background: 'rgba(9,12,20,0.9)' }}>
-      {currentStep > 0 && currentStep < COMPLETION_STEP && (
-        <p className="text-center text-[11px] uppercase font-semibold mb-2" style={{ color: '#7e8a9e', letterSpacing: '0.14em' }}>
-          Step {currentStep} of {COMPLETION_STEP - 1} · {STEP_NAMES[currentStep] ?? ''}
-        </p>
-      )}
-      <div className="flex justify-center gap-1.5">
-        {[...Array(COMPLETION_STEP)].map((_, idx) => (
-          <motion.div
-            key={idx}
-            className="h-1 rounded-full"
-            style={{
-              width: idx < currentStep ? 24 : 6,
-              background: idx < currentStep ? '#2dd4bf' : 'rgba(255, 255, 255, 0.1)',
-            }}
-            initial={{ width: 6 }}
-            animate={{ width: idx < currentStep ? 24 : 6 }}
-            transition={{ duration: 0.4 }}
-          />
-        ))}
-      </div>
-      </div>
-
-      {/* Back button */}
-      {currentStep > 0 && currentStep < COMPLETION_STEP && (
-        <motion.button
-          onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-          className="absolute top-8 left-6 p-2 rounded-lg"
-          style={{ background: 'rgba(255, 255, 255, 0.04)' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          whileHover={{ background: 'rgba(255, 255, 255, 0.08)' }}
-        >
-          <ChevronLeft size={24} style={{ color: '#8892a4' }} />
-        </motion.button>
+      {stepKey !== 'completion' && (
+        <div className="sticky top-0 z-40 px-4 pt-4 pb-3" style={{ background: 'rgba(9,12,20,0.92)' }}>
+          <div className="flex items-center gap-2">
+            {index > 0 ? (
+              <button onClick={goBack} className="p-2 rounded-lg" aria-label="Back" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <ChevronLeft size={22} style={{ color: '#8892a4' }} />
+              </button>
+            ) : (
+              <a href="/dashboard" className="p-2 rounded-lg" aria-label="Close" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <ChevronLeft size={22} style={{ color: '#8892a4' }} />
+              </a>
+            )}
+            <p className="flex-1 text-center text-[11px] uppercase font-semibold" style={{ color: '#7e8a9e', letterSpacing: '0.14em' }}>
+              Step {index + 1} of {questionCount} · {STEP_TITLES[stepKey]}
+            </p>
+            <span className="w-[38px]" />
+          </div>
+          <div className="flex gap-1.5 mt-3">
+            {keys.slice(0, -1).map((k, i) => (
+              <span key={k} className="h-1 rounded-full flex-1" style={{ background: i <= index ? '#2dd4bf' : 'rgba(255,255,255,0.1)' }} />
+            ))}
+          </div>
+        </div>
       )}
 
-      {/* Step content */}
-      <div className="pb-safe min-h-[calc(100vh-120px)]">
-        {/* Rendered directly, with no AnimatePresence.
-            AnimatePresence keeps an exiting child mounted until its exit
-            animation reports finished, and framer-motion reports that from
-            requestAnimationFrame. Inside the Android WebView rAF is paused
-            whenever the view loses focus — a notification, a call, the keyboard
-            opening. The exit then never completes.
-
-            With mode="wait" that froze the flow: the next step was never
-            mounted and Next did nothing. Without it, the exiting steps simply
-            never left, and nine screens stacked into one 7,800px page — which
-            is what this actually did in testing.
-
-            Unmounting outright cannot do either. The step swap is instant and
-            depends on no animation frame. */}
-        {steps[currentStep]}
-      </div>
+      {/* Rendered directly, with no AnimatePresence: the Android WebView pauses
+          requestAnimationFrame, an exit animation never finishes, and the flow
+          freezes. The step swap is instant and depends on no animation frame. */}
+      <div className="pb-safe">{body[stepKey]}</div>
     </div>
   )
 }

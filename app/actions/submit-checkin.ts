@@ -4,19 +4,23 @@ import { createClient } from '@/lib/supabase/server'
 import { getWeekNumber } from '@/lib/utils'
 import { toScore, DIGESTION, BLOATING, CRAVINGS, ADHERENCE } from '@/lib/health/checkin-scales'
 
+/**
+ * null = she was not asked, or skipped it. Stored as NULL, never as a default,
+ * so the coach can tell "didn't answer" from a real middling week.
+ */
 export interface CheckInSubmissionData {
-  energy: number
-  mood: number
-  sleepQuality: number
-  stress: number
-  digestion: string
-  bloating: string
-  cravings: string
-  nutritionAdherence: string
-  workoutsCompleted: number
-  workoutsTarget: number
-  medsTaken: number
-  medsTarget: number
+  energy: number | null
+  mood: number | null
+  sleepQuality: number | null
+  stress: number | null
+  digestion: string | null
+  bloating: string | null
+  cravings: string | null
+  nutritionAdherence: string | null
+  workoutsCompleted: number | null
+  workoutsTarget: number | null
+  medsTaken: number | null
+  medsTarget: number | null
   weight?: number
   /** Average daily steps for the week; optional. */
   steps?: number
@@ -44,10 +48,10 @@ interface SubmissionResult {
 // Convert text values to numeric scales for database
 // Scales live in lib/health/checkin-scales.ts so the reopen path reads the
 // same maps this writes. Thin wrappers keep the call sites below unchanged.
-const convertDigestion = (v: string) => toScore(DIGESTION, v, 5)
-const convertBloating = (v: string) => toScore(BLOATING, v, 5)
-const convertCravings = (v: string) => toScore(CRAVINGS, v, 5)
-const convertNutritionAdherence = (v: string) => toScore(ADHERENCE, v, 50)
+const convertDigestion = (v: string | null) => (v == null ? null : toScore(DIGESTION, v, 5))
+const convertBloating = (v: string | null) => (v == null ? null : toScore(BLOATING, v, 5))
+const convertCravings = (v: string | null) => (v == null ? null : toScore(CRAVINGS, v, 5))
+const convertNutritionAdherence = (v: string | null) => (v == null ? null : toScore(ADHERENCE, v, 50))
 
 export async function submitWeeklyCheckIn(
   formData: CheckInSubmissionData
@@ -171,12 +175,15 @@ export async function submitWeeklyCheckIn(
     const prevSleep = prevCheckin?.sleep_quality || null
     const prevWeight = prevCheckin?.weight || null
 
-    // Calculate week score
-    const weekScore = Math.round((formData.energy + formData.sleepQuality + (10 - formData.stress)) / 3)
+    // Week score: the mean of whichever of energy, sleep and (inverted) stress
+    // she answered. Stress is a detail question now, so usually it is two.
+    const parts = [formData.energy, formData.sleepQuality, formData.stress == null ? null : 10 - formData.stress]
+      .filter((v): v is number => typeof v === 'number')
+    const weekScore = parts.length ? Math.round(parts.reduce((a, b) => a + b, 0) / parts.length) : 0
 
     // Calculate deltas
-    const energyDelta = prevEnergy !== null ? formData.energy - prevEnergy : 0
-    const sleepDelta = prevSleep !== null ? formData.sleepQuality - prevSleep : 0
+    const energyDelta = prevEnergy !== null && formData.energy != null ? formData.energy - prevEnergy : 0
+    const sleepDelta = prevSleep !== null && formData.sleepQuality != null ? formData.sleepQuality - prevSleep : 0
     const weightDelta =
       prevWeight !== null && formData.weight !== undefined ? prevWeight - formData.weight : null
 

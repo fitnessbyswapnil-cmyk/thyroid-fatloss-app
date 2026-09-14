@@ -35,9 +35,8 @@ export default function CheckInError({
           This screen didn&apos;t load
         </h1>
         <p className="text-sm leading-relaxed mb-6" style={{ color: "#9aa4b5" }}>
-          Nothing you have already answered is lost. Try once more — and if it
-          happens again, start the check-in fresh, which clears whatever was
-          half-saved on this phone.
+          Nothing you have already answered is lost. It is saved on this phone,
+          and you will pick up on the same step.
         </p>
 
         <button
@@ -49,16 +48,11 @@ export default function CheckInError({
         </button>
 
         <button
-          onClick={() => {
-            try {
-              window.localStorage.removeItem("thyrowell.checkin.draft")
-            } catch {}
-            window.location.href = "/dashboard/check-in"
-          }}
+          onClick={() => { window.location.href = "/dashboard/check-in" }}
           className="w-full h-12 rounded-full text-sm"
           style={{ color: "#9aa4b5", border: "1px solid rgba(255,255,255,0.10)" }}
         >
-          Start the check-in fresh
+          Resume from where I was
         </button>
       </div>
     </main>
