@@ -105,7 +105,7 @@ export function buildWorklist(input: {
       kind: "report",
       text: `${r.count === 1 ? "blood report" : `${r.count} blood reports`} to enter · sent ${age === 0 ? "today" : `${days(age)} ago`}`,
       urgency: 70 + Math.min(age, 10),
-      href: `/coach/client/${clientId}/health`,
+      href: `/coach/client/${clientId}#health`,
     })
   }
 

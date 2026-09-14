@@ -208,7 +208,7 @@ export async function registerLabReport(input: { pathname: string; contentType?:
       await pushToUsers((coaches || []).map((c) => c.id), {
         title: 'New blood report',
         body: `${me?.full_name?.split(' ')[0] || 'A client'} uploaded a report. Enter the values when you can.`,
-        url: `/coach/client/${user.id}/health`,
+        url: `/coach/client/${user.id}#health`,
         tag: 'lab_report',
       })
     })

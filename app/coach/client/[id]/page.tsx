@@ -4,6 +4,9 @@ import { redirect, notFound } from "next/navigation"
 import { ClientDetailView } from "./client-detail-view"
 import { getPlansForClient } from "@/app/actions/plans"
 import { buildEngagement } from "@/lib/coach/engagement"
+import { getHealthProfile, listLabReports, listLabs } from "@/app/actions/health"
+import { getPendingReviews } from "@/app/actions/coach-reviews"
+import { unreadCount } from "@/app/actions/messages"
 
 /**
  * Drafting a meal plan with Claude runs from this page, and a model call over a
@@ -50,6 +53,11 @@ export default async function ClientDetailPage({
     foodPrefs,
     pushSubs,
     lessonCount,
+    healthProfile,
+    labRows,
+    labReports,
+    pending,
+    unread,
   ] = await Promise.all([
     supabase.from("clients").select("*").eq("id", id).single(),
     supabase.from("weekly_checkins").select("*").eq("client_id", id).order("submitted_at", { ascending: false }),
@@ -70,6 +78,12 @@ export default async function ClientDetailPage({
     supabase.from("food_preferences").select("*").eq("client_id", id).maybeSingle(),
     supabase.from("push_subscriptions").select("*", { count: "exact", head: true }).eq("client_id", id),
     supabase.from("lessons").select("*", { count: "exact", head: true }).eq("published", true),
+    // Health, reviews and chat now live on this page instead of three routes.
+    getHealthProfile(id),
+    listLabs(id),
+    listLabReports(id),
+    getPendingReviews(),
+    unreadCount(id),
   ])
 
   if (error || !client) {
@@ -103,6 +117,9 @@ export default async function ClientDetailPage({
       engagement={engagement}
       foodPrefs={foodPrefs.data}
       dailyLogs={dailyLogs.data || []}
+      health={{ profile: healthProfile, labs: labRows, reports: labReports }}
+      pendingReviews={(pending.reviews || []).filter((r) => r.client_id === id)}
+      unreadMessages={unread}
     />
   )
 }

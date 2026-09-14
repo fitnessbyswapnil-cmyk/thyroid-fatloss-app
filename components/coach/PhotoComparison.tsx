@@ -60,7 +60,7 @@ export function PhotoComparison({ clientId, photos, checkins }: { clientId: stri
   const rightImg = fileUrl((right?.[POSE_FIELD[pose]] as string | null) ?? null)
 
   const label = (s: Photo | null) =>
-    s ? `${s.week_number ? `Week ${s.week_number}` : ""} · ${new Date(s.upload_date).toLocaleDateString()}`.trim() : "—"
+    s ? `${s.week_number ? `Week ${s.week_number}` : ""} · ${new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(s.upload_date))}`.trim() : "—"
 
   // Non-scale-victory deltas between the check-ins nearest each photo date.
   const deltas = useMemo(() => {

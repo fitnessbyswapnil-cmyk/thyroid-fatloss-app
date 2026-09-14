@@ -25,6 +25,10 @@ import { EngagementPanel } from "@/components/coach/EngagementPanel"
 import { DailyLogStrip, type DailyLogRow } from "@/components/coach/DailyLogStrip"
 import type { buildEngagement } from "@/lib/coach/engagement"
 import { weekLabel } from "@/lib/health/programme"
+import { HealthView } from "@/components/health/HealthView"
+import { CheckInReviewScreen } from "@/components/coach/CheckInReviewScreen"
+import type { PendingReview } from "@/app/actions/coach-reviews"
+import type { HealthProfile, LabReport, LabResult } from "@/app/actions/health"
 
 interface Client {
   id: string
@@ -275,6 +279,9 @@ export function ClientDetailView({
   engagement,
   foodPrefs,
   dailyLogs,
+  health,
+  pendingReviews = [],
+  unreadMessages = 0,
 }: {
   client: Client
   checkins: Checkin[]
@@ -286,6 +293,10 @@ export function ClientDetailView({
   engagement: ReturnType<typeof buildEngagement>
   foodPrefs: FoodPrefsRow | null
   dailyLogs: DailyLogRow[]
+  health: { profile: HealthProfile | null; labs: LabResult[]; reports: LabReport[] }
+  /** Her submitted check-ins still waiting for a review. */
+  pendingReviews?: PendingReview[]
+  unreadMessages?: number
 }) {
   const router = useRouter()
   // Derived from props already on the page — no extra query for this panel.
@@ -295,7 +306,8 @@ export function ClientDetailView({
   ])
   const [newInsight, setNewInsight] = useState("")
   const [isSending, setIsSending] = useState(false)
-  const [activeTab, setActiveTab] = useState<"overview" | "trends" | "checkins" | "photos" | "plans" | "insights">("overview")
+  const [reviewing, setReviewing] = useState<PendingReview | null>(null)
+  const goTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })
 
   // Ascending series for trend charts (checkins arrive week DESC)
   const asc = checkins.slice().reverse()
@@ -380,13 +392,11 @@ export function ClientDetailView({
               style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.25)" }}
             >
               <MessageSquare size={13} /> Chat
-            </Link>
-            <Link
-              href={`/coach/client/${client.id}/health`}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5"
-              style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.25)" }}
-            >
-              <Activity size={13} /> Health &amp; Labs
+              {unreadMessages > 0 && (
+                <span className="ml-0.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold inline-flex items-center justify-center" style={{ background: "#2dd4bf", color: "#06231f" }}>
+                  {unreadMessages}
+                </span>
+              )}
             </Link>
             <span
               className="px-3 py-1 rounded-lg text-xs font-medium"
@@ -403,42 +413,49 @@ export function ClientDetailView({
         </div>
       </header>
 
-      {/* Tabs */}
-      <div
+      {/* Sections — one page, jump links instead of tabs, so reviewing a
+          check-in never hides her plan or her labs. */}
+      <nav
         className="px-6 py-3 border-b sticky top-[72px] z-40"
-        style={{
-          background: "rgba(9, 12, 20, 0.95)",
-          borderColor: "rgba(255, 255, 255, 0.06)",
-        }}
+        style={{ background: "rgba(9, 12, 20, 0.95)", borderColor: "rgba(255, 255, 255, 0.06)" }}
+        aria-label="Sections"
       >
         <div className="max-w-5xl mx-auto flex items-center gap-1.5 overflow-x-auto hide-scrollbar">
           {([
-            { id: "overview", label: "Overview", icon: LayoutDashboard },
+            { id: "overview", label: "Profile", icon: LayoutDashboard },
+            { id: "days", label: "14 days", icon: Calendar },
             { id: "trends", label: "Trends", icon: LineChart },
-            { id: "checkins", label: "Check-ins", icon: ClipboardList },
+            { id: "checkins", label: pendingReviews.length ? `Check-ins · ${pendingReviews.length} to review` : "Check-ins", icon: ClipboardList },
             { id: "photos", label: "Photos", icon: Camera },
             { id: "plans", label: "Plans", icon: Apple },
-            { id: "insights", label: "Insights", icon: Lightbulb },
+            { id: "health", label: health.reports.some((r) => !r.entered_at) ? "Health · report to enter" : "Health", icon: Activity },
+            { id: "insights", label: "Notes sent", icon: Lightbulb },
           ] as const).map((tab) => (
-            <button
+            <a
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium whitespace-nowrap shrink-0 transition-all"
-              style={{
-                background: activeTab === tab.id ? "rgba(45, 212, 191, 0.15)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${activeTab === tab.id ? "rgba(45,212,191,0.3)" : "rgba(255,255,255,0.06)"}`,
-                color: activeTab === tab.id ? "#2dd4bf" : "#7e8a9e",
-              }}
+              href={`#${tab.id}`}
+              onClick={(e) => { e.preventDefault(); goTo(tab.id) }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium whitespace-nowrap shrink-0"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "#a9b2c1" }}
             >
               <tab.icon size={14} />
               {tab.label}
-            </button>
+            </a>
           ))}
         </div>
-      </div>
+      </nav>
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
-        {activeTab === "overview" && (
+      {reviewing && (
+        <div className="fixed inset-0 z-[100]" style={{ background: "#090c14" }} role="dialog" aria-modal="true" aria-label={`Review ${client.full_name}`}>
+          <div className="max-w-2xl mx-auto h-full">
+            <CheckInReviewScreen review={reviewing} onClose={() => { setReviewing(null); router.refresh() }} />
+          </div>
+        </div>
+      )}
+
+      <main className="max-w-5xl mx-auto px-6 py-8 space-y-14">
+        <section id="overview" className="scroll-mt-40">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: "#e8eaf0" }}>Profile</h2>
           <div className="space-y-6">
             {/* What she has been given, and what is still outstanding. First
                 thing on the page deliberately: the metrics below tell you how
@@ -505,7 +522,7 @@ export function ClientDetailView({
                   // Only the coach's own outstanding work is clickable — there
                   // is nowhere useful to send them for her unfinished profile.
                   return item.owner === "coach" && item.state === "todo" ? (
-                    <button key={item.key} onClick={() => setActiveTab("plans")} className="text-left">
+                    <button key={item.key} onClick={() => goTo("plans")} className="text-left">
                       {body}
                     </button>
                   ) : (
@@ -557,7 +574,7 @@ export function ClientDetailView({
                 went quiet before that shows up anywhere else. */}
             {/* What she ticked, day by day. The engagement panel answers "is she
                 opening the app"; this answers "is she doing the three things". */}
-            <DailyLogStrip logs={dailyLogs} />
+            <div id="days" className="scroll-mt-40"><DailyLogStrip logs={dailyLogs} /></div>
 
             <EngagementPanel
               signals={engagement.signals}
@@ -582,7 +599,7 @@ export function ClientDetailView({
                   { label: "Phone", value: client.phone || "-" },
                   { label: "Age", value: client.age ? `${client.age} years` : "-" },
                   { label: "Gender", value: client.gender || "-" },
-                  { label: "Start Date", value: client.start_date ? new Date(client.start_date).toLocaleDateString() : "-" },
+                  { label: "Start Date", value: client.start_date ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(client.start_date)) : "-" },
                   { label: "Target Weight", value: client.target_weight ? `${client.target_weight} kg` : "-" },
                   { label: "Thyroid Condition", value: client.thyroid_condition || "-" },
                   { label: "Medications", value: client.medications || "-" },
@@ -643,9 +660,10 @@ export function ClientDetailView({
               </div>
             </div>
           </div>
-        )}
+        </section>
 
-        {activeTab === "trends" && (
+        <section id="trends" className="scroll-mt-40">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: "#e8eaf0" }}>Trends</h2>
           <div className="space-y-5">
             {[
               { title: "Weight (kg)", series: weightSeries, color: "#2dd4bf", unit: "" },
@@ -668,9 +686,10 @@ export function ClientDetailView({
               </div>
             ))}
           </div>
-        )}
+        </section>
 
-        {activeTab === "checkins" && (
+        <section id="checkins" className="scroll-mt-40">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: "#e8eaf0" }}>Check-ins</h2>
           <div className="space-y-4">
             {checkins.length === 0 ? (
               <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
@@ -695,15 +714,25 @@ export function ClientDetailView({
                       >
                         {weekLabel(client.start_date, checkin.submitted_at)}
                       </span>
-                      <span className="text-xs" style={{ color: "#7e8a9e" }}>
-                        {new Date(checkin.submitted_at).toLocaleDateString()}
+                      <span className="text-xs" style={{ color: "#7e8a9e" }} suppressHydrationWarning>
+                        {new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(checkin.submitted_at))}
                       </span>
                     </div>
-                    {checkin.adherence_score && (
-                      <span className="text-sm font-medium" style={{ color: "#2dd4bf" }}>
-                        {checkin.adherence_score}% adherence
-                      </span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {checkin.adherence_score && (
+                        <span className="text-sm font-medium" style={{ color: "#2dd4bf" }}>
+                          {checkin.adherence_score}% adherence
+                        </span>
+                      )}
+                      {(() => {
+                        const pending = pendingReviews.find((r) => r.id === checkin.id)
+                        return pending ? (
+                          <button onClick={() => setReviewing(pending)} className="h-9 px-4 rounded-full text-xs font-bold" style={{ background: "#2dd4bf", color: "#06231f" }}>
+                            Review &amp; reply
+                          </button>
+                        ) : null
+                      })()}
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     {[
@@ -732,9 +761,10 @@ export function ClientDetailView({
               ))
             )}
           </div>
-        )}
+        </section>
 
-        {activeTab === "photos" && (
+        <section id="photos" className="scroll-mt-40">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: "#e8eaf0" }}>Photos</h2>
           <div className="space-y-6">
             {photos.length === 0 ? (
               <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
@@ -757,7 +787,7 @@ export function ClientDetailView({
                       <div className="flex items-center gap-2 mb-4">
                         <Calendar size={14} style={{ color: "#7e8a9e" }} />
                         <span className="text-sm" style={{ color: "#7e8a9e" }}>
-                          {photo.week_number ? `Week ${photo.week_number}` : ""} · {new Date(photo.upload_date).toLocaleDateString()}
+                          {photo.week_number ? `Week ${photo.week_number}` : ""} · {new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(photo.upload_date))}
                         </span>
                       </div>
                       <div className="grid grid-cols-3 gap-2">
@@ -793,16 +823,22 @@ export function ClientDetailView({
               </>
             )}
           </div>
-        )}
+        </section>
 
-        {activeTab === "plans" && (
+        <section id="plans" className="scroll-mt-40">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: "#e8eaf0" }}>Plans</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <PlanEditor clientId={client.id} type="meal" plan={mealPlan} />
             <PlanEditor clientId={client.id} type="workout" plan={workoutPlan} />
           </div>
-        )}
+        </section>
 
-        {activeTab === "insights" && (
+        <section id="health-section" className="scroll-mt-40">
+          <HealthView profile={health.profile} labs={health.labs} reports={health.reports} clientId={client.id} clientName={client.full_name} asCoach embedded />
+        </section>
+
+        <section id="insights" className="scroll-mt-40">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: "#e8eaf0" }}>Notes you sent</h2>
           <div className="space-y-4">
             {insights.length === 0 ? (
               <div className="text-center py-12" style={{ color: "#7e8a9e" }}>
@@ -820,7 +856,7 @@ export function ClientDetailView({
                   }}
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <span className="text-xs" style={{ color: "#7e8a9e" }}>
+                    <span className="text-xs" style={{ color: "#7e8a9e" }} suppressHydrationWarning>
                       {new Date(insight.created_at).toLocaleDateString("en-IN", {
                         month: "short",
                         day: "numeric",
@@ -842,7 +878,7 @@ export function ClientDetailView({
               ))
             )}
           </div>
-        )}
+        </section>
       </main>
     </div>
   )

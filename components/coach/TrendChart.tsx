@@ -45,8 +45,9 @@ export function TrendChart({
       </defs>
 
       {/* min/max gridlines + labels */}
-      {[min, max].map((v) => (
-        <g key={v}>
+      {/* Index key: min and max are equal when every value is the same. */}
+      {[min, max].map((v, i) => (
+        <g key={i}>
           <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="rgba(255,255,255,0.07)" strokeDasharray="3 4" />
           <text x={PAD.left - 6} y={y(v) + 3} textAnchor="end" fontSize="9" fill="#7e8a9e" className="tabular-nums">
             {Number.isInteger(v) ? v : v.toFixed(1)}{unit}

@@ -88,7 +88,7 @@ export function DailyLogStrip({ logs, days = 14 }: { logs: DailyLogRow[]; days?:
                   : row.label === "Meals"
                     ? `${w.key} — Meals: ${l.meals_followed ?? 0} of 3`
                     : row.label === "Steps"
-                      ? `${w.key} — Steps: ${l.steps == null ? "not logged" : l.steps.toLocaleString()}`
+                      ? `${w.key} — Steps: ${l.steps == null ? "not logged" : l.steps.toLocaleString("en-IN")}`
                       : `${w.key} — ${row.label}: ${full ? "done" : "not done"}`
                 return (
                   <div
@@ -113,7 +113,7 @@ export function DailyLogStrip({ logs, days = 14 }: { logs: DailyLogRow[]; days?:
         ))}
         {avgSteps !== null && (
           <span className="text-[11px] tabular-nums" style={{ color: "#9aa4b5" }}>
-            avg <strong style={{ color: "#e8eaf0" }}>{avgSteps.toLocaleString()}</strong>
+            avg <strong style={{ color: "#e8eaf0" }}>{avgSteps.toLocaleString("en-IN")}</strong>
             <span style={{ color: "#5a6578" }}> steps</span>
           </span>
         )}
