@@ -2,30 +2,33 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Sun, UtensilsCrossed, Dumbbell, MessageCircle, User } from "lucide-react"
+import { Sun, TrendingUp, MessageCircle } from "lucide-react"
 
 /**
- * Five tabs, named for what is inside them, with the word under the icon.
+ * Three tabs, and nothing else is a tab.
  *
- * The earlier pill had four unlabelled icons — Home, Progress, "Plans", Profile.
- * A client looking for her food does not think "Plans", and the only way to
- * message her coach was to open Profile first. Labels cost 12px of height and
- * remove the guessing.
+ * Food, Move, check-in and lessons all belong to Today — they are reached by
+ * tapping the thing on Today, and while she is inside them the Today tab stays
+ * lit so she always knows the way back. Health lives inside Progress. Account
+ * is the icon in the page header, not a destination she has to choose between.
  */
 const tabs = [
-  { icon: Sun, label: "Today", href: "/dashboard", exact: true },
-  { icon: UtensilsCrossed, label: "Food", href: "/dashboard/food" },
-  { icon: Dumbbell, label: "Move", href: "/dashboard/move" },
-  { icon: MessageCircle, label: "Chat", href: "/dashboard/messages" },
-  { icon: User, label: "Me", href: "/account" },
+  { icon: Sun, label: "Today", href: "/dashboard", owns: ["/dashboard/food", "/dashboard/move", "/dashboard/check-in", "/dashboard/learn", "/dashboard/plans"] },
+  { icon: TrendingUp, label: "Progress", href: "/dashboard/progress", owns: ["/dashboard/progress-photos", "/dashboard/health"] },
+  { icon: MessageCircle, label: "Coach", href: "/dashboard/messages", owns: [] as string[] },
 ]
+
+function activeTab(pathname: string): number {
+  return tabs.findIndex((t) =>
+    t.href === "/dashboard"
+      ? pathname === "/dashboard" || t.owns.some((p) => pathname.startsWith(p))
+      : pathname.startsWith(t.href) || t.owns.some((p) => pathname.startsWith(p))
+  )
+}
 
 export function BottomNavPill() {
   const pathname = usePathname()
-  const activeIndex = Math.max(
-    0,
-    tabs.findIndex((t) => (t.exact ? pathname === t.href : pathname.startsWith(t.href)))
-  )
+  const active = activeTab(pathname)
 
   return (
     <nav
@@ -35,38 +38,29 @@ export function BottomNavPill() {
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         backdropFilter: "blur(28px) saturate(180%)",
         WebkitBackdropFilter: "blur(28px) saturate(180%)",
-        background: "rgba(9, 12, 20, 0.88)",
+        background: "rgba(9, 12, 20, 0.9)",
         borderTop: "1px solid rgba(255, 255, 255, 0.08)",
       }}
       aria-label="Main"
     >
-      <div className="max-w-2xl mx-auto grid grid-cols-5" style={{ height: 60 }}>
+      <div className="max-w-2xl mx-auto grid grid-cols-3" style={{ height: 60 }}>
         {tabs.map((tab, index) => {
-          const isActive = index === activeIndex
+          const isActive = index === active
           const Icon = tab.icon
           return (
             <Link
               key={tab.label}
               href={tab.href}
               className="flex flex-col items-center justify-center gap-1"
-              aria-label={tab.label}
               aria-current={isActive ? "page" : undefined}
             >
               <span
                 className="flex items-center justify-center rounded-full"
-                style={{
-                  width: 40,
-                  height: 26,
-                  background: isActive ? "rgba(45, 212, 191, 0.16)" : "transparent",
-                  transition: "background 200ms ease",
-                }}
+                style={{ width: 44, height: 26, background: isActive ? "rgba(45, 212, 191, 0.16)" : "transparent" }}
               >
                 <Icon size={20} style={{ color: isActive ? "#2dd4bf" : "rgba(255, 255, 255, 0.55)" }} />
               </span>
-              <span
-                className="text-[10.5px] font-semibold"
-                style={{ color: isActive ? "#2dd4bf" : "rgba(255, 255, 255, 0.55)", letterSpacing: "0.02em" }}
-              >
+              <span className="text-[11px] font-semibold" style={{ color: isActive ? "#2dd4bf" : "rgba(255, 255, 255, 0.55)" }}>
                 {tab.label}
               </span>
             </Link>

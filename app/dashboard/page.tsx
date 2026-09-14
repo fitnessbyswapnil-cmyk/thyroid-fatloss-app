@@ -6,6 +6,7 @@ import { EmptyCheckInState } from "./empty-checkin-state"
 import { nextLesson } from "@/app/actions/lessons"
 import { getPlansForClient } from "@/app/actions/plans"
 import { buildTodayMeals, buildTodayWorkout, dayNumberFrom } from "@/lib/plans/today"
+import { getClientHour } from "@/lib/client-hour"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -40,6 +41,8 @@ export default async function DashboardPage() {
     { data: feedbackRows, error: feedbackError },
     upNextLesson,
     plansForClient,
+    { data: latestPhoto },
+    clientHour,
   ] = await Promise.all([
     supabase.from("clients").select("*").eq("id", user.id).single(),
     supabase.from("weekly_checkins").select("*").eq("client_id", user.id).order("submitted_at", { ascending: false }),
@@ -57,11 +60,13 @@ export default async function DashboardPage() {
     // rather than leaning on RLS alone to scope it.
     supabase
       .from("checkin_feedback")
-      .select("id, checkin_id, body, created_at, weekly_checkins!inner(client_id)")
+      .select("id, checkin_id, body, created_at, read_at, weekly_checkins!inner(client_id)")
       .eq("weekly_checkins.client_id", user.id)
       .order("created_at", { ascending: false }),
     nextLesson(),
     getPlansForClient(user.id),
+    supabase.from("progress_photos").select("created_at").eq("client_id", user.id).order("created_at", { ascending: false }).limit(1),
+    getClientHour(),
   ])
 
   // If no profile or not onboarded, redirect to onboarding
@@ -103,6 +108,10 @@ export default async function DashboardPage() {
 
     const w0Today = new Date().toLocaleDateString("en-CA")
     const w0TodayLog = (logs || []).find((l) => l.date === w0Today) || null
+    const w0LogComplete =
+      (w0TodayLog?.meals_followed ?? 0) >= 3 &&
+      (Boolean(w0TodayLog?.workout_done) || todayWorkout.exercises.length === 0) &&
+      typeof w0TodayLog?.steps === "number"
 
     return (
       <EmptyCheckInState
@@ -110,6 +119,9 @@ export default async function DashboardPage() {
         dayNumber={dayNumber}
         todayMeals={todayMeals}
         todayWorkout={todayWorkout}
+        logComplete={w0LogComplete}
+        serverHour={clientHour}
+        lesson={upNextLesson ? { slug: upNextLesson.slug, title: upNextLesson.title, summary: upNextLesson.summary, minutes: upNextLesson.read_minutes } : null}
         todayLog={{
           workoutDone: Boolean(w0TodayLog?.workout_done),
           mealsFollowed: w0TodayLog?.meals_followed || 0,
@@ -143,7 +155,7 @@ export default async function DashboardPage() {
     ? (
         await supabase
           .from("checkin_feedback")
-          .select("id, checkin_id, body, created_at")
+          .select("id, checkin_id, body, created_at, read_at")
           .in("checkin_id", allCheckins.map((c) => c.id))
           .order("created_at", { ascending: false })
       ).data
@@ -154,6 +166,7 @@ export default async function DashboardPage() {
     weekNumber: (checkinIdToWeek.get(f.checkin_id) ?? null) as number | null,
     body: f.body as string,
     createdAt: f.created_at as string,
+    readAt: (f.read_at as string | null) ?? null,
   }))
 
   // Daily adherence logs → REAL streaks (last 180 days). Degrades to zeros if
@@ -244,6 +257,20 @@ export default async function DashboardPage() {
   const todayMeals = buildTodayMeals(mealPlan?.content?.mealItems, dayNumber)
   const todayWorkout = buildTodayWorkout(workoutPlan?.content?.workoutItems)
 
+  // Check-in is due 7 days after her last one — the same rule the reminder
+  // cron uses, so the app and the notification never disagree.
+  const DAY = 86_400_000
+  const daysSinceCheckin = Math.floor((Date.now() - new Date(latestCheckin.submitted_at || latestCheckin.created_at).getTime()) / DAY)
+  const checkinDue = daysSinceCheckin >= 7
+  const daysToCheckin = Math.max(0, 7 - daysSinceCheckin)
+  // Photos monthly: from week 4, when her newest set is 28+ days old (or there is none).
+  const photoAgeDays = latestPhoto?.[0]?.created_at ? Math.floor((Date.now() - new Date(latestPhoto[0].created_at).getTime()) / DAY) : null
+  const photoDue = programWeek >= 4 && (photoAgeDays === null || photoAgeDays >= 28)
+  const logComplete =
+    (todayLog?.meals_followed ?? 0) >= 3 &&
+    (Boolean(todayLog?.workout_done) || todayWorkout.exercises.length === 0) &&
+    typeof todayLog?.steps === "number"
+
   const dashboardData = {
     name: client.full_name?.split(" ")[0] || "Friend",
     programWeek,
@@ -322,6 +349,15 @@ export default async function DashboardPage() {
       sleep_score: c.sleep_quality || c.sleep_score || 0
     })) || [],
     coachFeedback,
+    focus: {
+      checkinDue,
+      unreadFeedback: coachFeedback.some((f) => !f.readAt),
+      logComplete,
+    },
+    daysToCheckin,
+    photoDue,
+    hasPhotos: photoAgeDays !== null,
+    serverHour: clientHour,
   }
 
   return <DashboardClient data={dashboardData} />

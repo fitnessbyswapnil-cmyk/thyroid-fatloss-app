@@ -174,7 +174,7 @@ export function SettingsView({
             <Link href="/terms" className="inline-flex items-center gap-2 text-sm" style={{ color: "#2dd4bf" }}><FileText size={15} /> Terms</Link>
           </div>
           <p className="text-xs mt-4" style={{ color: "#5a6578" }}>
-            ThyroWell is a wellness coaching program, not medical treatment or a substitute for your doctor. Individual results vary.
+            ThyroWell is a lifestyle coaching programme. Individual results vary.
           </p>
         </div>
 

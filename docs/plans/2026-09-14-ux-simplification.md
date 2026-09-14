@@ -101,9 +101,10 @@ One scrollable page with anchors: profile, trends, 14-day strip, check-ins, phot
 3. **Check-in day** — fixed weekday, or per client from her start date?
 4. **Photos** — prompt weekly, fortnightly or monthly?
 
-### Defaults used until answered (14 Sep 2026)
+### Answers (14 Sep 2026)
 
-1. Score removed from Today; streak and weight kept in the secondary area.
-2. Both kept; tour copy updated to the new tabs.
-3. Per client: due 7 days after her last check-in (or start date), the rule `/api/cron/reminders` already uses.
-4. Monthly: week 4+ and newest photo set 28+ days old, the rule the reminder cron already uses.
+1. **Score:** removed from Today. Streak and weight stay in the secondary area; trends stay on Progress.
+2. **Onboarding vs tour:** out of scope; both kept, tour copy updated to the three tabs.
+3. **Check-in day:** per client, due 7 days after her last check-in (or start date) — the rule `/api/cron/reminders` already uses.
+4. **Photos:** monthly — week 4+ and newest photo set 28+ days old.
+5. **Doctor wording:** keep the Terms, Privacy, onboarding consent and landing disclaimers; keep "discuss with your doctor" on health and lab screens and wherever tablet timing appears. Remove doctor-referral lines only from meal and workout plan content and from Settings.

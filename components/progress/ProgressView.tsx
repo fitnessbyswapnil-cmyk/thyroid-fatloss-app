@@ -3,6 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import type { ReactNode } from "react"
+import { AccountButton } from "@/components/dashboard/AccountButton"
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart"
 import { parseSymptoms, symptomBurden, symptomChanges } from "@/lib/health/symptoms"
 import { type Measurements } from "@/lib/health/measurements"
@@ -58,7 +60,7 @@ const WELLBEING: { key: keyof CheckinPoint; label: string; max: number; suffix: 
   { key: "adherence_score", label: "Nutrition", max: 100, suffix: "%" },
 ]
 
-export function ProgressView({ checkins, startDate = null, backHref = "/dashboard" }: { checkins: CheckinPoint[]; startDate?: string | null; backHref?: string }) {
+export function ProgressView({ checkins, startDate = null, backHref = "/dashboard", asTab = false, children }: { checkins: CheckinPoint[]; startDate?: string | null; backHref?: string; asTab?: boolean; children?: ReactNode }) {
   const [view, setView] = useState<ViewKey>("weight")
 
   // sleep_quality is what the check-in writes; sleep_score was never populated.
@@ -80,8 +82,9 @@ export function ProgressView({ checkins, startDate = null, backHref = "/dashboar
       <div className="tw-glow" style={{ position: "fixed", top: -140, left: 30, width: 340, height: 300, zIndex: 0 }} />
       <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>My Progress</h1>
+          {!asTab && <Link href={backHref} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>}
+          <h1 className="text-2xl flex-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>{asTab ? "Progress" : "My Progress"}</h1>
+          {asTab && <AccountButton />}
         </div>
       </header>
 
@@ -356,6 +359,7 @@ export function ProgressView({ checkins, startDate = null, backHref = "/dashboar
         <p className="text-xs px-1" style={{ color: "#5a6578" }}>
           The scale moves slowly with thyroid — energy, sleep and mood often improve first. Watch all of them, not just weight.
         </p>
+        {children}
       </main>
     </div>
   )

@@ -3,23 +3,23 @@
 import { useEffect, useState } from "react"
 import { UtensilsCrossed, Dumbbell, CheckCircle2 } from "lucide-react"
 
-const KEY = "thyrowell.tour.v1"
+const KEY = "thyrowell.tour.v2"
 
 const SCREENS = [
   {
     Icon: UtensilsCrossed,
-    title: "Your food is on the Today tab",
-    body: "Every day shows breakfast, lunch and dinner from your plan. Open Food for the recipe, the portion in grams, and other options you can swap in.",
+    title: "Today shows the one thing to do now",
+    body: "In the morning it is your next meal, in the afternoon your movement, at night your three taps. Everything else for the day is right below it.",
   },
   {
     Icon: Dumbbell,
-    title: "Your movement is 30 minutes of walking plus a short set of exercises",
-    body: "Tap Start on the Today tab and the app takes you through them one at a time, with a demo for each.",
+    title: "Tap a meal or your movement to open it",
+    body: "A meal opens its recipe, grams and swaps. Movement opens your walk and exercises — tap Start and the app takes you through them one at a time.",
   },
   {
     Icon: CheckCircle2,
-    title: "Every night, three taps",
-    body: "Ate to plan. Did the exercises. Roughly how many steps. That is all. Your coach sees it the next morning and adjusts your plan from it.",
+    title: "Three tabs, that is all",
+    body: "Today for your day. Progress for your weight, photos and reports. Coach to message Swapnil. Your account is the round icon at the top.",
   },
 ]
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Check, ChevronDown, ChevronLeft, ChevronRight, Footprints, Loader2, Play, Sparkles, X } from "lucide-react"
 import type { PlanSection, WorkoutItem } from "@/app/actions/plans"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
@@ -56,8 +57,9 @@ export function MoveToday({
         />
       )}
 
-      <header className="max-w-2xl mx-auto px-5" style={{ paddingTop: "calc(48px + env(safe-area-inset-top, 0px))" }}>
-        <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
+      <header className="max-w-2xl mx-auto px-5" style={{ paddingTop: "calc(12px + env(safe-area-inset-top, 0px))" }}>
+        <div className="flex items-center gap-2 -ml-2 mb-1"><Link href="/dashboard" aria-label="Back to Today" className="p-2 rounded-lg" style={{ color: "#7e8a9e" }}><ChevronLeft size={22} /></Link></div>
+                <p className="text-[10.5px] uppercase font-semibold" style={{ color: "#7e8a9e", letterSpacing: "0.16em" }}>
           Move · {new Date().toLocaleDateString("en-IN", { weekday: "long" })}
         </p>
         <h1 className="mt-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", fontSize: 30, lineHeight: 1.15, color: "#e8eaf0" }}>

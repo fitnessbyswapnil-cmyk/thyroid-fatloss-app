@@ -68,12 +68,15 @@ export function HealthView({
   clientId,
   clientName,
   asCoach = false,
+  embedded = false,
 }: {
   profile: HealthProfile | null
   labs: LabResult[]
   clientId?: string
   clientName?: string
   asCoach?: boolean
+  /** Render just the sections, for use inside the Progress tab. */
+  embedded?: boolean
 }) {
   const router = useRouter()
   const [p, setP] = useState<Partial<HealthProfile>>(profile || {})
@@ -121,19 +124,8 @@ export function HealthView({
       value: v,
     }))
 
-  return (
-    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
-      <div className="tw-glow" style={{ position: "fixed", top: -150, left: 10, width: 360, height: 300, zIndex: 0 }} />
-      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="max-w-2xl mx-auto flex items-center gap-4">
-          <Link href={asCoach && clientId ? `/coach/client/${clientId}` : "/dashboard"} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
-          <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
-            {asCoach ? `${clientName || "Client"} · Health` : "My Health"}
-          </h1>
-        </div>
-      </header>
-
-      <main className="max-w-2xl mx-auto px-6 py-8 space-y-5 relative" style={{ zIndex: 1 }}>
+  const body = (
+    <>
         {/* Free on-device report import */}
         <LabReportUpload clientId={clientId} />
 
@@ -237,6 +229,31 @@ export function HealthView({
         <p className="text-xs px-1" style={{ color: "#5a6578" }}>
           ThyroWell is coaching, not medical care. Always follow your doctor for medication and lab interpretation.
         </p>
+    </>
+  )
+
+  if (embedded) {
+    return (
+      <section id="health" className="space-y-5 pt-6 scroll-mt-20">
+        <h2 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>Health &amp; labs</h2>
+        {body}
+      </section>
+    )
+  }
+
+  return (
+    <div className="min-h-screen relative" style={{ background: "#090c14", paddingBottom: "calc(90px + env(safe-area-inset-bottom, 24px))" }}>
+      <div className="tw-glow" style={{ position: "fixed", top: -150, left: 10, width: 360, height: 300, zIndex: 0 }} />
+      <header className="sticky top-0 z-40 px-6 py-4" style={{ background: "rgba(9,12,20,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="max-w-2xl mx-auto flex items-center gap-4">
+          <Link href={asCoach && clientId ? `/coach/client/${clientId}` : "/dashboard/progress"} className="p-2 -ml-2 rounded-lg" style={{ color: "#7e8a9e" }}><ArrowLeft size={20} /></Link>
+          <h1 className="text-2xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic", color: "#e8eaf0" }}>
+            {asCoach ? `${clientName || "Client"} · Health` : "My Health"}
+          </h1>
+        </div>
+      </header>
+      <main className="max-w-2xl mx-auto px-6 py-8 space-y-5 relative" style={{ zIndex: 1 }}>
+        {body}
       </main>
     </div>
   )
