@@ -191,6 +191,11 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
   const [workoutItems, setWorkoutItems] = useState<WorkoutItem[]>(plan?.content?.workoutItems || [])
   const [mealItems, setMealItems] = useState<MealItem[]>(plan?.content?.mealItems || [])
   const [filePath, setFilePath] = useState<string | null>(plan?.file_path ?? null)
+  const [templateId, setTemplateId] = useState<string | null>(plan?.content?.templateId ?? null)
+  // A client with no plan yet starts at the template picker, not a blank form.
+  const [choosing, setChoosing] = useState(plan === null)
+  // After the first save in this editor, offer once to keep the plan as a template.
+  const [offerTemplate, setOfferTemplate] = useState<"no" | "ask" | "done">("no")
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -523,9 +528,13 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
       workoutItems: type === "workout" ? workoutItems : [],
       mealItems: type === "meal" ? mealItems : [],
       filePath,
+      templateId,
     })
     setSaving(false)
     if (result.success) {
+      if (offerTemplate === "no") setOfferTemplate("ask")
+      // Usage counts just changed; refetch the list next time it opens.
+      setTplOpen(false); setTemplates(null)
       // The save may have filed a revision, so the list is stale. Close the
       // panel as well as dropping it: the fetch only fires on open, so a list
       // cleared while the panel is up would sit on "Loading…" forever.
@@ -538,7 +547,7 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
     setTplSaving(true)
     const res = await saveTemplate({ type, title, content: currentContent() })
     setTplSaving(false)
-    if (res.success) setTemplates(await listTemplates(type))
+    if (res.success) { setTemplates(await listTemplates(type)); setOfferTemplate("done") }
     else setError(res.error || "Failed to save template")
   }
 
@@ -550,6 +559,8 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
     // The draft summary describes a list that is no longer on screen.
     setDraft(null)
     setTplOpen(false)
+    setTemplateId(t.id)
+    setChoosing(false)
   }
 
   /** Anything in the editor a template would overwrite. */
@@ -704,7 +715,10 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
                 {(templates || []).length === 0 && <p className="text-xs p-2" style={{ color: "#7e8a9e" }}>No templates yet.</p>}
                 {(templates || []).map((t) => (
                   <div key={t.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5">
-                    <button onClick={() => requestTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#e8eaf0" }}>{t.title}</button>
+                    <button onClick={() => requestTemplate(t)} className="text-xs text-left flex-1" style={{ color: "#e8eaf0" }}>
+                      {t.title}
+                      <span className="block text-[10.5px] mt-0.5" style={{ color: "#7e8a9e" }}>{t.usage === 0 ? "not used yet" : `used for ${t.usage} client${t.usage === 1 ? "" : "s"}`}</span>
+                    </button>
                     <button onClick={() => requestRemoveTemplate(t)} aria-label="Delete template" style={{ color: "#fb7185" }}><Trash2 size={12} /></button>
                   </div>
                 ))}
@@ -714,6 +728,10 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         </div>
       </div>
 
+      {choosing ? (
+        <TemplateChooser type={type} templates={templates} load={async () => { if (templates === null) setTemplates(await listTemplates(type)) }}
+          onPick={(t) => applyTemplate(t)} onBlank={() => setChoosing(false)} />
+      ) : (<>
       <label className="block text-xs uppercase mb-2" style={{ color: "#7e8a9e", letterSpacing: "0.08em" }}>Title</label>
       <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none mb-5" style={inputStyle} placeholder={meta.label} />
 
@@ -1267,7 +1285,63 @@ export function PlanEditor({ clientId, type, plan }: { clientId: string; type: P
         {saving ? <Loader2 size={18} className="animate-spin" /> : saved ? <><Check size={18} /> Saved</> : "Save Plan"}
       </motion.button>
 
+      {offerTemplate === "ask" && (
+        <div className="mt-3 p-3 rounded-xl flex items-center gap-3" style={{ background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.25)" }}>
+          <BookmarkPlus size={16} style={{ color: "#a78bfa" }} />
+          <p className="flex-1 text-xs" style={{ color: "#c9cdd5" }}>Saved. Keep this as a template for the next client like her?</p>
+          <button onClick={handleSaveTemplate} disabled={tplSaving} className="h-8 px-3 rounded-lg text-xs font-semibold" style={{ background: "#a78bfa", color: "#140b24" }}>
+            {tplSaving ? <Loader2 size={13} className="animate-spin" /> : "Save as template"}
+          </button>
+          <button onClick={() => setOfferTemplate("done")} className="text-xs" style={{ color: "#7e8a9e" }}>Not now</button>
+        </div>
+      )}
+      </>)}
+
       <ConfirmDialog prompt={confirmPrompt} onClose={() => setConfirmPrompt(null)} />
+    </div>
+  )
+}
+
+
+/**
+ * The front door for a client with no plan yet: start from a template, most
+ * used first, with a blank plan as the last resort rather than the default.
+ */
+function TemplateChooser({
+  type, templates, load, onPick, onBlank,
+}: {
+  type: PlanType
+  templates: PlanTemplate[] | null
+  load: () => Promise<void>
+  onPick: (t: PlanTemplate) => void
+  onBlank: () => void
+}) {
+  // Once, when the chooser appears; `load` is a fresh closure every render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { void load() }, [])
+  const items = (t: PlanTemplate) => type === "meal" ? `${t.content.mealItems?.length ?? 0} foods` : `${t.content.workoutItems?.length ?? 0} exercises`
+  return (
+    <div>
+      <p className="text-sm font-medium" style={{ color: "#e8eaf0" }}>Start from a template</p>
+      <p className="text-xs mt-1 mb-4" style={{ color: "#7e8a9e" }}>Pick the closest one, then adjust it for her. Nothing reaches her until you save.</p>
+      {templates === null ? (
+        <p className="text-xs py-3" style={{ color: "#7e8a9e" }}><Loader2 size={12} className="inline animate-spin mr-1" /> Loading templates…</p>
+      ) : (
+        <div className="space-y-2">
+          {templates.length === 0 && <p className="text-xs py-2" style={{ color: "#7e8a9e" }}>No templates yet — save your first plan as one.</p>}
+          {templates.map((t) => (
+            <button key={t.id} onClick={() => onPick(t)} className="w-full text-left p-3.5 rounded-xl hover:bg-white/5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <span className="block text-sm" style={{ color: "#e8eaf0" }}>{t.title}</span>
+              <span className="block text-[11px] mt-0.5" style={{ color: "#7e8a9e" }}>
+                {items(t)} · {t.usage === 0 ? "not used yet" : `used for ${t.usage} client${t.usage === 1 ? "" : "s"}`}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+      <button onClick={onBlank} className="mt-4 w-full h-11 rounded-xl text-sm" style={{ color: "#a9b2c1", border: "1px dashed rgba(255,255,255,0.12)" }}>
+        Start blank
+      </button>
     </div>
   )
 }

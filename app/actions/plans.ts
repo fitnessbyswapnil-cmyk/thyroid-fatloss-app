@@ -49,6 +49,8 @@ export interface PlanContent {
   sections: PlanSection[]
   workoutItems?: WorkoutItem[]
   mealItems?: MealItem[]
+  /** The template this plan was started from, for template usage counts. */
+  templateId?: string | null
 }
 
 export interface Plan {
@@ -87,6 +89,7 @@ interface SavePlanInput {
   workoutItems?: WorkoutItem[]
   mealItems?: MealItem[]
   filePath?: string | null
+  templateId?: string | null
 }
 
 /**
@@ -136,6 +139,7 @@ export async function savePlan(input: SavePlanInput) {
       sections,
       ...(workoutItems.length ? { workoutItems } : {}),
       ...(mealItems.length ? { mealItems } : {}),
+      ...(input.templateId ? { templateId: input.templateId } : {}),
     }
 
     const title = input.title.trim() || (input.type === 'meal' ? 'Meal Plan' : 'Workout Plan')

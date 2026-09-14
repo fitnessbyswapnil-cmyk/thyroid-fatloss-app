@@ -1,6 +1,6 @@
 # ThyroWell — UX Simplification
 
-**Status:** in progress
+**Status:** Phases 0–8 shipped 14 Sep 2026 (commits 834b88b → Phase 8). Real-device Android testing still to do.
 **Owner:** Swapnil
 **Goal:** cut the app's surface area so a tired 45-year-old woman on a mid-range Android can use it correctly on the first try without asking the coach.
 
