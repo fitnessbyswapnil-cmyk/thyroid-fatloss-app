@@ -8,7 +8,7 @@ import type { PlanSection, WorkoutItem } from "@/app/actions/plans"
 import { ExerciseDemo } from "@/components/dashboard/ExerciseDemo"
 import { ExerciseViewer } from "@/components/dashboard/ExerciseViewer"
 import { DAYS, dayLabel, groupByDay, scheduledDays, todayDayOfWeek } from "@/lib/plans/schedule"
-import { saveDailyLog } from "@/app/actions/daily-log"
+import { setExercisesDone } from "@/app/actions/daily-log"
 
 const card = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" } as const
 const localDate = () => new Date().toLocaleDateString("en-CA")
@@ -28,7 +28,7 @@ export function MoveToday({
   allItems: WorkoutItem[]
   sections: PlanSection[]
   autoStart: boolean
-  log: { workoutDone: boolean; mealsFollowed: number; steps: number | null }
+  log: { workoutDone: boolean }
 }) {
   const router = useRouter()
   const [viewing, setViewing] = useState<WorkoutItem | null>(null)
@@ -47,7 +47,6 @@ export function MoveToday({
       {running && (
         <Walkthrough
           exercises={exercises}
-          log={log}
           onClose={() => setRunning(false)}
           onDone={() => {
             setDone(true)
@@ -206,12 +205,10 @@ export function MoveToday({
  */
 function Walkthrough({
   exercises,
-  log,
   onClose,
   onDone,
 }: {
   exercises: WorkoutItem[]
-  log: { mealsFollowed: number; steps: number | null }
   onClose: () => void
   onDone: () => void
 }) {
@@ -233,13 +230,9 @@ function Walkthrough({
     setSaving(true)
     setError(null)
     try {
-      const res = await saveDailyLog({
-        date: localDate(),
-        workoutDone: true,
-        mealsFollowed: log.mealsFollowed,
-        walkDone: (log.steps ?? 0) >= 3000,
-        steps: log.steps,
-      })
+      // Writes one set per exercise to exercise_logs; the Today card's
+      // "did today's exercises" is derived from that, so it arrives ticked.
+      const res = await setExercisesDone(localDate(), true)
       if (res.success) onDone()
       else setError(res.error || "That didn't save. Tap Done again.")
     } catch {

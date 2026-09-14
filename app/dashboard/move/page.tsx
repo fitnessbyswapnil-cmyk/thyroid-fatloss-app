@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { getPlansForClient } from "@/app/actions/plans"
 import { buildTodayWorkout } from "@/lib/plans/today"
 import { MoveToday } from "@/components/dashboard/MoveToday"
+import { getClientToday } from "@/lib/client-hour"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
 
 /**
@@ -15,10 +16,11 @@ export default async function MovePage({ searchParams }: { searchParams: Promise
   const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
-  const today = new Date().toLocaleDateString("en-CA")
-  const [{ workout }, { data: log }, sp] = await Promise.all([
+  const today = await getClientToday()
+  // Trained today = any set in exercise_logs, the one record of training.
+  const [{ workout }, { count: setsToday }, sp] = await Promise.all([
     getPlansForClient(user.id),
-    supabase.from("daily_logs").select("workout_done, meals_followed, steps").eq("client_id", user.id).eq("date", today).maybeSingle(),
+    supabase.from("exercise_logs").select("id", { count: "exact", head: true }).eq("client_id", user.id).eq("date", today),
     searchParams,
   ])
 
@@ -38,11 +40,7 @@ export default async function MovePage({ searchParams }: { searchParams: Promise
         allItems={items}
         sections={sections}
         autoStart={sp.start === "1"}
-        log={{
-          workoutDone: Boolean(log?.workout_done),
-          mealsFollowed: log?.meals_followed ?? 0,
-          steps: typeof log?.steps === "number" ? log.steps : null,
-        }}
+        log={{ workoutDone: (setsToday ?? 0) > 0 }}
       />
       <BottomNavPill />
     </div>

@@ -47,7 +47,7 @@ export function EmptyCheckInState({
   dayNumber: number
   todayMeals: TodayMeal[]
   todayWorkout: { hasPlan: boolean; walk: WorkoutItem | null; exercises: WorkoutItem[] }
-  todayLog: { workoutDone: boolean; mealsFollowed: number; steps: number | null }
+  todayLog: { mealsDone: string[]; workoutDone: boolean; steps: number | null }
   logComplete: boolean
   lesson: { slug: string; title: string; summary: string | null; minutes: number } | null
   status?: Week0Status
@@ -74,9 +74,10 @@ export function EmptyCheckInState({
 
   const log = (
     <TodayLogCard
+      initialMealsDone={todayLog.mealsDone}
       initialWorkoutDone={todayLog.workoutDone}
-      initialMealsFollowed={todayLog.mealsFollowed}
       initialSteps={todayLog.steps}
+      hasExercises={todayWorkout.exercises.length > 0}
       heading="Tap what you did today"
     />
   )

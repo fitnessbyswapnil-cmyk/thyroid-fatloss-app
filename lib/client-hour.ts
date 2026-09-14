@@ -23,3 +23,20 @@ export async function getClientHour(): Promise<number | null> {
     return null
   }
 }
+
+/**
+ * Today's date (YYYY-MM-DD) on her clock, not the server's.
+ *
+ * The server runs in UTC, so between midnight and 05:30 IST its date is still
+ * yesterday — and a log read by the server date would show last night's ticks
+ * as this morning's. Uses the same timezone cookie; falls back to server time.
+ */
+export async function getClientToday(): Promise<string> {
+  const tz = (await cookies()).get(TZ_COOKIE)?.value
+  if (tz) {
+    try {
+      return new Intl.DateTimeFormat("en-CA", { timeZone: decodeURIComponent(tz) }).format(new Date())
+    } catch {}
+  }
+  return new Date().toLocaleDateString("en-CA")
+}

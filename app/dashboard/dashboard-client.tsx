@@ -39,7 +39,7 @@ interface DashboardData {
   insightTimestamp: string
   isNewInsight: boolean
   coachFeedback: CoachFeedbackItem[]
-  todayLog: { workoutDone: boolean; walkDone: boolean; mealsFollowed: number; steps: number | null }
+  todayLog: { mealsDone: string[]; workoutDone: boolean; steps: number | null }
   focus: FocusState
   daysToCheckin: number
   photoDue: boolean
@@ -51,9 +51,10 @@ export function DashboardClient({ data }: { data: DashboardData }) {
   const now = new Date()
   const log = (
     <TodayLogCard
+      initialMealsDone={data.todayLog.mealsDone}
       initialWorkoutDone={data.todayLog.workoutDone}
-      initialMealsFollowed={data.todayLog.mealsFollowed}
       initialSteps={data.todayLog.steps}
+      hasExercises={data.today.exercises.length > 0}
       heading="Tap what you did today"
     />
   )

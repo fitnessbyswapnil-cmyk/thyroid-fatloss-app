@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Check, Loader2, UtensilsCrossed, Dumbbell, Footprints } from "lucide-react"
-import { saveDailyLog } from "@/app/actions/daily-log"
+import { setExercisesDone, setMealEaten, setSteps } from "@/app/actions/daily-log"
 
 // Local date (IST-safe): en-CA gives YYYY-MM-DD
 const localDate = () => new Date().toLocaleDateString("en-CA")
@@ -16,8 +16,7 @@ const MEALS = ["Breakfast", "Lunch", "Dinner"] as const
  * She reads a rough figure off her phone's step counter once a day; asking her
  * to type "6,432" invites the keyboard, and the keyboard is what stops a log
  * being filled in at 10pm. The stored value is the middle of the band, so a
- * month of taps still averages honestly — it is a range she picked, not a
- * precision we are pretending to have.
+ * month of taps still averages honestly.
  */
 const STEPS = [
   { mid: 1000, label: "Under 2k" },
@@ -30,55 +29,45 @@ const STEPS = [
 const TEAL = "#2dd4bf"
 
 /**
- * The whole day in three rows: did she eat to plan, did she train, did she move.
+ * The whole day in three rows: meals, exercises, steps. Everything is a tap.
  *
- * Everything is a tap. No number pad, no stepper, no notes box — these get
- * filled in on a phone at the end of a long day, and anything needing the
- * keyboard does not get filled in at all.
+ * Each tap writes to the table that owns the fact — a meal to meal_logs, the
+ * exercises to exercise_logs, steps to the daily log — so a meal ticked here
+ * and a meal ticked in Food are the same row, and this card always shows what
+ * was saved from anywhere.
  */
 export function TodayLogCard({
+  initialMealsDone,
   initialWorkoutDone,
-  initialMealsFollowed,
   initialSteps,
+  hasExercises = true,
   heading = "Today",
 }: {
+  initialMealsDone: string[]
   initialWorkoutDone: boolean
-  initialMealsFollowed: number
   initialSteps: number | null
+  hasExercises?: boolean
   heading?: string
 }) {
   const router = useRouter()
-  const [meals, setMeals] = useState(initialMealsFollowed)
+  const [meals, setMeals] = useState<string[]>(initialMealsDone)
   const [workoutDone, setWorkoutDone] = useState(initialWorkoutDone)
-  const [steps, setSteps] = useState<number | null>(initialSteps)
+  const [steps, setStepsState] = useState<number | null>(initialSteps)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   /**
-   * Save, and put every control back if it did not land. A tick that survives a
-   * failed write tells her the day is logged while the coach's view says it is
-   * not — wrong in the direction that costs trust, and invisible from both sides.
+   * Run one save, and put the control back if it did not land. A tick that
+   * survives a failed write tells her the day is logged while the coach's view
+   * says it is not.
    */
-  const save = async (nextMeals: number, nextWorkout: boolean, nextSteps: number | null) => {
-    const prev = { meals, workoutDone, steps }
-    const revert = () => {
-      setMeals(prev.meals)
-      setWorkoutDone(prev.workoutDone)
-      setSteps(prev.steps)
-    }
+  const run = async (apply: () => void, revert: () => void, write: () => Promise<{ success: boolean; error?: string }>) => {
+    apply()
     setSaving(true)
     setError(null)
     try {
-      const res = await saveDailyLog({
-        date: localDate(),
-        mealsFollowed: nextMeals,
-        workoutDone: nextWorkout,
-        // walk_done stays true when she logged any real movement, so the streak
-        // and the coach's walk row keep working off the same tap.
-        walkDone: (nextSteps ?? 0) >= 3000,
-        steps: nextSteps,
-      })
+      const res = await write()
       if (res.success) {
         setSaved(true)
         setTimeout(() => setSaved(false), 1400)
@@ -96,80 +85,92 @@ export function TodayLogCard({
     }
   }
 
-  /** Tapping meal n sets the count to n+1, or back to n if it was already on. */
-  const tapMeal = (i: number) => {
-    const next = meals === i + 1 ? i : i + 1
-    setMeals(next)
-    save(next, workoutDone, steps)
+  const tapMeal = (m: string) => {
+    const was = meals
+    const on = !was.includes(m)
+    run(
+      () => setMeals(on ? [...was, m] : was.filter((x) => x !== m)),
+      () => setMeals(was),
+      () => setMealEaten(localDate(), m, on)
+    )
   }
 
-  const done = meals >= 3 && workoutDone && steps !== null
+  const tapWorkout = () => {
+    const was = workoutDone
+    run(() => setWorkoutDone(!was), () => setWorkoutDone(was), () => setExercisesDone(localDate(), !was))
+  }
+
+  const tapSteps = (mid: number) => {
+    const was = steps
+    const next = was === mid ? null : mid
+    run(() => setStepsState(next), () => setStepsState(was), () => setSteps(localDate(), next))
+  }
+
+  const mealCount = MEALS.filter((m) => meals.includes(m)).length
+  const done = mealCount >= 3 && (workoutDone || !hasExercises) && steps !== null
 
   return (
     <section className="px-4">
       <div className="flex items-baseline justify-between mb-3">
-        <span className="text-[11px] font-medium uppercase" style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}>
-          {heading}
-        </span>
+        <span className="text-[11px] font-medium uppercase" style={{ color: "#7e8a9e", letterSpacing: "0.10em" }}>{heading}</span>
         <span className="text-[11px]" style={{ color: done ? TEAL : "#5a6578" }}>
           {done ? "All three done — well done" : "Tap each one you did"}
         </span>
       </div>
 
       <div className="space-y-2.5">
-        {/* 1 — DIET */}
-        <Row Icon={UtensilsCrossed} title="Ate to plan" note={`${meals} of 3 meals`} on={meals >= 3}>
+        {/* 1 — MEALS */}
+        <Row Icon={UtensilsCrossed} title="Ate to plan" note={`${mealCount} of 3 meals`} on={mealCount >= 3}>
           <div className="grid grid-cols-3 gap-2 mt-3">
-            {MEALS.map((m, i) => {
-              const on = i < meals
+            {MEALS.map((m) => {
+              const on = meals.includes(m)
               return (
                 <button
                   key={m}
-                  onClick={() => tapMeal(i)}
+                  onClick={() => tapMeal(m)}
                   disabled={saving}
                   aria-pressed={on}
-                  className="h-11 rounded-xl text-[12px] font-medium transition-all active:scale-[0.97] disabled:opacity-60"
+                  className="h-11 rounded-xl text-[12px] font-medium transition-all active:scale-[0.97] disabled:opacity-60 inline-flex items-center justify-center gap-1"
                   style={{
                     background: on ? "rgba(45,212,191,0.14)" : "rgba(255,255,255,0.04)",
                     border: `1px solid ${on ? "rgba(45,212,191,0.4)" : "rgba(255,255,255,0.07)"}`,
                     color: on ? "#e8eaf0" : "#7e8a9e",
                   }}
                 >
-                  {m}
+                  {on && <Check size={12} style={{ color: TEAL }} />} {m}
                 </button>
               )
             })}
           </div>
         </Row>
 
-        {/* 2 — WORKOUT */}
-        <button
-          onClick={() => {
-            const v = !workoutDone
-            setWorkoutDone(v)
-            save(meals, v, steps)
-          }}
-          disabled={saving}
-          aria-pressed={workoutDone}
-          className="w-full p-4 rounded-2xl flex items-center justify-between transition-all active:scale-[0.99] disabled:opacity-60"
-          style={{
-            background: workoutDone ? "rgba(45,212,191,0.10)" : "rgba(255,255,255,0.03)",
-            border: `1px solid ${workoutDone ? "rgba(45,212,191,0.3)" : "rgba(255,255,255,0.06)"}`,
-          }}
-        >
-          <span className="inline-flex items-center gap-3">
-            <Dumbbell size={19} style={{ color: workoutDone ? TEAL : "#7e8a9e" }} />
-            <span className="text-left">
-              <span className="block text-[15px] font-medium" style={{ color: "#e8eaf0" }}>
-                Did today&apos;s exercises
-              </span>
-              <span className="block text-[11px] mt-0.5" style={{ color: "#7e8a9e" }}>
-                About 20 minutes
+        {/* 2 — EXERCISES */}
+        {hasExercises ? (
+          <button
+            onClick={tapWorkout}
+            disabled={saving}
+            aria-pressed={workoutDone}
+            className="w-full p-4 rounded-2xl flex items-center justify-between transition-all active:scale-[0.99] disabled:opacity-60"
+            style={{
+              background: workoutDone ? "rgba(45,212,191,0.10)" : "rgba(255,255,255,0.03)",
+              border: `1px solid ${workoutDone ? "rgba(45,212,191,0.3)" : "rgba(255,255,255,0.06)"}`,
+            }}
+          >
+            <span className="inline-flex items-center gap-3">
+              <Dumbbell size={19} style={{ color: workoutDone ? TEAL : "#7e8a9e" }} />
+              <span className="text-left">
+                <span className="block text-[15px] font-medium" style={{ color: "#e8eaf0" }}>Did today&apos;s exercises</span>
+                <span className="block text-[11px] mt-0.5" style={{ color: "#7e8a9e" }}>About 20 minutes</span>
               </span>
             </span>
-          </span>
-          <Tick on={workoutDone} />
-        </button>
+            <Tick on={workoutDone} />
+          </button>
+        ) : (
+          <div className="w-full p-4 rounded-2xl flex items-center gap-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <Dumbbell size={19} style={{ color: "#5a6578" }} />
+            <span className="text-[13px]" style={{ color: "#7e8a9e" }}>Rest day — no exercises to tick</span>
+          </div>
+        )}
 
         {/* 3 — STEPS */}
         <Row
@@ -184,11 +185,7 @@ export function TodayLogCard({
               return (
                 <button
                   key={s.mid}
-                  onClick={() => {
-                    const v = on ? null : s.mid
-                    setSteps(v)
-                    save(meals, workoutDone, v)
-                  }}
+                  onClick={() => tapSteps(s.mid)}
                   disabled={saving}
                   aria-pressed={on}
                   className="h-11 rounded-xl text-[11px] font-medium transition-all active:scale-[0.97] disabled:opacity-60"
@@ -226,28 +223,13 @@ export function TodayLogCard({
 
 function Tick({ on }: { on: boolean }) {
   return (
-    <span
-      className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-      style={{ background: on ? TEAL : "rgba(255,255,255,0.08)" }}
-    >
+    <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: on ? TEAL : "rgba(255,255,255,0.08)" }}>
       {on && <Check size={15} style={{ color: "#06231f" }} />}
     </span>
   )
 }
 
-function Row({
-  Icon,
-  title,
-  note,
-  on,
-  children,
-}: {
-  Icon: typeof Dumbbell
-  title: string
-  note: string
-  on: boolean
-  children: React.ReactNode
-}) {
+function Row({ Icon, title, note, on, children }: { Icon: typeof Dumbbell; title: string; note: string; on: boolean; children: React.ReactNode }) {
   return (
     <div
       className="p-4 rounded-2xl"

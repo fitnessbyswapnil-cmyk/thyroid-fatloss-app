@@ -6,7 +6,7 @@ import { EmptyCheckInState } from "./empty-checkin-state"
 import { nextLesson } from "@/app/actions/lessons"
 import { getPlansForClient } from "@/app/actions/plans"
 import { buildTodayMeals, buildTodayWorkout, dayNumberFrom } from "@/lib/plans/today"
-import { getClientHour } from "@/lib/client-hour"
+import { getClientHour, getClientToday } from "@/lib/client-hour"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -43,12 +43,13 @@ export default async function DashboardPage() {
     plansForClient,
     { data: latestPhoto },
     clientHour,
+    clientToday,
   ] = await Promise.all([
     supabase.from("clients").select("*").eq("id", user.id).single(),
     supabase.from("weekly_checkins").select("*").eq("client_id", user.id).order("submitted_at", { ascending: false }),
     supabase.from("coach_insights").select("*").eq("client_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     supabase.from("daily_logs").select("date, workout_done, walk_done, meals_followed, steps").eq("client_id", user.id).order("date", { ascending: false }).limit(180),
-    supabase.from("meal_logs").select("date, done").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
+    supabase.from("meal_logs").select("date, meal, done").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
     supabase.from("exercise_logs").select("date").eq("client_id", user.id).gte("date", streakWindowStart).order("date", { ascending: false }),
     supabase.from("health_profiles").select("medication, medication_dose, medication_timing").eq("client_id", user.id).maybeSingle(),
     // The coach's notes on her check-ins. checkin_feedback has no client_id of
@@ -67,7 +68,16 @@ export default async function DashboardPage() {
     getPlansForClient(user.id),
     supabase.from("progress_photos").select("created_at").eq("client_id", user.id).order("created_at", { ascending: false }).limit(1),
     getClientHour(),
+    getClientToday(),
   ])
+
+  // Today's three taps, read from the tables that own each fact: which meals
+  // from meal_logs, whether she trained from exercise_logs, steps from
+  // daily_logs (its only home). The date is her local date, not the server's.
+  const todayRow = (logs || []).find((l) => l.date === clientToday) || null
+  const todayMealsDone = [...new Set((mealLogDays || []).filter((m) => m.date === clientToday && m.done).map((m) => m.meal as string))]
+  const todayTrained = (exerciseLogDays || []).some((e) => e.date === clientToday)
+  const todaySteps = typeof todayRow?.steps === "number" ? todayRow.steps : null
 
   // If no profile or not onboarded, redirect to onboarding
   if (!client || !client.onboarding_completed) {
@@ -106,12 +116,8 @@ export default async function DashboardPage() {
     const todayMeals = buildTodayMeals(w0MealItems, dayNumber)
     const todayWorkout = buildTodayWorkout(w0WorkoutItems)
 
-    const w0Today = new Date().toLocaleDateString("en-CA")
-    const w0TodayLog = (logs || []).find((l) => l.date === w0Today) || null
     const w0LogComplete =
-      (w0TodayLog?.meals_followed ?? 0) >= 3 &&
-      (Boolean(w0TodayLog?.workout_done) || todayWorkout.exercises.length === 0) &&
-      typeof w0TodayLog?.steps === "number"
+      todayMealsDone.length >= 3 && (todayTrained || todayWorkout.exercises.length === 0) && todaySteps !== null
 
     return (
       <EmptyCheckInState
@@ -122,11 +128,7 @@ export default async function DashboardPage() {
         logComplete={w0LogComplete}
         serverHour={clientHour}
         lesson={upNextLesson ? { slug: upNextLesson.slug, title: upNextLesson.title, summary: upNextLesson.summary, minutes: upNextLesson.read_minutes } : null}
-        todayLog={{
-          workoutDone: Boolean(w0TodayLog?.workout_done),
-          mealsFollowed: w0TodayLog?.meals_followed || 0,
-          steps: typeof w0TodayLog?.steps === "number" ? w0TodayLog.steps : null,
-        }}
+        todayLog={{ mealsDone: todayMealsDone, workoutDone: todayTrained, steps: todaySteps }}
         status={{
           hasPlan: (w0Plans?.length ?? 0) > 0,
           hasMedication: Boolean(w0Profile?.medication),
@@ -207,7 +209,6 @@ export default async function DashboardPage() {
   }
   const monthPrefix = dayStr(new Date()).slice(0, 7)
   const monthlyCount = [...activeDays].filter((d) => d.startsWith(monthPrefix)).length
-  const todayLog = (logs || []).find((l) => l.date === dayStr(new Date())) || null
 
   // Calculate program week
   const startDate = client.start_date ? new Date(client.start_date) : new Date()
@@ -267,9 +268,7 @@ export default async function DashboardPage() {
   const photoAgeDays = latestPhoto?.[0]?.created_at ? Math.floor((Date.now() - new Date(latestPhoto[0].created_at).getTime()) / DAY) : null
   const photoDue = programWeek >= 4 && (photoAgeDays === null || photoAgeDays >= 28)
   const logComplete =
-    (todayLog?.meals_followed ?? 0) >= 3 &&
-    (Boolean(todayLog?.workout_done) || todayWorkout.exercises.length === 0) &&
-    typeof todayLog?.steps === "number"
+    todayMealsDone.length >= 3 && (todayTrained || todayWorkout.exercises.length === 0) && todaySteps !== null
 
   const dashboardData = {
     name: client.full_name?.split(" ")[0] || "Friend",
@@ -310,10 +309,9 @@ export default async function DashboardPage() {
     },
     monthlyGoal: { current: monthlyCount, target: 30 },
     todayLog: {
-      workoutDone: Boolean(todayLog?.workout_done),
-      walkDone: Boolean(todayLog?.walk_done),
-      mealsFollowed: todayLog?.meals_followed || 0,
-      steps: typeof todayLog?.steps === "number" ? todayLog.steps : null,
+      mealsDone: todayMealsDone,
+      workoutDone: todayTrained,
+      steps: todaySteps,
     },
     weight: { 
       current: client.current_weight || 0, 

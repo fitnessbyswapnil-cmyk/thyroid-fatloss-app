@@ -5,6 +5,7 @@ import { getPlansForClient } from "@/app/actions/plans"
 import { buildTodayMeals, dayNumberFrom } from "@/lib/plans/today"
 import { FoodToday } from "@/components/dashboard/FoodToday"
 import { BottomNavPill } from "@/components/dashboard/BottomNavPill"
+import { getClientToday } from "@/lib/client-hour"
 
 /**
  * Food tab: today's meals first, every other option one tap away.
@@ -18,9 +19,11 @@ export default async function FoodPage() {
   const user = await getAuthUser(supabase)
   if (!user) redirect("/auth/login")
 
-  const [{ meal }, { data: client }] = await Promise.all([
+  const today = await getClientToday()
+  const [{ meal }, { data: client }, { data: eatenRows }] = await Promise.all([
     getPlansForClient(user.id),
     supabase.from("clients").select("start_date").eq("id", user.id).maybeSingle(),
+    supabase.from("meal_logs").select("meal").eq("client_id", user.id).eq("date", today).eq("done", true),
   ])
 
   const dayNumber = dayNumberFrom(client?.start_date)
@@ -39,6 +42,7 @@ export default async function FoodPage() {
         sections={sections}
         filePath={meal?.file_path ?? null}
         hasPlan={Boolean(meal)}
+        eatenSlots={(eatenRows || []).map((r) => r.meal as string)}
       />
       <BottomNavPill />
     </div>

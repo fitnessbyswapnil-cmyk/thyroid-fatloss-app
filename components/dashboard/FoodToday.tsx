@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ChevronDown, ChevronLeft, ChevronRight, FileText, RefreshCw, Sparkles } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { setMealEaten } from "@/app/actions/daily-log"
+import { Check, ChevronDown, ChevronLeft, ChevronRight, FileText, Loader2, RefreshCw, Sparkles } from "lucide-react"
 import type { MealItem, PlanSection } from "@/app/actions/plans"
 import type { TodayMeal, MealOption } from "@/lib/plans/today"
 import { MealDetail } from "@/components/dashboard/MealDetail"
@@ -25,6 +27,7 @@ export function FoodToday({
   sections,
   filePath,
   hasPlan,
+  eatenSlots,
 }: {
   title: string
   updatedAt: string | null
@@ -32,7 +35,33 @@ export function FoodToday({
   sections: PlanSection[]
   filePath: string | null
   hasPlan: boolean
+  /** Meals already ticked today, read from meal_logs. */
+  eatenSlots: string[]
 }) {
+  const router = useRouter()
+  const [eaten, setEaten] = useState<string[]>(eatenSlots)
+  const [ticking, setTicking] = useState<string | null>(null)
+  const [tickError, setTickError] = useState<string | null>(null)
+
+  // Same write as the meal chips on Today — one meal_logs row — so ticking here
+  // shows up there straight away, and the other way round.
+  const toggleEaten = async (slot: string) => {
+    const was = eaten
+    const on = !was.includes(slot)
+    setEaten(on ? [...was, slot] : was.filter((x) => x !== slot))
+    setTicking(slot)
+    setTickError(null)
+    try {
+      const res = await setMealEaten(localDate(), slot, on)
+      if (!res.success) { setEaten(was); setTickError(res.error || "That didn't save. Try again.") }
+      else router.refresh()
+    } catch {
+      setEaten(was)
+      setTickError("That didn't save — you may have lost signal. Try again.")
+    } finally {
+      setTicking(null)
+    }
+  }
   const [chosen, setChosen] = useState<Record<string, string>>({})
   const [swapping, setSwapping] = useState<string | null>(null)
   const [detail, setDetail] = useState<MealItem | null>(null)
@@ -139,16 +168,33 @@ export function FoodToday({
                   <p className="text-sm mt-2" style={{ color: "#7e8a9e" }}>Not set yet</p>
                 )}
 
-                {others.length > 0 && (
-                  <button
-                    onClick={() => setSwapping(isOpen ? null : m.slot)}
-                    className="mt-3 h-10 px-4 rounded-full text-[13px] font-semibold inline-flex items-center gap-2"
-                    style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}
-                    aria-expanded={isOpen}
-                  >
-                    <RefreshCw size={14} /> {isOpen ? "Keep this one" : `Swap · ${others.length} other option${others.length === 1 ? "" : "s"}`}
-                  </button>
-                )}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {c && ["Breakfast", "Lunch", "Dinner"].includes(m.slot) && (
+                    <button
+                      onClick={() => toggleEaten(m.slot)}
+                      disabled={ticking === m.slot}
+                      aria-pressed={eaten.includes(m.slot)}
+                      className="h-10 px-4 rounded-full text-[13px] font-semibold inline-flex items-center gap-2 disabled:opacity-60"
+                      style={eaten.includes(m.slot)
+                        ? { background: "#2dd4bf", color: "#06231f" }
+                        : { background: "rgba(255,255,255,0.06)", color: "#e8eaf0", border: "1px solid rgba(255,255,255,0.1)" }}
+                    >
+                      {ticking === m.slot ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                      {eaten.includes(m.slot) ? `Ate ${m.slot.toLowerCase()}` : "I ate this"}
+                    </button>
+                  )}
+                  {others.length > 0 && (
+                    <button
+                      onClick={() => setSwapping(isOpen ? null : m.slot)}
+                      className="h-10 px-4 rounded-full text-[13px] font-semibold inline-flex items-center gap-2"
+                      style={{ background: "rgba(45,212,191,0.12)", color: "#2dd4bf" }}
+                      aria-expanded={isOpen}
+                    >
+                      <RefreshCw size={14} /> {isOpen ? "Keep this one" : `Swap · ${others.length} other option${others.length === 1 ? "" : "s"}`}
+                    </button>
+                  )}
+                </div>
+                {tickError && <p className="text-xs mt-2" style={{ color: "#fb7185" }}>{tickError}</p>}
               </div>
 
               {isOpen && (

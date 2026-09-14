@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { guard, failed } from '@/lib/errors'
+import { syncDailyLog } from '@/lib/logging/daily-sync'
 
 export interface ExerciseSet {
   exercise_name: string
@@ -56,6 +57,7 @@ export async function logExerciseSet(input: {
       { onConflict: 'client_id,date,exercise_name,set_number' }
     )
     if (error) return { success: false, error: error.message }
+    await syncDailyLog(supabase, user.id, input.date)
     revalidatePath('/dashboard/plans')
     revalidatePath('/dashboard/food')
     revalidatePath('/dashboard/move')
@@ -75,6 +77,7 @@ export async function deleteExerciseSet(date: string, exerciseName: string, setN
       .eq('client_id', user.id).eq('date', date)
       .eq('exercise_name', exerciseName).eq('set_number', setNumber)
     if (error) return { success: false, error: error.message }
+    await syncDailyLog(supabase, user.id, date)
     revalidatePath('/dashboard/plans')
     revalidatePath('/dashboard/food')
     revalidatePath('/dashboard/move')
@@ -147,6 +150,7 @@ export async function toggleMealLog(date: string, meal: string, done: boolean) {
       )
       if (error) return { success: false, error: error.message }
     }
+    await syncDailyLog(supabase, user.id, date)
     revalidatePath('/dashboard/plans')
     revalidatePath('/dashboard/food')
     revalidatePath('/dashboard/move')
