@@ -13,7 +13,8 @@ import {
 import { PendingReview } from "@/app/actions/coach-reviews"
 import type { CoachAlert } from "@/lib/coach/alerts"
 import type { ClientSetup } from "@/lib/coach/assignment"
-import { PendingReviewsQueue } from "@/components/coach/PendingReviewsQueue"
+import { Worklist } from "@/components/coach/Worklist"
+import type { WorkRow } from "@/lib/coach/worklist"
 import { AddClientButton } from "@/components/coach/AddClientButton"
 import { useStaggeredEntrance } from "@/components/ui/stagger"
 
@@ -65,6 +66,7 @@ export function CoachDashboardClient({
   engagement = { neverStarted: [], goneQuiet: [] },
   recentErrorCount = 0,
   setup = {},
+  worklist = [],
   stats
 }: {
   clients: Client[]
@@ -76,16 +78,13 @@ export function CoachDashboardClient({
   engagement?: RosterEngagement
   recentErrorCount?: number
   setup?: Record<string, ClientSetup>
+  worklist?: WorkRow[]
   stats: Stats
 }) {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedFilter, setSelectedFilter] = useState<"all" | "active" | "pending">("all")
 
-  // The stat grid used i * 0.1 and the roster i * 0.05, so a 20-client roster
-  // took a full second to finish appearing and the fourth stat card landed
-  // 300ms after the first. Both ramps are now capped at 300ms total.
-  const statEntrance = useStaggeredEntrance(0.06, 20)
   const rosterEntrance = useStaggeredEntrance(0.04, 10)
 
   // Re-lowercasing every client's name and email on every keystroke is work
@@ -115,37 +114,6 @@ export function CoachDashboardClient({
     await supabase.auth.signOut()
     router.push("/auth/login")
   }
-
-  const statCards = [
-    { 
-      label: "Total Clients", 
-      value: stats.totalClients, 
-      icon: Users, 
-      color: "#2dd4bf",
-      subtext: `${stats.activeClients} active`
-    },
-    { 
-      label: "Pending Check-ins", 
-      value: stats.pendingCheckins, 
-      icon: Clock, 
-      color: "#f59e0b",
-      subtext: "This week"
-    },
-    {
-      label: "To Review",
-      value: pendingReviews.length,
-      icon: Activity,
-      color: "#34d399",
-      subtext: "Submitted check-ins"
-    },
-    { 
-      label: "Avg Weight", 
-      value: `${stats.avgWeight} kg`, 
-      icon: TrendingUp, 
-      color: "#fb7185",
-      subtext: "Current"
-    },
-  ]
 
   return (
     <div 
@@ -201,17 +169,6 @@ export function CoachDashboardClient({
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Pending Reviews Section */}
-        {pendingReviews.length > 0 && (
-          <motion.div
-            className="mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <PendingReviewsQueue reviews={pendingReviews} />
-          </motion.div>
-        )}
-
         {/* App health — only appears when something actually failed, so it
             stays silent on a normal day rather than becoming background noise. */}
         {recentErrorCount > 0 && (
@@ -230,242 +187,16 @@ export function CoachDashboardClient({
           </div>
         )}
 
-        {/* Needs your call — rules over labs, energy, adherence and symptoms.
-            Sits above everything else because these are time-sensitive. */}
-        {alerts.length > 0 && (
-          <motion.div className="mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="flex items-center gap-2 mb-3">
-              <Zap size={16} style={{ color: "#fb7185" }} />
-              <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>Needs your call</h3>
-              <span className="text-xs" style={{ color: "#7e8a9e" }}>
-                · {alerts.length} flag{alerts.length === 1 ? "" : "s"} across your roster
-              </span>
-            </div>
-            <div className="space-y-2">
-              {alerts.map((a, i) => {
-                const tone =
-                  a.severity === "urgent"
-                    ? { color: "#fb7185", bg: "rgba(251,113,133,0.05)", border: "rgba(251,113,133,0.2)", label: "Urgent" }
-                    : a.severity === "attention"
-                    ? { color: "#f59e0b", bg: "rgba(245,158,11,0.05)", border: "rgba(245,158,11,0.18)", label: "Review" }
-                    : { color: "#34d399", bg: "rgba(52,211,153,0.05)", border: "rgba(52,211,153,0.18)", label: "Send a win" }
-                return (
-                  <Link
-                    key={`${a.clientId}-${a.kind}-${i}`}
-                    href={a.href}
-                    className="flex items-start gap-3 p-3.5 rounded-2xl"
-                    style={{ background: tone.bg, border: `1px solid ${tone.border}` }}
-                  >
-                    <span
-                      className="shrink-0 text-[9.5px] font-bold uppercase rounded-full px-2 py-1 mt-0.5"
-                      style={{ color: tone.color, background: `${tone.color}1f`, letterSpacing: "0.06em" }}
-                    >
-                      {tone.label}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>
-                        {a.clientName} — {a.title}
-                      </p>
-                      <p className="text-[11.5px] mt-0.5" style={{ color: "#7e8a9e" }}>{a.detail}</p>
-                    </div>
-                    <ChevronRight size={16} className="shrink-0 mt-1" style={{ color: tone.color }} />
-                  </Link>
-                )
-              })}
-            </div>
-          </motion.div>
-        )}
+        {/* One list: every reason a client needs you, ranked, with the reason
+            on the row. Replaces the separate reviews, alerts, replies, quiet
+            and engagement sections, and the stat cards. */}
+        <div className="mb-10">
+          <Worklist rows={worklist} reviews={pendingReviews} />
+        </div>
 
-        {/* Waiting for your reply — clients with unread messages */}
-        {waitingClients.length > 0 && (
-          <motion.div
-            className="mb-6 p-5 rounded-2xl"
-            style={{ background: "rgba(45, 212, 191, 0.06)", border: "1px solid rgba(45, 212, 191, 0.2)" }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <MessageSquare size={16} style={{ color: "#2dd4bf" }} />
-              <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>Waiting for your reply</h3>
-              <span className="text-xs" style={{ color: "#7e8a9e" }}>· {waitingClients.length} client{waitingClients.length === 1 ? "" : "s"}</span>
-            </div>
-            <div className="space-y-2">
-              {waitingClients.map((w) => (
-                <Link
-                  key={w.id}
-                  href={`/coach/client/${w.id}/messages`}
-                  className="flex items-center justify-between p-3 rounded-xl"
-                  style={{ background: "rgba(255, 255, 255, 0.03)" }}
-                >
-                  <span className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{w.full_name}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(45,212,191,0.15)", color: "#2dd4bf" }}>
-                    {w.count} new message{w.count === 1 ? "" : "s"}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Needs attention — quiet clients (active + onboarded, no check-in in 7+ days) */}
-        {quietClients.length > 0 && (
-          <motion.div
-            className="mb-8 p-5 rounded-2xl"
-            style={{ background: "rgba(245, 158, 11, 0.06)", border: "1px solid rgba(245, 158, 11, 0.2)" }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Clock size={16} style={{ color: "#f59e0b" }} />
-              <h3 className="font-semibold" style={{ color: "#e8eaf0" }}>Needs attention</h3>
-              <span className="text-xs" style={{ color: "#7e8a9e" }}>· {quietClients.length} quiet client{quietClients.length === 1 ? "" : "s"}</span>
-            </div>
-            <div className="space-y-2">
-              {quietClients.map((q) => (
-                <div
-                  key={q.id}
-                  className="flex items-center gap-3 p-3 rounded-xl"
-                  style={{ background: "rgba(255, 255, 255, 0.03)" }}
-                >
-                  <Link href={`/coach/client/${q.id}`} className="flex-1 min-w-0">
-                    <span className="block text-sm font-medium truncate" style={{ color: "#e8eaf0" }}>{q.full_name}</span>
-                    <span className="block text-xs mt-0.5" style={{ color: "#f59e0b" }}>
-                      {q.daysSince === null ? "No check-in yet" : `${q.daysSince} days since last check-in`}
-                    </span>
-                  </Link>
-                  <Link
-                    href={`/coach/client/${q.id}/messages`}
-                    className="shrink-0 text-[11px] font-semibold rounded-full px-3 py-1.5"
-                    style={{ color: "#2dd4bf", border: "1px solid rgba(45,212,191,0.3)" }}
-                  >
-                    Gentle nudge
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* App engagement — quieter than the lists above on purpose: this is
-            triage context for them, not its own alarm. Amber at most, and only
-            on the label; nothing here is a failure. */}
-        {(engagement.neverStarted.length > 0 || engagement.goneQuiet.length > 0) && (
-          <div
-            className="mb-8 p-5 rounded-2xl"
-            style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.06)" }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Activity size={14} style={{ color: "#7e8a9e" }} />
-              <h3 className="text-sm font-semibold" style={{ color: "#a9b2c1" }}>Using the app</h3>
-              <span className="text-[11px]" style={{ color: "#5a6578" }}>
-                · meals, workouts and check-ins across active clients
-              </span>
-            </div>
-            <div className="grid gap-5 md:grid-cols-2">
-              {engagement.neverStarted.length > 0 && (
-                <div>
-                  <p
-                    className="text-[10px] font-bold uppercase mb-1"
-                    style={{ color: "#f59e0b", letterSpacing: "0.07em" }}
-                  >
-                    Never started · {engagement.neverStarted.length}
-                  </p>
-                  <p className="text-[11px] mb-2.5" style={{ color: "#5a6578" }}>
-                    Nothing logged since she joined — she likely needs it shown to her once.
-                  </p>
-                  <div className="space-y-1.5">
-                    {engagement.neverStarted.map((c) => (
-                      <Link
-                        key={c.id}
-                        href={`/coach/client/${c.id}`}
-                        className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl"
-                        style={{ background: "rgba(255, 255, 255, 0.02)" }}
-                      >
-                        <span className="text-[13px] truncate" style={{ color: "#e8eaf0" }}>{c.full_name}</span>
-                        <span className="text-[11px] shrink-0 tabular-nums" style={{ color: "#7e8a9e" }}>
-                          {c.daysSinceJoined === null
-                            ? "joined recently"
-                            : `${c.daysSinceJoined}d since joining`}
-                          {c.pushOff ? " · reminders off" : ""}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {engagement.goneQuiet.length > 0 && (
-                <div>
-                  <p
-                    className="text-[10px] font-bold uppercase mb-1"
-                    style={{ color: "#a9b2c1", letterSpacing: "0.07em" }}
-                  >
-                    Gone quiet · {engagement.goneQuiet.length}
-                  </p>
-                  <p className="text-[11px] mb-2.5" style={{ color: "#5a6578" }}>
-                    Nothing logged lately — worth asking what changed.
-                  </p>
-                  <div className="space-y-1.5">
-                    {engagement.goneQuiet.map((c) => (
-                      <Link
-                        key={c.id}
-                        href={`/coach/client/${c.id}`}
-                        className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl"
-                        style={{ background: "rgba(255, 255, 255, 0.02)" }}
-                      >
-                        <span className="text-[13px] truncate" style={{ color: "#e8eaf0" }}>{c.full_name}</span>
-                        <span className="text-[11px] shrink-0 tabular-nums" style={{ color: "#7e8a9e" }}>
-                          {c.daysSinceLog === null
-                            ? `${c.active} of ${c.total} signals`
-                            : `last logged ${c.daysSinceLog}d ago · ${c.active}/${c.total}`}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {statCards.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              {...statEntrance(i)}
-              className="p-5 rounded-2xl"
-              style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px solid rgba(255, 255, 255, 0.06)",
-              }}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div 
-                  className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: `${stat.color}15` }}
-                >
-                  <stat.icon size={18} style={{ color: stat.color }} />
-                </div>
-              </div>
-              <div 
-                className="text-2xl font-bold mb-1 tabular-nums"
-                style={{ 
-                  color: "#e8eaf0",
-                  fontFamily: "'Instrument Serif', Georgia, serif",
-                  fontStyle: "italic"
-                }}
-              >
-                {stat.value}
-              </div>
-              <div className="text-xs" style={{ color: "#7e8a9e" }}>
-                {stat.label}
-              </div>
-              <div className="text-[10px] mt-1" style={{ color: "#404858" }}>
-                {stat.subtext}
-              </div>
-            </motion.div>
-          ))}
+        <div className="flex items-baseline justify-between mb-3">
+          <h2 className="text-lg font-semibold" style={{ color: "#e8eaf0" }}>All clients</h2>
+          <span className="text-xs tabular-nums" style={{ color: "#7e8a9e" }}>{stats.activeClients} active of {stats.totalClients}</span>
         </div>
 
         {/* Search and Filter */}

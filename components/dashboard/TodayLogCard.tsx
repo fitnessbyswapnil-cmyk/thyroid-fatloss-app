@@ -50,7 +50,7 @@ export function TodayLogCard({
   heading?: string
 }) {
   const router = useRouter()
-  const [meals, setMeals] = useState<string[]>(initialMealsDone)
+  const [meals, setMeals] = useState<string[]>(initialMealsDone ?? [])
   const [workoutDone, setWorkoutDone] = useState(initialWorkoutDone)
   const [steps, setStepsState] = useState<number | null>(initialSteps)
   const [saving, setSaving] = useState(false)

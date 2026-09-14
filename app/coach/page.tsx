@@ -6,6 +6,7 @@ import { buildSetupIndex } from "@/lib/coach/assignment"
 import { getPendingReviews } from "@/app/actions/coach-reviews"
 import { buildAlerts, sortAlerts, type CoachAlert } from "@/lib/coach/alerts"
 import { buildEngagement } from "@/lib/coach/engagement"
+import { buildWorklist } from "@/lib/coach/worklist"
 import type { RosterEngagement } from "./coach-dashboard-client"
 
 export default async function CoachDashboardPage() {
@@ -35,6 +36,7 @@ export default async function CoachDashboardPage() {
     { data: unreadMsgs },
     { count: recentErrorCount },
     { data: allPlans },
+    { data: pendingReports },
   ] = await Promise.all([
     supabase.from("clients").select("role").eq("id", user.id).single(),
     supabase.from("clients").select("*").eq("role", "client").order("created_at", { ascending: false }),
@@ -47,6 +49,8 @@ export default async function CoachDashboardPage() {
     // Singapore costs about the same as ten, and there is one per client
     // otherwise.
     supabase.from("plans").select("client_id, type, assigned_at, created_at"),
+    // Blood reports clients have sent that still need their values entered.
+    supabase.from("lab_reports").select("client_id, uploaded_at").is("entered_at", null),
   ])
 
   if (!coach || coach.role !== "coach") {
@@ -293,6 +297,25 @@ export default async function CoachDashboardPage() {
   // What each client has been given and what is still outstanding.
   const setup = buildSetupIndex(clients || [], allPlans || [])
 
+  // Everything above, merged into one ranked list with a reason per row.
+  const activeSet = new Set(activeIds)
+  const worklist = buildWorklist({
+    now,
+    names: Object.fromEntries([
+      ...(pendingReviews || []).map((r) => [r.client_id, r.client_name]),
+      ...(clients || []).map((c) => [c.id, c.full_name || "Client"]),
+    ]),
+    pendingReviews: pendingReviews || [],
+    alerts,
+    waiting: waitingClients,
+    reports: (pendingReports || []).filter((r) => activeSet.has(r.client_id)),
+    quiet: quietClients,
+    neverStarted: engagement.neverStarted,
+    goneQuiet: engagement.goneQuiet,
+    // Plans only matter for clients who are paying and past onboarding.
+    setup: Object.fromEntries(Object.entries(setup).filter(([id]) => activeSet.has(id))),
+  })
+
   return (
     <CoachDashboardClient
       clients={clients || []}
@@ -304,6 +327,7 @@ export default async function CoachDashboardPage() {
       alerts={alerts}
       engagement={engagement}
       recentErrorCount={recentErrorCount || 0}
+      worklist={worklist}
       stats={{
         totalClients,
         activeClients,
